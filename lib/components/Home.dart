@@ -1,0 +1,582 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
+import 'package:hexcolor/hexcolor.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
+import 'package:nej/components/Helpers/Networking.dart';
+import 'package:nej/components/Providers/HomeProvider.dart';
+import 'package:provider/provider.dart';
+
+class Home extends StatefulWidget {
+  const Home({Key? key}) : super(key: key);
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  bool isLoading = true; //Loading to get the stores.
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    //! Get the stores names
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      GetMainStores(context: context);
+    });
+  }
+
+  Future GetMainStores({required BuildContext context}) async {
+    //? Set the main stores to empty
+    context.read<HomeProvider>().updateMainStores(data: []);
+    //....
+    Uri mainUrl = Uri.parse(
+        Uri.encodeFull('${context.read<HomeProvider>().bridge}/getStores'));
+
+    //Assemble the bundle data
+    //* @param type: the type of request (past, scheduled, business)
+    Map<String, String> bundleData = {
+      'user_identifier': context.read<HomeProvider>().user_identifier,
+    };
+
+    try {
+      http.Response response = await http.post(mainUrl, body: bundleData);
+
+      if (response.statusCode == 200) //Got some results
+      {
+        log(response.body.toString());
+        List tmpResponse = json.decode(response.body);
+        //? Update
+        context.read<HomeProvider>().updateMainStores(data: tmpResponse);
+        setState(() {
+          isLoading = false;
+        });
+      } else //Has some errors
+      {
+        log(response.toString());
+        Timer(const Duration(milliseconds: 500), () {
+          GetMainStores(context: context);
+        });
+      }
+    } catch (e) {
+      log('8');
+      log(e.toString());
+      Timer(const Duration(milliseconds: 500), () {
+        GetMainStores(context: context);
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Container(
+          child: Column(
+            children: [
+              Header(),
+              Divider(
+                thickness: 1,
+                height: 35,
+              ),
+              SearchBar(),
+              Divider(
+                color: Colors.white,
+              ),
+              AddressBar(),
+              isLoading
+                  ? Padding(
+                      padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.height * 0.1),
+                      child: Container(
+                        child: CircularProgressIndicator(
+                          strokeWidth: 3,
+                          color: Colors.green,
+                        ),
+                      ))
+                  : context.watch<HomeProvider>().mainStores.isEmpty
+                      ? Container(
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                top: MediaQuery.of(context).size.height * 0.1),
+                            child: Column(
+                              children: [
+                                Icon(
+                                  Icons.wifi_off,
+                                  size: 40,
+                                  color: Colors.grey,
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Text('Unable to connect to the Internet.',
+                                    style: TextStyle(
+                                        color: Colors.grey, fontSize: 15))
+                              ],
+                            ),
+                          ),
+                        )
+                      : Expanded(
+                          child: ListView(
+                            children: [
+                              Divider(
+                                height: 30,
+                                color: Colors.white,
+                              ),
+                              StoresListingMain(),
+                              Visibility(
+                                visible: context
+                                        .watch<HomeProvider>()
+                                        .mainStores
+                                        .length >
+                                    4,
+                                child: Divider(
+                                  height: 60,
+                                  thickness: 1,
+                                ),
+                              ),
+                              Visibility(
+                                  visible: context
+                                          .watch<HomeProvider>()
+                                          .mainStores
+                                          .length >
+                                      4,
+                                  child: GenericTitle()),
+                              Visibility(
+                                  visible: context
+                                          .watch<HomeProvider>()
+                                          .mainStores
+                                          .length >
+                                      4,
+                                  child: NewStores())
+                            ],
+                          ),
+                        )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+//Genetic title
+class GenericTitle extends StatelessWidget {
+  const GenericTitle({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Padding(
+        padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+        child: Row(
+          children: [
+            Text('New Stores',
+                style: TextStyle(fontFamily: 'MoveTextBold', fontSize: 19)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+//Header
+class Header extends StatefulWidget {
+  const Header({Key? key}) : super(key: key);
+
+  @override
+  State<Header> createState() => _HeaderState();
+}
+
+class _HeaderState extends State<Header> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Padding(
+        padding: const EdgeInsets.only(left: 20, right: 20, top: 15),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+                child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Icon(Icons.arrow_back),
+              ],
+            )),
+            Expanded(
+                child: Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Stores',
+                      style:
+                          TextStyle(fontFamily: 'MoveTextBold', fontSize: 18),
+                    ))),
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 15),
+                    child: Icon(Icons.person),
+                  ),
+                  Icon(Icons.shopping_cart)
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+//Search bar
+class SearchBar extends StatefulWidget {
+  const SearchBar({Key? key}) : super(key: key);
+
+  @override
+  State<SearchBar> createState() => _SearchBarState();
+}
+
+class _SearchBarState extends State<SearchBar> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 20, right: 20),
+      child: Container(
+        height: 45,
+        child: TextField(
+          style: TextStyle(fontSize: 18),
+          decoration: InputDecoration(
+              contentPadding: EdgeInsets.only(bottom: 5),
+              prefixIcon: Icon(Icons.search, color: Colors.black),
+              prefixIconColor: Colors.black,
+              floatingLabelBehavior: FloatingLabelBehavior.never,
+              filled: true,
+              fillColor: Colors.grey.shade200,
+              floatingLabelStyle: const TextStyle(color: Colors.black),
+              label: Text('Search'),
+              enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey.shade200)),
+              focusedBorder: OutlineInputBorder(
+                  borderSide:
+                      const BorderSide(color: Color.fromRGBO(0, 0, 0, 1)),
+                  borderRadius: BorderRadius.circular(1)),
+              border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey.shade200),
+                  borderRadius: BorderRadius.circular(1))),
+        ),
+      ),
+    );
+  }
+}
+
+//Address bar
+class AddressBar extends StatelessWidget {
+  const AddressBar({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: ListTile(
+        horizontalTitleGap: 0,
+        leading: Icon(
+          Icons.home,
+          color: Colors.black,
+        ),
+        title: Text(
+          '22 Lister street',
+          style: TextStyle(fontFamily: 'MoveTextMedium'),
+        ),
+        subtitle: Text('Street and city'),
+        trailing: Icon(
+          Icons.arrow_forward_ios,
+          size: 15,
+        ),
+      ),
+    );
+  }
+}
+
+// Stores
+class StoresListingMain extends StatefulWidget {
+  const StoresListingMain({Key? key}) : super(key: key);
+
+  @override
+  State<StoresListingMain> createState() => _StoresListingMainState();
+}
+
+class _StoresListingMainState extends State<StoresListingMain> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Padding(
+        padding: const EdgeInsets.only(left: 20, right: 20),
+        child: Column(
+          children: [
+            Row(
+              children: context.watch<HomeProvider>().mainStores.isEmpty
+                  ? []
+                  : [
+                      BigStoreShow(
+                        imagePath: context.watch<HomeProvider>().mainStores[0]
+                            ['logo'],
+                        backgroundColor: HexColor(context
+                            .watch<HomeProvider>()
+                            .mainStores[0]['background']),
+                        borderColor: HexColor(context
+                            .watch<HomeProvider>()
+                            .mainStores[0]['border']),
+                        closingTime: context.watch<HomeProvider>().mainStores[0]
+                            ['times']['string'],
+                      ),
+                      Visibility(
+                        visible:
+                            context.watch<HomeProvider>().mainStores.length > 1,
+                        child: SizedBox(
+                          width: 20,
+                        ),
+                      ),
+                      Visibility(
+                        visible:
+                            context.watch<HomeProvider>().mainStores.length > 1,
+                        child: BigStoreShow(
+                          imagePath: context.watch<HomeProvider>().mainStores[1]
+                              ['logo'],
+                          backgroundColor: HexColor(context
+                              .watch<HomeProvider>()
+                              .mainStores[1]['background']),
+                          borderColor: HexColor(context
+                              .watch<HomeProvider>()
+                              .mainStores[1]['border']),
+                          closingTime: context
+                              .watch<HomeProvider>()
+                              .mainStores[1]['times']['string'],
+                        ),
+                      ),
+                    ],
+            ),
+            Divider(
+              color: Colors.white,
+            ),
+            Row(
+              children: [
+                Visibility(
+                  visible: context.watch<HomeProvider>().mainStores.length > 2,
+                  child: BigStoreShow(
+                    imagePath: context.watch<HomeProvider>().mainStores[2]
+                        ['logo'],
+                    backgroundColor: HexColor(context
+                        .watch<HomeProvider>()
+                        .mainStores[2]['background']),
+                    borderColor: HexColor(
+                        context.watch<HomeProvider>().mainStores[2]['border']),
+                    closingTime: context.watch<HomeProvider>().mainStores[2]
+                        ['times']['string'],
+                  ),
+                ),
+                Visibility(
+                  visible: context.watch<HomeProvider>().mainStores.length > 3,
+                  child: SizedBox(
+                    width: 20,
+                  ),
+                ),
+                Visibility(
+                  visible: context.watch<HomeProvider>().mainStores.length > 3,
+                  child: BigStoreShow(
+                    imagePath: context.watch<HomeProvider>().mainStores[3]
+                        ['logo'],
+                    backgroundColor: HexColor(context
+                        .watch<HomeProvider>()
+                        .mainStores[3]['background']),
+                    borderColor: HexColor(
+                        context.watch<HomeProvider>().mainStores[3]['border']),
+                    closingTime: context.watch<HomeProvider>().mainStores[3]
+                        ['times']['string'],
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Big store showoff
+class BigStoreShow extends StatelessWidget {
+  final Color backgroundColor;
+  final Color borderColor;
+  final String imagePath;
+  final String closingTime;
+  const BigStoreShow(
+      {Key? key,
+      this.backgroundColor = Colors.black,
+      this.borderColor = Colors.black,
+      required this.imagePath,
+      this.closingTime = "Closes in 3hours"})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        decoration: BoxDecoration(
+            color: backgroundColor, border: Border.all(color: borderColor)),
+        height: 150,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 15, right: 15),
+                child: SizedBox(
+                  height: 50,
+                  child: Image.network(
+                    imagePath,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const CircleAvatar(
+                        radius: 37,
+                        backgroundColor: Colors.white,
+                        backgroundImage: AssetImage(
+                          'assets/Images/user.png',
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100),
+                      color: Colors.black.withOpacity(0.7)),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 10, right: 10, top: 3, bottom: 3),
+                    child: Text(closingTime,
+                        style: TextStyle(
+                            fontFamily: 'MoveTextRegular',
+                            fontSize: 13,
+                            color: Colors.white)),
+                  )),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+//New stores
+class NewStores extends StatelessWidget {
+  const NewStores({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        height: 70.0,
+        // color: Colors.red,
+        child: ListView.builder(
+            shrinkWrap: true,
+            physics: ClampingScrollPhysics(),
+            scrollDirection: Axis.horizontal,
+            itemCount: context.watch<HomeProvider>().mainStores.length - 4,
+            itemBuilder: ((context, index) {
+              return NewStoreDisplay(
+                imagePath: 'assets/Images/Shops/ackermans.jpeg',
+                backgroundColor: Color.fromRGBO(97, 161, 98, 1),
+                borderColor: Color.fromRGBO(97, 161, 98, 1),
+                closingTime: 'Closes in 1hour',
+              );
+            })
+            // ListView(
+            //   shrinkWrap: true,
+            //   physics: ClampingScrollPhysics(),
+            //   scrollDirection: Axis.horizontal,
+            //   children: [
+            //     NewStoreDisplay(
+            //       imagePath: 'assets/Images/Shops/ackermans.jpeg',
+            //       backgroundColor: Color.fromRGBO(97, 161, 98, 1),
+            //       borderColor: Color.fromRGBO(97, 161, 98, 1),
+            //       closingTime: 'Closes in 1hour',
+            //     ),
+            //     NewStoreDisplay(
+            //       imagePath: 'assets/Images/Shops/ShoeCity.png',
+            //       backgroundColor: Colors.white,
+            //       borderColor: Colors.grey.shade400,
+            //       closingTime: 'Closes in 25min',
+            //     )
+            //   ],
+            // ),
+            ));
+  }
+
+  // //?Get the new stores
+  // List<Widget> getNewStores(BuildContext context) {
+
+  // }
+}
+
+//New stores display
+class NewStoreDisplay extends StatelessWidget {
+  final Color backgroundColor;
+  final Color borderColor;
+  final String imagePath;
+  final String closingTime;
+  const NewStoreDisplay(
+      {Key? key,
+      this.backgroundColor = Colors.black,
+      this.borderColor = Colors.black,
+      required this.imagePath,
+      this.closingTime = "Closes in 3hours"})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 20, right: 30),
+      child: Row(
+        children: [
+          Container(
+              decoration: BoxDecoration(
+                  color: backgroundColor,
+                  border: Border.all(color: borderColor)),
+              width: 70,
+              height: 70,
+              child: Image.asset(imagePath)),
+          SizedBox(
+            width: 15,
+          ),
+          Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Edgars',
+                  style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 17),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Text(
+                  'Clothing',
+                  style: TextStyle(color: Colors.grey.shade600),
+                ),
+                Expanded(
+                    child: Container(
+                        alignment: Alignment.bottomLeft,
+                        child: Text(closingTime)))
+              ])
+        ],
+      ),
+    );
+  }
+}
