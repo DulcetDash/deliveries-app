@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:nej/components/Helpers/Networking.dart';
 import 'package:nej/components/Providers/HomeProvider.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -46,7 +48,7 @@ class _HomeState extends State<Home> {
 
       if (response.statusCode == 200) //Got some results
       {
-        log(response.body.toString());
+        // log(response.body.toString());
         List tmpResponse = json.decode(response.body);
         //? Update
         context.read<HomeProvider>().updateMainStores(data: tmpResponse);
@@ -259,7 +261,7 @@ class _SearchBarState extends State<SearchBar> {
               filled: true,
               fillColor: Colors.grey.shade200,
               floatingLabelStyle: const TextStyle(color: Colors.black),
-              label: Text('Search'),
+              label: Text('Search stores'),
               enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.grey.shade200)),
               focusedBorder: OutlineInputBorder(
@@ -333,6 +335,8 @@ class _StoresListingMainState extends State<StoresListingMain> {
                             .mainStores[0]['border']),
                         closingTime: context.watch<HomeProvider>().mainStores[0]
                             ['times']['string'],
+                        productData:
+                            context.watch<HomeProvider>().mainStores[0],
                       ),
                       Visibility(
                         visible:
@@ -356,6 +360,8 @@ class _StoresListingMainState extends State<StoresListingMain> {
                           closingTime: context
                               .watch<HomeProvider>()
                               .mainStores[1]['times']['string'],
+                          productData:
+                              context.watch<HomeProvider>().mainStores[1],
                         ),
                       ),
                     ],
@@ -377,6 +383,7 @@ class _StoresListingMainState extends State<StoresListingMain> {
                         context.watch<HomeProvider>().mainStores[2]['border']),
                     closingTime: context.watch<HomeProvider>().mainStores[2]
                         ['times']['string'],
+                    productData: context.watch<HomeProvider>().mainStores[2],
                   ),
                 ),
                 Visibility(
@@ -397,6 +404,7 @@ class _StoresListingMainState extends State<StoresListingMain> {
                         context.watch<HomeProvider>().mainStores[3]['border']),
                     closingTime: context.watch<HomeProvider>().mainStores[3]
                         ['times']['string'],
+                    productData: context.watch<HomeProvider>().mainStores[3],
                   ),
                 ),
               ],
@@ -414,61 +422,88 @@ class BigStoreShow extends StatelessWidget {
   final Color borderColor;
   final String imagePath;
   final String closingTime;
+  final Map productData;
+
   const BigStoreShow(
       {Key? key,
       this.backgroundColor = Colors.black,
       this.borderColor = Colors.black,
       required this.imagePath,
-      this.closingTime = "Closes in 3hours"})
+      this.closingTime = "Closes in 3hours",
+      required this.productData})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Container(
-        decoration: BoxDecoration(
-            color: backgroundColor, border: Border.all(color: borderColor)),
-        height: 150,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 15, right: 15),
-                child: SizedBox(
-                  height: 50,
-                  child: Image.network(
-                    imagePath,
-                    errorBuilder: (context, error, stackTrace) {
-                      return const CircleAvatar(
-                        radius: 37,
-                        backgroundColor: Colors.white,
-                        backgroundImage: AssetImage(
-                          'assets/Images/user.png',
+      child: InkWell(
+        onTap: () {
+          //! Save the store fp and store name
+          Map tmpData = {
+            'store_fp': productData['fp'],
+            'name': productData['fd_name'],
+            'structured': productData['structured']
+          };
+          //...
+          context.read<HomeProvider>().updateSelectedStoreData(data: tmpData);
+          //...
+          Navigator.of(context).pushNamed('/catalogue');
+        },
+        child: Container(
+          decoration: BoxDecoration(
+              color: backgroundColor, border: Border.all(color: borderColor)),
+          height: 150,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 15, right: 15),
+                  child: SizedBox(
+                    height: 50,
+                    child: CachedNetworkImage(
+                      imageUrl: imagePath,
+                      progressIndicatorBuilder:
+                          (context, url, downloadProgress) => SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: 20.0,
+                        child: Shimmer.fromColors(
+                          baseColor: Colors.grey.shade300,
+                          highlightColor: Colors.grey.shade100,
+                          child: Container(
+                            width: 48.0,
+                            height: 48.0,
+                            color: Colors.white,
+                          ),
                         ),
-                      );
-                    },
+                      ),
+                      errorWidget: (context, url, error) => const Icon(
+                        Icons.error,
+                        size: 30,
+                        color: Colors.grey,
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100),
-                      color: Colors.black.withOpacity(0.7)),
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 10, right: 10, top: 3, bottom: 3),
-                    child: Text(closingTime,
-                        style: TextStyle(
-                            fontFamily: 'MoveTextRegular',
-                            fontSize: 13,
-                            color: Colors.white)),
-                  )),
-            )
-          ],
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        color: Colors.black.withOpacity(0.7)),
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 10, right: 10, top: 3, bottom: 3),
+                      child: Text(closingTime,
+                          style: TextStyle(
+                              fontFamily: 'MoveTextRegular',
+                              fontSize: 13,
+                              color: Colors.white)),
+                    )),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -490,33 +525,28 @@ class NewStores extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             itemCount: context.watch<HomeProvider>().mainStores.length - 4,
             itemBuilder: ((context, index) {
+              int indexAdjusted = index + 4;
               return NewStoreDisplay(
-                imagePath: 'assets/Images/Shops/ackermans.jpeg',
-                backgroundColor: Color.fromRGBO(97, 161, 98, 1),
-                borderColor: Color.fromRGBO(97, 161, 98, 1),
-                closingTime: 'Closes in 1hour',
+                storeName: context
+                    .watch<HomeProvider>()
+                    .mainStores[indexAdjusted]['fd_name'],
+                storeType: context
+                    .watch<HomeProvider>()
+                    .mainStores[indexAdjusted]['type'],
+                imagePath: context
+                    .watch<HomeProvider>()
+                    .mainStores[indexAdjusted]['logo'],
+                backgroundColor: HexColor(context
+                    .watch<HomeProvider>()
+                    .mainStores[indexAdjusted]['background']),
+                borderColor: HexColor(context
+                    .watch<HomeProvider>()
+                    .mainStores[indexAdjusted]['border']),
+                closingTime: context
+                    .watch<HomeProvider>()
+                    .mainStores[indexAdjusted]['times']['string'],
               );
-            })
-            // ListView(
-            //   shrinkWrap: true,
-            //   physics: ClampingScrollPhysics(),
-            //   scrollDirection: Axis.horizontal,
-            //   children: [
-            //     NewStoreDisplay(
-            //       imagePath: 'assets/Images/Shops/ackermans.jpeg',
-            //       backgroundColor: Color.fromRGBO(97, 161, 98, 1),
-            //       borderColor: Color.fromRGBO(97, 161, 98, 1),
-            //       closingTime: 'Closes in 1hour',
-            //     ),
-            //     NewStoreDisplay(
-            //       imagePath: 'assets/Images/Shops/ShoeCity.png',
-            //       backgroundColor: Colors.white,
-            //       borderColor: Colors.grey.shade400,
-            //       closingTime: 'Closes in 25min',
-            //     )
-            //   ],
-            // ),
-            ));
+            })));
   }
 
   // //?Get the new stores
@@ -531,12 +561,17 @@ class NewStoreDisplay extends StatelessWidget {
   final Color borderColor;
   final String imagePath;
   final String closingTime;
+  final String storeType;
+  final String storeName;
+
   const NewStoreDisplay(
       {Key? key,
       this.backgroundColor = Colors.black,
       this.borderColor = Colors.black,
       required this.imagePath,
-      this.closingTime = "Closes in 3hours"})
+      this.closingTime = "Closes in 3hours",
+      required this.storeName,
+      this.storeType = 'Store'})
       : super(key: key);
 
   @override
@@ -551,7 +586,31 @@ class NewStoreDisplay extends StatelessWidget {
                   border: Border.all(color: borderColor)),
               width: 70,
               height: 70,
-              child: Image.asset(imagePath)),
+              child: Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: CachedNetworkImage(
+                  imageUrl: imagePath,
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    height: 20.0,
+                    child: Shimmer.fromColors(
+                      baseColor: Colors.grey.shade300,
+                      highlightColor: Colors.grey.shade100,
+                      child: Container(
+                        width: 20.0,
+                        height: 20.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => const Icon(
+                    Icons.error,
+                    size: 30,
+                    color: Colors.grey,
+                  ),
+                ),
+              )),
           SizedBox(
             width: 15,
           ),
@@ -560,14 +619,14 @@ class NewStoreDisplay extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Edgars',
+                  storeName,
                   style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 17),
                 ),
                 SizedBox(
                   height: 5,
                 ),
                 Text(
-                  'Clothing',
+                  storeType,
                   style: TextStyle(color: Colors.grey.shade600),
                 ),
                 Expanded(

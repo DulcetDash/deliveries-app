@@ -1,6 +1,8 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
+import 'package:nej/components/Catalogue.dart';
+import 'package:nej/components/CatalogueDetailsL2.dart';
 import 'package:nej/components/Home.dart';
 import 'package:provider/src/provider.dart';
 import 'package:nej/ThemesAndRoutes/AppTheme.dart' as AppTheme;
@@ -25,6 +27,8 @@ class _AppGeneralEntryState extends State<AppGeneralEntry> {
   Widget build(BuildContext context) {
     return MaterialApp(theme: AppTheme.appTheme, initialRoute: '/', routes: {
       '/': (context) => const Home(),
+      '/catalogue': (context) => const Catalogue(),
+      '/catalogue_details_l2': (context) => const CatalogueDetailsL2()
     });
   }
 }
