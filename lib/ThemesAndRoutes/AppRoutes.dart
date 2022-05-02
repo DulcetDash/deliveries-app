@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:nej/components/Catalogue.dart';
 import 'package:nej/components/CatalogueDetailsL2.dart';
 import 'package:nej/components/Home.dart';
+import 'package:nej/components/ProductView.dart';
 import 'package:provider/src/provider.dart';
 import 'package:nej/ThemesAndRoutes/AppTheme.dart' as AppTheme;
 
@@ -28,7 +29,8 @@ class _AppGeneralEntryState extends State<AppGeneralEntry> {
     return MaterialApp(theme: AppTheme.appTheme, initialRoute: '/', routes: {
       '/': (context) => const Home(),
       '/catalogue': (context) => const Catalogue(),
-      '/catalogue_details_l2': (context) => const CatalogueDetailsL2()
+      '/catalogue_details_l2': (context) => const CatalogueDetailsL2(),
+      '/product_view': (context) => const ProductView()
     });
   }
 }

@@ -527,6 +527,8 @@ class NewStores extends StatelessWidget {
             itemBuilder: ((context, index) {
               int indexAdjusted = index + 4;
               return NewStoreDisplay(
+                productData:
+                    context.watch<HomeProvider>().mainStores[indexAdjusted],
                 storeName: context
                     .watch<HomeProvider>()
                     .mainStores[indexAdjusted]['fd_name'],
@@ -563,6 +565,7 @@ class NewStoreDisplay extends StatelessWidget {
   final String closingTime;
   final String storeType;
   final String storeName;
+  final Map productData;
 
   const NewStoreDisplay(
       {Key? key,
@@ -571,70 +574,86 @@ class NewStoreDisplay extends StatelessWidget {
       required this.imagePath,
       this.closingTime = "Closes in 3hours",
       required this.storeName,
-      this.storeType = 'Store'})
+      this.storeType = 'Store',
+      required this.productData})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 30),
-      child: Row(
-        children: [
-          Container(
-              decoration: BoxDecoration(
-                  color: backgroundColor,
-                  border: Border.all(color: borderColor)),
-              width: 70,
-              height: 70,
-              child: Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: CachedNetworkImage(
-                  imageUrl: imagePath,
-                  progressIndicatorBuilder: (context, url, downloadProgress) =>
-                      SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    height: 20.0,
-                    child: Shimmer.fromColors(
-                      baseColor: Colors.grey.shade300,
-                      highlightColor: Colors.grey.shade100,
-                      child: Container(
-                        width: 20.0,
-                        height: 20.0,
-                        color: Colors.white,
+      child: InkWell(
+        onTap: () {
+          //! Save the store fp and store name
+          Map tmpData = {
+            'store_fp': productData['fp'],
+            'name': productData['fd_name'],
+            'structured': productData['structured']
+          };
+          //...
+          context.read<HomeProvider>().updateSelectedStoreData(data: tmpData);
+          //...
+          Navigator.of(context).pushNamed('/catalogue');
+        },
+        child: Row(
+          children: [
+            Container(
+                decoration: BoxDecoration(
+                    color: backgroundColor,
+                    border: Border.all(color: borderColor)),
+                width: 70,
+                height: 70,
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: CachedNetworkImage(
+                    imageUrl: imagePath,
+                    progressIndicatorBuilder:
+                        (context, url, downloadProgress) => SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: 20.0,
+                      child: Shimmer.fromColors(
+                        baseColor: Colors.grey.shade300,
+                        highlightColor: Colors.grey.shade100,
+                        child: Container(
+                          width: 20.0,
+                          height: 20.0,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
+                    errorWidget: (context, url, error) => const Icon(
+                      Icons.error,
+                      size: 30,
+                      color: Colors.grey,
+                    ),
                   ),
-                  errorWidget: (context, url, error) => const Icon(
-                    Icons.error,
-                    size: 30,
-                    color: Colors.grey,
+                )),
+            SizedBox(
+              width: 15,
+            ),
+            Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    storeName,
+                    style:
+                        TextStyle(fontFamily: 'MoveTextMedium', fontSize: 17),
                   ),
-                ),
-              )),
-          SizedBox(
-            width: 15,
-          ),
-          Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  storeName,
-                  style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 17),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  storeType,
-                  style: TextStyle(color: Colors.grey.shade600),
-                ),
-                Expanded(
-                    child: Container(
-                        alignment: Alignment.bottomLeft,
-                        child: Text(closingTime)))
-              ])
-        ],
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    storeType,
+                    style: TextStyle(color: Colors.grey.shade600),
+                  ),
+                  Expanded(
+                      child: Container(
+                          alignment: Alignment.bottomLeft,
+                          child: Text(closingTime)))
+                ])
+          ],
+        ),
       ),
     );
   }

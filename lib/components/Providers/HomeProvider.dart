@@ -39,6 +39,24 @@ class HomeProvider with ChangeNotifier {
     // "subcategory": "BUCKETS"
   }; //Will hold the data l1 - structured that will be shown for more
 
+  Map<String, dynamic> selectedProduct = {
+    "index": 159,
+    "name": "PnP Salad Dressing Honey Mustard 340ml",
+    "price": "N\$2199",
+    "pictures": [
+      "https://cdn-prd-02.pnp.co.za/sys-master/images/h9d/hbd/10656924991518/silo-product-image-v2-22Jan2022-180103-6001007222260-front-2834200-726_515Wx515H",
+      "https://cdn-prd-02.pnp.co.za/sys-master/images/h0b/h64/10656928923678/silo-product-image-v2-22Jan2022-180103-6001007222260-up-2834290-713_515Wx515H"
+    ],
+    "sku": "000000000000458088_EA",
+    "meta": {
+      "category": "FRESH FRUIT & VEGETABLES",
+      "subcategory": "FRESH FRUIT & VEGETABLES",
+      "store": "PICK N PAY",
+      "store_fp": "picknpay8837887322322",
+      "structured": "true"
+    }
+  }; //Hold the product that the user selected for a closup
+
   //Updaters
   //?1. Update the main stores
   void updateMainStores({required List data}) {
@@ -65,6 +83,12 @@ class HomeProvider with ChangeNotifier {
   //?4. Update selected data l2 to show
   void updateSelectedDataL2ToShow({required Map<String, String> data}) {
     selectedDataL2ToShow = data;
+    notifyListeners();
+  }
+
+  //?5. Update  the selected product to show
+  void updateSelectedProduct({required Map<String, dynamic> data}) {
+    selectedProduct = data;
     notifyListeners();
   }
 }

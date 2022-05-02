@@ -262,7 +262,8 @@ class _SearchBarState extends State<SearchBar> {
               filled: true,
               fillColor: Colors.grey.shade200,
               floatingLabelStyle: const TextStyle(color: Colors.black),
-              label: Text('Search stores'),
+              label: Text(
+                  'Search in ${context.watch<HomeProvider>().selected_store['name']}'),
               enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.grey.shade200)),
               focusedBorder: OutlineInputBorder(
@@ -408,10 +409,14 @@ class ProductShower extends StatelessWidget {
         child: Row(
           children: [
             ProductDisplayModel(
-              productImage: productData['pictures'][0],
-              productName: productData['name'],
-              productPrice: productData['price'],
-            ),
+                productImage:
+                    productData['pictures'][0].runtimeType.toString() ==
+                            'List<dynamic>'
+                        ? productData['pictures'][0][0]
+                        : productData['pictures'][0],
+                productName: productData['name'],
+                productPrice: productData['price'],
+                productData: productData),
             Visibility(
               visible: index < 2,
               child: SizedBox(
@@ -435,19 +440,35 @@ class ProductDisplayModel extends StatelessWidget {
   final String productImage;
   final String productName;
   final String productPrice;
+  final Map productData;
 
   const ProductDisplayModel(
       {Key? key,
       required this.productImage,
       required this.productName,
-      required this.productPrice})
+      required this.productPrice,
+      required this.productData})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Flexible(
-      child: Container(
-        // color: Colors.red,
+      child: InkWell(
+        onTap: () {
+          //! Form the saving data object for the selected item
+          Map<String, dynamic> tmpData = {
+            "index": productData['index'],
+            "name": productData['name'],
+            "price": productData['price'],
+            "pictures": productData['pictures'],
+            "sku": productData['sku'],
+            "meta": productData['meta']
+          };
+          //...
+          context.read<HomeProvider>().updateSelectedProduct(data: tmpData);
+          //Move
+          Navigator.of(context).pushNamed('/product_view');
+        },
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Padding(
             padding: const EdgeInsets.only(bottom: 15),

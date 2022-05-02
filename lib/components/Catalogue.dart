@@ -236,7 +236,8 @@ class _SearchBarState extends State<SearchBar> {
               filled: true,
               fillColor: Colors.grey.shade200,
               floatingLabelStyle: const TextStyle(color: Colors.black),
-              label: Text('Search stores'),
+              label: Text(
+                  'Search in ${context.watch<HomeProvider>().selected_store['name']}'),
               enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.grey.shade200)),
               focusedBorder: OutlineInputBorder(
@@ -305,7 +306,6 @@ class ShowCaseMainCat extends StatelessWidget {
                           .toList()[index]
                           .toString()];
 
-              log(tmpProductData.toString());
               //...
               return TrioProductShower(
                 productData: tmpProductData,
@@ -379,30 +379,48 @@ class TrioProductShower extends StatelessWidget {
             ],
           ),
           Divider(height: 35, color: Colors.white),
-          Row(
-            children: [
-              ProductDisplayModel(
-                productImage: productData[0]['pictures'][0],
-                productName: productData[0]['name'],
-                productPrice: productData[0]['price'],
-              ),
-              SizedBox(
-                width: 20,
-              ),
-              ProductDisplayModel(
-                productImage: productData[1]['pictures'][0],
-                productName: productData[1]['name'],
-                productPrice: productData[1]['price'],
-              ),
-              SizedBox(
-                width: 20,
-              ),
-              ProductDisplayModel(
-                productImage: productData[2]['pictures'][0],
-                productName: productData[2]['name'],
-                productPrice: productData[2]['price'],
-              ),
-            ],
+          Container(
+            // color: Colors.red,
+            child: Row(
+              children: [
+                ProductDisplayModel(
+                  productImage:
+                      productData[0]['pictures'][0].runtimeType.toString() ==
+                              'List<dynamic>'
+                          ? productData[0]['pictures'][0][0]
+                          : productData[0]['pictures'][0],
+                  productName: productData[0]['name'],
+                  productPrice: productData[0]['price'],
+                  productData: productData[0],
+                ),
+                SizedBox(
+                  width: 20,
+                ),
+                ProductDisplayModel(
+                  productImage:
+                      productData[1]['pictures'][0].runtimeType.toString() ==
+                              'List<dynamic>'
+                          ? productData[1]['pictures'][0][0]
+                          : productData[1]['pictures'][0],
+                  productName: productData[1]['name'],
+                  productPrice: productData[1]['price'],
+                  productData: productData[1],
+                ),
+                SizedBox(
+                  width: 20,
+                ),
+                ProductDisplayModel(
+                  productImage:
+                      productData[2]['pictures'][0].runtimeType.toString() ==
+                              'List<dynamic>'
+                          ? productData[2]['pictures'][0][0]
+                          : productData[2]['pictures'][0],
+                  productName: productData[2]['name'],
+                  productPrice: productData[2]['price'],
+                  productData: productData[2],
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -420,58 +438,78 @@ class ProductDisplayModel extends StatelessWidget {
   final String productImage;
   final String productName;
   final String productPrice;
+  final Map productData;
 
   const ProductDisplayModel(
       {Key? key,
       required this.productImage,
       required this.productName,
-      required this.productPrice})
+      required this.productPrice,
+      required this.productData})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Expanded(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 15),
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: 90.0,
-              child: CachedNetworkImage(
-                fit: BoxFit.cover,
-                imageUrl: productImage,
-                progressIndicatorBuilder: (context, url, downloadProgress) =>
-                    SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: 20.0,
-                  child: Shimmer.fromColors(
-                    baseColor: Colors.grey.shade300,
-                    highlightColor: Colors.grey.shade100,
-                    child: Container(
-                      width: 20.0,
-                      height: 20.0,
-                      color: Colors.white,
+    return Expanded(
+      child: InkWell(
+        onTap: () {
+          //! Form the saving data object for the selected item
+          Map<String, dynamic> tmpData = {
+            "index": productData['index'],
+            "name": productData['name'],
+            "price": productData['price'],
+            "pictures": productData['pictures'],
+            "sku": productData['sku'],
+            "meta": productData['meta']
+          };
+          //...
+          context.read<HomeProvider>().updateSelectedProduct(data: tmpData);
+          //Move
+          Navigator.of(context).pushNamed('/product_view');
+        },
+        child: Container(
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 15),
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: 90.0,
+                child: CachedNetworkImage(
+                  fit: BoxFit.cover,
+                  imageUrl: productImage,
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    height: 20.0,
+                    child: Shimmer.fromColors(
+                      baseColor: Colors.grey.shade300,
+                      highlightColor: Colors.grey.shade100,
+                      child: Container(
+                        width: 20.0,
+                        height: 20.0,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
-                ),
-                errorWidget: (context, url, error) => const Icon(
-                  Icons.error,
-                  size: 30,
-                  color: Colors.grey,
+                  errorWidget: (context, url, error) => const Icon(
+                    Icons.error,
+                    size: 30,
+                    color: Colors.grey,
+                  ),
                 ),
               ),
             ),
-          ),
-          Text(productName,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 15)),
-          SizedBox(
-            height: 5,
-          ),
-          Text(productPrice,
-              style: TextStyle(fontSize: 16, color: Colors.grey.shade700))
-        ]),
+            Text(productName,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 15)),
+            SizedBox(
+              height: 5,
+            ),
+            Text(productPrice,
+                style: TextStyle(fontSize: 16, color: Colors.grey.shade700))
+          ]),
+        ),
       ),
     );
   }
