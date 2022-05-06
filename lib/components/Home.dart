@@ -6,6 +6,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:nej/components/CartIcon.dart';
+import 'package:nej/components/Helpers/AppTheme.dart';
 import 'package:nej/components/Helpers/DataParser.dart';
 import 'package:nej/components/Helpers/LocationOpsHandler.dart';
 import 'package:nej/components/Helpers/Networking.dart';
@@ -122,7 +123,7 @@ class _HomeState extends State<Home> {
                       child: Container(
                         child: CircularProgressIndicator(
                           strokeWidth: 3,
-                          color: Colors.green,
+                          color: AppTheme().getPrimaryColor(),
                         ),
                       ))
                   : context.watch<HomeProvider>().mainStores.isEmpty

@@ -6,6 +6,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:nej/components/CartIcon.dart';
+import 'package:nej/components/Helpers/AppTheme.dart';
 import 'package:nej/components/Helpers/Networking.dart';
 import 'package:nej/components/Home.dart';
 import 'package:nej/components/Providers/HomeProvider.dart';
@@ -101,7 +102,7 @@ class _CatalogueState extends State<Catalogue> {
                       child: Container(
                         child: CircularProgressIndicator(
                           strokeWidth: 3,
-                          color: Colors.green,
+                          color: AppTheme().getPrimaryColor(),
                         ),
                       ))
                   : context
@@ -365,14 +366,14 @@ class TrioProductShower extends StatelessWidget {
                         style: TextStyle(
                             fontFamily: 'MoveTextBold',
                             fontSize: 14,
-                            color: Colors.green)),
+                            color: AppTheme().getPrimaryColor())),
                     SizedBox(
                       width: 4,
                     ),
                     Icon(
                       Icons.arrow_forward,
                       size: 18,
-                      color: Colors.green,
+                      color: AppTheme().getPrimaryColor(),
                     )
                   ],
                 ),

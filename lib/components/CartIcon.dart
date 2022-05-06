@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart';
+import 'package:nej/components/Helpers/AppTheme.dart';
 import 'package:nej/components/Providers/HomeProvider.dart';
 import 'package:provider/provider.dart';
 
@@ -21,7 +22,7 @@ class CartIcon extends StatelessWidget {
                       : Text(
                           context.watch<HomeProvider>().CART.length.toString(),
                           style: TextStyle(color: Colors.white)),
-                  badgeColor: Colors.green,
+                  badgeColor: AppTheme().getPrimaryColor(),
                   child: Icon(Icons.shopping_cart),
                 )),
     );

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:nej/components/GenericRectButton.dart';
+import 'package:nej/components/Helpers/AppTheme.dart';
 import 'package:provider/provider.dart';
 
 import 'Providers/HomeProvider.dart';
@@ -139,7 +140,7 @@ class MethodChoice extends StatelessWidget {
         alignment: Alignment.centerLeft,
         child: CheckboxListTile(
           contentPadding: EdgeInsets.zero,
-          activeColor: Colors.green,
+          activeColor: AppTheme().getPrimaryColor(),
           title: Text(
             paymentMethod,
             style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 18),
@@ -162,7 +163,7 @@ class MethodChoice extends StatelessWidget {
                     '+N\$45 to pick it up.',
                     style: TextStyle(
                         fontFamily: 'MoveTextMedium',
-                        color: Colors.green,
+                        color: AppTheme().getPrimaryColor(),
                         fontSize: 17),
                   ),
                 )

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:nej/components/GenericRectButton.dart';
+import 'package:nej/components/Helpers/AppTheme.dart';
 import 'package:nej/components/Helpers/DataParser.dart';
 import 'package:nej/components/Providers/HomeProvider.dart';
 import 'package:provider/provider.dart';
@@ -56,26 +57,31 @@ class _LocationDetailsState extends State<LocationDetails> {
                     height: 40,
                   ),
                   LocationChoice(
-                    title: 'Delivery location',
-                    subtitle: context
-                                    .watch<HomeProvider>()
-                                    .manuallySettedCurrentLocation_dropoff[
-                                'street'] !=
-                            null
-                        ? _dataParser.getGenericLocationString(
-                            location: _dataParser.getRealisticPlacesNames(
-                                locationData: context
-                                    .watch<HomeProvider>()
-                                    .manuallySettedCurrentLocation_dropoff))
-                        : 'Enter the address where you wish your package to be dropped off.',
-                    checked: context
-                            .watch<HomeProvider>()
-                            .manuallySettedCurrentLocation_dropoff['street'] !=
-                        null,
-                    actuator: () {
-                      print('Clicked');
-                    },
-                  ),
+                      title: 'Delivery location',
+                      subtitle: context
+                                      .watch<HomeProvider>()
+                                      .manuallySettedCurrentLocation_dropoff[
+                                  'street'] !=
+                              null
+                          ? _dataParser.getGenericLocationString(
+                              location: _dataParser.getRealisticPlacesNames(
+                                  locationData: context
+                                      .watch<HomeProvider>()
+                                      .manuallySettedCurrentLocation_dropoff))
+                          : 'Enter the address where you wish your package to be dropped off.',
+                      checked: context
+                                  .watch<HomeProvider>()
+                                  .manuallySettedCurrentLocation_dropoff[
+                              'street'] !=
+                          null,
+                      actuator: () => showMaterialModalBottomSheet(
+                            bounce: true,
+                            duration: Duration(milliseconds: 400),
+                            context: context,
+                            builder: (context) => LocalModal(
+                              scenario: 'dropoff',
+                            ),
+                          )),
                   Divider(
                     height: 40,
                   ),
@@ -177,7 +183,7 @@ class LocationChoice extends StatelessWidget {
           leading: tracked
               ? Icon(
                   Icons.check_circle,
-                  color: checked ? Colors.green : Colors.grey,
+                  color: checked ? AppTheme().getPrimaryColor() : Colors.grey,
                 )
               : Text(''),
           title: Text(
@@ -190,13 +196,13 @@ class LocationChoice extends StatelessWidget {
               subtitle,
               style: TextStyle(
                   fontSize: 16,
-                  color: checked ? Colors.green : Colors.grey.shade500),
+                  color: checked ? AppTheme().getPrimaryColor() : Colors.grey.shade500),
             ),
           ),
           trailing: Icon(
             Icons.arrow_forward_ios,
             size: 18,
-            color: Colors.green,
+            color: checked ? Colors.grey : AppTheme().getPrimaryColor(),
           ),
         ));
   }
@@ -210,21 +216,43 @@ class LocalModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //! 1. Pickup location
-    return SafeArea(
-      child: Container(
-          height: MediaQuery.of(context).size.height,
-          child: Column(
-            children: [
-              HeaderSearch(
-                location_type: 'pickup',
-              ),
-              SearchResultsRenderer(
-                location_type: 'pickup',
-              )
-            ],
-          )),
-    );
+    if (scenario == 'pickup') {
+      //! 1. Pickup location
+      return SafeArea(
+        child: Container(
+            height: MediaQuery.of(context).size.height,
+            child: Column(
+              children: [
+                HeaderSearch(
+                  location_type: 'pickup',
+                ),
+                SearchResultsRenderer(
+                  location_type: 'pickup',
+                )
+              ],
+            )),
+      );
+    } else if (scenario == 'dropoff') {
+      //! 1. Dropoff location
+      return SafeArea(
+        child: Container(
+            height: MediaQuery.of(context).size.height,
+            child: Column(
+              children: [
+                HeaderSearch(
+                  location_type: 'dropoff',
+                ),
+                SearchResultsRenderer(
+                  location_type: 'dropoff',
+                )
+              ],
+            )),
+      );
+    } else {
+      return Container(
+        child: SizedBox.shrink(),
+      );
+    }
   }
 }
 
@@ -252,7 +280,7 @@ class SearchResultsRenderer extends StatelessWidget {
               horizontalTitleGap: -5,
               leading: Icon(
                 Icons.my_location,
-                color: Colors.green,
+                color: AppTheme().getPrimaryColor(),
               ),
               title: Text(
                 'My current location',
@@ -445,7 +473,10 @@ class _HeaderSearchState extends State<HeaderSearch> {
                       SizedBox(
                         width: 4,
                       ),
-                      Text('Where are you?',
+                      Text(
+                          location_type == 'pickup'
+                              ? 'Where are you?'
+                              : 'Delivery location',
                           style: TextStyle(
                               fontFamily: 'MoveTextBold', fontSize: 20))
                     ],
@@ -481,6 +512,10 @@ class _HeaderSearchState extends State<HeaderSearch> {
                         fontSize: 18,
                         color: Colors.black),
                     decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          onPressed: _editingController.clear,
+                          icon: Icon(Icons.clear),
+                        ),
                         contentPadding:
                             EdgeInsets.only(top: 0, left: 10, right: 10),
                         filled: true,

@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:nej/components/CartIcon.dart';
 import 'package:nej/components/GenericRectButton.dart';
+import 'package:nej/components/Helpers/AppTheme.dart';
 import 'package:nej/components/Helpers/Networking.dart';
 import 'package:nej/components/Home.dart';
 import 'package:nej/components/Providers/HomeProvider.dart';
@@ -256,7 +257,7 @@ class ProductDisplayModel extends StatelessWidget {
                 style: TextStyle(
                     fontFamily: 'MoveTextMedium',
                     fontSize: 21,
-                    color: Colors.green)),
+                    color: AppTheme().getPrimaryColor())),
           ],
         ),
         Expanded(child: Text('')),
@@ -272,7 +273,7 @@ class ProductDisplayModel extends StatelessWidget {
                 : 'Add to cart',
             backgroundColor: context.read<HomeProvider>().isProductInCart(
                     product: context.read<HomeProvider>().selectedProduct)
-                ? Colors.green
+                ? AppTheme().getPrimaryColor()
                 : Colors.black,
             bottomSubtitleText: context.read<HomeProvider>().isProductInCart(
                     product: context.read<HomeProvider>().selectedProduct)

@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:nej/components/GenericRectButton.dart';
+import 'package:nej/components/Helpers/AppTheme.dart';
 import 'package:nej/components/Providers/HomeProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -111,7 +112,7 @@ class Header extends StatelessWidget {
                   style: TextStyle(
                       fontFamily: 'MoveTextMedium',
                       fontSize: 20,
-                      color: Colors.green),
+                      color: AppTheme().getPrimaryColor()),
                 )
               ],
             ),
