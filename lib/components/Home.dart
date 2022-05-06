@@ -5,7 +5,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:nej/components/CartIcon.dart';
+import 'package:nej/components/Helpers/DataParser.dart';
+import 'package:nej/components/Helpers/LocationOpsHandler.dart';
 import 'package:nej/components/Helpers/Networking.dart';
+import 'package:nej/components/Helpers/Watcher.dart';
 import 'package:nej/components/Providers/HomeProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -20,6 +24,10 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   bool isLoading = true; //Loading to get the stores.
 
+  // Create a new networking instance
+  late LocationOpsHandler locationOpsHandler;
+  Watcher watcher = Watcher();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -28,6 +36,24 @@ class _HomeState extends State<Home> {
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       GetMainStores(context: context);
     });
+
+    //Start with the timers
+    //Location operation handlers
+    locationOpsHandler = LocationOpsHandler(context: context);
+    //Ask once for the location permission
+    locationOpsHandler.requestLocationPermission();
+    //globalDataFetcher.getCoreDate(context: context);
+    watcher.startWatcher(context: context, actuatorFunctions: [
+      {'name': 'LocationOpsHandler', 'actuator': locationOpsHandler},
+    ]);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    locationOpsHandler.dispose();
+    watcher.dispose();
   }
 
   Future GetMainStores({required BuildContext context}) async {
@@ -225,7 +251,7 @@ class _HeaderState extends State<Header> {
                     padding: const EdgeInsets.only(right: 15),
                     child: Icon(Icons.person),
                   ),
-                  Icon(Icons.shopping_cart)
+                  CartIcon()
                 ],
               ),
             )
@@ -279,10 +305,14 @@ class _SearchBarState extends State<SearchBar> {
 
 //Address bar
 class AddressBar extends StatelessWidget {
-  const AddressBar({Key? key}) : super(key: key);
+  final DataParser _dataParser = DataParser();
+
+  AddressBar({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    Map<String, String> locationData = _dataParser.getRealisticPlacesNames(
+        locationData: context.watch<HomeProvider>().userLocationDetails);
     return Container(
       child: ListTile(
         horizontalTitleGap: 0,
@@ -291,10 +321,15 @@ class AddressBar extends StatelessWidget {
           color: Colors.black,
         ),
         title: Text(
-          '22 Lister street',
+          locationData['suburb'] != null
+              ? locationData['suburb'].toString()
+              : 'Finding location',
           style: TextStyle(fontFamily: 'MoveTextMedium'),
         ),
-        subtitle: Text('Street and city'),
+        subtitle: Text(
+          '${locationData['location_name']}, ${locationData['city']}',
+          overflow: TextOverflow.ellipsis,
+        ),
         trailing: Icon(
           Icons.arrow_forward_ios,
           size: 15,
@@ -439,11 +474,9 @@ class BigStoreShow extends StatelessWidget {
       child: InkWell(
         onTap: () {
           //! Save the store fp and store name
-          Map tmpData = {
-            'store_fp': productData['fp'],
-            'name': productData['fd_name'],
-            'structured': productData['structured']
-          };
+          Map tmpData = productData;
+          tmpData['store_fp'] = productData['fp'];
+          tmpData['name'] = productData['fd_name'];
           //...
           context.read<HomeProvider>().updateSelectedStoreData(data: tmpData);
           //...

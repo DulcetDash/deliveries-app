@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:nej/components/CartIcon.dart';
 import 'package:nej/components/GenericRectButton.dart';
 import 'package:nej/components/Helpers/Networking.dart';
 import 'package:nej/components/Home.dart';
@@ -133,11 +134,6 @@ class _HeaderState extends State<Header> {
               children: [
                 InkWell(
                     onTap: () {
-                      //! Clear the data
-                      context
-                          .read<HomeProvider>()
-                          .updateSelectedProduct(data: {});
-                      //...
                       Navigator.of(context).pop();
                     },
                     child: Icon(Icons.close)),
@@ -149,7 +145,7 @@ class _HeaderState extends State<Header> {
             Expanded(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: [Icon(Icons.shopping_cart)],
+                children: [CartIcon()],
               ),
             )
           ],
@@ -166,7 +162,7 @@ class ShowProductMain extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Map<String, dynamic> productData =
-        context.read<HomeProvider>().selectedProduct;
+        context.watch<HomeProvider>().selectedProduct;
 
     return Flexible(
       child: Padding(
@@ -264,13 +260,205 @@ class ProductDisplayModel extends StatelessWidget {
           ],
         ),
         Expanded(child: Text('')),
+        Visibility(
+            visible: context.read<HomeProvider>().isProductInCart(
+                    product: context.read<HomeProvider>().selectedProduct) ==
+                false,
+            child: ProductNumberIncrementor()),
         GenericRectButton(
-            label: 'Add to cart',
+            label: context.read<HomeProvider>().isProductInCart(
+                    product: context.read<HomeProvider>().selectedProduct)
+                ? 'Item in your cart'
+                : 'Add to cart',
+            backgroundColor: context.read<HomeProvider>().isProductInCart(
+                    product: context.read<HomeProvider>().selectedProduct)
+                ? Colors.green
+                : Colors.black,
+            bottomSubtitleText: context.read<HomeProvider>().isProductInCart(
+                    product: context.read<HomeProvider>().selectedProduct)
+                ? 'Click to remove from your cart'
+                : null,
             labelFontSize: 20,
             horizontalPadding: 0,
             isArrowShow: false,
-            actuatorFunctionl: () {})
+            actuatorFunctionl: context.read<HomeProvider>().isProductInCart(
+                        product:
+                            context.read<HomeProvider>().selectedProduct) ==
+                    false
+                ? () {
+                    if (context.read<HomeProvider>().isProductInCart(
+                            product:
+                                context.read<HomeProvider>().selectedProduct) ==
+                        false) {
+                      context.read<HomeProvider>().addProductToCart(
+                          product:
+                              context.read<HomeProvider>().selectedProduct);
+                    }
+                  }
+                : () {
+                    //!Remove from your cart
+                    if (context.read<HomeProvider>().isProductInCart(
+                        product:
+                            context.read<HomeProvider>().selectedProduct)) {
+                      context.read<HomeProvider>().removeProductFromCart(
+                          product:
+                              context.read<HomeProvider>().selectedProduct);
+                    }
+                  })
       ]),
     );
+  }
+}
+
+//Increment/decrement the total number of items you want for this product
+class ProductNumberIncrementor extends StatefulWidget {
+  const ProductNumberIncrementor({Key? key}) : super(key: key);
+
+  @override
+  State<ProductNumberIncrementor> createState() =>
+      _ProductNumberIncrementorState();
+}
+
+class _ProductNumberIncrementorState extends State<ProductNumberIncrementor> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Container(
+        child: Row(children: [
+          InkWell(
+            onTap: () {
+              //! Reduce the amount of this product by one
+              Map<String, dynamic> productModel =
+                  context.read<HomeProvider>().selectedProduct;
+              productModel['items'] = productModel['items'] != null
+                  ? productModel['items'] > 1
+                      ? productModel['items'] - 1
+                      : 1
+                  : 1;
+              //! Keep the original price
+              productModel['base_price'] = productModel['base_price'] != null
+                  ? productModel['base_price']
+                  : productModel['price'];
+              //! Update the price
+              productModel['price'] = pricingToolbox(
+                  currentPrice: productModel['base_price'],
+                  multiplier: productModel['items']);
+              //?Update the product
+              context
+                  .read<HomeProvider>()
+                  .updateSelectedProduct(data: productModel);
+            },
+            child: Container(
+                width: 50,
+                height: 30,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                    color: context
+                                .watch<HomeProvider>()
+                                .selectedProduct['items'] !=
+                            null
+                        ? context
+                                    .watch<HomeProvider>()
+                                    .selectedProduct['items'] ==
+                                1
+                            ? Colors.grey.shade400
+                            : Colors.black
+                        : Colors.grey.shade400,
+                    border: Border.all(width: 1),
+                    borderRadius: BorderRadius.circular(50)),
+                child: Text('-',
+                    style: TextStyle(
+                        fontFamily: 'MoveTextBold',
+                        fontSize: 19,
+                        color: context
+                                    .watch<HomeProvider>()
+                                    .selectedProduct['items'] !=
+                                null
+                            ? context
+                                        .watch<HomeProvider>()
+                                        .selectedProduct['items'] ==
+                                    1
+                                ? Colors.black
+                                : Colors.white
+                            : Colors.black))),
+          ),
+          Container(
+              width: 70,
+              height: 30,
+              alignment: Alignment.center,
+              child: Text(
+                  context.watch<HomeProvider>().selectedProduct['items'] != null
+                      ? context
+                          .watch<HomeProvider>()
+                          .selectedProduct['items']
+                          .toString()
+                      : '1',
+                  style:
+                      TextStyle(fontFamily: 'MoveTextMedium', fontSize: 19))),
+          InkWell(
+            onTap: () {
+              //! Add the amount of this product by one
+              //? STOP AT 100
+              if (context.read<HomeProvider>().selectedProduct['items'] ==
+                      null ||
+                  context.read<HomeProvider>().selectedProduct['items'] < 100) {
+                Map<String, dynamic> productModel =
+                    context.read<HomeProvider>().selectedProduct;
+                productModel['items'] = productModel['items'] != null
+                    ? productModel['items'] + 1
+                    : 2;
+                //! Keep the original price
+                productModel['base_price'] = productModel['base_price'] != null
+                    ? productModel['base_price']
+                    : productModel['price'];
+                //! Update the price
+                productModel['price'] = pricingToolbox(
+                    currentPrice: productModel['base_price'],
+                    multiplier: productModel['items']);
+                //?Update the product
+                context
+                    .read<HomeProvider>()
+                    .updateSelectedProduct(data: productModel);
+              }
+            },
+            child: Container(
+                width: 50,
+                height: 30,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                    color: Colors.black,
+                    border: Border.all(width: 1),
+                    borderRadius: BorderRadius.circular(50)),
+                child: Text('+',
+                    style: TextStyle(
+                        fontFamily: 'MoveTextBold',
+                        fontSize: 19,
+                        color: Colors.white))),
+          )
+        ]),
+      ),
+    );
+  }
+
+  //Pricing toolbox
+  String pricingToolbox(
+      {required String currentPrice, required int multiplier}) {
+    if (currentPrice.split(',').length > 1 &&
+        currentPrice.split(',')[1].length == 2) //Remove and divide by 100
+    {
+      //Get the number
+      double number = double.parse(
+              currentPrice.replaceAll('N\$', '').trim().replaceAll(',', '')) /
+          100;
+      //...
+      return 'N\$${(number * multiplier).toStringAsFixed(2)}';
+    } else {
+      //Get the number
+      double number = double.parse(
+          currentPrice.replaceAll('N\$', '').trim().replaceAll(',', ''));
+      //...
+      return 'N\$${(number * multiplier).toStringAsFixed(2)}';
+    }
   }
 }

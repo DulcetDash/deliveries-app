@@ -34,6 +34,12 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Nej needs your location to give you accurate price estimates, track your orders and for a better navigation experience.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Nej needs your location to give you accurate price estimates, track your orders and for a better navigation experience.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Nej needs your location to give you accurate price estimates, track your orders and for a better navigation experience.</string>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

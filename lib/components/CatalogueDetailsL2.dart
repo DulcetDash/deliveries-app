@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:nej/components/CartIcon.dart';
 import 'package:nej/components/Helpers/Networking.dart';
 import 'package:nej/components/Providers/HomeProvider.dart';
 import 'package:provider/provider.dart';
@@ -227,7 +228,7 @@ class _HeaderState extends State<Header> {
             Expanded(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: [Icon(Icons.shopping_cart)],
+                children: [CartIcon()],
               ),
             )
           ],
@@ -296,7 +297,7 @@ class TimeBar extends StatelessWidget {
         title: Padding(
           padding: const EdgeInsets.only(bottom: 4),
           child: Text(
-            'Closing in 2hours',
+            context.read<HomeProvider>().selected_store['times']['string'],
             style: TextStyle(fontFamily: 'MoveTextRegular', fontSize: 16),
           ),
         ),
