@@ -88,6 +88,9 @@ class HomeProvider with ChangeNotifier {
   Map<String, dynamic> userLocationDetails =
       {}; //The details of the user location: city, location name
 
+  //? Note
+  String noteTyped = ''; //Will hold the note typed by the user for the shopping
+
   //Updaters
   //?1. Update the main stores
   void updateMainStores({required List data}) {
@@ -333,6 +336,7 @@ class HomeProvider with ChangeNotifier {
       {required String location_type, required Map<String, dynamic> location}) {
     if (location_type == 'pickup') {
       manuallySettedCurrentLocation_pickup = location;
+      log(location.toString());
       notifyListeners();
     } else if (location_type == 'dropoff') {
       manuallySettedCurrentLocation_dropoff = location;
@@ -348,5 +352,32 @@ class HomeProvider with ChangeNotifier {
     } else {
       return manuallySettedCurrentLocation_dropoff;
     }
+  }
+
+  //?18. Is manual pickup equal to the auto location
+  bool isManualLocationEqualToTheAuto() {
+    return mapEquals(manuallySettedCurrentLocation_pickup, userLocationDetails);
+  }
+
+  //?19. Update the typed note by the user
+  void updateTypedUserNoteShopping({required String data}) {
+    noteTyped = data;
+    notifyListeners();
+  }
+
+  //! 20. GET TOTALS
+  Map<String, String> getTotals() {
+    double cart = double.parse(getCartTotal().replaceAll('N\$', ''));
+    double service_fee = 90.0;
+    double cash_pickup_fee = paymentMethod == 'cash' ? 45.0 : 0;
+    //...
+    double total = (cart + service_fee + cash_pickup_fee).ceilToDouble();
+
+    return {
+      'cart': 'N\$${cart.toStringAsFixed(2)}',
+      'service_fee': 'N\$${service_fee.toStringAsFixed(2)}',
+      'cash_pickup_fee': 'N\$${cash_pickup_fee.toStringAsFixed(2)}',
+      'total': 'N\$${total.toStringAsFixed(2)}',
+    };
   }
 }

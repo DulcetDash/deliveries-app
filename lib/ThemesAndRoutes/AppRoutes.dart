@@ -8,6 +8,7 @@ import 'package:nej/components/Home.dart';
 import 'package:nej/components/LocationDetails.dart';
 import 'package:nej/components/PaymentSetting.dart';
 import 'package:nej/components/ProductView.dart';
+import 'package:nej/components/ShoppingSummary.dart';
 import 'package:provider/src/provider.dart';
 import 'package:nej/ThemesAndRoutes/AppTheme.dart' as AppTheme;
 
@@ -36,7 +37,8 @@ class _AppGeneralEntryState extends State<AppGeneralEntry> {
       '/product_view': (context) => const ProductView(),
       '/cart': (context) => const Cart(),
       '/paymentSetting': (context) => const PaymentSetting(),
-      '/locationDetails': (context) => const LocationDetails()
+      '/locationDetails': (context) => const LocationDetails(),
+      '/ShoppingSummary': (context) => const ShoppingSummary()
     });
   }
 }

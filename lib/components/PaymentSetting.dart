@@ -63,7 +63,23 @@ class _PaymentSettingState extends State<PaymentSetting> {
                 label: 'Next',
                 labelFontSize: 22,
                 actuatorFunctionl: () {
-                  Navigator.of(context).pushNamed('/locationDetails');
+                  //! Update the pickup location to THIS if not specified yet
+                  if (context
+                          .read<HomeProvider>()
+                          .manuallySettedCurrentLocation_pickup['street'] ==
+                      null) //No pickup location already set
+                  {
+                    //Preset to the automatically computed by default
+                    context.read<HomeProvider>().updateManualPickupOrDropoff(
+                        location_type: 'pickup',
+                        location:
+                            context.read<HomeProvider>().userLocationDetails);
+                    //...
+                    Navigator.of(context).pushNamed('/locationDetails');
+                  } else //Next
+                  {
+                    Navigator.of(context).pushNamed('/locationDetails');
+                  }
                 })
           ],
         )));

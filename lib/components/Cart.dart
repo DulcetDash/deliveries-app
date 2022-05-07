@@ -24,26 +24,59 @@ class _CartState extends State<Cart> {
             Header(),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: ListView.separated(
-                    itemBuilder: (context, index) {
-                      return ProductModel(
-                        indexProduct: index + 1,
-                        productData: context.watch<HomeProvider>().CART[index],
-                      );
-                    },
-                    separatorBuilder: (context, index) => Divider(
-                          height: 50,
-                        ),
-                    itemCount: context.watch<HomeProvider>().CART.length),
-              ),
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: context.watch<HomeProvider>().CART.isNotEmpty
+                      ? ListView.separated(
+                          itemBuilder: (context, index) {
+                            return ProductModel(
+                              indexProduct: index + 1,
+                              productData:
+                                  context.watch<HomeProvider>().CART[index],
+                            );
+                          },
+                          separatorBuilder: (context, index) => Divider(
+                                height: 50,
+                              ),
+                          itemCount: context.watch<HomeProvider>().CART.length)
+                      : Padding(
+                          padding: EdgeInsets.only(
+                              top: MediaQuery.of(context).size.height * 0.15),
+                          child: Container(
+                            child: Column(
+                              children: [
+                                Icon(
+                                  Icons.shopping_cart,
+                                  size: 45,
+                                  color: Colors.grey,
+                                ),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                Text(
+                                  'No items selected for your shopping.',
+                                  style: TextStyle(
+                                      color: Colors.grey.shade500,
+                                      fontSize: 17),
+                                )
+                              ],
+                            ),
+                          ),
+                        )),
             ),
-            GenericRectButton(
-                label: 'Place order',
-                labelFontSize: 22,
-                actuatorFunctionl: () {
-                  Navigator.of(context).pushNamed('/paymentSetting');
-                })
+            Visibility(
+              visible: context.watch<HomeProvider>().CART.isNotEmpty,
+              child: GenericRectButton(
+                  label: 'Place order',
+                  labelFontSize: 22,
+                  actuatorFunctionl: context
+                          .watch<HomeProvider>()
+                          .CART
+                          .isNotEmpty
+                      ? () {
+                          Navigator.of(context).pushNamed('/paymentSetting');
+                        }
+                      : () {}),
+            )
           ],
         )));
   }
@@ -219,7 +252,7 @@ class ProductModel extends StatelessWidget {
                 ),
                 Text(
                   '${productData['price']} • ${getItemsNumber()}',
-                  style: TextStyle(color: Colors.grey.shade600, fontSize: 15),
+                  style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
                 )
               ],
             ),

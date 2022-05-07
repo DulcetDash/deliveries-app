@@ -1,7 +1,6 @@
 class DataParser {
   //Get the realistic names for the location name, suburb and street name
   Map<String, String> getRealisticPlacesNames({required Map locationData}) {
-    print(locationData);
     //? Essentials
     //! Autocomplete
     locationData['location_name'] = locationData['location_name'] != null

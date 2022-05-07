@@ -298,7 +298,9 @@ class TimeBar extends StatelessWidget {
         title: Padding(
           padding: const EdgeInsets.only(bottom: 4),
           child: Text(
-            context.read<HomeProvider>().selected_store['times']['string'],
+            context.read<HomeProvider>().selected_store['times'] != null
+                ? context.read<HomeProvider>().selected_store['times']['string']
+                : 'Finding closing time',
             style: TextStyle(fontFamily: 'MoveTextRegular', fontSize: 16),
           ),
         ),

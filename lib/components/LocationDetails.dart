@@ -19,92 +19,116 @@ class _LocationDetailsState extends State<LocationDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.white,
         body: SafeArea(
             child: Column(
-      children: [
-        Header(),
-        Expanded(
-          child: Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: ListView(
-                children: [
-                  LocationChoice(
-                      title: 'Where are you?',
-                      subtitle: context
+          children: [
+            Header(),
+            Expanded(
+              child: Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: ListView(
+                    children: [
+                      LocationChoice(
+                          title: 'Where are you?',
+                          subtitle: context
+                                          .watch<HomeProvider>()
+                                          .manuallySettedCurrentLocation_pickup[
+                                      'street'] !=
+                                  null
+                              ? _dataParser.getGenericLocationString(
+                                  location: _dataParser.getRealisticPlacesNames(
+                                      locationData: context
+                                          .watch<HomeProvider>()
+                                          .manuallySettedCurrentLocation_pickup))
+                              : 'Enter your current address.',
+                          checked: context
                                       .watch<HomeProvider>()
                                       .manuallySettedCurrentLocation_pickup[
                                   'street'] !=
-                              null
-                          ? _dataParser.getGenericLocationString(
-                              location: _dataParser.getRealisticPlacesNames(
-                                  locationData: context
-                                      .watch<HomeProvider>()
-                                      .manuallySettedCurrentLocation_pickup))
-                          : 'Enter your current address.',
-                      checked: context
-                              .watch<HomeProvider>()
-                              .manuallySettedCurrentLocation_pickup['street'] !=
-                          null,
-                      actuator: () => showMaterialModalBottomSheet(
-                            bounce: true,
-                            duration: Duration(milliseconds: 400),
-                            context: context,
-                            builder: (context) => LocalModal(
-                              scenario: 'pickup',
-                            ),
-                          )),
-                  Divider(
-                    height: 40,
-                  ),
-                  LocationChoice(
-                      title: 'Delivery location',
-                      subtitle: context
+                              null,
+                          actuator: () => showMaterialModalBottomSheet(
+                                bounce: true,
+                                duration: Duration(milliseconds: 400),
+                                context: context,
+                                builder: (context) => LocalModal(
+                                  scenario: 'pickup',
+                                ),
+                              )),
+                      Divider(
+                        height: 40,
+                      ),
+                      LocationChoice(
+                          title: 'Delivery location',
+                          subtitle: context
+                                          .watch<HomeProvider>()
+                                          .manuallySettedCurrentLocation_dropoff[
+                                      'street'] !=
+                                  null
+                              ? _dataParser.getGenericLocationString(
+                                  location: _dataParser.getRealisticPlacesNames(
+                                      locationData: context
+                                          .watch<HomeProvider>()
+                                          .manuallySettedCurrentLocation_dropoff))
+                              : 'Enter the address where you wish your package to be dropped off.',
+                          checked: context
                                       .watch<HomeProvider>()
                                       .manuallySettedCurrentLocation_dropoff[
                                   'street'] !=
-                              null
-                          ? _dataParser.getGenericLocationString(
-                              location: _dataParser.getRealisticPlacesNames(
-                                  locationData: context
-                                      .watch<HomeProvider>()
-                                      .manuallySettedCurrentLocation_dropoff))
-                          : 'Enter the address where you wish your package to be dropped off.',
-                      checked: context
-                                  .watch<HomeProvider>()
-                                  .manuallySettedCurrentLocation_dropoff[
-                              'street'] !=
-                          null,
-                      actuator: () => showMaterialModalBottomSheet(
-                            bounce: true,
-                            duration: Duration(milliseconds: 400),
-                            context: context,
-                            builder: (context) => LocalModal(
-                              scenario: 'dropoff',
-                            ),
-                          )),
-                  Divider(
-                    height: 40,
-                  ),
-                  LocationChoice(
-                    title: 'Add a note',
-                    subtitle:
-                        'Tell us any specifications you want about your shopping.',
-                    actuator: () {
-                      print('Clicked');
-                    },
-                    tracked: false,
-                  ),
-                ],
-              )),
-        ),
-        GenericRectButton(
-            label: 'Next',
-            labelFontSize: 22,
-            actuatorFunctionl: () {
-              // Navigator.of(context).pushNamed('/locationDetails');
-            })
-      ],
-    )));
+                              null,
+                          actuator: () => showMaterialModalBottomSheet(
+                                bounce: true,
+                                duration: Duration(milliseconds: 400),
+                                context: context,
+                                builder: (context) => LocalModal(
+                                  scenario: 'dropoff',
+                                ),
+                              )),
+                      Divider(
+                        height: 40,
+                      ),
+                      LocationChoice(
+                        title: 'Add a note',
+                        subtitle:
+                            'Tell us any specifications you want about your shopping.',
+                        actuator: () => showMaterialModalBottomSheet(
+                          bounce: true,
+                          duration: Duration(milliseconds: 400),
+                          context: context,
+                          builder: (context) => LocalModal(
+                            scenario: 'note',
+                          ),
+                        ),
+                        tracked: false,
+                      ),
+                    ],
+                  )),
+            ),
+            Opacity(
+              opacity: isDataAllowingNex(context: context) ? 1 : 0.3,
+              child: GenericRectButton(
+                  label: 'Next',
+                  labelFontSize: 22,
+                  actuatorFunctionl: isDataAllowingNex(context: context)
+                      ? () {
+                          Navigator.of(context).pushNamed('/ShoppingSummary');
+                        }
+                      : () {}),
+            )
+          ],
+        )));
+  }
+
+  //? Is data allowing next
+  bool isDataAllowingNex({required BuildContext context}) {
+    return context
+                .watch<HomeProvider>()
+                .manuallySettedCurrentLocation_pickup['street'] !=
+            null &&
+        context
+                .watch<HomeProvider>()
+                .manuallySettedCurrentLocation_dropoff['street'] !=
+            null;
   }
 }
 
@@ -196,7 +220,9 @@ class LocationChoice extends StatelessWidget {
               subtitle,
               style: TextStyle(
                   fontSize: 16,
-                  color: checked ? AppTheme().getPrimaryColor() : Colors.grey.shade500),
+                  color: checked
+                      ? AppTheme().getPrimaryColor()
+                      : Colors.grey.shade500),
             ),
           ),
           trailing: Icon(
@@ -220,6 +246,7 @@ class LocalModal extends StatelessWidget {
       //! 1. Pickup location
       return SafeArea(
         child: Container(
+            color: Colors.white,
             height: MediaQuery.of(context).size.height,
             child: Column(
               children: [
@@ -236,6 +263,7 @@ class LocalModal extends StatelessWidget {
       //! 1. Dropoff location
       return SafeArea(
         child: Container(
+            color: Colors.white,
             height: MediaQuery.of(context).size.height,
             child: Column(
               children: [
@@ -246,6 +274,16 @@ class LocalModal extends StatelessWidget {
                   location_type: 'dropoff',
                 )
               ],
+            )),
+      );
+    } else if (scenario == 'note') {
+      //Shopping note
+      return SafeArea(
+        child: Container(
+            color: Colors.white,
+            height: MediaQuery.of(context).size.height,
+            child: Column(
+              children: [HeaderNote()],
             )),
       );
     } else {
@@ -269,33 +307,64 @@ class SearchResultsRenderer extends StatelessWidget {
     Map<String, String> locationData = _dataParser.getRealisticPlacesNames(
         locationData: context.watch<HomeProvider>().userLocationDetails);
 
+    context.read<HomeProvider>().isManualLocationEqualToTheAuto();
+
     return Expanded(
       child: Container(
         width: MediaQuery.of(context).size.width,
         // color: Colors.red,
         child: Column(
           children: [
-            ListTile(
-              contentPadding: EdgeInsets.only(top: 10, left: 20, right: 20),
-              horizontalTitleGap: -5,
-              leading: Icon(
-                Icons.my_location,
-                color: AppTheme().getPrimaryColor(),
-              ),
-              title: Text(
-                'My current location',
-                style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 16),
-              ),
-              subtitle: Padding(
-                padding: const EdgeInsets.only(top: 5),
-                child: Text(
-                  '${locationData['location_name']}, ${locationData['city']}',
-                  style: TextStyle(fontSize: 15),
+            Visibility(
+              visible: context
+                          .read<HomeProvider>()
+                          .isManualLocationEqualToTheAuto() ==
+                      false &&
+                  location_type == 'pickup',
+              child: ListTile(
+                onTap: () {
+                  //! Set the location
+                  context.read<HomeProvider>().updateManualPickupOrDropoff(
+                      location_type: location_type,
+                      location:
+                          context.read<HomeProvider>().userLocationDetails);
+                  //! Go back and clean
+                  context
+                      .read<HomeProvider>()
+                      .updateRealtimeLocationSuggestions(data: []);
+                  context
+                      .read<HomeProvider>()
+                      .updateTypedSeachQueries(data: '');
+
+                  Navigator.of(context).pop();
+                },
+                contentPadding: EdgeInsets.only(top: 10, left: 20, right: 20),
+                horizontalTitleGap: -5,
+                leading: Icon(
+                  Icons.my_location,
+                  color: AppTheme().getPrimaryColor(),
+                ),
+                title: Text(
+                  'My current location',
+                  style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 16),
+                ),
+                subtitle: Padding(
+                  padding: const EdgeInsets.only(top: 5),
+                  child: Text(
+                    '${locationData['location_name']}, ${locationData['city']}',
+                    style: TextStyle(fontSize: 15),
+                  ),
                 ),
               ),
             ),
             Divider(
-              color: Colors.grey,
+              color: context
+                              .read<HomeProvider>()
+                              .isManualLocationEqualToTheAuto() ==
+                          false &&
+                      location_type == 'pickup'
+                  ? Colors.grey
+                  : Colors.white,
             ),
             context.watch<HomeProvider>().isLoadingForSearch
                 ? Padding(
@@ -513,7 +582,12 @@ class _HeaderSearchState extends State<HeaderSearch> {
                         color: Colors.black),
                     decoration: InputDecoration(
                         suffixIcon: IconButton(
-                          onPressed: _editingController.clear,
+                          onPressed: () {
+                            context
+                                .read<HomeProvider>()
+                                .updateTypedSeachQueries(data: '');
+                            _editingController.clear();
+                          },
                           icon: Icon(Icons.clear),
                         ),
                         contentPadding:
@@ -537,6 +611,136 @@ class _HeaderSearchState extends State<HeaderSearch> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+//Header note
+class HeaderNote extends StatelessWidget {
+  HeaderNote({Key? key}) : super(key: key);
+
+  final TextEditingController _editingController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    _editingController.value =
+        TextEditingValue(text: context.read<HomeProvider>().noteTyped);
+    _editingController.selection = TextSelection.fromPosition(
+        TextPosition(offset: _editingController.text.length));
+
+    return Expanded(
+      child: Column(
+        children: [
+          Container(
+            decoration: BoxDecoration(color: Colors.white, boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.2),
+                spreadRadius: 0,
+                blurRadius: 0,
+                offset: Offset(0, 1), // changes position of shadow
+              )
+            ]),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 15, right: 20, top: 15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(Icons.arrow_back),
+                            SizedBox(
+                              width: 4,
+                            ),
+                            Text('Add a note',
+                                style: TextStyle(
+                                    fontFamily: 'MoveTextBold', fontSize: 20))
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 26, top: 10),
+                    child: Text(
+                        'Let us know if you require any specifications about your shopping.',
+                        style: TextStyle(
+                            fontSize: 16, color: Colors.grey.shade600)),
+                  ),
+                  Divider(
+                    height: 20,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+            child: SizedBox(
+              height: 250,
+              child: TextField(
+                  controller: _editingController,
+                  autocorrect: false,
+                  onChanged: (value) {
+                    //! Update the change for the typed
+                    context
+                        .read<HomeProvider>()
+                        .updateTypedUserNoteShopping(data: value);
+                    //! Place the cursor at the end
+                    _editingController.text = value;
+                    _editingController.selection = TextSelection.fromPosition(
+                        TextPosition(offset: _editingController.text.length));
+                  },
+                  style: TextStyle(
+                      fontFamily: 'MoveTextRegular',
+                      fontSize: 18,
+                      color: Colors.black),
+                  maxLines: 45,
+                  decoration: InputDecoration(
+                      contentPadding:
+                          EdgeInsets.only(top: 20, left: 10, right: 10),
+                      filled: true,
+                      fillColor: Colors.grey.shade200,
+                      floatingLabelStyle: const TextStyle(color: Colors.black),
+                      label: Align(
+                        alignment: Alignment.topLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 20),
+                          child: Text("Enter your note here."),
+                        ),
+                      ),
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey.shade200)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey.shade200),
+                          borderRadius: BorderRadius.circular(1)),
+                      border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey.shade200),
+                          borderRadius: BorderRadius.circular(1)))),
+            ),
+          ),
+          Expanded(child: SizedBox.shrink()),
+          GenericRectButton(
+            label: context.watch<HomeProvider>().noteTyped.isEmpty
+                ? 'Skip'
+                : 'Done',
+            labelFontSize: 20,
+            actuatorFunctionl: () {
+              Navigator.of(context).pop();
+            },
+            isArrowShow: false,
+          )
+        ],
       ),
     );
   }
