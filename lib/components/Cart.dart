@@ -203,7 +203,7 @@ class ProductModel extends StatelessWidget {
               width: 70,
               height: 60,
               child: CachedNetworkImage(
-                fit: BoxFit.cover,
+                fit: BoxFit.contain,
                 imageUrl: productData['pictures'][0].runtimeType.toString() ==
                         'List<dynamic>'
                     ? productData['pictures'][0][0]
@@ -237,18 +237,14 @@ class ProductModel extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
-                  height: 38,
-                  child: Text(
-                    productData['name'],
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style:
-                        TextStyle(fontSize: 15, fontFamily: 'MoveTextMedium'),
-                  ),
+                Text(
+                  productData['name'],
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 15, fontFamily: 'MoveTextMedium'),
                 ),
                 SizedBox(
-                  height: 5,
+                  height: 10,
                 ),
                 Text(
                   '${productData['price']} • ${getItemsNumber()}',

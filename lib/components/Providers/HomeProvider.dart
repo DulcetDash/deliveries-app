@@ -15,7 +15,8 @@ class HomeProvider with ChangeNotifier {
   final String bridge = 'http://localhost:9697';
   // final String bridge = 'https://taxiconnectnanetwork.com:9999';
 
-  String user_identifier = 'abc'; //The user's identifier
+  String user_identifier =
+      '8246a726f668f5471a797175116f04e38b33f2fd1ec2f74ebd3936c3938a3778daa71b0b71c43880e6d02df7aec129cb3576d07ebe46d93788b9c8ea6ec4555e'; //The user's identifier
 
   Map selected_store = {
     "store_fp": "kfc9537807322322",
@@ -90,6 +91,10 @@ class HomeProvider with ChangeNotifier {
 
   //? Note
   String noteTyped = ''; //Will hold the note typed by the user for the shopping
+
+  //? Requesting for the shopping
+  bool isLoadingForRequest =
+      false; //Whether or not the app is loading while making a request
 
   //Updaters
   //?1. Update the main stores
@@ -379,5 +384,11 @@ class HomeProvider with ChangeNotifier {
       'cash_pickup_fee': 'N\$${cash_pickup_fee.toStringAsFixed(2)}',
       'total': 'N\$${total.toStringAsFixed(2)}',
     };
+  }
+
+  //?21. Update request loading status
+  void updateLoadingRequestStatus({required bool status}) {
+    isLoadingForRequest = status;
+    notifyListeners();
   }
 }

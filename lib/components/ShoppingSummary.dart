@@ -1,7 +1,12 @@
 //ShoppingSummary
 
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:nej/components/GenericRectButton.dart';
 import 'package:nej/components/Helpers/AppTheme.dart';
 import 'package:nej/components/Providers/HomeProvider.dart';
@@ -93,7 +98,7 @@ class _ShoppingSummaryState extends State<ShoppingSummary> {
                         Text('Your cart', style: TextStyle(fontSize: 17)),
                         Text(payment_summary['cart'],
                             style: TextStyle(
-                                fontSize: 20,
+                                fontSize: 19,
                                 color: AppTheme().getPrimaryColor())),
                       ],
                     ),
@@ -108,7 +113,7 @@ class _ShoppingSummaryState extends State<ShoppingSummary> {
                         Text('Service fee', style: TextStyle(fontSize: 17)),
                         Text(payment_summary['service_fee'],
                             style: TextStyle(
-                                fontSize: 20,
+                                fontSize: 19,
                                 color: AppTheme().getPrimaryColor())),
                       ],
                     ),
@@ -126,7 +131,7 @@ class _ShoppingSummaryState extends State<ShoppingSummary> {
                               style: TextStyle(fontSize: 17)),
                           Text(payment_summary['cash_pickup_fee'],
                               style: TextStyle(
-                                  fontSize: 20,
+                                  fontSize: 19,
                                   color: AppTheme().getPrimaryColor())),
                         ],
                       ),
@@ -151,21 +156,206 @@ class _ShoppingSummaryState extends State<ShoppingSummary> {
                       ],
                     ),
                   ),
-                  GenericRectButton(
-                      label: 'Shop now',
-                      labelFontSize: 22,
-                      actuatorFunctionl:
-                          context.watch<HomeProvider>().CART.isNotEmpty
-                              ? () {
-                                  Navigator.of(context)
-                                      .pushNamed('/paymentSetting');
-                                }
-                              : () {}),
+                  context.watch<HomeProvider>().isLoadingForRequest
+                      ? Column(
+                          children: [
+                            SizedBox(
+                              height: 25,
+                            ),
+                            CircularProgressIndicator(
+                              strokeWidth: 3,
+                              color: Colors.black,
+                            ),
+                            SizedBox(
+                              height: 20,
+                            )
+                          ],
+                        )
+                      : GenericRectButton(
+                          label: 'Shop now',
+                          labelFontSize: 22,
+                          actuatorFunctionl: () {
+                            requestForShopping(context: context);
+                          }),
                 ],
               ),
             )
           ],
         )));
+  }
+
+  //Request for shipping
+  Future requestForShopping({required BuildContext context}) async {
+    //? Start the loader
+    context.read<HomeProvider>().updateLoadingRequestStatus(status: true);
+
+    Uri mainUrl = Uri.parse(Uri.encodeFull(
+        '${context.read<HomeProvider>().bridge}/requestForShopping'));
+
+    //Assemble the bundle data
+    //1. Locations data
+    Map<String, dynamic> locations = {
+      "pickup":
+          context.read<HomeProvider>().manuallySettedCurrentLocation_pickup,
+      "delivery":
+          context.read<HomeProvider>().manuallySettedCurrentLocation_dropoff
+    };
+
+    List shopping_list = context.read<HomeProvider>().CART;
+    //? For the request
+    Map<String, String> bundleData = {
+      "user_identifier": context.read<HomeProvider>().user_identifier,
+      "payment_method": context.read<HomeProvider>().paymentMethod,
+      "locations": json.encode(locations).toString(),
+      "totals":
+          json.encode(context.read<HomeProvider>().getTotals()).toString(),
+      "shopping_list": json.encode(shopping_list).toString()
+    };
+
+    try {
+      Response response = await post(mainUrl, body: bundleData);
+
+      if (response.statusCode == 200) //Got some results
+      {
+        log(response.body.toString());
+        Map<String, dynamic> responseInfo = json.decode(response.body);
+
+        if (responseInfo['response'] == 'unable_to_request') {
+          showErrorModal(context: context, scenario: 'internet_error');
+        } else if (responseInfo['response'] == 'has_a_pending_shopping') {
+          showErrorModal(context: context, scenario: 'already_requested');
+        } else if (responseInfo['response'] == 'successful') //?SUCCESSFUL
+        {
+          //? Go to the successful request page
+          Navigator.of(context).pushNamed('/successfulRequest');
+        } else //Some weird error
+        {
+          showErrorModal(context: context, scenario: 'internet_error');
+        }
+      } else //Has some errors
+      {
+        log(response.toString());
+        showErrorModal(context: context, scenario: 'internet_error');
+      }
+    } catch (e) {
+      log('8');
+      log(e.toString());
+      showErrorModal(context: context, scenario: 'internet_error');
+    }
+  }
+
+  //Show error modal
+  void showErrorModal(
+      {required BuildContext context, required String scenario}) {
+    //! Swhitch loader to false
+    context.read<HomeProvider>().updateLoadingRequestStatus(status: false);
+    //...
+    showMaterialModalBottomSheet(
+      expand: true,
+      bounce: true,
+      duration: Duration(milliseconds: 400),
+      context: context,
+      builder: (context) => LocalModal(
+        scenario: scenario,
+      ),
+    );
+  }
+}
+
+//Local modal
+class LocalModal extends StatelessWidget {
+  final String scenario;
+
+  const LocalModal({Key? key, required this.scenario}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (scenario == 'already_requested') {
+      return SafeArea(
+        child: Container(
+            child: Padding(
+          padding:
+              EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.15),
+          child: Column(
+            children: [
+              Icon(Icons.warning, size: 50, color: AppTheme().getErrorColor()),
+              SizedBox(
+                height: 15,
+              ),
+              Text(
+                'You have a request in progress',
+                style: TextStyle(
+                  fontFamily: 'MoveTextMedium',
+                  fontSize: 19,
+                ),
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: Text(
+                  "We were unable to go forward with this shopping request because it seems like you have an unconfirmed shopping request in progress, please confirm it and try again.",
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+              Expanded(child: SizedBox.shrink()),
+              GenericRectButton(
+                label: 'Try again',
+                labelFontSize: 20,
+                actuatorFunctionl: () {
+                  Navigator.of(context).pop();
+                },
+                isArrowShow: false,
+              )
+            ],
+          ),
+        )),
+      );
+    } else //Unknown error
+    {
+      return SafeArea(
+        child: Container(
+            child: Padding(
+          padding:
+              EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.15),
+          child: Column(
+            children: [
+              Icon(Icons.error, size: 50, color: AppTheme().getErrorColor()),
+              SizedBox(
+                height: 15,
+              ),
+              Text(
+                'Unable to request',
+                style: TextStyle(
+                  fontFamily: 'MoveTextMedium',
+                  fontSize: 19,
+                ),
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: Text(
+                  "We were unable to go forward with your shopping request due to an unexpected error, please try again and if it persists, please contact us through the Support tab.",
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+              Expanded(child: SizedBox.shrink()),
+              GenericRectButton(
+                label: 'Try again',
+                labelFontSize: 20,
+                actuatorFunctionl: () {
+                  Navigator.of(context).pop();
+                },
+                isArrowShow: false,
+              )
+            ],
+          ),
+        )),
+      );
+    }
   }
 }
 
@@ -186,22 +376,28 @@ class Header extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 InkWell(
-                  onTap: () {
-                    //! Restore the tmp selected product if changed
-                    context.read<HomeProvider>().updateSelectedProduct(
-                        data: context
-                                    .read<HomeProvider>()
-                                    .tmp_selectedProduct['name'] !=
-                                null
-                            ? context.read<HomeProvider>().tmp_selectedProduct
-                            : context.read<HomeProvider>().selectedProduct);
-                    //! Clear the tmp selected product
-                    context
-                        .read<HomeProvider>()
-                        .updateTMPSelectedProduct(data: {});
-                    //...
-                    Navigator.of(context).pop();
-                  },
+                  onTap: context.watch<HomeProvider>().isLoadingForRequest
+                      ? () {}
+                      : () {
+                          //! Restore the tmp selected product if changed
+                          context.read<HomeProvider>().updateSelectedProduct(
+                              data: context
+                                          .read<HomeProvider>()
+                                          .tmp_selectedProduct['name'] !=
+                                      null
+                                  ? context
+                                      .read<HomeProvider>()
+                                      .tmp_selectedProduct
+                                  : context
+                                      .read<HomeProvider>()
+                                      .selectedProduct);
+                          //! Clear the tmp selected product
+                          context
+                              .read<HomeProvider>()
+                              .updateTMPSelectedProduct(data: {});
+                          //...
+                          Navigator.of(context).pop();
+                        },
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -215,17 +411,17 @@ class Header extends StatelessWidget {
                     ],
                   ),
                 ),
-                Text(
-                  'Edit',
-                  style: TextStyle(
-                      fontFamily: 'MoveTextMedium',
-                      fontSize: 20,
-                      color: AppTheme().getPrimaryColor()),
-                )
+                // Text(
+                //   'Edit',
+                //   style: TextStyle(
+                //       fontFamily: 'MoveTextMedium',
+                //       fontSize: 20,
+                //       color: AppTheme().getPrimaryColor()),
+                // )
               ],
             ),
             Divider(
-              height: 40,
+              height: 35,
               color: Colors.white,
             )
           ],
@@ -259,7 +455,7 @@ class ProductModel extends StatelessWidget {
             width: 70,
             height: 60,
             child: CachedNetworkImage(
-              fit: BoxFit.cover,
+              fit: BoxFit.contain,
               imageUrl: productData['pictures'][0].runtimeType.toString() ==
                       'List<dynamic>'
                   ? productData['pictures'][0][0]
@@ -293,17 +489,14 @@ class ProductModel extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                height: 38,
-                child: Text(
-                  productData['name'],
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 15, fontFamily: 'MoveTextMedium'),
-                ),
+              Text(
+                productData['name'],
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontSize: 15, fontFamily: 'MoveTextMedium'),
               ),
               SizedBox(
-                height: 5,
+                height: 10,
               ),
               Text(
                 '${productData['price']} • ${getItemsNumber()}',
