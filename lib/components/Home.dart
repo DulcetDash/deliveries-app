@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:nej/components/CartIcon.dart';
 import 'package:nej/components/Helpers/AppTheme.dart';
 import 'package:nej/components/Helpers/DataParser.dart';
@@ -25,10 +26,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   bool isLoading = true; //Loading to get the stores.
 
-  // Create a new networking instance
-  late LocationOpsHandler locationOpsHandler;
-  Watcher watcher = Watcher();
-
   @override
   void initState() {
     // TODO: implement initState
@@ -37,24 +34,6 @@ class _HomeState extends State<Home> {
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       GetMainStores(context: context);
     });
-
-    //Start with the timers
-    //Location operation handlers
-    locationOpsHandler = LocationOpsHandler(context: context);
-    //Ask once for the location permission
-    locationOpsHandler.requestLocationPermission();
-    //globalDataFetcher.getCoreDate(context: context);
-    watcher.startWatcher(context: context, actuatorFunctions: [
-      {'name': 'LocationOpsHandler', 'actuator': locationOpsHandler},
-    ]);
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    locationOpsHandler.dispose();
-    watcher.dispose();
   }
 
   Future GetMainStores({required BuildContext context}) async {
@@ -233,7 +212,10 @@ class _HeaderState extends State<Header> {
                 child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(Icons.arrow_back),
+                Icon(
+                  Icons.menu,
+                  size: 30,
+                )
               ],
             )),
             Expanded(

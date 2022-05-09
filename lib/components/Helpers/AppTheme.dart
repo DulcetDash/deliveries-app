@@ -4,7 +4,7 @@ import 'package:hexcolor/hexcolor.dart';
 class AppTheme {
   //1. Get the primary color
   Color getPrimaryColor() {
-    return HexColor('#06C167');
+    return HexColor('#639f62');
   }
 
   //2. Get the error color

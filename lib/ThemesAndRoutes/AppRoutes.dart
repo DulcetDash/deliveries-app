@@ -5,9 +5,11 @@ import 'package:nej/components/Cart.dart';
 import 'package:nej/components/Catalogue.dart';
 import 'package:nej/components/CatalogueDetailsL2.dart';
 import 'package:nej/components/Home.dart';
+import 'package:nej/components/HomeScreen.dart';
 import 'package:nej/components/LocationDetails.dart';
 import 'package:nej/components/PaymentSetting.dart';
 import 'package:nej/components/ProductView.dart';
+import 'package:nej/components/Shopping/RequestWindow.dart';
 import 'package:nej/components/ShoppingSummary.dart';
 import 'package:nej/components/SuccessRequest.dart';
 import 'package:provider/src/provider.dart';
@@ -31,16 +33,21 @@ class _AppGeneralEntryState extends State<AppGeneralEntry> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(theme: AppTheme.appTheme, initialRoute: '/', routes: {
-      '/': (context) => const Home(),
-      '/catalogue': (context) => const Catalogue(),
-      '/catalogue_details_l2': (context) => const CatalogueDetailsL2(),
-      '/product_view': (context) => const ProductView(),
-      '/cart': (context) => const Cart(),
-      '/paymentSetting': (context) => const PaymentSetting(),
-      '/locationDetails': (context) => const LocationDetails(),
-      '/ShoppingSummary': (context) => const ShoppingSummary(),
-      '/successfulRequest': (context) => const SuccessRequest()
-    });
+    return MaterialApp(
+        theme: AppTheme.appTheme,
+        initialRoute: '/home',
+        routes: {
+          '/home': (context) => const HomeScreen(),
+          '/shopping': (context) => const Home(),
+          '/catalogue': (context) => const Catalogue(),
+          '/catalogue_details_l2': (context) => const CatalogueDetailsL2(),
+          '/product_view': (context) => const ProductView(),
+          '/cart': (context) => const Cart(),
+          '/paymentSetting': (context) => const PaymentSetting(),
+          '/locationDetails': (context) => const LocationDetails(),
+          '/ShoppingSummary': (context) => const ShoppingSummary(),
+          '/successfulRequest': (context) => const SuccessRequest(),
+          '/requestWindow': (context) => const RequestWindow()
+        });
   }
 }

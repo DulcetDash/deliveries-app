@@ -31,6 +31,9 @@ class Watcher with ChangeNotifier {
               case 'LocationOpsHandler':
                 actuatorFunctions[i]['actuator'].runLocationOpasHandler();
                 break;
+              case 'getShoppingData':
+                actuatorFunctions[i]['actuator'].exec(context: context);
+                break;
               default:
             }
           } else //No valid context

@@ -4,35 +4,63 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
 import '../Providers/HomeProvider.dart';
 
-class GetMainStores {
-  // Future exec({required BuildContext context}) async {
-  //   Uri mainUrl = Uri.parse(
-  //       Uri.encodeFull('${context.read<HomeProvider>().bridge}/getStores'));
+class GetShoppingData {
+  //Get shopping data
+  Future exec({required BuildContext context}) async {
+    Uri mainUrl = Uri.parse(Uri.encodeFull(
+        '${context.read<HomeProvider>().bridge}/getShoppingData'));
 
-  //   //Assemble the bundle data
-  //   //* @param type: the type of request (past, scheduled, business)
-  //   Map<String, String> bundleData = {
-  //     'user_fingerprint': context.read<HomeProvider>().user_identifier,
-  //   };
+    //? For the request
+    Map<String, String> bundleData = {
+      "user_identifier": context.read<HomeProvider>().user_identifier,
+    };
 
-  //   try {
-  //     http.Response response = await http.post(mainUrl, body: bundleData);
+    try {
+      Response response = await post(mainUrl, body: bundleData);
 
-  //     if (response.statusCode == 200) //Got some results
-  //     {
-  //       log(response.body.toString());
-  //     } else //Has some errors
-  //     {
-  //       log(response.toString());
-  //     }
-  //   } catch (e) {
-  //     log('8');
-  //     log(e.toString());
-  //   }
-  // }
+      if (response.statusCode == 200) //Got some results
+      {
+        if (response.body.toString() == 'false') //no data
+        {
+          context.read<HomeProvider>().updateRealtimeShoppingData(data: []);
+        } else //? Found some data
+        {
+          // log(response.body.toString());
+          List responseData = json.decode(response.body);
+          context
+              .read<HomeProvider>()
+              .updateRealtimeShoppingData(data: responseData);
+          //? MOVE TO THE REQUEST WINDOW
+          if (context.read<HomeProvider>().isThereARequestLockedIn['locked'] ==
+                  false &&
+              context
+                      .read<HomeProvider>()
+                      .isThereARequestLockedIn['makeException'] ==
+                  false) //!Auto redirect to the request windhoek
+          {
+            //! LOCK IN REQUEST WINDOW
+            context
+                .read<HomeProvider>()
+                .updateRequestWindowLockState(state: true);
+            //...
+            Navigator.of(context).pushNamed('/requestWindow');
+          }
+        }
+      } else //Has some errors
+      {
+        log(response.toString());
+        context.read<HomeProvider>().updateRealtimeShoppingData(data: []);
+      }
+    } catch (e) {
+      log('8');
+      log(e.toString());
+      context.read<HomeProvider>().updateRealtimeShoppingData(data: []);
+    }
+  }
 }

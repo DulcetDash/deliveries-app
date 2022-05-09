@@ -96,6 +96,13 @@ class HomeProvider with ChangeNotifier {
   bool isLoadingForRequest =
       false; //Whether or not the app is loading while making a request
 
+  List requestShoppingData = []; //! Will hold the realtime shopping data
+
+  Map<String, bool> isThereARequestLockedIn = {
+    "locked": false,
+    "makeException": false
+  }; //If the app already redirected the user to the request window
+
   //Updaters
   //?1. Update the main stores
   void updateMainStores({required List data}) {
@@ -148,6 +155,12 @@ class HomeProvider with ChangeNotifier {
         element['sku'] == product['sku'] &&
         element['meta']['store_fp'] == product['meta']['store_fp']));
     //...
+    notifyListeners();
+  }
+
+  //?6.c Clear the cart
+  void clearCart() {
+    CART = [];
     notifyListeners();
   }
 
@@ -390,5 +403,26 @@ class HomeProvider with ChangeNotifier {
   void updateLoadingRequestStatus({required bool status}) {
     isLoadingForRequest = status;
     notifyListeners();
+  }
+
+  //?22. Update realtime shopping data
+  void updateRealtimeShoppingData({required List data}) {
+    if (requestShoppingData.isEmpty ||
+        data[0].toString() != requestShoppingData[0].toString()) //New data
+    {
+      print('NEW DATA');
+      requestShoppingData = data;
+      notifyListeners();
+    }
+  }
+
+  //?23. Lock request window state
+  void updateRequestWindowLockState({required bool state}) {
+    isThereARequestLockedIn['locked'] = state;
+  }
+
+  //?23.b Lock request window state - make an exception
+  void updateRequestWindowLockState_makeException({required bool state}) {
+    isThereARequestLockedIn['makeException'] = state;
   }
 }

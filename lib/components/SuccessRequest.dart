@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:nej/components/GenericRectButton.dart';
 import 'package:nej/components/Helpers/AppTheme.dart';
+import 'package:nej/components/Providers/HomeProvider.dart';
+import 'package:provider/provider.dart';
 
 class SuccessRequest extends StatelessWidget {
   const SuccessRequest({Key? key}) : super(key: key);
@@ -42,6 +44,10 @@ class SuccessRequest extends StatelessWidget {
               label: 'Track your shopping',
               labelFontSize: 20,
               actuatorFunctionl: () {
+                //! Clear the shopping cart
+                context.read<HomeProvider>().clearCart();
+
+                ///...
                 Navigator.of(context).pushNamed('/');
               },
             )

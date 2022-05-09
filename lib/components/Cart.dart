@@ -122,7 +122,7 @@ class Header extends StatelessWidget {
                       SizedBox(
                         width: 4,
                       ),
-                      Text('CART',
+                      Text('Cart',
                           style: TextStyle(
                               fontFamily: 'MoveTextBold', fontSize: 24)),
                       Visibility(
