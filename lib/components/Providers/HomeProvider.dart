@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:http/http.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:phone_number/phone_number.dart';
 import 'package:provider/src/provider.dart';
 
 //? HOME PROVIDER
@@ -102,6 +103,29 @@ class HomeProvider with ChangeNotifier {
     "locked": false,
     "makeException": false
   }; //If the app already redirected the user to the request window
+
+  //? Recipients related
+  List recipients_infos = [
+    {
+      'name': '',
+      'phone': '',
+      'dropoff_location': {'empty': 0}
+    }
+  ]; //Will hold all the user details array form
+
+  int selectedRecipient_index =
+      0; //The index representing the selected recipient
+
+  //Selected country code for phone input
+  Map selectedCountryCodeData = {
+    "name": "Namibia",
+    "flag": "🇳🇦",
+    "code": "NA",
+    "dial_code": "+264"
+  }; //Defaults - Namibia
+  String enteredPhoneNumber = ''; //Default - empty
+  bool isPhoneEnteredValid =
+      true; //If the phone is valid or not - default: true
 
   //Updaters
   //?1. Update the main stores
@@ -243,9 +267,15 @@ class HomeProvider with ChangeNotifier {
       //* @param type: the type of request (past, scheduled, business)
       Map<String, String> bundleData = {
         "query": querySearch,
-        "country": userLocationDetails['country'],
-        "city": userLocationDetails['city'],
-        "state": "Khomas",
+        "country": userLocationDetails['country'] != null
+            ? userLocationDetails['country']
+            : 'Namibia',
+        "city": userLocationDetails['city'] != null
+            ? userLocationDetails['city']
+            : 'Windhoek',
+        "state": userLocationDetails['state'] != null
+            ? userLocationDetails['state']
+            : "Khomas",
         "user_fp": user_identifier
       };
 
@@ -362,6 +392,20 @@ class HomeProvider with ChangeNotifier {
     }
   }
 
+  //?16. Update the manual location for the user - pickup or drop off - DELIVERY
+  void updateManualPickupOrDropoff_delivery(
+      {required String location_type, required Map<String, dynamic> location}) {
+    if (location_type == 'pickup') {
+      manuallySettedCurrentLocation_pickup = location;
+      log(location.toString());
+      notifyListeners();
+    } else if (location_type == 'dropoff') {
+      recipients_infos[selectedRecipient_index]['dropoff_location'] = location;
+      print(recipients_infos);
+      notifyListeners();
+    }
+  }
+
   //?17. Get manual location data
   Map<String, dynamic> getManualLocationSetted(
       {required String location_type}) {
@@ -369,6 +413,16 @@ class HomeProvider with ChangeNotifier {
       return manuallySettedCurrentLocation_pickup;
     } else {
       return manuallySettedCurrentLocation_dropoff;
+    }
+  }
+
+  //?17b. Get manual location data - DELIVERY
+  Map<String, dynamic> getManualLocationSetted_delivery(
+      {required String location_type}) {
+    if (location_type == 'pickup') {
+      return manuallySettedCurrentLocation_pickup;
+    } else {
+      return recipients_infos[selectedRecipient_index]['dropoff_location'];
     }
   }
 
@@ -424,5 +478,96 @@ class HomeProvider with ChangeNotifier {
   //?23.b Lock request window state - make an exception
   void updateRequestWindowLockState_makeException({required bool state}) {
     isThereARequestLockedIn['makeException'] = state;
+  }
+
+  //?24. Get recipient details based on the index and the nature of the data (name, phone or location)
+  List getRecipientDetails_indexBased(
+      {required int index, required String nature_data}) {
+    switch (nature_data) {
+      case 'name':
+        String name = recipients_infos[index]['name'];
+        return [name];
+      case 'dropoff_location':
+        Map location = recipients_infos[index]['dropoff_location'];
+        return [location];
+      default:
+        return [];
+    }
+  }
+
+  //? 25. Update selected country code
+  void updateSelectedCountryCode({required Map dialData}) {
+    selectedCountryCodeData = dialData;
+    // log(dialData.toString());
+    notifyListeners();
+  }
+
+  //? 26. Update entered phone number
+  void updateEnteredPhoneNumber({required String phone}) {
+    enteredPhoneNumber = phone;
+    notifyListeners();
+  }
+
+  //?27. Update phone number status
+  void updatePhoneNumberStatus() async {
+    String phoneNumber =
+        '${selectedCountryCodeData['dial_code']}${enteredPhoneNumber}';
+
+    PhoneNumberUtil plugin = PhoneNumberUtil();
+    RegionInfo region = RegionInfo(
+        prefix: int.parse(selectedCountryCodeData['dial_code']
+            .toString()
+            .replaceAll('+', '')),
+        name: selectedCountryCodeData['name'],
+        code: selectedCountryCodeData['code']);
+
+    bool isValid = await plugin.validate(phoneNumber, region.code);
+
+    isPhoneEnteredValid = enteredPhoneNumber.isEmpty ? true : isValid;
+    notifyListeners();
+  }
+
+  //?28. Update the recipient index
+  void updateSelected_recipient_index({required int index}) {
+    selectedRecipient_index = index;
+    notifyListeners();
+  }
+
+  //?29. Validate individual recipient data - not relative to the whole pack.
+  Map<String, dynamic> validateRecipient_data_isolated({int? index = null}) {
+    Map recipient = index != null
+        ? recipients_infos[index]
+        : recipients_infos[selectedRecipient_index];
+
+    //!check the phone number
+    updatePhoneNumberStatus();
+
+    return recipient['name'].toString().isNotEmpty &&
+            isPhoneEnteredValid &&
+            recipient['dropoff_location']['street'] != null
+        ? {'opacity': 1.0, 'actuator': 'back'}
+        : {'opacity': 0.3, 'actuator': 'none'};
+  }
+
+  //?30. Update the selected recipient name
+  void updateSelected_recipientName({required String name}) {
+    recipients_infos[selectedRecipient_index]['name'] = name;
+    // notifyListeners();
+  }
+
+  //?31. Update the phone number of the selected recipient
+  void updateSelectedRecipient_phone() {
+    if (enteredPhoneNumber.isNotEmpty) {
+      String phoneNumber =
+          '${selectedCountryCodeData['dial_code']}${enteredPhoneNumber}';
+
+      recipients_infos[selectedRecipient_index]['phone'] = phoneNumber;
+    }
+  }
+
+  //?32. Clear the entered phone number
+  void clearEnteredPhone_number() {
+    enteredPhoneNumber = '';
+    notifyListeners();
   }
 }

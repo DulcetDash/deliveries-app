@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:nej/components/Cart.dart';
 import 'package:nej/components/Catalogue.dart';
 import 'package:nej/components/CatalogueDetailsL2.dart';
+import 'package:nej/components/DelRecipients.dart';
 import 'package:nej/components/Home.dart';
 import 'package:nej/components/HomeScreen.dart';
 import 'package:nej/components/LocationDetails.dart';
@@ -35,7 +36,7 @@ class _AppGeneralEntryState extends State<AppGeneralEntry> {
   Widget build(BuildContext context) {
     return MaterialApp(
         theme: AppTheme.appTheme,
-        initialRoute: '/home',
+        initialRoute: '/delivery_recipients',
         routes: {
           '/home': (context) => const HomeScreen(),
           '/shopping': (context) => const Home(),
@@ -47,7 +48,9 @@ class _AppGeneralEntryState extends State<AppGeneralEntry> {
           '/locationDetails': (context) => const LocationDetails(),
           '/ShoppingSummary': (context) => const ShoppingSummary(),
           '/successfulRequest': (context) => const SuccessRequest(),
-          '/requestWindow': (context) => const RequestWindow()
+          '/requestWindow': (context) => const RequestWindow(),
+          //Delivery
+          '/delivery_recipients': (context) => const DelRecipients()
         });
   }
 }

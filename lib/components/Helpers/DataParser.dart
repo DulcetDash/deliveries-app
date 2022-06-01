@@ -25,7 +25,7 @@ class DataParser {
                     locationData['street_name'] != 'false' &&
                     locationData['street_name'] != null
                 ? locationData['street_name']
-                : 'Finding location';
+                : 'Finding your location';
 
     //2. Location name
     String location_name = locationData['location_name'] != false &&

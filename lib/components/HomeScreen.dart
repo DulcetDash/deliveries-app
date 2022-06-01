@@ -213,7 +213,7 @@ class ProductsSelection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width * 0.7,
+      width: MediaQuery.of(context).size.width * 0.65,
       alignment: Alignment.center,
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         selections(

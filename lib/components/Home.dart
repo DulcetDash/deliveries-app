@@ -212,10 +212,16 @@ class _HeaderState extends State<Header> {
                 child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(
-                  Icons.menu,
-                  size: 30,
-                )
+                InkWell(
+                    onTap: () {
+                      //! Clear the data
+                      context
+                          .read<HomeProvider>()
+                          .updateCatalogueLevel1_structured(data: {});
+                      //...
+                      Navigator.of(context).pop();
+                    },
+                    child: Icon(Icons.arrow_back)),
               ],
             )),
             Expanded(
@@ -230,10 +236,10 @@ class _HeaderState extends State<Header> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 15),
-                    child: Icon(Icons.person),
-                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(right: 15),
+                  //   child: Icon(Icons.person),
+                  // ),
                   CartIcon()
                 ],
               ),
@@ -306,7 +312,7 @@ class AddressBar extends StatelessWidget {
         title: Text(
           locationData['suburb'] != null
               ? locationData['suburb'].toString()
-              : 'Finding location',
+              : 'Finding your location',
           style: TextStyle(fontFamily: 'MoveTextMedium'),
         ),
         subtitle: Text(
