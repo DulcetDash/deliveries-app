@@ -45,7 +45,11 @@ class _PaymentSettingState extends State<PaymentSetting> {
                       ),
                       MethodChoice(
                         paymentMethod: 'Cash',
-                        subtitle: 'Pay using cash',
+                        subtitle:
+                            context.read<HomeProvider>().selectedService ==
+                                    'delivery'
+                                ? 'Pay using cash on pickup'
+                                : 'Pay using cash',
                         hasPickupFee: true,
                         isSelected:
                             context.watch<HomeProvider>().paymentMethod ==
@@ -63,22 +67,49 @@ class _PaymentSettingState extends State<PaymentSetting> {
                 label: 'Next',
                 labelFontSize: 22,
                 actuatorFunctionl: () {
-                  //! Update the pickup location to THIS if not specified yet
-                  if (context
+                  //?1. SHOPPING
+                  if (context.read<HomeProvider>().selectedService ==
+                      'shopping') {
+                    //! Update the pickup location to THIS if not specified yet
+                    if (context
+                            .read<HomeProvider>()
+                            .manuallySettedCurrentLocation_pickup['street'] ==
+                        null) //No pickup location already set
+                    {
+                      //Preset to the automatically computed by default
+                      context.read<HomeProvider>().updateManualPickupOrDropoff(
+                          location_type: 'pickup',
+                          location:
+                              context.read<HomeProvider>().userLocationDetails);
+                      //...
+                      Navigator.of(context).pushNamed('/locationDetails');
+                    } else //Next
+                    {
+                      Navigator.of(context).pushNamed('/locationDetails');
+                    }
+                  }
+                  //?2. DELIVERY
+                  if (context.read<HomeProvider>().selectedService ==
+                      'delivery') {
+                    if (context
+                            .read<HomeProvider>()
+                            .delivery_pickup['street'] ==
+                        null) //No pickup location already set
+                    {
+                      //Preset to the automatically computed by default
+                      context
                           .read<HomeProvider>()
-                          .manuallySettedCurrentLocation_pickup['street'] ==
-                      null) //No pickup location already set
-                  {
-                    //Preset to the automatically computed by default
-                    context.read<HomeProvider>().updateManualPickupOrDropoff(
-                        location_type: 'pickup',
-                        location:
-                            context.read<HomeProvider>().userLocationDetails);
-                    //...
-                    Navigator.of(context).pushNamed('/locationDetails');
-                  } else //Next
-                  {
-                    Navigator.of(context).pushNamed('/locationDetails');
+                          .updateManualPickupOrDropoff_delivery(
+                              location_type: 'pickup',
+                              location: context
+                                  .read<HomeProvider>()
+                                  .userLocationDetails);
+                      //...
+                      // Navigator.of(context).pushNamed('/locationDetails');
+                    } else //Next
+                    {
+                      // Navigator.of(context).pushNamed('/locationDetails');
+                    }
                   }
                 })
           ],
@@ -174,7 +205,9 @@ class MethodChoice extends StatelessWidget {
                   height: 10,
                 ),
                 Visibility(
-                  visible: hasPickupFee,
+                  visible: hasPickupFee &&
+                      context.read<HomeProvider>().selectedService ==
+                          'shopping',
                   child: Text(
                     '+N\$45 to pick it up.',
                     style: TextStyle(

@@ -5,6 +5,8 @@ import 'package:nej/components/Cart.dart';
 import 'package:nej/components/Catalogue.dart';
 import 'package:nej/components/CatalogueDetailsL2.dart';
 import 'package:nej/components/DelRecipients.dart';
+import 'package:nej/components/DeliveryPickupLocation.dart';
+import 'package:nej/components/DeliverySummary.dart';
 import 'package:nej/components/Home.dart';
 import 'package:nej/components/HomeScreen.dart';
 import 'package:nej/components/LocationDetails.dart';
@@ -36,7 +38,7 @@ class _AppGeneralEntryState extends State<AppGeneralEntry> {
   Widget build(BuildContext context) {
     return MaterialApp(
         theme: AppTheme.appTheme,
-        initialRoute: '/delivery_recipients',
+        initialRoute: '/DeliverySummary',
         routes: {
           '/home': (context) => const HomeScreen(),
           '/shopping': (context) => const Home(),
@@ -44,13 +46,17 @@ class _AppGeneralEntryState extends State<AppGeneralEntry> {
           '/catalogue_details_l2': (context) => const CatalogueDetailsL2(),
           '/product_view': (context) => const ProductView(),
           '/cart': (context) => const Cart(),
-          '/paymentSetting': (context) => const PaymentSetting(),
+          '/paymentSetting': (context) =>
+              const PaymentSetting(), //? SHARED PAGE
           '/locationDetails': (context) => const LocationDetails(),
           '/ShoppingSummary': (context) => const ShoppingSummary(),
           '/successfulRequest': (context) => const SuccessRequest(),
           '/requestWindow': (context) => const RequestWindow(),
           //Delivery
-          '/delivery_recipients': (context) => const DelRecipients()
+          '/delivery_recipients': (context) => const DelRecipients(),
+          '/delivery_pickupLocation': (context) =>
+              const DeliveryPickupLocation(),
+          '/DeliverySummary': (context) => const DeliverySummary()
         });
   }
 }

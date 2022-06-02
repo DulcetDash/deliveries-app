@@ -153,7 +153,8 @@ class _DelRecipientsState extends State<DelRecipients> {
                           .validateRecipient_data_bulk()['actuator'] ==
                       'back'
                   ? () {
-                      Navigator.of(context).pop();
+                      //? Successfully validated
+
                     }
                   : () => {},
             ),
@@ -165,6 +166,7 @@ class _DelRecipientsState extends State<DelRecipients> {
 
   //Add new recipient
   Widget addNewRecipient({required BuildContext context, required int index}) {
+    //! Limit to 30 recipients.
     return Visibility(
         visible:
             index + 1 == context.watch<HomeProvider>().recipients_infos.length,
@@ -172,7 +174,7 @@ class _DelRecipientsState extends State<DelRecipients> {
             padding: const EdgeInsets.only(top: 50),
             child: ListTile(
               onTap: () =>
-                  context.read<HomeProvider>().addNewReceiver_delivery(),
+                  context.read<HomeProvider>().recipients_infos.length==30 ? {} : context.read<HomeProvider>().addNewReceiver_delivery(),
               contentPadding: EdgeInsets.zero,
               horizontalTitleGap: -5,
               leading: Text(''),

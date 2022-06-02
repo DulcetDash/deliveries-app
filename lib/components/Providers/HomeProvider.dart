@@ -16,6 +16,9 @@ class HomeProvider with ChangeNotifier {
   final String bridge = 'http://localhost:9697';
   // final String bridge = 'https://taxiconnectnanetwork.com:9999';
 
+  String selectedService =
+      'delivery'; //! The selected service that the user selected: ride, delivery and shopping
+
   String user_identifier =
       '8246a726f668f5471a797175116f04e38b33f2fd1ec2f74ebd3936c3938a3778daa71b0b71c43880e6d02df7aec129cb3576d07ebe46d93788b9c8ea6ec4555e'; //The user's identifier
 
@@ -92,6 +95,8 @@ class HomeProvider with ChangeNotifier {
 
   //? Note
   String noteTyped = ''; //Will hold the note typed by the user for the shopping
+  String noteTyped_delivery =
+      ''; //Will hold the note typed by the user for the delivery
 
   //? Requesting for the shopping
   bool isLoadingForRequest =
@@ -105,6 +110,7 @@ class HomeProvider with ChangeNotifier {
   }; //If the app already redirected the user to the request window
 
   //? Recipients related
+  Map<String, dynamic> delivery_pickup = {'empty': 0};
   List recipients_infos = [
     {
       'name': '',
@@ -398,12 +404,11 @@ class HomeProvider with ChangeNotifier {
   void updateManualPickupOrDropoff_delivery(
       {required String location_type, required Map<String, dynamic> location}) {
     if (location_type == 'pickup') {
-      manuallySettedCurrentLocation_pickup = location;
+      delivery_pickup = location;
       log(location.toString());
       notifyListeners();
     } else if (location_type == 'dropoff') {
       recipients_infos[selectedRecipient_index]['dropoff_location'] = location;
-      print(recipients_infos);
       notifyListeners();
     }
   }
@@ -422,7 +427,7 @@ class HomeProvider with ChangeNotifier {
   Map<String, dynamic> getManualLocationSetted_delivery(
       {required String location_type}) {
     if (location_type == 'pickup') {
-      return manuallySettedCurrentLocation_pickup;
+      return delivery_pickup;
     } else {
       return recipients_infos[selectedRecipient_index]['dropoff_location'];
     }
@@ -436,6 +441,12 @@ class HomeProvider with ChangeNotifier {
   //?19. Update the typed note by the user
   void updateTypedUserNoteShopping({required String data}) {
     noteTyped = data;
+    notifyListeners();
+  }
+
+  //?19b. Update the typed note by the user
+  void updateTypedUserNoteDelivery({required String data}) {
+    noteTyped_delivery = data;
     notifyListeners();
   }
 
@@ -620,6 +631,19 @@ class HomeProvider with ChangeNotifier {
   //?34. Remove receiver if > 1
   void removeReceiver_delivery({required int index}) {
     recipients_infos.removeAt(index);
+    notifyListeners();
+  }
+
+  //?35. Validate delivery pickup location
+  Map<String, dynamic> validateDelivery_pickupLocation() {
+    return delivery_pickup['street'] != null
+        ? {'opacity': 1.0, 'actuator': 'back'}
+        : {'opacity': 0.3, 'actuator': 'none'};
+  }
+
+  //!36. Update the selected service: ride, delivery and shopping
+  void updateSelectedService({required String service}) {
+    selectedService = service;
     notifyListeners();
   }
 }
