@@ -154,9 +154,11 @@ class _DelRecipientsState extends State<DelRecipients> {
                       'back'
                   ? () {
                       //? Successfully validated
-
+                      Navigator.of(context)
+                          .pushNamed('/delivery_pickupLocation');
                     }
-                  : () => {},
+                  : () {
+                    },
             ),
           )
         ],
@@ -174,7 +176,9 @@ class _DelRecipientsState extends State<DelRecipients> {
             padding: const EdgeInsets.only(top: 50),
             child: ListTile(
               onTap: () =>
-                  context.read<HomeProvider>().recipients_infos.length==30 ? {} : context.read<HomeProvider>().addNewReceiver_delivery(),
+                  context.read<HomeProvider>().recipients_infos.length == 30
+                      ? {}
+                      : context.read<HomeProvider>().addNewReceiver_delivery(),
               contentPadding: EdgeInsets.zero,
               horizontalTitleGap: -5,
               leading: Text(''),
@@ -214,7 +218,9 @@ class Header extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(Icons.arrow_back),
+            InkWell(
+                onTap: () => Navigator.of(context).pop(),
+                child: Icon(Icons.arrow_back)),
             SizedBox(
               height: 15,
             ),

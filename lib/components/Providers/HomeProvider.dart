@@ -450,7 +450,7 @@ class HomeProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  //! 20. GET TOTALS
+  //! 20. GET TOTALS - SHOPPING
   Map<String, String> getTotals() {
     double cart = double.parse(getCartTotal().replaceAll('N\$', ''));
     double service_fee = 90.0;
@@ -462,6 +462,22 @@ class HomeProvider with ChangeNotifier {
       'cart': 'N\$${cart.toStringAsFixed(2)}',
       'service_fee': 'N\$${service_fee.toStringAsFixed(2)}',
       'cash_pickup_fee': 'N\$${cash_pickup_fee.toStringAsFixed(2)}',
+      'total': 'N\$${total.toStringAsFixed(2)}',
+    };
+  }
+
+  //! 20. GET TOTALS - DELIVERY
+  Map<String, String> getTotals_delivery() {
+    double unitPrice_delivery = 45;
+
+    double delivery_fee = unitPrice_delivery * recipients_infos.length;
+    double service_fee = 5.0;
+    //...
+    double total = (delivery_fee + service_fee).ceilToDouble();
+
+    return {
+      'delivery_fee': 'N\$${delivery_fee.toStringAsFixed(2)}',
+      'service_fee': 'N\$${service_fee.toStringAsFixed(2)}',
       'total': 'N\$${total.toStringAsFixed(2)}',
     };
   }

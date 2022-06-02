@@ -105,10 +105,10 @@ class _PaymentSettingState extends State<PaymentSetting> {
                                   .read<HomeProvider>()
                                   .userLocationDetails);
                       //...
-                      // Navigator.of(context).pushNamed('/locationDetails');
+                      Navigator.of(context).pushNamed('/DeliverySummary');
                     } else //Next
                     {
-                      // Navigator.of(context).pushNamed('/locationDetails');
+                      Navigator.of(context).pushNamed('/DeliverySummary');
                     }
                   }
                 })

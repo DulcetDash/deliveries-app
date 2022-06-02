@@ -209,7 +209,8 @@ class _ShoppingSummaryState extends State<ShoppingSummary> {
       "locations": json.encode(locations).toString(),
       "totals":
           json.encode(context.read<HomeProvider>().getTotals()).toString(),
-      "shopping_list": json.encode(shopping_list).toString()
+      "shopping_list": json.encode(shopping_list).toString(),
+      "ride_mode": context.read<HomeProvider>().selectedService
     };
 
     try {

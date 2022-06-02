@@ -24,7 +24,7 @@ class DeliverySummary extends StatefulWidget {
 class _DeliverySummaryState extends State<DeliverySummary> {
   @override
   Widget build(BuildContext context) {
-    Map payment_summary = context.read<HomeProvider>().getTotals();
+    Map payment_summary = context.read<HomeProvider>().getTotals_delivery();
     DataParser _dataParser = DataParser();
 
     return Scaffold(
@@ -59,7 +59,12 @@ class _DeliverySummaryState extends State<DeliverySummary> {
                   ),
                   checked: true,
                   actuator: () => Navigator.of(context)
-                      .pushNamed('/delivery_pickupLocation')),
+                      .pushNamed('/delivery_pickupLocation'),
+                  shape: 'circle'),
+            ),
+            Divider(
+              height: 40,
+              color: Colors.white,
             ),
             Expanded(
               child: Padding(
@@ -129,7 +134,7 @@ class _DeliverySummaryState extends State<DeliverySummary> {
                                 actuator: () {});
                           },
                           separatorBuilder: (context, index) => Divider(
-                                height: 50,
+                                height: 30,
                               ),
                           itemCount: context
                               .watch<HomeProvider>()
@@ -182,8 +187,8 @@ class _DeliverySummaryState extends State<DeliverySummary> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Your cart', style: TextStyle(fontSize: 17)),
-                        Text(payment_summary['cart'],
+                        Text('Delivery fee', style: TextStyle(fontSize: 17)),
+                        Text(payment_summary['delivery_fee'],
                             style: TextStyle(
                                 fontSize: 19,
                                 color: AppTheme().getPrimaryColor())),
@@ -197,31 +202,12 @@ class _DeliverySummaryState extends State<DeliverySummary> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Service fee', style: TextStyle(fontSize: 17)),
+                        Text('Handling fee', style: TextStyle(fontSize: 17)),
                         Text(payment_summary['service_fee'],
                             style: TextStyle(
                                 fontSize: 19,
                                 color: AppTheme().getPrimaryColor())),
                       ],
-                    ),
-                  ),
-                  //CASH PICKUP FEE?
-                  Visibility(
-                    visible:
-                        context.watch<HomeProvider>().paymentMethod == 'cash',
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 20, right: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('Cash pickup fee',
-                              style: TextStyle(fontSize: 17)),
-                          Text(payment_summary['cash_pickup_fee'],
-                              style: TextStyle(
-                                  fontSize: 19,
-                                  color: AppTheme().getPrimaryColor())),
-                        ],
-                      ),
                     ),
                   ),
                   Divider(),
@@ -262,7 +248,7 @@ class _DeliverySummaryState extends State<DeliverySummary> {
                           label: 'Make your delivery',
                           labelFontSize: 22,
                           actuatorFunctionl: () {
-                            requestForShopping(context: context);
+                            requestForDelivery(context: context);
                           }),
                 ],
               ),
@@ -271,32 +257,28 @@ class _DeliverySummaryState extends State<DeliverySummary> {
         )));
   }
 
-  //Request for shipping
-  Future requestForShopping({required BuildContext context}) async {
+  //Request for delivery
+  Future requestForDelivery({required BuildContext context}) async {
     //? Start the loader
     context.read<HomeProvider>().updateLoadingRequestStatus(status: true);
 
     Uri mainUrl = Uri.parse(Uri.encodeFull(
-        '${context.read<HomeProvider>().bridge}/requestForShopping'));
+        '${context.read<HomeProvider>().bridge}/requestForRideOrDelivery'));
 
     //Assemble the bundle data
-    //1. Locations data
-    Map<String, dynamic> locations = {
-      "pickup":
-          context.read<HomeProvider>().manuallySettedCurrentLocation_pickup,
-      "delivery":
-          context.read<HomeProvider>().manuallySettedCurrentLocation_dropoff
-    };
-
     List shopping_list = context.read<HomeProvider>().CART;
     //? For the request
     Map<String, String> bundleData = {
       "user_identifier": context.read<HomeProvider>().user_identifier,
       "payment_method": context.read<HomeProvider>().paymentMethod,
-      "locations": json.encode(locations).toString(),
-      "totals":
-          json.encode(context.read<HomeProvider>().getTotals()).toString(),
-      "shopping_list": json.encode(shopping_list).toString()
+      "dropOff_data":
+          json.encode(context.read<HomeProvider>().recipients_infos).toString(),
+      "totals": json
+          .encode(context.read<HomeProvider>().getTotals_delivery())
+          .toString(),
+      "pickup_location":
+          json.encode(context.read<HomeProvider>().delivery_pickup).toString(),
+      "ride_mode": context.read<HomeProvider>().selectedService
     };
 
     try {
@@ -357,6 +339,7 @@ class LocationChoiceRecipientFront extends StatelessWidget {
   final bool tracked;
   final bool checked;
   final int recipient_index;
+  final String shape;
 
   const LocationChoiceRecipientFront(
       {Key? key,
@@ -365,6 +348,7 @@ class LocationChoiceRecipientFront extends StatelessWidget {
       required this.actuator,
       required this.recipient_index,
       this.tracked = true,
+      this.shape = 'square',
       this.checked = false})
       : super(key: key);
 
@@ -381,21 +365,21 @@ class LocationChoiceRecipientFront extends StatelessWidget {
               ? recipient_index + 1 ==
                       context.read<HomeProvider>().recipients_infos.length
                   ? Icon(
-                      Icons.square,
-                      size: 15,
+                      shape == 'square' ? Icons.square : Icons.circle,
+                      size: 13,
                       color:
                           checked ? AppTheme().getPrimaryColor() : Colors.grey,
                     )
                   : Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        SizedBox(
-                          height: 8,
-                        ),
                         Icon(
-                          Icons.square,
-                          size: 15,
+                          shape == 'square' ? Icons.square : Icons.circle,
+                          size: 13,
                           color: checked
-                              ? AppTheme().getPrimaryColor()
+                              ? shape == 'circle'
+                                  ? Colors.black
+                                  : AppTheme().getPrimaryColor()
                               : Colors.grey,
                         ),
                         Flexible(

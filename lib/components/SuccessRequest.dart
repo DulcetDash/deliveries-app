@@ -35,13 +35,17 @@ class SuccessRequest extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 20, right: 20),
               child: Text(
-                "Your shopping request has been successfully made, please click on the button below to track it.",
+                context.read<HomeProvider>().selectedService == 'delivery'
+                    ? "Your delivery request has been successfully made, please click on the button below to track it."
+                    : "Your shopping request has been successfully made, please click on the button below to track it.",
                 style: TextStyle(fontSize: 16),
               ),
             ),
             Expanded(child: SizedBox.shrink()),
             GenericRectButton(
-              label: 'Track your shopping',
+              label: context.read<HomeProvider>().selectedService == 'delivery'
+                  ? 'Track your delivery'
+                  : 'Track your shopping',
               labelFontSize: 20,
               actuatorFunctionl: () {
                 //! Clear the shopping cart

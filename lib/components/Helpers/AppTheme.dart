@@ -5,6 +5,7 @@ class AppTheme {
   //1. Get the primary color
   Color getPrimaryColor() {
     return HexColor('#639f62');
+    // return Colors.blue;
   }
 
   //2. Get the error color

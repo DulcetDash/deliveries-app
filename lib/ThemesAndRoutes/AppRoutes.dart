@@ -38,7 +38,7 @@ class _AppGeneralEntryState extends State<AppGeneralEntry> {
   Widget build(BuildContext context) {
     return MaterialApp(
         theme: AppTheme.appTheme,
-        initialRoute: '/DeliverySummary',
+        initialRoute: '/home',
         routes: {
           '/home': (context) => const HomeScreen(),
           '/shopping': (context) => const Home(),

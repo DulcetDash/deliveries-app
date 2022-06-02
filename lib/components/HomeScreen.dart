@@ -4,6 +4,8 @@ import 'package:nej/components/Helpers/AppTheme.dart';
 import 'package:nej/components/Helpers/LocationOpsHandler.dart';
 import 'package:nej/components/Helpers/Networking.dart';
 import 'package:nej/components/Helpers/Watcher.dart';
+import 'package:nej/components/Providers/HomeProvider.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -213,17 +215,44 @@ class ProductsSelection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width * 0.65,
+      width: MediaQuery.of(context).size.width * 0.90,
       alignment: Alignment.center,
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         selections(
             context: context,
+            imagePath: 'assets/Images/normaltaxi2.jpeg',
+            title: 'Ride',
+            actuator: () {
+              print('Ride');
+              //! Update the selected service
+              context
+                  .read<HomeProvider>()
+                  .updateSelectedService(service: 'ride');
+            }),
+        selections(
+            context: context,
             imagePath: 'assets/Images/box_delivery.png',
-            title: 'Delivery'),
+            title: 'Delivery',
+            actuator: () {
+              //! Update the selected service
+              context
+                  .read<HomeProvider>()
+                  .updateSelectedService(service: 'delivery');
+              //...
+              Navigator.of(context).pushNamed('/delivery_recipients');
+            }),
         selections(
             context: context,
             imagePath: 'assets/Images/cart.jpg',
-            title: 'Shopping')
+            title: 'Shopping',
+            actuator: () {
+              //! Update the selected service
+              context
+                  .read<HomeProvider>()
+                  .updateSelectedService(service: 'shopping');
+              //...
+              Navigator.of(context).pushNamed('/shopping');
+            })
       ]),
     );
   }
@@ -232,25 +261,31 @@ class ProductsSelection extends StatelessWidget {
   Widget selections(
       {required BuildContext context,
       required String imagePath,
-      required String title}) {
-    return Container(
-      // color: Colors.red,
-      width: 90,
-      child: Column(
-        children: [
-          SizedBox(
-            width: 90,
-            height: 60,
-            child: Image.asset(imagePath),
-          ),
-          SizedBox(
-            height: 25,
-          ),
-          Text(
-            title,
-            style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 16),
-          )
-        ],
+      required String title,
+      required actuator}) {
+    return InkWell(
+      onTap: actuator,
+      highlightColor: Colors.white,
+      splashFactory: NoSplash.splashFactory,
+      child: Container(
+        // color: Colors.red,
+        width: 90,
+        child: Column(
+          children: [
+            SizedBox(
+              width: 90,
+              height: 60,
+              child: Image.asset(imagePath),
+            ),
+            SizedBox(
+              height: 25,
+            ),
+            Text(
+              title,
+              style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 16),
+            )
+          ],
+        ),
       ),
     );
   }

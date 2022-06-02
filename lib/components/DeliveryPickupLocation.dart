@@ -91,6 +91,7 @@ class _DeliveryPickupLocationState extends State<DeliveryPickupLocation> {
                       'back'
                   ? () {
                       //? Successfully validated
+                      Navigator.of(context).pushNamed('/paymentSetting');
                     }
                   : () => {},
             ),
@@ -114,7 +115,9 @@ class Header extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(Icons.arrow_back),
+            InkWell(
+                onTap: () => Navigator.of(context).pop(),
+                child: Icon(Icons.arrow_back)),
             SizedBox(
               height: 15,
             ),
