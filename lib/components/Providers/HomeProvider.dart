@@ -126,6 +126,8 @@ class HomeProvider with ChangeNotifier {
   String enteredPhoneNumber = ''; //Default - empty
   bool isPhoneEnteredValid =
       true; //If the phone is valid or not - default: true
+  bool isGenerally_phoneNumbersValid =
+      false; //If allthe phone number entered are valid
 
   //Updaters
   //?1. Update the main stores
@@ -527,6 +529,20 @@ class HomeProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  //?27b. Update phone number status - with a precise phone number
+  void updatePhoneNumberStatus_custom({required String phone_custom}) async {
+    String phoneNumber = phone_custom;
+
+    PhoneNumberUtil plugin = PhoneNumberUtil();
+    RegionInfo region = RegionInfo(
+        prefix: int.parse('+264'.toString().replaceAll('+', '')),
+        name: 'Namibia',
+        code: 'NA');
+
+    bool isValid = await plugin.validate(phoneNumber, region.code);
+    isGenerally_phoneNumbersValid = isValid;
+  }
+
   //?28. Update the recipient index
   void updateSelected_recipient_index({required int index}) {
     selectedRecipient_index = index;
@@ -545,6 +561,25 @@ class HomeProvider with ChangeNotifier {
     return recipient['name'].toString().isNotEmpty &&
             isPhoneEnteredValid &&
             recipient['dropoff_location']['street'] != null
+        ? {'opacity': 1.0, 'actuator': 'back'}
+        : {'opacity': 0.3, 'actuator': 'none'};
+  }
+
+  //?29b. Validate individual recipient data - Bulk
+  Map<String, dynamic> validateRecipient_data_bulk() {
+    List invalidRecipients = List.from(recipients_infos);
+
+    invalidRecipients.removeWhere((element) {
+      updatePhoneNumberStatus_custom(phone_custom: element['phone']);
+
+      return element['name'].toString().isNotEmpty &&
+          isGenerally_phoneNumbersValid &&
+          element['dropoff_location']['street'] != null;
+    });
+
+    // print(invalidRecipients);
+
+    return invalidRecipients.isEmpty
         ? {'opacity': 1.0, 'actuator': 'back'}
         : {'opacity': 0.3, 'actuator': 'none'};
   }
@@ -568,6 +603,23 @@ class HomeProvider with ChangeNotifier {
   //?32. Clear the entered phone number
   void clearEnteredPhone_number() {
     enteredPhoneNumber = '';
+    notifyListeners();
+  }
+
+  //?33. Add new receciver
+  void addNewReceiver_delivery() {
+    recipients_infos.add({
+      'name': '',
+      'phone': '',
+      'dropoff_location': {'empty': 0}
+    });
+    //...
+    notifyListeners();
+  }
+
+  //?34. Remove receiver if > 1
+  void removeReceiver_delivery({required int index}) {
+    recipients_infos.removeAt(index);
     notifyListeners();
   }
 }

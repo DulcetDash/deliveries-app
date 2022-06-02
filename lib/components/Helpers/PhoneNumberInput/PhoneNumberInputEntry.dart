@@ -169,10 +169,15 @@ class TextEntryPhoneInput extends StatelessWidget {
                   maxLength: 10, //! Should be conditional to the country
                   keyboardType: const TextInputType.numberWithOptions(
                       decimal: false, signed: false),
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                       counterText: '',
                       border: InputBorder.none,
-                      labelText: "Phone number",
+                      labelText: context
+                              .watch<HomeProvider>()
+                              .enteredPhoneNumber
+                              .isEmpty
+                          ? "Phone number"
+                          : context.watch<HomeProvider>().enteredPhoneNumber,
                       labelStyle: TextStyle(fontFamily: 'UberMoveTextMedium'),
                       floatingLabelBehavior: FloatingLabelBehavior.never,
                       contentPadding: EdgeInsets.only(bottom: 21)),

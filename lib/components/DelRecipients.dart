@@ -36,6 +36,7 @@ class _DelRecipientsState extends State<DelRecipients> {
                     child: Column(
                       children: [
                         LocationChoiceRecipientFront(
+                            recipient_index: index,
                             title: receipientData['name'].toString().isEmpty
                                 ? 'Recipient ${index + 1}'
                                 : receipientData['name'].toString(),
@@ -100,7 +101,7 @@ class _DelRecipientsState extends State<DelRecipients> {
                               return showMaterialModalBottomSheet(
                                 backgroundColor: Colors.white,
                                 bounce: true,
-                                duration: Duration(milliseconds: 400),
+                                duration: Duration(milliseconds: 250),
                                 context: context,
                                 builder: (context) => LocalModal(
                                   scenario: 'setRecipient',
@@ -135,6 +136,27 @@ class _DelRecipientsState extends State<DelRecipients> {
                     ),
                 itemCount:
                     context.watch<HomeProvider>().recipients_infos.length),
+          ),
+          //? Done button
+          Opacity(
+            opacity: context
+                .read<HomeProvider>()
+                .validateRecipient_data_bulk()['opacity'],
+            child: GenericRectButton(
+              label: 'Next',
+              bottomSubtitleText:
+                  'You have ${context.read<HomeProvider>().recipients_infos.length} recipient${context.read<HomeProvider>().recipients_infos.length > 1 || context.read<HomeProvider>().recipients_infos.isEmpty ? 's' : ''}',
+              labelFontSize: 20,
+              horizontalPadding: 20,
+              actuatorFunctionl: context
+                          .read<HomeProvider>()
+                          .validateRecipient_data_bulk()['actuator'] ==
+                      'back'
+                  ? () {
+                      Navigator.of(context).pop();
+                    }
+                  : () => {},
+            ),
           )
         ],
       )),
@@ -144,10 +166,13 @@ class _DelRecipientsState extends State<DelRecipients> {
   //Add new recipient
   Widget addNewRecipient({required BuildContext context, required int index}) {
     return Visibility(
-        visible: index + 1 == 2,
+        visible:
+            index + 1 == context.watch<HomeProvider>().recipients_infos.length,
         child: Padding(
             padding: const EdgeInsets.only(top: 50),
             child: ListTile(
+              onTap: () =>
+                  context.read<HomeProvider>().addNewReceiver_delivery(),
               contentPadding: EdgeInsets.zero,
               horizontalTitleGap: -5,
               leading: Text(''),
@@ -157,7 +182,7 @@ class _DelRecipientsState extends State<DelRecipients> {
                       width: 30,
                       height: 30,
                       decoration: BoxDecoration(
-                          color: AppTheme().getPrimaryColor(),
+                          color: Colors.black,
                           borderRadius: BorderRadius.circular(150)),
                       child: Icon(Icons.add, color: Colors.white)),
                   SizedBox(
@@ -211,12 +236,14 @@ class LocationChoiceRecipientFront extends StatelessWidget {
   final actuator;
   final bool tracked;
   final bool checked;
+  final int recipient_index;
 
   const LocationChoiceRecipientFront(
       {Key? key,
       required this.title,
       required this.subtitle,
       required this.actuator,
+      required this.recipient_index,
       this.tracked = true,
       this.checked = false})
       : super(key: key);
@@ -251,11 +278,25 @@ class LocationChoiceRecipientFront extends StatelessWidget {
                   //           : Colors.grey.shade500),
                   // ),
                   ),
-          trailing: Icon(
-            Icons.arrow_forward_ios,
-            size: 18,
-            color: checked ? Colors.grey : AppTheme().getPrimaryColor(),
-          ),
+          trailing: context.watch<HomeProvider>().recipients_infos.length > 1
+              ? InkWell(
+                  onTap: () => context
+                      .read<HomeProvider>()
+                      .removeReceiver_delivery(index: recipient_index),
+                  child: Icon(Icons.close, color: AppTheme().getErrorColor()))
+              : context.watch<HomeProvider>().recipients_infos.length == 1
+                  ? Icon(
+                      Icons.arrow_forward_ios,
+                      size: 18,
+                      color:
+                          checked ? Colors.grey : AppTheme().getPrimaryColor(),
+                    )
+                  : Icon(
+                      Icons.arrow_forward_ios,
+                      size: 18,
+                      color:
+                          checked ? Colors.grey : AppTheme().getPrimaryColor(),
+                    ),
         ));
   }
 }
@@ -357,7 +398,7 @@ class LocalModal extends StatelessWidget {
                           width: 5,
                         ),
                         Text(
-                          'Recipient #',
+                          'Recipient ${context.read<HomeProvider>().selectedRecipient_index + 1}',
                           style: TextStyle(
                               fontFamily: 'MoveTextBold', fontSize: 19),
                         ),
@@ -449,7 +490,7 @@ class LocalModal extends StatelessWidget {
                           null,
                       actuator: () => showMaterialModalBottomSheet(
                             bounce: true,
-                            duration: Duration(milliseconds: 400),
+                            duration: Duration(milliseconds: 250),
                             context: context,
                             builder: (context) => LocalModal_locations(
                               scenario: 'dropoff',
