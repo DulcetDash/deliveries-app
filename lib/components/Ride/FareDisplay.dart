@@ -113,7 +113,7 @@ class PaymentMethodSelector extends StatelessWidget {
                 width: 35,
                 height: 35,
                 child: Image.asset(context
-                    .read<HomeProvider>()
+                    .watch<HomeProvider>()
                     .getCleanPaymentMethod_nameAndImage()['image']!),
               ),
               SizedBox(
@@ -121,7 +121,7 @@ class PaymentMethodSelector extends StatelessWidget {
               ),
               Text(
                 context
-                    .read<HomeProvider>()
+                    .watch<HomeProvider>()
                     .getCleanPaymentMethod_nameAndImage()['name']!,
                 style: TextStyle(
                     fontFamily: 'MoveTextMedium',

@@ -385,6 +385,8 @@ class HomeProvider with ChangeNotifier {
     if (!mapEquals(newCurrentLocation, userLocationDetails)) //New data received
     {
       userLocationDetails = newCurrentLocation;
+      userLocationDetails['coordinates'] =
+          userLocationCoords; //? Very important
       notifyListeners();
     }
   }
