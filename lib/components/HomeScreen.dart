@@ -228,6 +228,8 @@ class ProductsSelection extends StatelessWidget {
               context
                   .read<HomeProvider>()
                   .updateSelectedService(service: 'ride');
+              //...
+              Navigator.of(context).pushNamed('/PassengersInput');
             }),
         selections(
             context: context,

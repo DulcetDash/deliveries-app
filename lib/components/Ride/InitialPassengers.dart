@@ -901,7 +901,7 @@ class SearchResultsRenderer extends StatelessWidget {
 
     if (isPickupSet && dropoffsTemplate.isEmpty) //Valid move forward
     {
-      print('LOCATIONS CORRECT');
+      Navigator.of(context).pushNamed('/FareDisplay');
     }
   }
 }
@@ -967,7 +967,7 @@ class LocationInstance extends StatelessWidget {
 
     if (isPickupSet && dropoffsTemplate.isEmpty) //Valid move forward
     {
-      print('LOCATIONS CORRECT');
+      Navigator.of(context).pushNamed('/FareDisplay');
     }
   }
 }

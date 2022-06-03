@@ -3,10 +3,12 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:nej/components/Helpers/DataParser.dart';
+import 'package:nej/components/Helpers/MapMarkerFactory/place_to_marker.dart';
 import 'package:phone_number/phone_number.dart';
 import 'package:provider/src/provider.dart';
 
@@ -150,6 +152,24 @@ class HomeProvider with ChangeNotifier {
   List<Map<String, dynamic>> ride_location_dropoff = [
     {'item': 0}
   ];
+
+  List<LatLng> routeSnapshotData =
+      <LatLng>[]; //Will hold the converted route snapshot recived
+  Map<PolylineId, Polyline> polylines_snapshot = <PolylineId,
+      Polyline>{}; //Will contain the full form of the polyline ready to be used
+  Map<MarkerId, Marker> markers_snapshot =
+      <MarkerId, Marker>{}; //Will hold the markers for the snapshot route
+  Map<String, dynamic> eta_informationSnap = {
+    "eta": "",
+    "point1": {},
+    "point2": {}
+  };
+
+  List pricing_computed = []; //Will hold the pricing data in bulk
+  Map<String, dynamic> selected_pricing_model =
+      {}; //The selected pricing vehicle
+  bool isLoadingFor_fareComputation =
+      true; //Whether the app is loading for fare computation
 
   //Updaters
   //?1. Update the main stores
@@ -797,5 +817,102 @@ class HomeProvider with ChangeNotifier {
           ? 'assets/Images/mobile_payment.png'
           : 'assets/Images/banknote.png'
     };
+  }
+
+  //?43. Update route snapshot and eta
+  void updateRouteSnaphotData({required Map<String, dynamic> rawSnap}) async {
+    //? Convert the route point to be compatible with google maps
+    List<LatLng> points = <LatLng>[];
+    List snapsPoints = rawSnap['routePoints'];
+    snapsPoints.forEach((e) {
+      points.add(createLatLng(e[1], e[0]));
+    });
+    //...save
+    routeSnapshotData = points;
+
+    final String polylineIdVal = 'polyline_id_route_snapshot';
+    final PolylineId polylineId = PolylineId(polylineIdVal);
+
+    final Polyline polyline = Polyline(
+      polylineId: polylineId,
+      consumeTapEvents: true,
+      color: Colors.black,
+      endCap: Cap.buttCap,
+      width: 4,
+      zIndex: 100,
+      points: points,
+      onTap: () {
+        print(polylineId);
+      },
+    );
+    //! Update
+    polylines_snapshot[polylineId] = polyline;
+
+    //   //? Create custom markers for origin and destination
+    final originIcon = await placeToMarker(
+        ride_location_pickup['location_name'].toString().length > 22
+            ? '${ride_location_pickup['location_name'].toString().substring(0, 15)}...'
+            : ride_location_pickup['location_name'].toString(),
+        null);
+    final destinationIcon = await placeToMarker(
+      ride_location_dropoff[0]['location_name'].toString().length > 22
+          ? '${ride_location_dropoff[0]['location_name'].toString().substring(0, 15)}...'
+          : ride_location_dropoff[0]['location_name'].toString(),
+      int.parse(rawSnap['eta'].toString().split(' ')[0]) *
+          (rawSnap['eta'].toString().split(' ')[1] == 'min' ? 60 : 1),
+    );
+
+    const originId = MarkerId('origin');
+    const destinationId = MarkerId('destination');
+
+    final originMarker = Marker(
+      markerId: originId,
+      position: LatLng(double.parse(rawSnap['origin']['latitude']),
+          double.parse(rawSnap['origin']['longitude'])),
+      icon: originIcon,
+      anchor: const Offset(1, 1.2),
+    );
+
+    final destinationMarker = Marker(
+      markerId: destinationId,
+      position: LatLng(double.parse(rawSnap['destination']['latitude']),
+          double.parse(rawSnap['destination']['longitude'])),
+      icon: destinationIcon,
+      anchor: const Offset(0, 1.2),
+    );
+
+    //...Save
+    markers_snapshot[originId] = originMarker;
+    markers_snapshot[destinationId] = destinationMarker;
+
+    //? Update the eta and origin & destination points
+    eta_informationSnap['eta'] =
+        rawSnap['eta'].toString().replaceAll(' away', '');
+    eta_informationSnap['point1'] = rawSnap['origin'];
+    eta_informationSnap['point2'] = rawSnap['destination'];
+    //...
+    notifyListeners();
+  }
+
+  LatLng createLatLng(double lat, double lng) {
+    return LatLng(lat, lng);
+  }
+
+  //?44. Update the pricing data in bulk
+  void updatePricingData_bulk({required List data}) {
+    pricing_computed = data;
+    notifyListeners();
+  }
+
+  //?45. Update the selected pricing model
+  void updateSelectedPricing_model({required Map<String, dynamic> data}) {
+    selected_pricing_model = data;
+    notifyListeners();
+  }
+
+  //?46. Update fare computation status
+  void updateFareComputation_status({required bool status}) {
+    isLoadingFor_fareComputation = status;
+    notifyListeners();
   }
 }
