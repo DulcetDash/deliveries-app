@@ -754,6 +754,12 @@ class HomeProvider with ChangeNotifier {
   //?37. Update the passengers number
   void updatePassengersNumber({required int no}) {
     passengersNumber = no;
+    //! Update the dropoff array for ride accordingly
+    List<Map<String, dynamic>> newEls =
+        List.generate(passengersNumber, (index) => {'item': index});
+    //...
+    ride_location_dropoff = newEls;
+
     notifyListeners();
   }
 
