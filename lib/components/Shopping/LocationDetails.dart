@@ -155,7 +155,8 @@ class Header extends StatelessWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Icon(Icons.arrow_back),
+                      Icon(Icons.arrow_back,
+                          size: AppTheme().getArrowBackSize()),
                       SizedBox(
                         width: 4,
                       ),
@@ -472,7 +473,7 @@ class _HeaderSearchState extends State<HeaderSearch> {
     // TODO: implement initState
     super.initState();
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) {});
+    WidgetsBinding.instance.addPostFrameCallback((_) {});
   }
 
   @override
@@ -538,7 +539,8 @@ class _HeaderSearchState extends State<HeaderSearch> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Icon(Icons.arrow_back),
+                      Icon(Icons.arrow_back,
+                          size: AppTheme().getArrowBackSize()),
                       SizedBox(
                         width: 4,
                       ),
@@ -656,7 +658,8 @@ class HeaderNote extends StatelessWidget {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Icon(Icons.arrow_back),
+                            Icon(Icons.arrow_back,
+                                size: AppTheme().getArrowBackSize()),
                             SizedBox(
                               width: 4,
                             ),

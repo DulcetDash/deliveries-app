@@ -402,7 +402,8 @@ class Header extends StatelessWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Icon(Icons.arrow_back),
+                      Icon(Icons.arrow_back,
+                          size: AppTheme().getArrowBackSize()),
                       SizedBox(
                         width: 4,
                       ),

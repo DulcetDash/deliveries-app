@@ -6,13 +6,13 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:nej/components/CartIcon.dart';
 import 'package:nej/components/Helpers/AppTheme.dart';
 import 'package:nej/components/Helpers/DataParser.dart';
 import 'package:nej/components/Helpers/LocationOpsHandler.dart';
 import 'package:nej/components/Helpers/Networking.dart';
 import 'package:nej/components/Helpers/Watcher.dart';
 import 'package:nej/components/Providers/HomeProvider.dart';
+import 'package:nej/components/Shopping/CartIcon.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -31,7 +31,7 @@ class _HomeState extends State<Home> {
     // TODO: implement initState
     super.initState();
     //! Get the stores names
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       GetMainStores(context: context);
     });
   }
@@ -221,7 +221,8 @@ class _HeaderState extends State<Header> {
                       //...
                       Navigator.of(context).pop();
                     },
-                    child: Icon(Icons.arrow_back)),
+                    child: Icon(Icons.arrow_back,
+                        size: AppTheme().getArrowBackSize())),
               ],
             )),
             Expanded(

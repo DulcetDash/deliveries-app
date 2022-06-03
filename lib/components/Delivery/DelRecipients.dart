@@ -157,8 +157,7 @@ class _DelRecipientsState extends State<DelRecipients> {
                       Navigator.of(context)
                           .pushNamed('/delivery_pickupLocation');
                     }
-                  : () {
-                    },
+                  : () {},
             ),
           )
         ],
@@ -220,7 +219,8 @@ class Header extends StatelessWidget {
           children: [
             InkWell(
                 onTap: () => Navigator.of(context).pop(),
-                child: Icon(Icons.arrow_back)),
+                child: Icon(Icons.arrow_back,
+                    size: AppTheme().getArrowBackSize())),
             SizedBox(
               height: 15,
             ),
@@ -401,7 +401,8 @@ class LocalModal extends StatelessWidget {
                     onTap: () => Navigator.of(context).pop(),
                     child: Row(
                       children: [
-                        Icon(Icons.arrow_back),
+                        Icon(Icons.arrow_back,
+                            size: AppTheme().getArrowBackSize()),
                         SizedBox(
                           width: 5,
                         ),
@@ -641,7 +642,7 @@ class _HeaderSearchState extends State<HeaderSearch> {
     // TODO: implement initState
     super.initState();
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) {});
+    WidgetsBinding.instance.addPostFrameCallback((_) {});
   }
 
   @override
@@ -707,7 +708,8 @@ class _HeaderSearchState extends State<HeaderSearch> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Icon(Icons.arrow_back),
+                      Icon(Icons.arrow_back,
+                          size: AppTheme().getArrowBackSize()),
                       SizedBox(
                         width: 4,
                       ),

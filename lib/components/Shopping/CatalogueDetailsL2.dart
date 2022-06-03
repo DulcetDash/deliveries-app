@@ -5,10 +5,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:nej/components/CartIcon.dart';
 import 'package:nej/components/Helpers/AppTheme.dart';
 import 'package:nej/components/Helpers/Networking.dart';
 import 'package:nej/components/Providers/HomeProvider.dart';
+import 'package:nej/components/Shopping/CartIcon.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -27,7 +27,7 @@ class _CatalogueDetailsL2State extends State<CatalogueDetailsL2> {
     // TODO: implement initState
     super.initState();
     //! Get the stores names
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       GetCatalogueL2(context: context);
     });
   }
@@ -215,7 +215,8 @@ class _HeaderState extends State<Header> {
                       //...
                       Navigator.of(context).pop();
                     },
-                    child: Icon(Icons.arrow_back)),
+                    child: Icon(Icons.arrow_back,
+                        size: AppTheme().getArrowBackSize())),
               ],
             )),
             Expanded(

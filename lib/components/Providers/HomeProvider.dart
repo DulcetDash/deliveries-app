@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:http/http.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:nej/components/Helpers/DataParser.dart';
 import 'package:phone_number/phone_number.dart';
 import 'package:provider/src/provider.dart';
 
@@ -134,6 +135,21 @@ class HomeProvider with ChangeNotifier {
       true; //If the phone is valid or not - default: true
   bool isGenerally_phoneNumbersValid =
       false; //If allthe phone number entered are valid
+
+  //? RIDE RELATED
+  int passengersNumber = 1; //The number of passengers selected
+  bool? isGoingTheSameWay =
+      false; //If the passengers are going to the same destination
+  String rideStyle =
+      'shared'; //The type of ride: private or shared - default: shared - economical
+  String noteTyped_ride = ''; //The note typed for the driver in a ride
+  int selectedLocationField_index =
+      -1; //The selected field for the locations - default: -1 (pickup location)
+  Map<String, dynamic> ride_location_pickup = {'item': 0}; //OLD: ride_locations
+
+  List<Map<String, dynamic>> ride_location_dropoff = [
+    {'item': 0}
+  ];
 
   //Updaters
   //?1. Update the main stores
@@ -400,7 +416,7 @@ class HomeProvider with ChangeNotifier {
     }
   }
 
-  //?16. Update the manual location for the user - pickup or drop off - DELIVERY
+  //?16b. Update the manual location for the user - pickup or drop off - DELIVERY
   void updateManualPickupOrDropoff_delivery(
       {required String location_type, required Map<String, dynamic> location}) {
     if (location_type == 'pickup') {
@@ -409,6 +425,19 @@ class HomeProvider with ChangeNotifier {
       notifyListeners();
     } else if (location_type == 'dropoff') {
       recipients_infos[selectedRecipient_index]['dropoff_location'] = location;
+      notifyListeners();
+    }
+  }
+
+  //?16c. Update the manual location for the user - pickup or drop off - RIDE
+  //Index is the corresponding index for the drop off element
+  void updateManualPickupOrDropoff_ride(
+      {required String location_type, required Map<String, dynamic> location}) {
+    if (location_type == 'pickup' || selectedRecipient_index == -1) {
+      ride_location_pickup = location;
+      notifyListeners();
+    } else if (location_type == 'dropoff') {
+      ride_location_dropoff[selectedLocationField_index] = location;
       notifyListeners();
     }
   }
@@ -433,9 +462,67 @@ class HomeProvider with ChangeNotifier {
     }
   }
 
+  //?17c. Get manual location data - RIDE
+  //Index is the index of the corresponding drop off dield
+  String getManualLocationSetted_ride(
+      {required String location_type, int? index}) {
+    DataParser _dataParser = DataParser();
+    //...
+    if (location_type == 'pickup') {
+      // return ride_location_pickup;
+      //! Auto initialize pickup location to current location if not set.
+      ride_location_pickup = ride_location_pickup['street'] != null
+          ? ride_location_pickup
+          : userLocationDetails;
+      //!.....
+      return typedSearchLocation.isNotEmpty && selectedLocationField_index == -1
+          ? typedSearchLocation
+          : ride_location_pickup['street'] != null
+              ? _dataParser
+                      .getRealisticPlacesNames(
+                          locationData: ride_location_pickup)['location_name']!
+                      .isNotEmpty
+                  ? _dataParser.getRealisticPlacesNames(
+                      locationData: ride_location_pickup)['location_name']
+                  : _dataParser.getRealisticPlacesNames(
+                      locationData: ride_location_pickup)['suburb']
+              : userLocationDetails['street'] != null
+                  ? userLocationDetails['street'].toString().isNotEmpty
+                      ? ''
+                      : userLocationDetails['suburb']
+                  : '';
+    } else {
+      if (index != null) {
+        Map<String, dynamic> dropoff_data = ride_location_dropoff[index];
+        //...
+        return (typedSearchLocation.isNotEmpty &&
+                    selectedLocationField_index == index
+                ? typedSearchLocation
+                : dropoff_data['street'] != null
+                    ? _dataParser
+                            .getRealisticPlacesNames(
+                                locationData: dropoff_data)['location_name']!
+                            .isNotEmpty
+                        ? _dataParser.getRealisticPlacesNames(
+                            locationData: dropoff_data)['location_name']
+                        : _dataParser.getRealisticPlacesNames(
+                            locationData: dropoff_data)['suburb']
+                    : '')
+            .toString();
+      } else {
+        return '';
+      }
+    }
+  }
+
   //?18. Is manual pickup equal to the auto location
   bool isManualLocationEqualToTheAuto() {
     return mapEquals(manuallySettedCurrentLocation_pickup, userLocationDetails);
+  }
+
+  //?18b. Is manual pickup equal to the auto location
+  bool isManualLocationEqualToTheAuto_ride() {
+    return mapEquals(ride_location_pickup, userLocationDetails);
   }
 
   //?19. Update the typed note by the user
@@ -660,6 +747,37 @@ class HomeProvider with ChangeNotifier {
   //!36. Update the selected service: ride, delivery and shopping
   void updateSelectedService({required String service}) {
     selectedService = service;
+    notifyListeners();
+  }
+
+  //RIDE
+  //?37. Update the passengers number
+  void updatePassengersNumber({required int no}) {
+    passengersNumber = no;
+    notifyListeners();
+  }
+
+  //?38. Update if going the same way or not
+  void updateGoingSameDestinationOrNot({required bool? value}) {
+    isGoingTheSameWay = value;
+    notifyListeners();
+  }
+
+  //?39. Update rise style: private or shared
+  void updateRideStyle({required String value}) {
+    rideStyle = value;
+    notifyListeners();
+  }
+
+  //?40. Update typed note for driver - ride
+  void updateTypedNote_ride({required String value}) {
+    noteTyped_ride = value;
+    notifyListeners();
+  }
+
+  //?41. Update the selected field for the location
+  void updateSelectedLocationField_index({required int index}) {
+    selectedLocationField_index = index;
     notifyListeners();
   }
 }
