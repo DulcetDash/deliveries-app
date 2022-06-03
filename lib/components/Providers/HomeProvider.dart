@@ -18,7 +18,7 @@ class HomeProvider with ChangeNotifier {
   // final String bridge = 'https://taxiconnectnanetwork.com:9999';
 
   String selectedService =
-      'delivery'; //! The selected service that the user selected: ride, delivery and shopping
+      'ride'; //! The selected service that the user selected: ride, delivery and shopping - default: ''
 
   String user_identifier =
       '8246a726f668f5471a797175116f04e38b33f2fd1ec2f74ebd3936c3938a3778daa71b0b71c43880e6d02df7aec129cb3576d07ebe46d93788b9c8ea6ec4555e'; //The user's identifier
@@ -785,5 +785,15 @@ class HomeProvider with ChangeNotifier {
   void updateSelectedLocationField_index({required int index}) {
     selectedLocationField_index = index;
     notifyListeners();
+  }
+
+  //?42. Get clean payment method name
+  Map<String, String> getCleanPaymentMethod_nameAndImage() {
+    return {
+      'name': paymentMethod == 'cash' ? 'Cash' : 'Ewallet',
+      'image': paymentMethod == 'mobile_money'
+          ? 'assets/Images/mobile_payment.png'
+          : 'assets/Images/banknote.png'
+    };
   }
 }

@@ -45,11 +45,14 @@ class _PaymentSettingState extends State<PaymentSetting> {
                       ),
                       MethodChoice(
                         paymentMethod: 'Cash',
-                        subtitle:
-                            context.read<HomeProvider>().selectedService ==
-                                    'delivery'
-                                ? 'Pay using cash on pickup'
-                                : 'Pay using cash',
+                        subtitle: context
+                                        .read<HomeProvider>()
+                                        .selectedService ==
+                                    'delivery' ||
+                                context.read<HomeProvider>().selectedService ==
+                                    'ride'
+                            ? 'Pay using cash on pickup'
+                            : 'Pay using cash',
                         hasPickupFee: true,
                         isSelected:
                             context.watch<HomeProvider>().paymentMethod ==
@@ -64,8 +67,12 @@ class _PaymentSettingState extends State<PaymentSetting> {
                   )),
             ),
             GenericRectButton(
-                label: 'Next',
+                label: context.read<HomeProvider>().selectedService == 'ride'
+                    ? 'Done'
+                    : 'Next',
                 labelFontSize: 22,
+                isArrowShow:
+                    context.read<HomeProvider>().selectedService != 'ride',
                 actuatorFunctionl: () {
                   //?1. SHOPPING
                   if (context.read<HomeProvider>().selectedService ==
@@ -89,7 +96,7 @@ class _PaymentSettingState extends State<PaymentSetting> {
                     }
                   }
                   //?2. DELIVERY
-                  if (context.read<HomeProvider>().selectedService ==
+                  else if (context.read<HomeProvider>().selectedService ==
                       'delivery') {
                     if (context
                             .read<HomeProvider>()
@@ -110,6 +117,11 @@ class _PaymentSettingState extends State<PaymentSetting> {
                     {
                       Navigator.of(context).pushNamed('/DeliverySummary');
                     }
+                  }
+                  //?3. RIDE
+                  else if (context.read<HomeProvider>().selectedService ==
+                      'ride') {
+                    Navigator.of(context).pop();
                   }
                 })
           ],

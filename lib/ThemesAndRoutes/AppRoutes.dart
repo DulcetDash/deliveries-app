@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
+import 'package:nej/components/Ride/FareDisplay.dart';
 import 'package:nej/components/Shopping/Catalogue.dart';
 import 'package:nej/components/Shopping/CatalogueDetailsL2.dart';
 import 'package:nej/components/Delivery/DelRecipients.dart';
@@ -39,7 +40,7 @@ class _AppGeneralEntryState extends State<AppGeneralEntry> {
   Widget build(BuildContext context) {
     return MaterialApp(
         theme: AppTheme.appTheme,
-        initialRoute: '/PassengersInput',
+        initialRoute: '/FareDisplay',
         routes: {
           '/home': (context) => const HomeScreen(),
           '/shopping': (context) => const Home(),
@@ -59,7 +60,8 @@ class _AppGeneralEntryState extends State<AppGeneralEntry> {
               const DeliveryPickupLocation(),
           '/DeliverySummary': (context) => const DeliverySummary(),
           //Ride
-          '/PassengersInput': (context) => const InitialPassengers()
+          '/PassengersInput': (context) => const InitialPassengers(),
+          '/FareDisplay': (context) => const FareDisplay()
         });
   }
 }
