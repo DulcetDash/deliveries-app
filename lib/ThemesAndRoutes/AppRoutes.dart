@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:nej/components/Ride/FareDisplay.dart';
+import 'package:nej/components/Ride/RequestWindow_ride.dart';
 import 'package:nej/components/Ride/RideSummary.dart';
 import 'package:nej/components/Shopping/Catalogue.dart';
 import 'package:nej/components/Shopping/CatalogueDetailsL2.dart';
@@ -63,7 +64,8 @@ class _AppGeneralEntryState extends State<AppGeneralEntry> {
           //Ride
           '/PassengersInput': (context) => const InitialPassengers(),
           '/FareDisplay': (context) => const FareDisplay(),
-          '/RideSummary': (context) => const RideSummary()
+          '/RideSummary': (context) => const RideSummary(),
+          '/RequestWindow_ride': (context) => const RequestWindow_ride()
         });
   }
 }

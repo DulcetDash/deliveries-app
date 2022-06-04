@@ -10,7 +10,7 @@ class AppTheme {
 
   //1b. Get the secondary color
   Color getSecondaryColor() {
-    return Colors.blue;
+    return Color.fromRGBO(9, 110, 212, 1);
   }
 
   //2. Get the error color
@@ -36,5 +36,10 @@ class AppTheme {
   //6. Generic faded opacity value
   double getFadedOpacityValue() {
     return 0.3;
+  }
+
+  //7. Get gold color
+  Color getGoldColor() {
+    return Colors.yellow.shade800;
   }
 }

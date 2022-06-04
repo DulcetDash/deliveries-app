@@ -26,7 +26,8 @@ class GetShoppingData {
 
       if (response.statusCode == 200) //Got some results
       {
-        if (response.body.toString() == 'false') //no data
+        if (response.body.toString() == 'false' ||
+            response.body == false) //no data
         {
           context.read<HomeProvider>().updateRealtimeShoppingData(data: []);
         } else //? Found some data
@@ -49,7 +50,15 @@ class GetShoppingData {
                 .read<HomeProvider>()
                 .updateRequestWindowLockState(state: true);
             //...
-            Navigator.of(context).pushNamed('/requestWindow');
+            //Reroute to the correct page based on the ride mode
+            if (responseData[0]['ride_mode'] == 'SHOPPING') {
+              Navigator.of(context).pushNamed('/requestWindow');
+            } else if (responseData[0]['ride_mode'] == 'RIDE') {
+              Navigator.of(context).pushNamed('/RequestWindow_ride');
+            } else //DELIVERY
+            {
+              print('Reroute to the delivery request window.');
+            }
           }
         }
       } else //Has some errors

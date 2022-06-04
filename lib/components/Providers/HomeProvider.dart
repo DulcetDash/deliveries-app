@@ -607,10 +607,16 @@ class HomeProvider with ChangeNotifier {
 
   //?22. Update realtime shopping data
   void updateRealtimeShoppingData({required List data}) {
-    if (requestShoppingData.isEmpty ||
-        data[0].toString() != requestShoppingData[0].toString()) //New data
+    if (requestShoppingData.isNotEmpty) //New data
     {
-      print('NEW DATA');
+      if (data[0].toString() != requestShoppingData[0].toString()) {
+        print('NEW DATA');
+        requestShoppingData = data;
+        notifyListeners();
+      }
+    } else //No requests
+    {
+      print('No request');
       requestShoppingData = data;
       notifyListeners();
     }
@@ -818,7 +824,16 @@ class HomeProvider with ChangeNotifier {
   }
 
   //?42. Get clean payment method name
-  Map<String, String> getCleanPaymentMethod_nameAndImage() {
+  Map<String, String> getCleanPaymentMethod_nameAndImage({String? payment}) {
+    if (payment != null) {
+      return {
+        'name': payment == 'cash' ? 'Cash' : 'Ewallet',
+        'image': payment == 'mobile_money'
+            ? 'assets/Images/mobile_payment.png'
+            : 'assets/Images/banknote.png'
+      };
+    }
+
     return {
       'name': paymentMethod == 'cash' ? 'Cash' : 'Ewallet',
       'image': paymentMethod == 'mobile_money'

@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:nej/components/DrawerMenu.dart';
 import 'package:nej/components/Helpers/AppTheme.dart';
 import 'package:nej/components/Helpers/LocationOpsHandler.dart';
 import 'package:nej/components/Helpers/Networking.dart';
@@ -50,6 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      drawer: DrawerMenu(),
       body: SafeArea(
           top: false,
           child: Column(
@@ -83,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               SizedBox(
                                 width: MediaQuery.of(context).size.width * 0.65,
                                 child: Text(
-                                  'Shop or make deliveries anywhere with Nej.',
+                                  'Ride, shop or make deliveries anywhere with Nej.',
                                   style: TextStyle(
                                       fontSize: 15, color: Colors.white),
                                 ),
@@ -314,10 +316,13 @@ class _HeaderState extends State<Header> {
                 child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(
-                  Icons.menu,
-                  size: 30,
-                  color: Colors.white,
+                InkWell(
+                  onTap: () => Scaffold.of(context).openDrawer(),
+                  child: Icon(
+                    Icons.menu,
+                    size: 30,
+                    color: Colors.white,
+                  ),
                 )
               ],
             )),
