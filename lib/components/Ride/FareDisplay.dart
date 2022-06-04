@@ -232,21 +232,54 @@ class _MapPreviewState extends State<MapPreview> {
       decoration: BoxDecoration(color: Colors.blue),
       height: MediaQuery.of(context).size.height * 0.45,
       width: MediaQuery.of(context).size.width,
-      child: GoogleMap(
-        initialCameraPosition: CameraPosition(
-          target: LatLng(
-              context.watch<HomeProvider>().userLocationCoords['latitude'],
-              context.watch<HomeProvider>().userLocationCoords['longitude']),
-          zoom: 7.0,
+      child: Stack(children: [
+        GoogleMap(
+          initialCameraPosition: CameraPosition(
+            target: LatLng(
+                context.watch<HomeProvider>().userLocationCoords['latitude'],
+                context.watch<HomeProvider>().userLocationCoords['longitude']),
+            zoom: 7.0,
+          ),
+          polylines: Set<Polyline>.of(
+              context.watch<HomeProvider>().polylines_snapshot.values),
+          markers: Set<Marker>.of(
+              context.watch<HomeProvider>().markers_snapshot.values),
+          onMapCreated: _onMapCreated,
+          myLocationEnabled: true,
+          myLocationButtonEnabled: false,
         ),
-        polylines: Set<Polyline>.of(
-            context.watch<HomeProvider>().polylines_snapshot.values),
-        markers: Set<Marker>.of(
-            context.watch<HomeProvider>().markers_snapshot.values),
-        onMapCreated: _onMapCreated,
-        myLocationEnabled: true,
-        myLocationButtonEnabled: false,
-      ),
+        SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: Row(
+              children: [
+                InkWell(
+                  onTap: () => Navigator.of(context)
+                      .popUntil(ModalRoute.withName('/PassengersInput')),
+                  child: Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(200),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.grey.withOpacity(0.4),
+                            blurRadius: 7,
+                            spreadRadius: 3)
+                      ],
+                    ),
+                    child: Icon(
+                      Icons.arrow_back,
+                      size: AppTheme().getArrowBackSize(),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ]),
     );
   }
 }
@@ -306,7 +339,8 @@ class FarePreview extends StatelessWidget {
                     child: GenericRectButton(
                         label: 'Confirm',
                         labelFontSize: 20,
-                        actuatorFunctionl: () => {}),
+                        actuatorFunctionl: () =>
+                            Navigator.of(context).pushNamed('/RideSummary')),
                   ),
                 ],
               ),
@@ -328,11 +362,14 @@ class LoadingForFare extends StatelessWidget {
             backgroundColor: Colors.white,
             color: Colors.black,
           ),
+          SizedBox(
+            height: 40,
+          ),
           Container(
               height: 200,
               alignment: Alignment.center,
-              child:
-                  Text('Computing your fare', style: TextStyle(fontSize: 18)))
+              child: Text('Computing your fare...',
+                  style: TextStyle(fontSize: 18)))
         ],
       ),
     );
@@ -408,7 +445,6 @@ class CarInstance extends StatelessWidget {
       onTap: carObject['availability'] == 'unavailable'
           ? () => {}
           : () {
-              print('Pressed');
               context
                   .read<HomeProvider>()
                   .updateSelectedPricing_model(data: carObject);
@@ -421,7 +457,7 @@ class CarInstance extends StatelessWidget {
           decoration: BoxDecoration(
               border: Border(
                   left: BorderSide(
-                      width: 7,
+                      width: 6,
                       color: carObject['availability'] == 'unavailable' ||
                               carObject['app_label'] !=
                                   context
@@ -435,7 +471,14 @@ class CarInstance extends StatelessWidget {
                 child: SizedBox(
               width: 80,
               height: 60,
-              child: Image.asset('assets/Images/normaltaxi2.jpeg'),
+              child: Padding(
+                padding: EdgeInsets.all(
+                    carObject['car_type'] != 'normalTaxiEconomy' ? 3.5 : 0),
+                child: Image.asset(
+                  'assets/Images/${carObject['media']['car_app_icon'].toString()}',
+                  fit: BoxFit.contain,
+                ),
+              ),
             )),
             title: Text(
               carObject['app_label'],

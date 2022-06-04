@@ -220,7 +220,7 @@ class ProductsSelection extends StatelessWidget {
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         selections(
             context: context,
-            imagePath: 'assets/Images/normaltaxi2.jpeg',
+            imagePath: 'assets/Images/normalTaxiEconomy.jpeg',
             title: 'Ride',
             actuator: () {
               print('Ride');

@@ -206,6 +206,7 @@ class _ShoppingSummaryState extends State<ShoppingSummary> {
     Map<String, String> bundleData = {
       "user_identifier": context.read<HomeProvider>().user_identifier,
       "payment_method": context.read<HomeProvider>().paymentMethod,
+      "note": context.read<HomeProvider>().noteTyped,
       "locations": json.encode(locations).toString(),
       "totals":
           json.encode(context.read<HomeProvider>().getTotals()).toString(),

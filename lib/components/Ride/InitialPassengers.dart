@@ -85,18 +85,24 @@ class _InitialPassengersState extends State<InitialPassengers> {
           Opacity(
             opacity: 1,
             child: GenericRectButton(
-              label: 'Continue',
-              labelFontSize: 20,
-              horizontalPadding: 20,
-              actuatorFunctionl: () => showMaterialModalBottomSheet(
-                bounce: true,
-                duration: Duration(milliseconds: 250),
-                context: context,
-                builder: (context) => LocalModal_locations(
-                  scenario: 'dropoff',
-                ),
-              ),
-            ),
+                label: 'Continue',
+                labelFontSize: 20,
+                horizontalPadding: 20,
+                actuatorFunctionl: () {
+                  //!Reset the fare loading status to true
+                  context
+                      .read<HomeProvider>()
+                      .updateFareComputation_status(status: true);
+                  //!
+                  return showMaterialModalBottomSheet(
+                    bounce: true,
+                    duration: Duration(milliseconds: 250),
+                    context: context,
+                    builder: (context) => LocalModal_locations(
+                      scenario: 'dropoff',
+                    ),
+                  );
+                }),
           )
         ],
       )),
@@ -880,7 +886,15 @@ class SearchResultsRenderer extends StatelessWidget {
                             .watch<HomeProvider>()
                             .suggestedLocationSearches
                             .length),
-                  )
+                  ),
+            //!Show move next if valid
+            Expanded(child: SizedBox.shrink()),
+            GenericRectButton(
+                label: 'Next',
+                labelFontSize: 20,
+                actuatorFunctionl: areAllLocationsValid(context: context)
+                    ? () => Navigator.of(context).pushNamed('/FareDisplay')
+                    : () {})
           ],
         ),
       ),
@@ -903,6 +917,19 @@ class SearchResultsRenderer extends StatelessWidget {
     {
       Navigator.of(context).pushNamed('/FareDisplay');
     }
+  }
+
+  bool areAllLocationsValid({required BuildContext context}) {
+    bool isPickupSet =
+        context.read<HomeProvider>().ride_location_pickup['street'] != null
+            ? true
+            : false;
+    List<Map<String, dynamic>> dropoffsTemplate =
+        List.from(context.read<HomeProvider>().ride_location_dropoff);
+
+    dropoffsTemplate.removeWhere((element) => element['street'] != null);
+
+    return isPickupSet && dropoffsTemplate.isEmpty;
   }
 }
 

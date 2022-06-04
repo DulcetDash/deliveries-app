@@ -171,6 +171,14 @@ class HomeProvider with ChangeNotifier {
   bool isLoadingFor_fareComputation =
       true; //Whether the app is loading for fare computation
 
+  //?CUSTOM FARES
+  //For the custom fare inputs
+  final double maximumPercentageCustomFareUpLimit = 0.85; //85%
+  double? customFareEntered; //The custom fare entered by the rider
+  double? definitiveCustomFare; //The unchanging custom fare after validatiion
+  bool isCustomFareConsidered =
+      false; //Whether or not a custom fare was applied by the user.
+
   //Updaters
   //?1. Update the main stores
   void updateMainStores({required List data}) {
@@ -913,6 +921,66 @@ class HomeProvider with ChangeNotifier {
   //?46. Update fare computation status
   void updateFareComputation_status({required bool status}) {
     isLoadingFor_fareComputation = status;
+    notifyListeners();
+  }
+
+  //?47. Get the prices range in which the custom fare should lie in.
+  Map getCustomFareRange() {
+    //The maximum custom fare should be = base fare + (based Fare)*60%
+    //The minimum custom fare should be = base fare + 1
+    double baseFare =
+        double.parse(selected_pricing_model['base_fare'].toString());
+    double maximumCustomFare =
+        baseFare + (baseFare * maximumPercentageCustomFareUpLimit);
+
+    return {'max': maximumCustomFare.round(), 'min': baseFare.round() + 1};
+  }
+
+  //?48. Set custom fare value
+  Map setCustomFareValue() {
+    if (customFareEntered != null) //Good
+    {
+      //Check that the custom fare is within the acceptable range
+      Map fareRange = getCustomFareRange();
+      if (fareRange['min'] <= customFareEntered &&
+          fareRange['max'] >= customFareEntered) //Clear
+      {
+        definitiveCustomFare = customFareEntered; //!Crucial
+        isCustomFareConsidered = true;
+        notifyListeners();
+        return {'response': true};
+      } else //Out of Range
+      {
+        notifyListeners();
+        return {'response': 'out_of_range'};
+      }
+    } else //No value provided
+    {
+      notifyListeners();
+      return {'response': 'no_change'};
+    }
+  }
+
+  //?49. Remove custom fare previously set
+  void removeCustomFare() {
+    definitiveCustomFare = null; //!crucial
+    customFareEntered = null;
+    isCustomFareConsidered = false;
+    notifyListeners();
+  }
+
+  //?50. Update the custom fare value on change
+  void updateCustomFareValueOnChange({required double customFareValue}) {
+    try {
+      if (customFareValue > 0) {
+        customFareEntered = customFareValue;
+      } else //Set to null
+      {
+        customFareEntered = null;
+      }
+    } catch (e) {
+      customFareEntered = customFareValue;
+    }
     notifyListeners();
   }
 }

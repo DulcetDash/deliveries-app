@@ -15,7 +15,7 @@ class AppTheme {
 
   //2. Get the error color
   Color getErrorColor() {
-    return Colors.red.shade400;
+    return Color.fromRGBO(178, 34, 34, 1);
   }
 
   //3. Universal arrow back size

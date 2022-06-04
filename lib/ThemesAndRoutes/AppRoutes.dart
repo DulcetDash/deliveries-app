@@ -2,12 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:nej/components/Ride/FareDisplay.dart';
+import 'package:nej/components/Ride/RideSummary.dart';
 import 'package:nej/components/Shopping/Catalogue.dart';
 import 'package:nej/components/Shopping/CatalogueDetailsL2.dart';
 import 'package:nej/components/Delivery/DelRecipients.dart';
 import 'package:nej/components/Delivery/DeliveryPickupLocation.dart';
 import 'package:nej/components/Delivery/DeliverySummary.dart';
-import 'package:nej/components/Delivery/ShoppingSummary.dart';
+import 'package:nej/components/Shopping/ShoppingSummary.dart';
 import 'package:nej/components/Ride/InitialPassengers.dart';
 import 'package:nej/components/Shopping/Cart.dart';
 import 'package:nej/components/Shopping/Home.dart';
@@ -61,7 +62,8 @@ class _AppGeneralEntryState extends State<AppGeneralEntry> {
           '/DeliverySummary': (context) => const DeliverySummary(),
           //Ride
           '/PassengersInput': (context) => const InitialPassengers(),
-          '/FareDisplay': (context) => const FareDisplay()
+          '/FareDisplay': (context) => const FareDisplay(),
+          '/RideSummary': (context) => const RideSummary()
         });
   }
 }

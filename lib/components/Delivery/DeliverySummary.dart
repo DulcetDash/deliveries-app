@@ -271,6 +271,7 @@ class _DeliverySummaryState extends State<DeliverySummary> {
     Map<String, String> bundleData = {
       "user_identifier": context.read<HomeProvider>().user_identifier,
       "payment_method": context.read<HomeProvider>().paymentMethod,
+      "note": context.read<HomeProvider>().noteTyped_delivery,
       "dropOff_data":
           json.encode(context.read<HomeProvider>().recipients_infos).toString(),
       "totals": json
@@ -448,7 +449,7 @@ class LocalModal extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 20, right: 20),
                 child: Text(
-                  "We were unable to go forward with this shopping request because it seems like you have an unconfirmed shopping request in progress, please confirm it and try again.",
+                  "We were unable to go forward with this delivery request because it seems like you have an unconfirmed delivery request in progress, please confirm it and try again.",
                   style: TextStyle(fontSize: 16),
                 ),
               ),
@@ -491,7 +492,7 @@ class LocalModal extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 20, right: 20),
                 child: Text(
-                  "We were unable to go forward with your shopping request due to an unexpected error, please try again and if it persists, please contact us through the Support tab.",
+                  "We were unable to go forward with your delivery request due to an unexpected error, please try again and if it persists, please contact us through the Support tab.",
                   style: TextStyle(fontSize: 16),
                 ),
               ),
