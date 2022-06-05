@@ -35,6 +35,11 @@ class AppTheme {
     return Colors.grey.shade600;
   }
 
+  //5.b Generic  grey
+  Color getGenericGrey() {
+    return Colors.grey.shade400;
+  }
+
   //6. Generic faded opacity value
   double getFadedOpacityValue() {
     return 0.3;

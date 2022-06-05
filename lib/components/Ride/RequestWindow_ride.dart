@@ -104,7 +104,11 @@ class RenderBottomPreview extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.only(top: 15),
             child: ListTile(
-              leading: Text('LOADER'),
+              leading: SizedBox(
+                  width: 30,
+                  height: 30,
+                  child: CircularProgressIndicator(
+                      strokeWidth: 3, color: AppTheme().getPrimaryColor())),
               title: Text(
                 'Finding your driver...',
                 style: TextStyle(fontFamily: 'MoveTextBold', fontSize: 19),

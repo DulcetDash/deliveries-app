@@ -37,7 +37,9 @@ class SuccessRequest extends StatelessWidget {
               child: Text(
                 context.read<HomeProvider>().selectedService == 'delivery'
                     ? "Your delivery request has been successfully made, please click on the button below to track it."
-                    : "Your shopping request has been successfully made, please click on the button below to track it.",
+                    : context.read<HomeProvider>().selectedService == 'shopping'
+                        ? "Your shopping request has been successfully made, please click on the button below to track it."
+                        : "Your ride request has been successfully made, please click on the button below to track it.",
                 style: TextStyle(fontSize: 16),
               ),
             ),
@@ -45,7 +47,9 @@ class SuccessRequest extends StatelessWidget {
             GenericRectButton(
               label: context.read<HomeProvider>().selectedService == 'delivery'
                   ? 'Track your delivery'
-                  : 'Track your shopping',
+                  : context.read<HomeProvider>().selectedService == 'shopping'
+                      ? 'Track your shopping'
+                      : 'Track your ride',
               labelFontSize: 20,
               actuatorFunctionl: () {
                 //! Clear the shopping cart

@@ -42,7 +42,7 @@ class GetShoppingData {
           }
         } else //? Found some data
         {
-          // print(response.body);
+          // log(response.body.toString());
           List responseData = json.decode(response.body);
           context
               .read<HomeProvider>()
