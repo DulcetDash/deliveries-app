@@ -47,6 +47,8 @@ dependencies:
   google_maps_flutter: ^2.1.7
   url_launcher: ^6.0.17
   dotted_border: ^2.0.0+1
+  flutter_rating_bar: ^4.0.1
+  maps_toolkit: ^2.0.0
 
 dev_dependencies:
   flutter_test:

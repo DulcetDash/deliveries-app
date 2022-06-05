@@ -21,6 +21,7 @@ class GenericRectButton extends StatelessWidget {
       bottomSubtitleText; //The subtitle to display under the main label text - default:null
   final Color backgroundColor; //The background color of the button
   final Color textColor; //the text color
+  final String labelFontFamily; //The font family for the labe;
 
   GenericRectButton(
       {required this.label,
@@ -34,7 +35,8 @@ class GenericRectButton extends StatelessWidget {
       this.bottomSubtitleText,
       this.actuatorTrailingFunctional = false,
       this.backgroundColor = Colors.black,
-      this.textColor = Colors.white});
+      this.textColor = Colors.white,
+      this.labelFontFamily = 'MoveTextMedium'});
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +88,7 @@ class GenericRectButton extends StatelessWidget {
                                           : Text(
                                               this.label,
                                               style: TextStyle(
-                                                  fontFamily: 'MoveTextMedium',
+                                                  fontFamily: labelFontFamily,
                                                   fontSize:
                                                       this.bottomSubtitleText ==
                                                               null

@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -7,14 +9,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:maps_toolkit/maps_toolkit.dart' as MapToolkit;
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:nej/components/DrawerMenu.dart';
+import 'package:nej/components/GenericRectButton.dart';
 import 'package:nej/components/Helpers/AppTheme.dart';
+import 'package:nej/components/Helpers/MapMarkerFactory/place_to_marker.dart';
 import 'package:nej/components/Helpers/RequestCardHelper.dart';
 import 'package:nej/components/Providers/HomeProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
+import 'dart:ui' as ui;
 
 class RequestWindow_ride extends StatefulWidget {
   const RequestWindow_ride({Key? key}) : super(key: key);
@@ -216,11 +223,222 @@ class RenderBottomPreview extends StatelessWidget {
         ),
       );
     } else if (scenario == 'completed') {
-      return Container(
-        decoration: BoxDecoration(color: Colors.amber),
-        width: 400,
-        height: 300,
-        child: Text('Completed, rate the driver.'),
+      final RequestCardHelper requestCardHelper = RequestCardHelper();
+
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+                color: Colors.white, borderRadius: BorderRadius.circular(5)),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: 20, right: 20, top: 20, bottom: 5),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Itinerary',
+                        style: TextStyle(
+                            fontFamily: 'MoveTextMedium',
+                            fontSize: 16,
+                            color: Colors.grey.shade600),
+                      ),
+                    ],
+                  ),
+                ),
+                //PICKUP -> DROP OFF DETAILS
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: 20, right: 20, top: 20, bottom: 20),
+                  child: IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(top: 6),
+                              child: Icon(
+                                Icons.circle,
+                                size: 8,
+                              ),
+                            ),
+                            Flexible(
+                              child: DottedBorder(
+                                color: Colors.black,
+                                strokeWidth: 0.5,
+                                padding: EdgeInsets.all(0.5),
+                                borderType: BorderType.RRect,
+                                dashPattern: [4, 0],
+                                child: Container(
+                                  // width: 1,
+                                  height: 48,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 23),
+                              child: Icon(
+                                Icons.stop,
+                                size: 15,
+                                color: AppTheme().getSecondaryColor(),
+                              ),
+                            )
+                          ],
+                        ),
+                        Expanded(
+                          child: Column(
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    // color: Colors.orange,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          // color: Colors.green,
+                                          height: 33,
+                                          child: const Padding(
+                                            padding: EdgeInsets.only(top: 2),
+                                            child: SizedBox(
+                                                width: 45,
+                                                child: Text(
+                                                  'From',
+                                                  style: TextStyle(
+                                                      fontFamily:
+                                                          'MoveTextLight'),
+                                                )),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Container(
+                                            alignment: Alignment.centerLeft,
+                                            // color: Colors.amber,
+                                            child: Column(
+                                              children: requestCardHelper
+                                                  .fitLocationWidgetsToList(
+                                                      context: context,
+                                                      locationData: [
+                                                    context
+                                                            .read<HomeProvider>()
+                                                            .requestShoppingData[0]
+                                                        [
+                                                        'trip_locations']['pickup']
+                                                  ]),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              //Destination
+                              Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        // color: Colors.green,
+                                        height: 34,
+                                        child: const Padding(
+                                          padding: EdgeInsets.only(top: 3),
+                                          child: SizedBox(
+                                              width: 45,
+                                              child: Text(
+                                                'To',
+                                                style: TextStyle(
+                                                    fontFamily:
+                                                        'MoveTextLight'),
+                                              )),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          alignment: Alignment.centerLeft,
+                                          // color: Colors.amber,
+                                          child: Column(
+                                              children: requestCardHelper
+                                                  .fitLocationWidgetsToList(
+                                                      context: context,
+                                                      locationData: context
+                                                                  .read<HomeProvider>()
+                                                                  .requestShoppingData[0]
+                                                              ['trip_locations']
+                                                          ['dropoff'])),
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                //?ETA
+                Container(
+                  color: Colors.grey
+                      .withOpacity(AppTheme().getFadedOpacityValue() - 0.1),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 15),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.timer,
+                          size: 17,
+                          color: AppTheme().getSecondaryColor(),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          'About ${requestData['route_details']['eta']}',
+                          style: TextStyle(fontSize: 16),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          //Button rating
+          GenericRectButton(
+              label: 'Rate your driver',
+              horizontalPadding: 0,
+              labelFontSize: 25,
+              labelFontFamily: "MoveBold",
+              backgroundColor: AppTheme().getSecondaryColor(),
+              actuatorFunctionl: () => showMaterialModalBottomSheet(
+                    backgroundColor: Colors.white,
+                    enableDrag: false,
+                    expand: true,
+                    bounce: true,
+                    duration: Duration(milliseconds: 250),
+                    context: context,
+                    builder: (context) => LocalModal(
+                      scenario: 'rating',
+                    ),
+                  ))
+        ],
       );
     } else {
       return SizedBox.shrink();
@@ -238,10 +456,18 @@ class MapPreview extends StatefulWidget {
 
 class _MapPreviewState extends State<MapPreview> {
   GoogleMapController? controller;
-  Map<PolylineId, Polyline> polylines = <PolylineId, Polyline>{};
+  List<LatLng> routeSnapshotData =
+      <LatLng>[]; //Will hold the converted route snapshot recived
+  Map<PolylineId, Polyline> polylines_snapshot = <PolylineId,
+      Polyline>{}; //Will contain the full form of the polyline ready to be used
+  Map<MarkerId, Marker> markers_snapshot =
+      <MarkerId, Marker>{}; //Will hold the markers for the snapshot route
   PolylineId? selectedPolyline;
 
   late String _mapStyle;
+  late BitmapDescriptor customCarIcon;
+
+  BitmapDescriptor? _carMarkerIcon;
 
   // ignore: use_setters_to_change_properties
   void _onMapCreated(GoogleMapController controller) {
@@ -257,30 +483,582 @@ class _MapPreviewState extends State<MapPreview> {
     rootBundle.loadString('assets/map_style.txt').then((string) {
       _mapStyle = string;
     });
+    //Initialize car marker icon
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {});
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      initCarMarker();
+    });
+  }
+
+  void initCarMarker() async {
+    final Uint8List? markerIcon =
+        await getBytesFromAsset("assets/Images/caradvanced_black.png", 90);
+
+    setState(() {
+      _carMarkerIcon = BitmapDescriptor.fromBytes(markerIcon!);
+    });
+  }
+
+  LatLng createLatLng(double lat, double lng) {
+    return LatLng(lat, lng);
+  }
+
+  //! Compute the route
+  Future<Uint8List?> getBytesFromAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
+        targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))
+        ?.buffer
+        .asUint8List();
+  }
+
+  //Bearing angle
+  double angleFromCoordinate(
+      double lat1, double long1, double lat2, double long2) {
+    double dLon = (long2 - long1);
+
+    double y = sin(dLon) * cos(lat2);
+    double x = cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(dLon);
+
+    double brng = atan2(y, x);
+
+    brng = brng * pi / 180;
+    brng = (brng + 360) % 360;
+    brng = 360 -
+        brng; // count degrees counter-clockwise - remove to make clockwise
+
+    return brng;
+  }
+
+  //!1. SIMULATE ROUTE TO PICKUP
+  bool isPickupLocked = false;
+  late Timer simulationTimer;
+  late LatLng prevDriverCoords;
+  String? currentStepTripCycle;
+
+  void simulateRouteToPickupOrDropOff({required BuildContext context}) async {
+    Map<String, dynamic> requestData =
+        context.watch<HomeProvider>().requestShoppingData[0];
+
+    if (requestData['state_vars']['isAccepted'] &&
+        requestData['step_name'] != 'pending' &&
+        requestData['step_name'] != 'completed') {
+      //?Only allow if not locked
+      if (isPickupLocked == false ||
+          currentStepTripCycle == null ||
+          currentStepTripCycle.toString() != requestData['step_name']) {
+        //! Update the current step name
+        currentStepTripCycle = requestData['step_name'];
+
+        //!Lock in sumulation
+        isPickupLocked = true;
+        print('GET UPDATED ROUTE');
+        print('SIMULATION LOCKED');
+        //? Convert the route point to be compatible with google maps
+        List<LatLng> points = <LatLng>[];
+        List snapsPoints = requestData['route_details']['routePoints'];
+        snapsPoints.forEach((e) {
+          points.add(createLatLng(e[1], e[0]));
+        });
+        //...save
+        routeSnapshotData = points;
+
+        //!Start the timer
+        simulationTimer = Timer.periodic(Duration(seconds: 1), (timer) async {
+          polylines_snapshot = <PolylineId, Polyline>{};
+
+          try {
+            //Save the prev driver coord
+            prevDriverCoords = requestData['step_name'] == 'in_route_to_pickup'
+                ? routeSnapshotData[routeSnapshotData.length - 1]
+                : routeSnapshotData[0];
+            //!Remove one point at the end
+            requestData['step_name'] == 'in_route_to_pickup'
+                ? routeSnapshotData.removeLast()
+                : routeSnapshotData.removeAt(0);
+
+            //?Establish the origin and destination
+            LatLng originPoint =
+                requestData['step_name'] == 'in_route_to_pickup'
+                    ? routeSnapshotData[0]
+                    : routeSnapshotData[routeSnapshotData.length - 1];
+            LatLng destinationPoint =
+                requestData['step_name'] == 'in_route_to_pickup'
+                    ? routeSnapshotData[routeSnapshotData.length - 1]
+                    : routeSnapshotData[0];
+            LatLng driverPoint =
+                requestData['step_name'] == 'in_route_to_pickup'
+                    ? routeSnapshotData[routeSnapshotData.length - 1]
+                    : routeSnapshotData[0];
+
+            print(routeSnapshotData.length);
+
+            final String polylineIdVal = 'polyline_id_route_snapshot';
+            final PolylineId polylineId = PolylineId(polylineIdVal);
+
+            final Polyline polyline = Polyline(
+              polylineId: polylineId,
+              consumeTapEvents: false,
+              color: requestData['step_name'] == 'in_route_to_pickup'
+                  ? Colors.black
+                  : AppTheme().getPrimaryColor(),
+              endCap: Cap.buttCap,
+              width: 4,
+              zIndex: 100,
+              points: points,
+            );
+            //! Update
+            polylines_snapshot[polylineId] = polyline;
+
+            //   //? Create custom markers for origin and destination
+            final originIcon = await placeToMarker('My location', null);
+            final destinationIcon = await placeToMarker(
+              requestData['step_name'] == 'in_route_to_dropoff'
+                  ? requestData['trip_locations']['dropoff'][0]['location_name']
+                              .toString()
+                              .length >
+                          22
+                      ? '${requestData['trip_locations']['dropoff'][0]['location_name'].toString().substring(0, 15)}...'
+                      : requestData['trip_locations']['dropoff'][0]
+                              ['location_name']
+                          .toString()
+                  : 'My driver',
+              int.parse(requestData['route_details']['eta']
+                      .toString()
+                      .split(' ')[0]) *
+                  (requestData['route_details']['eta']
+                              .toString()
+                              .split(' ')[1] ==
+                          'min'
+                      ? 60
+                      : 1),
+            );
+
+            const originId = MarkerId('origin');
+            const destinationId = MarkerId('destination');
+
+            final originMarker = Marker(
+              markerId: originId,
+              position: originPoint,
+              icon: originIcon,
+              anchor: const Offset(1, 1.2),
+            );
+
+            final destinationMarker = Marker(
+              markerId: destinationId,
+              position: requestData['step_name'] == 'in_route_to_pickup'
+                  ? destinationPoint
+                  : LatLng(
+                      double.parse(requestData['trip_locations']['dropoff'][0]
+                              ['coordinates'][0]
+                          .toString()),
+                      double.parse(requestData['trip_locations']['dropoff'][0]
+                              ['coordinates'][1]
+                          .toString())),
+              icon: destinationIcon,
+              anchor: const Offset(0, 1.2),
+            );
+
+            //...Save
+            if (requestData['step_name'] == 'pending') {
+              markers_snapshot[originId] = originMarker;
+            } else {
+              markers_snapshot = <MarkerId, Marker>{}; //Clean
+            }
+            //...
+            markers_snapshot[destinationId] = destinationMarker;
+
+            //! Add the car marker
+            const driverCarId = MarkerId('driver_car_id');
+
+            //Compute the heading angle
+            var headingAngle = MapToolkit.SphericalUtil.computeHeading(
+                MapToolkit.LatLng(
+                    prevDriverCoords.latitude, prevDriverCoords.longitude),
+                MapToolkit.LatLng(driverPoint.latitude, driverPoint.longitude));
+
+            print('BEARING ANGLE: $headingAngle');
+
+            // print(angleFromCoordinate(
+            //     double.parse(requestData['route_details']['origin']['latitude']),
+            //     double.parse(requestData['route_details']['origin']['longitude']),
+            //     double.parse(requestData['route_details']['destination']['latitude']),
+            //     double.parse(
+            //         requestData['route_details']['destination']['longitude'])));
+
+            final driverCarMarker = Marker(
+                rotation: headingAngle.toDouble(),
+                markerId: driverCarId,
+                position: driverPoint,
+                // icon: markerbitmap,
+                icon: _carMarkerIcon!
+                // anchor: const Offset(0, 1.2),
+                );
+            //!Save
+            markers_snapshot[driverCarId] = driverCarMarker;
+
+            //Reorient
+            try {
+              controller?.moveCamera(
+                CameraUpdate.newLatLngBounds(
+                  requestData['step_name'] == 'in_route_to_pickup'
+                      ? LatLngBounds(
+                          southwest: originPoint, northeast: prevDriverCoords)
+                      : LatLngBounds(
+                          southwest: originPoint, northeast: destinationPoint),
+                  100.0,
+                ),
+              );
+            } on Exception catch (e) {
+              // TODO
+              controller?.moveCamera(
+                CameraUpdate.newLatLngBounds(
+                  requestData['step_name'] == 'in_route_to_pickup'
+                      ? LatLngBounds(
+                          northeast: originPoint,
+                          southwest: prevDriverCoords,
+                        )
+                      : LatLngBounds(
+                          northeast: destinationPoint,
+                          southwest: originPoint,
+                        ),
+                  100.0,
+                ),
+              );
+            }
+          } catch (e) {
+            print(e);
+            simulationTimer.cancel();
+            polylines_snapshot = <PolylineId, Polyline>{};
+          }
+        });
+      } else {
+        // simulationTimer.cancel();
+        // polylines_snapshot = <PolylineId, Polyline>{};
+      }
+    } else //Empty the data
+    {
+      //!Unlock simulation
+      isPickupLocked = false;
+      simulationTimer.cancel();
+
+      routeSnapshotData = <LatLng>[];
+      polylines_snapshot = <PolylineId, Polyline>{};
+      markers_snapshot = <MarkerId, Marker>{};
+    }
+  }
+
+  void computeRouteAndSoOn({required BuildContext context}) async {
+    Map<String, dynamic> requestData =
+        context.watch<HomeProvider>().requestShoppingData[0];
+
+    if (requestData['state_vars']['isAccepted'] &&
+        requestData['step_name'] != 'pending' &&
+        requestData['step_name'] != 'completed') {
+      //!Auto clear everything if the step changes
+      polylines_snapshot =
+          currentStepTripCycle.toString() != requestData['step_name']
+              ? <PolylineId, Polyline>{}
+              : polylines_snapshot;
+      markers_snapshot =
+          currentStepTripCycle.toString() != requestData['step_name']
+              ? <MarkerId, Marker>{}
+              : markers_snapshot;
+
+      //! Update the current step name
+      currentStepTripCycle = requestData['step_name'];
+
+      //? Convert the route point to be compatible with google maps
+      List<LatLng> points = <LatLng>[];
+      List snapsPoints = requestData['route_details']['routePoints'];
+      snapsPoints.forEach((e) {
+        points.add(createLatLng(e[1], e[0]));
+      });
+      //...save
+      routeSnapshotData = points;
+
+      //!Start the route
+      polylines_snapshot = <PolylineId, Polyline>{};
+
+      try {
+        //!Save the prev driver coord
+        prevDriverCoords = requestData['step_name'] == 'in_route_to_pickup'
+            ? routeSnapshotData[routeSnapshotData.length - 1]
+            : routeSnapshotData[0];
+
+        //?Establish the origin and destination
+        LatLng originPoint = requestData['step_name'] == 'in_route_to_pickup'
+            ? routeSnapshotData[0]
+            : routeSnapshotData[routeSnapshotData.length - 1];
+        LatLng destinationPoint =
+            requestData['step_name'] == 'in_route_to_pickup'
+                ? routeSnapshotData[routeSnapshotData.length - 1]
+                : routeSnapshotData[0];
+        LatLng driverPoint = requestData['step_name'] == 'in_route_to_pickup'
+            ? routeSnapshotData[routeSnapshotData.length - 1]
+            : routeSnapshotData[0];
+
+        // print(routeSnapshotData.length);
+
+        final String polylineIdVal = 'polyline_id_route_snapshot';
+        final PolylineId polylineId = PolylineId(polylineIdVal);
+
+        final Polyline polyline = Polyline(
+          polylineId: polylineId,
+          consumeTapEvents: false,
+          color: requestData['step_name'] == 'in_route_to_pickup'
+              ? Colors.black
+              : AppTheme().getPrimaryColor(),
+          endCap: Cap.buttCap,
+          width: 4,
+          zIndex: 100,
+          points: points,
+        );
+        //! Update
+        polylines_snapshot[polylineId] = polyline;
+
+        //   //? Create custom markers for origin and destination
+        final originIcon = await placeToMarker('My location', null);
+        final destinationIcon = await placeToMarker(
+          requestData['step_name'] == 'in_route_to_dropoff'
+              ? requestData['trip_locations']['dropoff'][0]['location_name']
+                          .toString()
+                          .length >
+                      22
+                  ? '${requestData['trip_locations']['dropoff'][0]['location_name'].toString().substring(0, 15)}...'
+                  : requestData['trip_locations']['dropoff'][0]['location_name']
+                      .toString()
+              : 'My driver',
+          int.parse(requestData['route_details']['eta']
+                  .toString()
+                  .split(' ')[0]) *
+              (requestData['route_details']['eta'].toString().split(' ')[1] ==
+                      'min'
+                  ? 60
+                  : 1),
+        );
+
+        const originId = MarkerId('origin');
+        const destinationId = MarkerId('destination');
+
+        final originMarker = Marker(
+          markerId: originId,
+          position: originPoint,
+          icon: originIcon,
+          anchor: const Offset(1, 1.2),
+        );
+
+        final destinationMarker = Marker(
+          markerId: destinationId,
+          position: requestData['step_name'] == 'in_route_to_pickup'
+              ? destinationPoint
+              : LatLng(
+                  double.parse(requestData['trip_locations']['dropoff'][0]
+                          ['coordinates'][0]
+                      .toString()),
+                  double.parse(requestData['trip_locations']['dropoff'][0]
+                          ['coordinates'][1]
+                      .toString())),
+          icon: destinationIcon,
+          anchor: const Offset(0, 1.2),
+        );
+
+        //...Save
+        if (requestData['step_name'] == 'pending') {
+          markers_snapshot[originId] = originMarker;
+        } else {
+          markers_snapshot = <MarkerId, Marker>{}; //Clean
+        }
+        //...
+        markers_snapshot[destinationId] = destinationMarker;
+
+        //! Add the car marker
+        const driverCarId = MarkerId('driver_car_id');
+
+        //Compute the heading angle
+        var headingAngle = MapToolkit.SphericalUtil.computeHeading(
+            MapToolkit.LatLng(
+                prevDriverCoords.latitude, prevDriverCoords.longitude),
+            MapToolkit.LatLng(driverPoint.latitude, driverPoint.longitude));
+
+        print('BEARING ANGLE: $headingAngle');
+
+        // print(angleFromCoordinate(
+        //     double.parse(requestData['route_details']['origin']['latitude']),
+        //     double.parse(requestData['route_details']['origin']['longitude']),
+        //     double.parse(requestData['route_details']['destination']['latitude']),
+        //     double.parse(
+        //         requestData['route_details']['destination']['longitude'])));
+
+        final driverCarMarker = Marker(
+            rotation: headingAngle.toDouble(),
+            markerId: driverCarId,
+            position: driverPoint,
+            // icon: markerbitmap,
+            icon: _carMarkerIcon!
+            // anchor: const Offset(0, 1.2),
+            );
+        //!Save
+        markers_snapshot[driverCarId] = driverCarMarker;
+
+        //Reorient
+        try {
+          controller?.moveCamera(
+            CameraUpdate.newLatLngBounds(
+              requestData['step_name'] == 'in_route_to_pickup'
+                  ? LatLngBounds(
+                      southwest: originPoint, northeast: prevDriverCoords)
+                  : LatLngBounds(
+                      southwest: originPoint, northeast: destinationPoint),
+              100.0,
+            ),
+          );
+        } on Exception catch (e) {
+          // TODO
+          controller?.moveCamera(
+            CameraUpdate.newLatLngBounds(
+              requestData['step_name'] == 'in_route_to_pickup'
+                  ? LatLngBounds(
+                      northeast: originPoint,
+                      southwest: prevDriverCoords,
+                    )
+                  : LatLngBounds(
+                      northeast: destinationPoint,
+                      southwest: originPoint,
+                    ),
+              100.0,
+            ),
+          );
+        }
+      } catch (e) {
+        print(e);
+        polylines_snapshot = <PolylineId, Polyline>{};
+      }
+    } else //Empty the data
+    {
+      if (requestData['step_name'] != 'completed') //PENDING
+      {
+        routeSnapshotData = <LatLng>[];
+        polylines_snapshot = <PolylineId, Polyline>{};
+        // markers_snapshot = <MarkerId, Marker>{};
+        //...
+        LatLng originPoint = LatLng(
+            double.parse(requestData['trip_locations']['pickup']['coordinates']
+                    ['latitude']
+                .toString()),
+            double.parse(requestData['trip_locations']['pickup']['coordinates']
+                    ['longitude']
+                .toString()));
+
+        const originId = MarkerId('origin');
+
+        final originIcon = await placeToMarker('My pickup', 1000000);
+
+        final originMarker = Marker(
+          markerId: originId,
+          position: originPoint,
+          icon: originIcon,
+          anchor: const Offset(0, 1.5),
+        );
+
+        //Save
+        markers_snapshot[originId] = originMarker;
+
+        //Recenter to user
+        controller?.getZoomLevel().then((value) {
+          if (value != 14) {
+            controller?.moveCamera(
+              CameraUpdate.newLatLngZoom(
+                LatLng(
+                    double.parse(context
+                        .watch<HomeProvider>()
+                        .requestShoppingData[0]['trip_locations']['pickup']
+                            ['coordinates']['latitude']
+                        .toString()),
+                    double.parse(context
+                        .watch<HomeProvider>()
+                        .requestShoppingData[0]['trip_locations']['pickup']
+                            ['coordinates']['longitude']
+                        .toString())),
+                14.0,
+              ),
+            );
+          }
+        });
+      } else //?COMPLETED
+      {
+        routeSnapshotData = <LatLng>[];
+        polylines_snapshot = <PolylineId, Polyline>{};
+        markers_snapshot = <MarkerId, Marker>{};
+
+        //Recenter to user
+        controller?.getZoomLevel().then((value) {
+          if (value != 14) {
+            controller?.moveCamera(
+              CameraUpdate.newLatLngZoom(
+                LatLng(
+                    double.parse(context
+                        .watch<HomeProvider>()
+                        .requestShoppingData[0]['trip_locations']['pickup']
+                            ['coordinates']['latitude']
+                        .toString()),
+                    double.parse(context
+                        .watch<HomeProvider>()
+                        .requestShoppingData[0]['trip_locations']['pickup']
+                            ['coordinates']['longitude']
+                        .toString())),
+                14.0,
+              ),
+            );
+          }
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    computeRouteAndSoOn(context: context);
+    // simulateRouteToPickupOrDropOff(context: context);
+
     return Container(
       decoration: BoxDecoration(color: Colors.blue),
       // height: MediaQuery.of(context).size.height * 0.45,
       width: MediaQuery.of(context).size.width,
       child: Stack(children: [
         GoogleMap(
+          padding: EdgeInsets.only(bottom: 170, top: 50),
           initialCameraPosition: CameraPosition(
             target: LatLng(
-                context.watch<HomeProvider>().userLocationCoords['latitude'],
-                context.watch<HomeProvider>().userLocationCoords['longitude']),
+                double.parse(context
+                    .watch<HomeProvider>()
+                    .requestShoppingData[0]['trip_locations']['pickup']
+                        ['coordinates']['latitude']
+                    .toString()),
+                double.parse(context
+                    .watch<HomeProvider>()
+                    .requestShoppingData[0]['trip_locations']['pickup']
+                        ['coordinates']['longitude']
+                    .toString())),
             zoom: 14.0,
           ),
-          // polylines: Set<Polyline>.of(
-          //     context.watch<HomeProvider>().polylines_snapshot.values),
-          // markers: Set<Marker>.of(
-          //     context.watch<HomeProvider>().markers_snapshot.values),
+          polylines: Set<Polyline>.of(polylines_snapshot.values),
+          markers: Set<Marker>.of(markers_snapshot.values),
           onMapCreated: _onMapCreated,
-          myLocationEnabled: true,
+          myLocationEnabled: context
+                          .watch<HomeProvider>()
+                          .requestShoppingData[0]['step_name'] ==
+                      'in_route_to_pickup' ||
+                  context.watch<HomeProvider>().requestShoppingData[0]
+                          ['step_name'] ==
+                      'pending' ||
+                  context.watch<HomeProvider>().requestShoppingData[0]
+                          ['step_name'] ==
+                      'completed'
+              ? true
+              : false,
           myLocationButtonEnabled: false,
         ),
         SafeArea(
@@ -319,18 +1097,45 @@ class _MapPreviewState extends State<MapPreview> {
 }
 
 //Local modal
-class LocalModal extends StatelessWidget {
+class LocalModal extends StatefulWidget {
   final String scenario;
   const LocalModal({Key? key, required this.scenario}) : super(key: key);
 
   @override
+  State<LocalModal> createState() => _LocalModalState(scenario: scenario);
+}
+
+class _LocalModalState extends State<LocalModal> {
+  final String scenario;
+
+  _LocalModalState({Key? key, required this.scenario});
+
+  List<String> ratingStrings = [
+    'Terrible',
+    'Bad',
+    'Good',
+    'Very good',
+    'Excellent!'
+  ];
+  int rating = 4; //Rating
+  List<Map<String, String>> badges = [
+    {'title': 'Excellent service', 'image': 'assets/Images/gold_medal.png'},
+    {'title': 'Neat and tidy', 'image': 'assets/Images/cloth.png'},
+    {'title': 'Great conversation', 'image': 'assets/Images/conversation.png'},
+    {'title': 'Great beats', 'image': 'assets/Images/musical_notes.png'},
+    {'title': 'Expert navigator', 'image': 'assets/Images/placeholder.png'}
+  ];
+  List<String> selectedBadges = [];
+  String note = '';
+
+  @override
   Widget build(BuildContext context) {
+    final RequestCardHelper requestCardHelper = RequestCardHelper();
+    final Map<String, dynamic> requestData =
+        context.watch<HomeProvider>().requestShoppingData[0];
+
     switch (scenario) {
       case 'trip_details':
-        final RequestCardHelper requestCardHelper = RequestCardHelper();
-        final Map<String, dynamic> requestData =
-            context.watch<HomeProvider>().requestShoppingData[0];
-
         return SafeArea(
           child: Container(
             child: Column(
@@ -887,6 +1692,306 @@ class LocalModal extends StatelessWidget {
             ),
           ),
         );
+
+      case 'rating':
+        return SafeArea(
+            child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+              child: InkWell(
+                onTap: () => Navigator.of(context).pop(),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.arrow_back,
+                      size: AppTheme().getArrowBackSize() - 3,
+                    ),
+                    Text(
+                      'Rate driver',
+                      style:
+                          TextStyle(fontFamily: 'MoveTextBold', fontSize: 18),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Divider(
+              height: 20,
+              thickness: 1,
+            ),
+            Expanded(
+                child: ListView(
+              padding: EdgeInsets.only(top: 15),
+              children: [
+                Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10000),
+                        child: CachedNetworkImage(
+                          fit: BoxFit.cover,
+                          width: 80, height: 80,
+                          imageUrl: 'https://picsum.photos/200/300',
+                          // requestData['driver_details']
+                          //     ['picture'],
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) => Container(
+                            width: 60,
+                            height: 20.0,
+                            child: Shimmer.fromColors(
+                              baseColor: Colors.grey.shade300,
+                              highlightColor: Colors.grey.shade100,
+                              child: Container(
+                                width: 20.0,
+                                height: 20.0,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          errorWidget: (context, url, error) => const Icon(
+                            Icons.error,
+                            size: 30,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                    )),
+                SizedBox(
+                  height: 15,
+                ),
+                Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      requestData['driver_details']['name'],
+                      style: TextStyle(fontFamily: 'MoveBold', fontSize: 22),
+                    )),
+                SizedBox(
+                  height: 35,
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  child: RatingBar.builder(
+                    initialRating: 4,
+                    minRating: 1,
+                    direction: Axis.horizontal,
+                    allowHalfRating: false,
+                    itemCount: 5,
+                    itemSize: 42,
+                    itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                    itemBuilder: (context, _) => Icon(
+                      Icons.star,
+                      color: AppTheme().getGoldColor(),
+                    ),
+                    onRatingUpdate: (val) {
+                      setState(() {
+                        rating = int.parse(val.toStringAsFixed(0));
+                        print(rating);
+                      });
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      ratingStrings[rating - 1],
+                      style: TextStyle(
+                          fontFamily: 'MoveTextRegular', fontSize: 17),
+                    )),
+                Divider(
+                  height: 50,
+                ),
+                //?BADGES
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Give a badge',
+                        style: TextStyle(
+                            fontFamily: 'MoveTextMedium',
+                            fontSize: 16,
+                            color: Colors.grey.shade600),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, top: 20),
+                  child: Container(
+                    height: 130,
+                    // color: Colors.red,
+                    child: ListView.separated(
+                        padding: EdgeInsets.only(right: 30),
+                        shrinkWrap: false,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) => InkWell(
+                              onTap: () {
+                                setState(() {
+                                  if (selectedBadges.contains(badges[index]
+                                          ['title']
+                                      .toString())) //!Remove
+                                  {
+                                    selectedBadges.removeAt(
+                                        selectedBadges.indexOf(
+                                            badges[index]['title'].toString()));
+                                  } else //!Add
+                                  {
+                                    selectedBadges
+                                        .add(badges[index]['title'].toString());
+                                  }
+                                });
+                              },
+                              child: Opacity(
+                                opacity: selectedBadges.contains(
+                                        badges[index]['title'].toString())
+                                    ? 1
+                                    : AppTheme().getFadedOpacityValue() + 0.1,
+                                child: Container(
+                                  // color: Colors.amber,
+                                  width: 95,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(1000),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(1000),
+                                              color: Colors.white,
+                                              border: Border.all(
+                                                  width: 2,
+                                                  color: Colors.grey
+                                                      .withOpacity(AppTheme()
+                                                          .getFadedOpacityValue()))),
+                                          height: 65,
+                                          width: 65,
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(1000),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Image.asset(
+                                                badges[index]['image']
+                                                    .toString(),
+                                                fit: BoxFit.contain,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Text(
+                                        badges[index]['title'].toString(),
+                                        textAlign: TextAlign.center,
+                                        maxLines: 3,
+                                        style: TextStyle(
+                                            fontFamily: 'MoveTextMedium',
+                                            fontSize: 15),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                        separatorBuilder: (context, index) => SizedBox(
+                              width: 20,
+                            ),
+                        itemCount: badges.length),
+                  ),
+                ),
+                //Note
+                Divider(
+                  height: 30,
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Note',
+                        style: TextStyle(
+                            fontFamily: 'MoveTextMedium',
+                            fontSize: 16,
+                            color: Colors.grey.shade600),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20, top: 5),
+                  child: SizedBox(
+                    height: 100,
+                    child: TextField(
+                        autocorrect: false,
+                        onChanged: (value) {
+                          //! Update the change for the typed
+                          setState(() {
+                            note = value;
+                          });
+                        },
+                        maxLength: 500,
+                        style: TextStyle(
+                            fontFamily: 'MoveTextRegular',
+                            fontSize: 18,
+                            color: Colors.black),
+                        maxLines: 45,
+                        decoration: InputDecoration(
+                            contentPadding:
+                                EdgeInsets.only(top: 25, left: 10, right: 10),
+                            filled: true,
+                            fillColor: Colors.grey.shade200,
+                            floatingLabelStyle:
+                                const TextStyle(color: Colors.black),
+                            label: Align(
+                              alignment: Alignment.topLeft,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 25),
+                                child: Text("Enter your note here."),
+                              ),
+                            ),
+                            floatingLabelBehavior: FloatingLabelBehavior.never,
+                            enabledBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.grey.shade200)),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.grey.shade200),
+                                borderRadius: BorderRadius.circular(1)),
+                            border: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.grey.shade200),
+                                borderRadius: BorderRadius.circular(1)))),
+                  ),
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                GenericRectButton(
+                    label: 'Done',
+                    labelFontSize: 22,
+                    isArrowShow: false,
+                    actuatorFunctionl: () => Navigator.of(context).pop()),
+                SizedBox(
+                  height: 30,
+                )
+              ],
+            ))
+          ],
+        ));
       default:
         return SizedBox.shrink();
     }

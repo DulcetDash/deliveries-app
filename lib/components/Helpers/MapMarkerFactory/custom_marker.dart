@@ -96,6 +96,18 @@ class MyCustomMarker extends CustomPainter {
         color: Colors.white,
         width: size.height,
       );
+    } else if (duration == 1000000) {
+      _drawText(
+        canvas: canvas,
+        size: size,
+        text: String.fromCharCode(
+          Icons.location_on.codePoint,
+        ),
+        fontFamily: Icons.gps_fixed_rounded.fontFamily,
+        fontSize: 40,
+        color: Colors.white,
+        width: size.height,
+      );
     } else {
       final realDuration = Duration(seconds: duration!);
       final minutes = realDuration.inMinutes;
