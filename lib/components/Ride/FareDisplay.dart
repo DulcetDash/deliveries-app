@@ -114,19 +114,36 @@ class _MapPreviewState extends State<MapPreview> {
               .updateRouteSnaphotData(rawSnap: tmpResponse);
           //? Recenter
           try {
-            controller?.moveCamera(
-              CameraUpdate.newLatLngBounds(
-                LatLngBounds(
-                  southwest: LatLng(
-                      double.parse(tmpResponse['origin']['latitude']),
-                      double.parse(tmpResponse['origin']['longitude'])),
-                  northeast: LatLng(
-                      double.parse(tmpResponse['destination']['latitude']),
-                      double.parse(tmpResponse['destination']['longitude'])),
+            if (double.parse(tmpResponse['origin']['latitude']) <=
+                double.parse(tmpResponse['destination']['latitude'])) {
+              controller?.moveCamera(
+                CameraUpdate.newLatLngBounds(
+                  LatLngBounds(
+                    southwest: LatLng(
+                        double.parse(tmpResponse['origin']['latitude']),
+                        double.parse(tmpResponse['origin']['longitude'])),
+                    northeast: LatLng(
+                        double.parse(tmpResponse['destination']['latitude']),
+                        double.parse(tmpResponse['destination']['longitude'])),
+                  ),
+                  100.0,
                 ),
-                50.0,
-              ),
-            );
+              );
+            } else {
+              controller?.moveCamera(
+                CameraUpdate.newLatLngBounds(
+                  LatLngBounds(
+                    southwest: LatLng(
+                        double.parse(tmpResponse['destination']['latitude']),
+                        double.parse(tmpResponse['destination']['longitude'])),
+                    northeast: LatLng(
+                        double.parse(tmpResponse['origin']['latitude']),
+                        double.parse(tmpResponse['origin']['longitude'])),
+                  ),
+                  100.0,
+                ),
+              );
+            }
           } on Exception catch (e) {
             // TODO
             controller?.moveCamera(
@@ -139,7 +156,7 @@ class _MapPreviewState extends State<MapPreview> {
                       double.parse(tmpResponse['destination']['latitude']),
                       double.parse(tmpResponse['destination']['longitude'])),
                 ),
-                50.0,
+                100.0,
               ),
             );
           }

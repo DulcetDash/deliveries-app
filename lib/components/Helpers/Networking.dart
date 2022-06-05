@@ -30,9 +30,19 @@ class GetShoppingData {
             response.body == false) //no data
         {
           context.read<HomeProvider>().updateRealtimeShoppingData(data: []);
+
+          //? Move back to main screen if locked
+          if (context.read<HomeProvider>().isThereARequestLockedIn['locked']!) {
+            //! UNLOCK IN REQUEST WINDOW
+            context
+                .read<HomeProvider>()
+                .updateRequestWindowLockState(state: false);
+            //...
+            Navigator.of(context).pushNamed('/home');
+          }
         } else //? Found some data
         {
-          // log(response.body.toString());
+          // print(response.body);
           List responseData = json.decode(response.body);
           context
               .read<HomeProvider>()

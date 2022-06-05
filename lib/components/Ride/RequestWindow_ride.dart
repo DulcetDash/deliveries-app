@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:math';
 import 'dart:typed_data';
@@ -22,6 +23,7 @@ import 'package:nej/components/Providers/HomeProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'dart:ui' as ui;
+import 'package:http/http.dart' as http;
 
 class RequestWindow_ride extends StatefulWidget {
   const RequestWindow_ride({Key? key}) : super(key: key);
@@ -33,30 +35,33 @@ class RequestWindow_ride extends StatefulWidget {
 class _RequestWindow_rideState extends State<RequestWindow_ride> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: DrawerMenu(),
-      backgroundColor: Colors.white,
-      body: Stack(
-        alignment: Alignment.bottomLeft,
-        children: [
-          MapPreview(),
-          SafeArea(
-            top: false,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 15, right: 15, bottom: 20),
-              child: Container(
-                // color: Colors.red,
-                width: MediaQuery.of(context).size.width,
-                child: RenderBottomPreview(
-                    scenario: context
-                        .watch<HomeProvider>()
-                        .requestShoppingData[0]['step_name']),
-              ),
+    return context.watch<HomeProvider>().requestShoppingData.isEmpty
+        ? SizedBox.shrink()
+        : Scaffold(
+            drawer: DrawerMenu(),
+            backgroundColor: Colors.white,
+            body: Stack(
+              alignment: Alignment.bottomLeft,
+              children: [
+                MapPreview(),
+                SafeArea(
+                  top: false,
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.only(left: 15, right: 15, bottom: 20),
+                    child: Container(
+                      // color: Colors.red,
+                      width: MediaQuery.of(context).size.width,
+                      child: RenderBottomPreview(
+                          scenario: context
+                              .watch<HomeProvider>()
+                              .requestShoppingData[0]['step_name']),
+                    ),
+                  ),
+                )
+              ],
             ),
-          )
-        ],
-      ),
-    );
+          );
   }
 }
 
@@ -530,6 +535,13 @@ class _MapPreviewState extends State<MapPreview> {
         brng; // count degrees counter-clockwise - remove to make clockwise
 
     return brng;
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    controller!.dispose();
   }
 
   //!1. SIMULATE ROUTE TO PICKUP
@@ -1127,6 +1139,117 @@ class _LocalModalState extends State<LocalModal> {
   ];
   List<String> selectedBadges = [];
   String note = '';
+  bool isLoadingSubmission = false;
+
+  //!Submit user rating
+  Future SubmitUserRating({required BuildContext context}) async {
+    //Start the loader
+    setState(() {
+      isLoadingSubmission = true;
+    });
+
+    Map<String, dynamic> requestData =
+        context.read<HomeProvider>().requestShoppingData[0];
+    //....
+    Uri mainUrl = Uri.parse(Uri.encodeFull(
+        '${context.read<HomeProvider>().bridge}/submitRiderOrClientRating'));
+
+    //Assemble the bundle data
+    //* @param type: the type of request (past, scheduled, business)
+    Map<String, String> bundleData = {
+      "request_fp": requestData['request_fp'].toString(),
+      "rating": rating.toString(),
+      "badges": json.encode(selectedBadges).toString(),
+      "note": note,
+      "user_fingerprint": context.read<HomeProvider>().user_identifier
+    };
+
+    print(bundleData);
+
+    try {
+      http.Response response = await http.post(mainUrl, body: bundleData);
+
+      if (response.statusCode == 200) //Got some results
+      {
+        Map<String, dynamic> tmpResponse = json.decode(response.body)[0];
+        //? Update
+        if (tmpResponse['response'] == 'success') {
+          Timer(Duration(seconds: 2), () {
+            Navigator.of(context).popAndPushNamed('/home');
+          });
+        } else //Some error
+        {
+          showErrorModal(context: context);
+        }
+      } else //Has some errors
+      {
+        print(response.toString());
+        showErrorModal(context: context);
+      }
+    } catch (e) {
+      print('8');
+      print(e.toString());
+      showErrorModal(context: context);
+    }
+  }
+
+  //Show error modal
+  void showErrorModal({required BuildContext context}) {
+    //! Swhitch loader to false
+    setState(() {
+      isLoadingSubmission = false;
+    });
+    //...
+    showMaterialModalBottomSheet(
+      expand: false,
+      bounce: true,
+      duration: Duration(milliseconds: 250),
+      context: context,
+      builder: (context) => SafeArea(
+        child: Container(
+            height: MediaQuery.of(context).size.height * 0.5,
+            child: Padding(
+              padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * 0.05),
+              child: Column(
+                children: [
+                  Icon(Icons.error,
+                      size: 50, color: AppTheme().getErrorColor()),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Text(
+                    'Unable to rate driver',
+                    style: TextStyle(
+                      fontFamily: 'MoveTextMedium',
+                      fontSize: 19,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: Text(
+                      "We were unable to submit your rating due to an unexpected error, please try again and if it persists, please contact us through the Support tab.",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  Expanded(child: SizedBox.shrink()),
+                  GenericRectButton(
+                    label: 'Try again',
+                    labelFontSize: 20,
+                    actuatorFunctionl: () {
+                      Navigator.of(context).pop();
+                    },
+                    isArrowShow: false,
+                  )
+                ],
+              ),
+            )),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1700,7 +1823,9 @@ class _LocalModalState extends State<LocalModal> {
             Padding(
               padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
               child: InkWell(
-                onTap: () => Navigator.of(context).pop(),
+                onTap: isLoadingSubmission
+                    ? () {}
+                    : () => Navigator.of(context).pop(),
                 child: Row(
                   children: [
                     Icon(
@@ -1732,10 +1857,11 @@ class _LocalModalState extends State<LocalModal> {
                         borderRadius: BorderRadius.circular(10000),
                         child: CachedNetworkImage(
                           fit: BoxFit.cover,
-                          width: 80, height: 80,
-                          imageUrl: 'https://picsum.photos/200/300',
-                          // requestData['driver_details']
-                          //     ['picture'],
+                          width: 80,
+                          height: 80,
+                          imageUrl:
+                              // 'https://picsum.photos/200/300',
+                              requestData['driver_details']['picture'],
                           progressIndicatorBuilder:
                               (context, url, downloadProgress) => Container(
                             width: 60,
@@ -1784,12 +1910,14 @@ class _LocalModalState extends State<LocalModal> {
                       Icons.star,
                       color: AppTheme().getGoldColor(),
                     ),
-                    onRatingUpdate: (val) {
-                      setState(() {
-                        rating = int.parse(val.toStringAsFixed(0));
-                        print(rating);
-                      });
-                    },
+                    onRatingUpdate: isLoadingSubmission
+                        ? (v) {}
+                        : (val) {
+                            setState(() {
+                              rating = int.parse(val.toStringAsFixed(0));
+                              print(rating);
+                            });
+                          },
                   ),
                 ),
                 SizedBox(
@@ -1831,22 +1959,25 @@ class _LocalModalState extends State<LocalModal> {
                         shrinkWrap: false,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) => InkWell(
-                              onTap: () {
-                                setState(() {
-                                  if (selectedBadges.contains(badges[index]
-                                          ['title']
-                                      .toString())) //!Remove
-                                  {
-                                    selectedBadges.removeAt(
-                                        selectedBadges.indexOf(
-                                            badges[index]['title'].toString()));
-                                  } else //!Add
-                                  {
-                                    selectedBadges
-                                        .add(badges[index]['title'].toString());
-                                  }
-                                });
-                              },
+                              onTap: isLoadingSubmission
+                                  ? () {}
+                                  : () {
+                                      setState(() {
+                                        if (selectedBadges.contains(
+                                            badges[index]['title']
+                                                .toString())) //!Remove
+                                        {
+                                          selectedBadges.removeAt(selectedBadges
+                                              .indexOf(badges[index]['title']
+                                                  .toString()));
+                                        } else //!Add
+                                        {
+                                          selectedBadges.add(badges[index]
+                                                  ['title']
+                                              .toString());
+                                        }
+                                      });
+                                    },
                               child: Opacity(
                                 opacity: selectedBadges.contains(
                                         badges[index]['title'].toString())
@@ -1981,10 +2112,12 @@ class _LocalModalState extends State<LocalModal> {
                   height: 30,
                 ),
                 GenericRectButton(
-                    label: 'Done',
+                    label: isLoadingSubmission ? 'LOADING' : 'Done',
                     labelFontSize: 22,
                     isArrowShow: false,
-                    actuatorFunctionl: () => Navigator.of(context).pop()),
+                    actuatorFunctionl: isLoadingSubmission
+                        ? () {}
+                        : () => SubmitUserRating(context: context)),
                 SizedBox(
                   height: 30,
                 )

@@ -607,19 +607,8 @@ class HomeProvider with ChangeNotifier {
 
   //?22. Update realtime shopping data
   void updateRealtimeShoppingData({required List data}) {
-    if (requestShoppingData.isNotEmpty) //New data
-    {
-      if (data[0].toString() != requestShoppingData[0].toString()) {
-        print('NEW DATA');
-        requestShoppingData = data;
-        notifyListeners();
-      }
-    } else //No requests
-    {
-      print('No request');
-      requestShoppingData = data;
-      notifyListeners();
-    }
+    requestShoppingData = data;
+    notifyListeners();
   }
 
   //?23. Lock request window state

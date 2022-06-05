@@ -4,13 +4,15 @@ import 'package:hexcolor/hexcolor.dart';
 class AppTheme {
   //1. Get the primary color
   Color getPrimaryColor() {
-    return HexColor('#639f62');
+    // return HexColor('#639f62');
     // return Colors.blue;
+    return HexColor('#660099');
   }
 
   //1b. Get the secondary color
   Color getSecondaryColor() {
-    return Color.fromRGBO(9, 110, 212, 1);
+    // return Color.fromRGBO(9, 110, 212, 1);
+    return HexColor('#339900');
   }
 
   //2. Get the error color

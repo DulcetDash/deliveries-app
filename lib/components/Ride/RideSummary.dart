@@ -70,8 +70,46 @@ class _MapPreviewState extends State<MapPreview> {
     WidgetsBinding.instance.addPostFrameCallback((_) {});
   }
 
+  void updateMapOrientation({required BuildContext context}) {
+    try {
+      if (context.read<HomeProvider>().routeSnapshotData[0].latitude >=
+          context
+              .read<HomeProvider>()
+              .routeSnapshotData[
+                  context.read<HomeProvider>().routeSnapshotData.length - 1]
+              .latitude) {
+        controller?.moveCamera(
+          CameraUpdate.newLatLngBounds(
+            LatLngBounds(
+              southwest: context.read<HomeProvider>().routeSnapshotData[
+                  context.read<HomeProvider>().routeSnapshotData.length - 1],
+              northeast: context.read<HomeProvider>().routeSnapshotData[0],
+            ),
+            100.0,
+          ),
+        );
+      } else {
+        controller?.moveCamera(
+          CameraUpdate.newLatLngBounds(
+            LatLngBounds(
+              southwest: context.read<HomeProvider>().routeSnapshotData[0],
+              northeast: context.read<HomeProvider>().routeSnapshotData[
+                  context.read<HomeProvider>().routeSnapshotData.length - 1],
+            ),
+            100.0,
+          ),
+        );
+      }
+    } on Exception catch (e) {
+      // TODO
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    updateMapOrientation(context: context);
+
     return Container(
       decoration: BoxDecoration(color: Colors.blue),
       height: MediaQuery.of(context).size.height * 0.35,
@@ -85,7 +123,7 @@ class _MapPreviewState extends State<MapPreview> {
                   context
                       .watch<HomeProvider>()
                       .userLocationCoords['longitude']),
-              zoom: 7.0,
+              zoom: 14.0,
             ),
             polylines: Set<Polyline>.of(
                 context.watch<HomeProvider>().polylines_snapshot.values),

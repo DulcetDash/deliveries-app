@@ -888,7 +888,7 @@ class SearchResultsRenderer extends StatelessWidget {
                             .length),
                   ),
             //!Show move next if valid
-            Expanded(child: SizedBox.shrink()),
+            // Expanded(child: SizedBox.shrink()),
             GenericRectButton(
                 label: 'Next',
                 labelFontSize: 20,
