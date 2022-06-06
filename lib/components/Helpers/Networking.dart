@@ -67,7 +67,7 @@ class GetShoppingData {
               Navigator.of(context).pushNamed('/RequestWindow_ride');
             } else //DELIVERY
             {
-              print('Reroute to the delivery request window.');
+              Navigator.of(context).pushNamed('/RequestWindow_delivery');
             }
           }
         }

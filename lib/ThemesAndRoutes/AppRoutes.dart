@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
+import 'package:nej/components/Delivery/RequestWindow_delivery.dart';
 import 'package:nej/components/Ride/FareDisplay.dart';
 import 'package:nej/components/Ride/RequestWindow_ride.dart';
 import 'package:nej/components/Ride/RideSummary.dart';
@@ -61,6 +62,8 @@ class _AppGeneralEntryState extends State<AppGeneralEntry> {
           '/delivery_pickupLocation': (context) =>
               const DeliveryPickupLocation(),
           '/DeliverySummary': (context) => const DeliverySummary(),
+          '/RequestWindow_delivery': (context) =>
+              const RequestWindow_delivery(),
           //Ride
           '/PassengersInput': (context) => const InitialPassengers(),
           '/FareDisplay': (context) => const FareDisplay(),

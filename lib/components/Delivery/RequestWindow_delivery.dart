@@ -10,20 +10,21 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:nej/components/GenericRectButton.dart';
 import 'package:nej/components/Helpers/AppTheme.dart';
+import 'package:nej/components/Helpers/DataParser.dart';
 import 'package:nej/components/Helpers/RequestCardHelper.dart';
 import 'package:nej/components/Providers/HomeProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:http/http.dart' as http;
 
-class RequestWindow extends StatefulWidget {
-  const RequestWindow({Key? key}) : super(key: key);
+class RequestWindow_delivery extends StatefulWidget {
+  const RequestWindow_delivery({Key? key}) : super(key: key);
 
   @override
-  State<RequestWindow> createState() => _RequestWindowState();
+  State<RequestWindow_delivery> createState() => _RequestWindow_deliveryState();
 }
 
-class _RequestWindowState extends State<RequestWindow> {
+class _RequestWindow_deliveryState extends State<RequestWindow_delivery> {
   @override
   void dispose() {
     // TODO: implement dispose
@@ -44,14 +45,14 @@ class _RequestWindowState extends State<RequestWindow> {
                 child: ListView(
               children: [
                 Header(),
-                ShoppingList(),
+                DeliveryList(),
                 PaymentSection(),
-                DeliverySection(),
+                // DeliverySection(),
                 CancellationSection(),
-                requestData['state_vars']['completedShopping'] == false
+                requestData['state_vars']['completedDropoff'] == false
                     ? SizedBox.shrink()
                     : GenericRectButton(
-                        label: 'Rate your shopper',
+                        label: 'Rate your courier',
                         horizontalPadding: 20,
                         labelFontSize: 25,
                         labelFontFamily: "MoveBold",
@@ -104,7 +105,7 @@ class Header extends StatelessWidget {
             height: 15,
           ),
           Text(
-            'Finding your shopper...',
+            'Finding your courier...',
             style: TextStyle(fontSize: 18, fontFamily: 'MoveTextBold'),
           )
         ],
@@ -224,14 +225,11 @@ class Header extends StatelessWidget {
         requestData['state_vars']['didPickupCash'] == false &&
         requestData['payment_method'] == 'mobile_money') {
       return 'Waiting for your ewallet...';
-    } else if (requestData['state_vars']['inRouteToShop'] &&
-        requestData['state_vars']['inRouteToDelivery'] == false) {
-      return 'Shopping in progress...';
-    } else if (requestData['state_vars']['inRouteToDelivery'] &&
-        requestData['state_vars']['completedShopping'] == false) {
-      return 'Delivering the packages...';
-    } else if (requestData['state_vars']['completedShopping']) //Shopping done
-    {
+    } else if (requestData['state_vars']['inRouteToDropoff'] &&
+        requestData['state_vars']['completedDropoff'] == false) {
+      return 'Delivery in progress...';
+    } else if (requestData['state_vars']['completedDropoff']) {
+      //Shopping done
       return 'Done shopping.';
     } else {
       return '';
@@ -239,14 +237,22 @@ class Header extends StatelessWidget {
   }
 }
 
-//Shopping list
-class ShoppingList extends StatelessWidget {
-  const ShoppingList({Key? key}) : super(key: key);
+//Delivery list
+class DeliveryList extends StatelessWidget {
+  DeliveryList({Key? key}) : super(key: key);
+
+  final RequestCardHelper _requestCardHelper = RequestCardHelper();
 
   @override
   Widget build(BuildContext context) {
     Map<String, dynamic> requestData =
         context.watch<HomeProvider>().requestShoppingData[0];
+
+    var dropoffsTMP = requestData['trip_locations']['dropoff'].map((element) {
+      return element['dropoff_location'];
+    });
+
+    List dropoffs = dropoffsTMP.toList();
 
     return InkWell(
       onTap: () => showMaterialModalBottomSheet(
@@ -257,7 +263,7 @@ class ShoppingList extends StatelessWidget {
         duration: Duration(milliseconds: 250),
         context: context,
         builder: (context) => LocalModal(
-          scenario: 'shopping_list',
+          scenario: 'delivery_list',
         ),
       ),
       child: Container(
@@ -267,100 +273,195 @@ class ShoppingList extends StatelessWidget {
             //     top: BorderSide(width: 0.5, color: Colors.grey),
             //     bottom: BorderSide(width: 0.5, color: Colors.grey))
           ),
-          height: 145,
+          height: 245,
           child: Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Flexible(
-                      child: Container(
-                        height: 50,
-                        // width: 50,
-                        child: ListView.separated(
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) => getThumbnailItem(
-                                context: context,
-                                itemData: requestData['shopping_list'][index]),
-                            separatorBuilder: (context, index) => SizedBox(
-                                  width: 15,
-                                ),
-                            itemCount: requestData['shopping_list'].length),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Icon(
-                      Icons.arrow_forward,
-                      size: 20,
-                      color: Colors.grey.shade600,
+                    Text(
+                      'Delivery',
+                      style: TextStyle(
+                          fontFamily: 'MoveTextMedium',
+                          fontSize: 17,
+                          color: Colors.grey.shade600),
                     )
                   ],
                 ),
                 SizedBox(
                   height: 20,
                 ),
-                Text(
-                  'Your shopping list',
-                  style: TextStyle(fontSize: 15),
+                IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(top: 6),
+                            child: Icon(
+                              Icons.circle,
+                              size: 8,
+                            ),
+                          ),
+                          Flexible(
+                            child: DottedBorder(
+                              color: Colors.black,
+                              strokeWidth: 0.5,
+                              padding: EdgeInsets.all(0.5),
+                              borderType: BorderType.RRect,
+                              dashPattern: [4, 0],
+                              child: Container(
+                                // width: 1,
+                                height: 48,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(bottom: 23),
+                            child: Icon(
+                              Icons.stop,
+                              size: 15,
+                              color: AppTheme().getSecondaryColor(),
+                            ),
+                          )
+                        ],
+                      ),
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  // color: Colors.orange,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        // color: Colors.green,
+                                        height: 33,
+                                        child: const Padding(
+                                          padding: EdgeInsets.only(top: 2),
+                                          child: SizedBox(
+                                              width: 45,
+                                              child: Text(
+                                                'From',
+                                                style: TextStyle(
+                                                    fontFamily:
+                                                        'MoveTextLight'),
+                                              )),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          alignment: Alignment.centerLeft,
+                                          // color: Colors.amber,
+                                          child: Column(
+                                            children: _requestCardHelper
+                                                .fitLocationWidgetsToList(
+                                                    context: context,
+                                                    locationData: [
+                                                  context
+                                                          .read<HomeProvider>()
+                                                          .requestShoppingData[0]
+                                                      [
+                                                      'trip_locations']['pickup']
+                                                ]),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            //Destination
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      // color: Colors.green,
+                                      height: 34,
+                                      child: const Padding(
+                                        padding: EdgeInsets.only(top: 3),
+                                        child: SizedBox(
+                                            width: 45,
+                                            child: Text(
+                                              'To',
+                                              style: TextStyle(
+                                                  fontFamily: 'MoveTextLight'),
+                                            )),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Container(
+                                        alignment: Alignment.centerLeft,
+                                        // color: Colors.amber,
+                                        child: Column(
+                                            children: _requestCardHelper
+                                                .fitLocationWidgetsToList(
+                                                    context: context,
+                                                    locationData: [
+                                              dropoffs[0]
+                                            ])),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                dropoffs.length == 1
+                                    ? Text('')
+                                    : Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 45,
+                                          ),
+                                          Text(
+                                              '+${dropoffs.length - 1} more location${dropoffs.length - 1 > 1 ? 's' : ''}.',
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: AppTheme()
+                                                      .getSecondaryColor())),
+                                        ],
+                                      )
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Divider(
+                  height: 35,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('View delivery status',
+                        style: TextStyle(
+                            fontFamily: 'MoveTextMedium',
+                            fontSize: 14,
+                            color: AppTheme().getSecondaryColor())),
+                    Icon(
+                      Icons.arrow_forward,
+                      size: 20,
+                      color: Colors.grey.shade600,
+                    )
+                  ],
                 )
               ],
-            ),
-          )),
-    );
-  }
-
-  //Get images thembnail array
-  List<Widget> imagesArray({required BuildContext context}) {
-    List tmpFinal = [];
-    return [];
-  }
-
-  //Thumbnail items
-  Widget getThumbnailItem(
-      {required BuildContext context, required Map<String, dynamic> itemData}) {
-    return Badge(
-      badgeContent: itemData['isShoped'] != null
-          ? Icon(
-              Icons.check,
-              size: 15,
-              color: itemData['isShoped'] != null ? Colors.white : Colors.black,
-            )
-          : Icon(Icons.timelapse_sharp, size: 15),
-      badgeColor: itemData['isShoped'] != null
-          ? AppTheme().getSecondaryColor()
-          : AppTheme().getGenericGrey(),
-      child: Container(
-          height: 50,
-          width: 60,
-          color: Colors.grey,
-          child: CachedNetworkImage(
-            imageUrl: itemData['pictures'][0].runtimeType.toString() ==
-                    'List<dynamic>'
-                ? itemData['pictures'][0][0]
-                : itemData['pictures'][0],
-            progressIndicatorBuilder: (context, url, downloadProgress) =>
-                SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: 20.0,
-              child: Shimmer.fromColors(
-                baseColor: Colors.grey.shade300,
-                highlightColor: Colors.grey.shade100,
-                child: Container(
-                  width: 48.0,
-                  height: 48.0,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            errorWidget: (context, url, error) => const Icon(
-              Icons.error,
-              size: 30,
-              color: Colors.grey,
             ),
           )),
     );
@@ -378,7 +479,7 @@ class PaymentSection extends StatelessWidget {
 
     return Container(
         child: Padding(
-      padding: const EdgeInsets.only(left: 20, right: 20, top: 30, bottom: 20),
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 40, bottom: 20),
       child: Column(
         children: [
           Row(
@@ -689,24 +790,30 @@ class CancellationSection extends StatelessWidget {
         context.watch<HomeProvider>().requestShoppingData[0];
 
     return Visibility(
-      visible: requestData['state_vars']['inRouteToShop'] == false,
-      child: InkWell(
-        onTap: () {
-          print('Cancellation action');
-        },
-        child: Padding(
-          padding:
-              const EdgeInsets.only(left: 20, right: 20, top: 30, bottom: 60),
-          child: Container(
-            child: Text(
-              'Cancel the shopping',
-              style: TextStyle(
-                  fontFamily: 'MoveTextMedium',
-                  fontSize: 17,
-                  color: AppTheme().getErrorColor()),
+      visible: requestData['state_vars']['inRouteToDropoff'] == false,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Divider(),
+          InkWell(
+            onTap: () {
+              print('Cancellation action');
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  left: 20, right: 20, top: 30, bottom: 60),
+              child: Container(
+                child: Text(
+                  'Cancel the shopping',
+                  style: TextStyle(
+                      fontFamily: 'MoveTextMedium',
+                      fontSize: 17,
+                      color: AppTheme().getErrorColor()),
+                ),
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -740,7 +847,6 @@ class _LocalModalState extends State<LocalModal> {
     {'title': 'Very fast', 'image': 'assets/Images/fast.png'},
     {'title': 'Neat and tidy', 'image': 'assets/Images/cloth.png'},
     {'title': 'Very polite', 'image': 'assets/Images/polite.png'},
-    {'title': 'Expert shopper', 'image': 'assets/Images/shopping.png'}
   ];
   List<String> selectedBadges = [];
   String note = '';
@@ -1276,7 +1382,7 @@ class _LocalModalState extends State<LocalModal> {
             ))
           ],
         )));
-      case 'shopping_list':
+      case 'delivery_list':
         return SafeArea(
             child: Container(
           child: Column(
@@ -1301,7 +1407,7 @@ class _LocalModalState extends State<LocalModal> {
                         Expanded(
                           child: Container(
                             child: Text(
-                              'My shopping list',
+                              'Delivery status',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   fontFamily: 'MoveTextBold', fontSize: 18),
@@ -1325,7 +1431,7 @@ class _LocalModalState extends State<LocalModal> {
                 alignment: Alignment.centerLeft,
                 child: Padding(
                   padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Text('You can see which items are shopped.'),
+                  child: Text('You can see which packages are delivered.'),
                 ),
               ),
               Expanded(
@@ -1333,15 +1439,14 @@ class _LocalModalState extends State<LocalModal> {
                 child: ListView.separated(
                     padding: EdgeInsets.only(left: 20, right: 20, top: 35),
                     itemBuilder: (context, index) {
-                      return ProductModel(
-                        indexProduct: index + 1,
-                        productData: requestData['shopping_list'][index],
-                      );
+                      return LocationPackageModel(
+                          packageData: requestData['trip_locations']['dropoff']
+                              [index]);
                     },
                     separatorBuilder: (context, index) => Divider(
                           height: 50,
                         ),
-                    itemCount: requestData['shopping_list'].length),
+                    itemCount: requestData['trip_locations']['dropoff'].length),
               ))
             ],
           ),
@@ -1363,7 +1468,7 @@ class _LocalModalState extends State<LocalModal> {
                       size: AppTheme().getArrowBackSize() - 3,
                     ),
                     Text(
-                      'Rate shopper',
+                      'Rate courier',
                       style:
                           TextStyle(fontFamily: 'MoveTextBold', fontSize: 18),
                     ),
@@ -1661,109 +1766,67 @@ class _LocalModalState extends State<LocalModal> {
   }
 }
 
-//Product model
-class ProductModel extends StatelessWidget {
-  final Map<String, dynamic> productData;
-  final int indexProduct;
+//Delivery location model
+class LocationPackageModel extends StatelessWidget {
+  final Map<String, dynamic> packageData;
 
-  const ProductModel(
-      {Key? key, required this.productData, required this.indexProduct})
-      : super(key: key);
+  LocationPackageModel({Key? key, required this.packageData}) : super(key: key);
+
+  final DataParser _dataParser = DataParser();
 
   @override
   Widget build(BuildContext context) {
+    Map<String, dynamic> locationTemplate = _dataParser.getRealisticPlacesNames(
+        locationData: packageData['dropoff_location']);
+
     return Container(
-      child: InkWell(
-        // onTap: () {},
-        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          SizedBox(
-              width: 30,
-              child: Text(
-                indexProduct.toString(),
-                style: TextStyle(fontSize: 17),
-              )),
-          Badge(
-            badgeContent: productData['isShoped'] != null
-                ? Icon(
-                    Icons.check,
-                    size: 15,
-                    color: productData['isShoped'] != null
-                        ? Colors.white
-                        : Colors.black,
-                  )
-                : Icon(Icons.timelapse_sharp, size: 15),
-            badgeColor: productData['isShoped'] != null
-                ? AppTheme().getSecondaryColor()
-                : AppTheme().getGenericGrey(),
-            child: Container(
-                // color: Colors.red,
-                width: 70,
-                height: 60,
-                child: CachedNetworkImage(
-                  fit: BoxFit.contain,
-                  imageUrl: productData['pictures'][0].runtimeType.toString() ==
-                          'List<dynamic>'
-                      ? productData['pictures'][0][0]
-                      : productData['pictures'][0],
-                  progressIndicatorBuilder: (context, url, downloadProgress) =>
-                      SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    height: 20.0,
-                    child: Shimmer.fromColors(
-                      baseColor: Colors.grey.shade300,
-                      highlightColor: Colors.grey.shade100,
-                      child: Container(
-                        width: 20.0,
-                        height: 20.0,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  errorWidget: (context, url, error) => const Icon(
-                    Icons.error,
-                    size: 30,
-                    color: Colors.grey,
-                  ),
-                )),
-          ),
-          SizedBox(
-            width: 30,
-          ),
-          Container(
-            // color: Colors.amber,
-            width: MediaQuery.of(context).size.width * 0.5,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: ListTile(
+        contentPadding: EdgeInsets.zero,
+        horizontalTitleGap: 0,
+        leading:
+            Icon(Icons.location_on, color: AppTheme().getGenericDarkGrey()),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(packageData['name'].toString(),
+                style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 16)),
+            Divider(
+              height: 5,
+              color: Colors.white,
+            ),
+            Text(packageData['phone'],
+                style: TextStyle(
+                    fontSize: 14, color: AppTheme().getGenericDarkGrey())),
+            Divider(
+              color: Colors.white,
+              height: 15,
+            ),
+            Row(
               children: [
-                Text(
-                  productData['name'],
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 14, fontFamily: 'MoveTextMedium'),
+                Icon(
+                  Icons.circle,
+                  size: 5,
+                  color: AppTheme().getSecondaryColor(),
                 ),
                 SizedBox(
-                  height: 10,
+                  width: 3,
                 ),
                 Text(
-                  '${productData['price']} • ${getItemsNumber()}',
-                  style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
-                )
+                    '${locationTemplate['suburb'].toString().isEmpty ? '' : '${locationTemplate['suburb']}, '}${locationTemplate['location_name'].toString().isEmpty ? '' : '${locationTemplate['location_name']}, '}${locationTemplate['city']}',
+                    style: TextStyle(
+                        color: AppTheme().getSecondaryColor(), fontSize: 15)),
               ],
-            ),
-          ),
-        ]),
+            )
+          ],
+        ),
+        trailing: packageData['isDroped'] != null
+            ? Icon(
+                Icons.check_circle,
+                size: 30,
+                color: AppTheme().getSecondaryColor(),
+              )
+            : Icon(Icons.timelapse_rounded, size: 30),
       ),
     );
-  }
-
-  //Get the number of items
-  String getItemsNumber() {
-    int items = productData['items'];
-
-    if (items == 0 || items > 1) {
-      return '$items items';
-    } else {
-      return '$items item';
-    }
   }
 }

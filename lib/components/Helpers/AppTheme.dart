@@ -6,7 +6,7 @@ class AppTheme {
   Color getPrimaryColor() {
     // return HexColor('#639f62');
     // return Colors.blue;
-    return HexColor('#660099');
+    return HexColor('#814a95');
   }
 
   //1b. Get the secondary color
