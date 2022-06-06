@@ -12,6 +12,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart';
 import 'package:maps_toolkit/maps_toolkit.dart' as MapToolkit;
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:nej/components/DrawerMenu.dart';
@@ -35,33 +36,35 @@ class RequestWindow_ride extends StatefulWidget {
 class _RequestWindow_rideState extends State<RequestWindow_ride> {
   @override
   Widget build(BuildContext context) {
-    return context.watch<HomeProvider>().requestShoppingData.isEmpty
+    return context.watch<HomeProvider>().requestShoppingData == null
         ? SizedBox.shrink()
-        : Scaffold(
-            drawer: DrawerMenu(),
-            backgroundColor: Colors.white,
-            body: Stack(
-              alignment: Alignment.bottomLeft,
-              children: [
-                MapPreview(),
-                SafeArea(
-                  top: false,
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.only(left: 15, right: 15, bottom: 20),
-                    child: Container(
-                      // color: Colors.red,
-                      width: MediaQuery.of(context).size.width,
-                      child: RenderBottomPreview(
-                          scenario: context
-                              .watch<HomeProvider>()
-                              .requestShoppingData[0]['step_name']),
-                    ),
-                  ),
-                )
-              ],
-            ),
-          );
+        : context.watch<HomeProvider>().requestShoppingData.isEmpty
+            ? SizedBox.shrink()
+            : Scaffold(
+                drawer: DrawerMenu(),
+                backgroundColor: Colors.white,
+                body: Stack(
+                  alignment: Alignment.bottomLeft,
+                  children: [
+                    MapPreview(),
+                    SafeArea(
+                      top: false,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 15, right: 15, bottom: 20),
+                        child: Container(
+                          // color: Colors.red,
+                          width: MediaQuery.of(context).size.width,
+                          child: RenderBottomPreview(
+                              scenario: context
+                                  .watch<HomeProvider>()
+                                  .requestShoppingData[0]['step_name']),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              );
   }
 }
 
@@ -74,238 +77,298 @@ class RenderBottomPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Map<String, dynamic> requestData =
-        context.watch<HomeProvider>().requestShoppingData[0];
+        context.watch<HomeProvider>().requestShoppingData.isNotEmpty
+            ? context.watch<HomeProvider>().requestShoppingData[0]
+            : {};
 
-    if (scenario == 'pending') {
-      return InkWell(
-        onTap: () => showMaterialModalBottomSheet(
-          backgroundColor: Colors.white,
-          enableDrag: false,
-          expand: true,
-          bounce: true,
-          duration: Duration(milliseconds: 250),
-          context: context,
-          builder: (context) => LocalModal(
-            scenario: 'trip_details',
-          ),
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(5),
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.grey.withOpacity(0.4),
-                  blurRadius: 7,
-                  spreadRadius: 3)
-            ],
-          ),
-          height: 110,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 15),
-            child: ListTile(
-              leading: SizedBox(
-                  width: 30,
-                  height: 30,
-                  child: CircularProgressIndicator(
-                      strokeWidth: 3, color: AppTheme().getPrimaryColor())),
-              title: Text(
-                'Finding your driver...',
-                style: TextStyle(fontFamily: 'MoveTextBold', fontSize: 19),
-              ),
-              subtitle: Padding(
-                padding: const EdgeInsets.only(top: 5),
-                child: Text('Press here for more details about your trip.'),
-              ),
-              trailing: Icon(
-                Icons.arrow_forward,
-                color: AppTheme().getPrimaryColor(),
-              ),
-            ),
-          ),
-        ),
-      );
-    } else if (scenario == 'in_route_to_pickup' ||
-        scenario == 'in_route_to_dropoff') {
-      return InkWell(
-        onTap: () => showMaterialModalBottomSheet(
-          backgroundColor: Colors.white,
-          enableDrag: false,
-          expand: true,
-          bounce: true,
-          duration: Duration(milliseconds: 250),
-          context: context,
-          builder: (context) => LocalModal(
-            scenario: 'trip_details',
-          ),
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(5),
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.grey.withOpacity(0.4),
-                  blurRadius: 7,
-                  spreadRadius: 3)
-            ],
-          ),
-          height: 110,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 15),
-            child: ListTile(
-              leading: ClipRRect(
-                borderRadius: BorderRadius.circular(10000.0),
+    if (context.watch<HomeProvider>().requestShoppingData.isEmpty) {
+      return SizedBox.shrink();
+    } else {
+      if (scenario == 'pending') {
+        return context.watch<HomeProvider>().requestShoppingData.isEmpty
+            ? SizedBox.shrink()
+            : InkWell(
+                onTap: () => showMaterialModalBottomSheet(
+                  backgroundColor: Colors.white,
+                  enableDrag: false,
+                  expand: true,
+                  bounce: true,
+                  duration: Duration(milliseconds: 250),
+                  context: context,
+                  builder: (context) => LocalModal(
+                    scenario: 'trip_details',
+                  ),
+                ),
                 child: Container(
-                  width: 60,
-                  height: 60,
-                  child: CachedNetworkImage(
-                    fit: BoxFit.cover,
-                    imageUrl:
-                        //'https://picsum.photos/200/300',
-                        requestData['driver_details']['picture'],
-                    progressIndicatorBuilder:
-                        (context, url, downloadProgress) => Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 20.0,
-                      child: Shimmer.fromColors(
-                        baseColor: Colors.grey.shade300,
-                        highlightColor: Colors.grey.shade100,
-                        child: Container(
-                          width: 20.0,
-                          height: 20.0,
-                          color: Colors.white,
-                        ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(5),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.grey.withOpacity(0.4),
+                          blurRadius: 7,
+                          spreadRadius: 3)
+                    ],
+                  ),
+                  height: 110,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 15),
+                    child: ListTile(
+                      leading: SizedBox(
+                          width: 30,
+                          height: 30,
+                          child: CircularProgressIndicator(
+                              strokeWidth: 3,
+                              color: AppTheme().getPrimaryColor())),
+                      title: Text(
+                        'Finding your driver...',
+                        style:
+                            TextStyle(fontFamily: 'MoveTextBold', fontSize: 19),
                       ),
-                    ),
-                    errorWidget: (context, url, error) => const Icon(
-                      Icons.error,
-                      size: 30,
-                      color: Colors.grey,
+                      subtitle: Padding(
+                        padding: const EdgeInsets.only(top: 5),
+                        child: Text(
+                            'Press here for more details about your trip.'),
+                      ),
+                      trailing: Icon(
+                        Icons.arrow_forward,
+                        color: AppTheme().getPrimaryColor(),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              title: Text(
-                requestData['driver_details']['name'],
-                style: TextStyle(fontFamily: 'MoveTextBold', fontSize: 19),
-              ),
-              subtitle: Padding(
-                padding: const EdgeInsets.only(top: 5),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(requestData['driver_details']['vehicle']['brand']),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(
-                          Icons.star,
-                          size: 17,
-                          color: AppTheme().getGoldColor(),
-                        ),
-                        SizedBox(
-                          width: 2,
-                        ),
-                        Text(
-                          '${double.parse(requestData['driver_details']['rating'].toString()).toStringAsFixed(1)}',
-                          style: TextStyle(
-                              fontFamily: 'MoveTextMedium',
-                              fontSize: 16,
-                              color: Colors.black),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              trailing: Icon(
-                Icons.arrow_forward,
-                color: AppTheme().getPrimaryColor(),
-              ),
+              );
+      } else if (scenario == 'in_route_to_pickup' ||
+          scenario == 'in_route_to_dropoff') {
+        return InkWell(
+          onTap: () => showMaterialModalBottomSheet(
+            backgroundColor: Colors.white,
+            enableDrag: false,
+            expand: true,
+            bounce: true,
+            duration: Duration(milliseconds: 250),
+            context: context,
+            builder: (context) => LocalModal(
+              scenario: 'trip_details',
             ),
           ),
-        ),
-      );
-    } else if (scenario == 'completed') {
-      final RequestCardHelper requestCardHelper = RequestCardHelper();
-
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Container(
+          child: Container(
             decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(5)),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 20, right: 20, top: 20, bottom: 5),
-                  child: Row(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(5),
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.grey.withOpacity(0.4),
+                    blurRadius: 7,
+                    spreadRadius: 3)
+              ],
+            ),
+            height: 110,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 15),
+              child: ListTile(
+                leading: ClipRRect(
+                  borderRadius: BorderRadius.circular(10000.0),
+                  child: Container(
+                    width: 60,
+                    height: 60,
+                    child: CachedNetworkImage(
+                      fit: BoxFit.cover,
+                      imageUrl:
+                          //'https://picsum.photos/200/300',
+                          requestData['driver_details']['picture'],
+                      progressIndicatorBuilder:
+                          (context, url, downloadProgress) => Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 20.0,
+                        child: Shimmer.fromColors(
+                          baseColor: Colors.grey.shade300,
+                          highlightColor: Colors.grey.shade100,
+                          child: Container(
+                            width: 20.0,
+                            height: 20.0,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => const Icon(
+                        Icons.error,
+                        size: 30,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                ),
+                title: Text(
+                  requestData['driver_details']['name'],
+                  style: TextStyle(fontFamily: 'MoveTextBold', fontSize: 19),
+                ),
+                subtitle: Padding(
+                  padding: const EdgeInsets.only(top: 5),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Itinerary',
-                        style: TextStyle(
-                            fontFamily: 'MoveTextMedium',
-                            fontSize: 16,
-                            color: Colors.grey.shade600),
+                      Text(requestData['driver_details']['vehicle']['brand']),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.star,
+                            size: 17,
+                            color: AppTheme().getGoldColor(),
+                          ),
+                          SizedBox(
+                            width: 2,
+                          ),
+                          Text(
+                            '${double.parse(requestData['driver_details']['rating'].toString()).toStringAsFixed(1)}',
+                            style: TextStyle(
+                                fontFamily: 'MoveTextMedium',
+                                fontSize: 16,
+                                color: Colors.black),
+                          )
+                        ],
                       ),
                     ],
                   ),
                 ),
-                //PICKUP -> DROP OFF DETAILS
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 20, right: 20, top: 20, bottom: 20),
-                  child: IntrinsicHeight(
+                trailing: Icon(
+                  Icons.arrow_forward,
+                  color: AppTheme().getPrimaryColor(),
+                ),
+              ),
+            ),
+          ),
+        );
+      } else if (scenario == 'completed') {
+        final RequestCardHelper requestCardHelper = RequestCardHelper();
+
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                  color: Colors.white, borderRadius: BorderRadius.circular(5)),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 20, right: 20, top: 20, bottom: 5),
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Column(
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.only(top: 6),
-                              child: Icon(
-                                Icons.circle,
-                                size: 8,
-                              ),
-                            ),
-                            Flexible(
-                              child: DottedBorder(
-                                color: Colors.black,
-                                strokeWidth: 0.5,
-                                padding: EdgeInsets.all(0.5),
-                                borderType: BorderType.RRect,
-                                dashPattern: [4, 0],
-                                child: Container(
-                                  // width: 1,
-                                  height: 48,
+                        Text(
+                          'Itinerary',
+                          style: TextStyle(
+                              fontFamily: 'MoveTextMedium',
+                              fontSize: 16,
+                              color: Colors.grey.shade600),
+                        ),
+                      ],
+                    ),
+                  ),
+                  //PICKUP -> DROP OFF DETAILS
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 20, right: 20, top: 20, bottom: 20),
+                    child: IntrinsicHeight(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Column(
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(top: 6),
+                                child: Icon(
+                                  Icons.circle,
+                                  size: 8,
                                 ),
                               ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 23),
-                              child: Icon(
-                                Icons.stop,
-                                size: 15,
-                                color: AppTheme().getSecondaryColor(),
+                              Flexible(
+                                child: DottedBorder(
+                                  color: Colors.black,
+                                  strokeWidth: 0.5,
+                                  padding: EdgeInsets.all(0.5),
+                                  borderType: BorderType.RRect,
+                                  dashPattern: [4, 0],
+                                  child: Container(
+                                    // width: 1,
+                                    height: 48,
+                                  ),
+                                ),
                               ),
-                            )
-                          ],
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    // color: Colors.orange,
-                                    child: Row(
+                              Padding(
+                                padding: EdgeInsets.only(bottom: 23),
+                                child: Icon(
+                                  Icons.stop,
+                                  size: 15,
+                                  color: AppTheme().getSecondaryColor(),
+                                ),
+                              )
+                            ],
+                          ),
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      // color: Colors.orange,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            // color: Colors.green,
+                                            height: 33,
+                                            child: const Padding(
+                                              padding: EdgeInsets.only(top: 2),
+                                              child: SizedBox(
+                                                  width: 45,
+                                                  child: Text(
+                                                    'From',
+                                                    style: TextStyle(
+                                                        fontFamily:
+                                                            'MoveTextLight'),
+                                                  )),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Container(
+                                              alignment: Alignment.centerLeft,
+                                              // color: Colors.amber,
+                                              child: Column(
+                                                children: requestCardHelper
+                                                    .fitLocationWidgetsToList(
+                                                        context: context,
+                                                        locationData: [
+                                                      context
+                                                              .read<HomeProvider>()
+                                                              .requestShoppingData[0]
+                                                          [
+                                                          'trip_locations']['pickup']
+                                                    ]),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                //Destination
+                                Column(
+                                  children: [
+                                    Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
                                       crossAxisAlignment:
@@ -313,13 +376,13 @@ class RenderBottomPreview extends StatelessWidget {
                                       children: [
                                         Container(
                                           // color: Colors.green,
-                                          height: 33,
+                                          height: 34,
                                           child: const Padding(
-                                            padding: EdgeInsets.only(top: 2),
+                                            padding: EdgeInsets.only(top: 3),
                                             child: SizedBox(
                                                 width: 45,
                                                 child: Text(
-                                                  'From',
+                                                  'To',
                                                   style: TextStyle(
                                                       fontFamily:
                                                           'MoveTextLight'),
@@ -331,126 +394,80 @@ class RenderBottomPreview extends StatelessWidget {
                                             alignment: Alignment.centerLeft,
                                             // color: Colors.amber,
                                             child: Column(
-                                              children: requestCardHelper
-                                                  .fitLocationWidgetsToList(
-                                                      context: context,
-                                                      locationData: [
-                                                    context
-                                                            .read<HomeProvider>()
-                                                            .requestShoppingData[0]
-                                                        [
-                                                        'trip_locations']['pickup']
-                                                  ]),
-                                            ),
+                                                children: requestCardHelper
+                                                    .fitLocationWidgetsToList(
+                                                        context: context,
+                                                        locationData: context
+                                                                    .read<
+                                                                        HomeProvider>()
+                                                                    .requestShoppingData[0]
+                                                                [
+                                                                'trip_locations']
+                                                            ['dropoff'])),
                                           ),
                                         )
                                       ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              //Destination
-                              Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        // color: Colors.green,
-                                        height: 34,
-                                        child: const Padding(
-                                          padding: EdgeInsets.only(top: 3),
-                                          child: SizedBox(
-                                              width: 45,
-                                              child: Text(
-                                                'To',
-                                                style: TextStyle(
-                                                    fontFamily:
-                                                        'MoveTextLight'),
-                                              )),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Container(
-                                          alignment: Alignment.centerLeft,
-                                          // color: Colors.amber,
-                                          child: Column(
-                                              children: requestCardHelper
-                                                  .fitLocationWidgetsToList(
-                                                      context: context,
-                                                      locationData: context
-                                                                  .read<HomeProvider>()
-                                                                  .requestShoppingData[0]
-                                                              ['trip_locations']
-                                                          ['dropoff'])),
-                                        ),
-                                      )
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ],
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                //?ETA
-                Container(
-                  color: Colors.grey
-                      .withOpacity(AppTheme().getFadedOpacityValue() - 0.1),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 15),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.timer,
-                          size: 17,
-                          color: AppTheme().getSecondaryColor(),
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Text(
-                          'About ${requestData['route_details']['eta']}',
-                          style: TextStyle(fontSize: 16),
-                        )
-                      ],
+                  //?ETA
+                  Container(
+                    color: Colors.grey
+                        .withOpacity(AppTheme().getFadedOpacityValue() - 0.1),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 15),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.timer,
+                            size: 17,
+                            color: AppTheme().getSecondaryColor(),
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            'About ${requestData['route_details']['eta']}',
+                            style: TextStyle(fontSize: 16),
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          //Button rating
-          GenericRectButton(
-              label: 'Rate your driver',
-              horizontalPadding: 0,
-              labelFontSize: 25,
-              labelFontFamily: "MoveBold",
-              backgroundColor: AppTheme().getSecondaryColor(),
-              actuatorFunctionl: () => showMaterialModalBottomSheet(
-                    backgroundColor: Colors.white,
-                    enableDrag: false,
-                    expand: true,
-                    bounce: true,
-                    duration: Duration(milliseconds: 250),
-                    context: context,
-                    builder: (context) => LocalModal(
-                      scenario: 'rating',
-                    ),
-                  ))
-        ],
-      );
-    } else {
-      return SizedBox.shrink();
+            //Button rating
+            GenericRectButton(
+                label: 'Rate your driver',
+                horizontalPadding: 0,
+                labelFontSize: 25,
+                labelFontFamily: "MoveBold",
+                backgroundColor: AppTheme().getSecondaryColor(),
+                actuatorFunctionl: () => showMaterialModalBottomSheet(
+                      backgroundColor: Colors.white,
+                      enableDrag: false,
+                      expand: true,
+                      bounce: true,
+                      duration: Duration(milliseconds: 250),
+                      context: context,
+                      builder: (context) => LocalModal(
+                        scenario: 'rating',
+                      ),
+                    ))
+          ],
+        );
+      } else {
+        return SizedBox.shrink();
+      }
     }
   }
 }
@@ -1210,6 +1227,7 @@ class _LocalModalState extends State<LocalModal> {
       duration: Duration(milliseconds: 250),
       context: context,
       builder: (context) => SafeArea(
+        top: false,
         child: Container(
             height: MediaQuery.of(context).size.height * 0.5,
             child: Padding(
@@ -1253,6 +1271,115 @@ class _LocalModalState extends State<LocalModal> {
             )),
       ),
     );
+  }
+
+  //Cancel shopping
+  Future cancelRequest({required BuildContext context}) async {
+    //Start the loader
+    setState(() {
+      isLoadingSubmission = true;
+    });
+
+    Uri mainUrl = Uri.parse(Uri.encodeFull(
+        '${context.read<HomeProvider>().bridge}/cancel_request_user'));
+
+    //Assemble the bundle data
+    Map<String, dynamic> requestData =
+        context.read<HomeProvider>().requestShoppingData[0];
+
+    //? For the request
+    Map<String, String> bundleData = {
+      "user_identifier":
+          context.read<HomeProvider>().user_identifier.toString(),
+      "request_fp": requestData['request_fp'].toString(),
+    };
+
+    try {
+      Response response = await post(mainUrl, body: bundleData);
+
+      if (response.statusCode == 200) //Got some results
+      {
+        print(response.body.toString());
+        Map<String, dynamic> tmpResponse = json.decode(response.body)[0];
+        //? Update
+        if (tmpResponse['response'] == 'success') {
+          Timer(Duration(seconds: 3), () {
+            Navigator.of(context).popAndPushNamed('/home');
+          });
+        } else //Some error
+        {
+          showErrorModal_cancellation(context: context);
+        }
+      } else //Has some errors
+      {
+        print(response.toString());
+        showErrorModal_cancellation(context: context);
+      }
+    } catch (e) {
+      print('8');
+      print(e.toString());
+      showErrorModal_cancellation(context: context);
+    }
+  }
+
+  //Show error modal
+  void showErrorModal_cancellation({required BuildContext context}) {
+    //! Swhitch loader to false
+    setState(() {
+      isLoadingSubmission = false;
+    });
+    //...
+    showMaterialModalBottomSheet(
+      expand: false,
+      bounce: true,
+      enableDrag: false,
+      duration: Duration(milliseconds: 250),
+      context: context,
+      builder: (context) => SafeArea(
+        top: false,
+        child: Container(
+            height: MediaQuery.of(context).size.height * 0.5,
+            child: Padding(
+              padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * 0.05),
+              child: Column(
+                children: [
+                  Icon(Icons.error,
+                      size: 50, color: AppTheme().getErrorColor()),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Text(
+                    'Unable to cancel',
+                    style: TextStyle(
+                      fontFamily: 'MoveTextMedium',
+                      fontSize: 19,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: Text(
+                      "We were unable to cancel your ride request due to an unexpected error, please try again and if it persists, please contact us through the Support tab.",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  Expanded(child: SizedBox.shrink()),
+                  GenericRectButton(
+                    label: 'Try again',
+                    labelFontSize: 20,
+                    actuatorFunctionl: () {
+                      Navigator.of(context).pop();
+                    },
+                    isArrowShow: false,
+                  )
+                ],
+              ),
+            )),
+      ),
+    ).whenComplete(() => Navigator.of(context).pop());
   }
 
   @override
@@ -1802,6 +1929,15 @@ class _LocalModalState extends State<LocalModal> {
                                 ['inRouteToDropoff'] ==
                             false,
                         child: ListTile(
+                          onTap: () => showMaterialModalBottomSheet(
+                            expand: false,
+                            bounce: true,
+                            duration: Duration(milliseconds: 250),
+                            context: context,
+                            builder: (context) => LocalModal(
+                              scenario: 'cancel_request',
+                            ),
+                          ),
                           contentPadding: EdgeInsets.only(left: 20),
                           title: Text(
                             'Cancel your ride',
@@ -2129,6 +2265,86 @@ class _LocalModalState extends State<LocalModal> {
             ))
           ],
         ));
+
+      case 'cancel_request':
+        return SafeArea(
+          top: false,
+          child: Container(
+            height: MediaQuery.of(context).size.height * 0.5,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 20,
+                ),
+                Align(
+                  child: Container(
+                      // color: Colors.red,
+                      child: Text('Cancel ride?',
+                          style: TextStyle(
+                              fontFamily: 'MoveTextBold', fontSize: 20))),
+                ),
+                Divider(
+                  height: 30,
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                  child: Container(
+                    child:
+                        Text('Do you really want to cancel your ride request?',
+                            style: TextStyle(
+                              fontSize: 16,
+                            )),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Container(
+                    child: Text(
+                        'By doing so you will not be able to get a driver to move you to your destination.',
+                        style: TextStyle(fontSize: 16)),
+                  ),
+                ),
+                Expanded(child: SizedBox.shrink()),
+                GenericRectButton(
+                    label: isLoadingSubmission ? 'LOADING' : 'Cancel ride',
+                    labelFontSize: 20,
+                    horizontalPadding: 20,
+                    verticalPadding: 0,
+                    isArrowShow: !isLoadingSubmission,
+                    backgroundColor: AppTheme().getErrorColor(),
+                    actuatorFunctionl: isLoadingSubmission
+                        ? () => {}
+                        : () => cancelRequest(context: context)),
+                Divider(
+                  height: 20,
+                  color: Colors.white,
+                ),
+                Opacity(
+                  opacity: isLoadingSubmission
+                      ? AppTheme().getFadedOpacityValue()
+                      : 1,
+                  child: GenericRectButton(
+                      label: 'Don\'t cancel',
+                      labelFontSize: 20,
+                      horizontalPadding: 20,
+                      verticalPadding: 0,
+                      isArrowShow: false,
+                      backgroundColor: AppTheme().getGenericGrey(),
+                      textColor: Colors.black,
+                      labelFontFamily: 'MoveTextBold',
+                      actuatorFunctionl: isLoadingSubmission
+                          ? () => {}
+                          : () => Navigator.of(context).pop()),
+                ),
+                SizedBox(
+                  height: 20,
+                )
+              ],
+            ),
+          ),
+        );
       default:
         return SizedBox.shrink();
     }

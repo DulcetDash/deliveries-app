@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:http/http.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:nej/components/GenericRectButton.dart';
@@ -33,43 +35,51 @@ class _RequestWindowState extends State<RequestWindow> {
   @override
   Widget build(BuildContext context) {
     Map<String, dynamic> requestData =
-        context.watch<HomeProvider>().requestShoppingData.length > 0
-            ? context.watch<HomeProvider>().requestShoppingData[0]
-            : {};
+        context.watch<HomeProvider>().requestShoppingData == null
+            ? {}
+            : context.watch<HomeProvider>().requestShoppingData.isNotEmpty
+                ? context.watch<HomeProvider>().requestShoppingData[0]
+                : {};
 
-    return context.watch<HomeProvider>().requestShoppingData.length == 0
+    return context.watch<HomeProvider>().requestShoppingData == null ||
+            context.watch<HomeProvider>().requestShoppingData[0]
+                    ['shopping_list'] ==
+                null
         ? SizedBox.shrink()
-        : Scaffold(
-            body: SafeArea(
-                child: ListView(
-              children: [
-                Header(),
-                ShoppingList(),
-                PaymentSection(),
-                DeliverySection(),
-                CancellationSection(),
-                requestData['state_vars']['completedShopping'] == false
-                    ? SizedBox.shrink()
-                    : GenericRectButton(
-                        label: 'Rate your shopper',
-                        horizontalPadding: 20,
-                        labelFontSize: 25,
-                        labelFontFamily: "MoveBold",
-                        backgroundColor: AppTheme().getSecondaryColor(),
-                        actuatorFunctionl: () => showMaterialModalBottomSheet(
-                              backgroundColor: Colors.white,
-                              enableDrag: false,
-                              expand: true,
-                              bounce: true,
-                              duration: Duration(milliseconds: 250),
-                              context: context,
-                              builder: (context) => LocalModal(
-                                scenario: 'rating',
-                              ),
-                            ))
-              ],
-            )),
-          );
+        : context.watch<HomeProvider>().requestShoppingData.length == 0
+            ? SizedBox.shrink()
+            : Scaffold(
+                body: SafeArea(
+                    child: ListView(
+                  children: [
+                    Header(),
+                    ShoppingList(),
+                    PaymentSection(),
+                    DeliverySection(),
+                    CancellationSection(),
+                    requestData['state_vars']['completedShopping'] == false
+                        ? SizedBox.shrink()
+                        : GenericRectButton(
+                            label: 'Rate your shopper',
+                            horizontalPadding: 20,
+                            labelFontSize: 25,
+                            labelFontFamily: "MoveBold",
+                            backgroundColor: AppTheme().getSecondaryColor(),
+                            actuatorFunctionl: () =>
+                                showMaterialModalBottomSheet(
+                                  backgroundColor: Colors.white,
+                                  enableDrag: false,
+                                  expand: true,
+                                  bounce: true,
+                                  duration: Duration(milliseconds: 250),
+                                  context: context,
+                                  builder: (context) => LocalModal(
+                                    scenario: 'rating',
+                                  ),
+                                ))
+                  ],
+                )),
+              );
   }
 }
 
@@ -691,9 +701,15 @@ class CancellationSection extends StatelessWidget {
     return Visibility(
       visible: requestData['state_vars']['inRouteToShop'] == false,
       child: InkWell(
-        onTap: () {
-          print('Cancellation action');
-        },
+        onTap: () => showMaterialModalBottomSheet(
+          expand: false,
+          bounce: true,
+          duration: Duration(milliseconds: 250),
+          context: context,
+          builder: (context) => LocalModal(
+            scenario: 'cancel_request',
+          ),
+        ),
         child: Padding(
           padding:
               const EdgeInsets.only(left: 20, right: 20, top: 30, bottom: 60),
@@ -811,6 +827,118 @@ class _LocalModalState extends State<LocalModal> {
       duration: Duration(milliseconds: 250),
       context: context,
       builder: (context) => SafeArea(
+        child: SafeArea(
+          top: false,
+          child: Container(
+              height: MediaQuery.of(context).size.height * 0.5,
+              child: Padding(
+                padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.height * 0.05),
+                child: Column(
+                  children: [
+                    Icon(Icons.error,
+                        size: 50, color: AppTheme().getErrorColor()),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Text(
+                      'Unable to rate shopper',
+                      style: TextStyle(
+                        fontFamily: 'MoveTextMedium',
+                        fontSize: 19,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20, right: 20),
+                      child: Text(
+                        "We were unable to submit your rating due to an unexpected error, please try again and if it persists, please contact us through the Support tab.",
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                    Expanded(child: SizedBox.shrink()),
+                    GenericRectButton(
+                      label: 'Try again',
+                      labelFontSize: 20,
+                      actuatorFunctionl: () {
+                        Navigator.of(context).pop();
+                      },
+                      isArrowShow: false,
+                    )
+                  ],
+                ),
+              )),
+        ),
+      ),
+    );
+  }
+
+  //Cancel shopping
+  Future cancelRequest({required BuildContext context}) async {
+    //Start the loader
+    setState(() {
+      isLoadingSubmission = true;
+    });
+
+    Uri mainUrl = Uri.parse(Uri.encodeFull(
+        '${context.read<HomeProvider>().bridge}/cancel_request_user'));
+
+    //Assemble the bundle data
+    Map<String, dynamic> requestData =
+        context.read<HomeProvider>().requestShoppingData[0];
+
+    //? For the request
+    Map<String, String> bundleData = {
+      "user_identifier":
+          context.read<HomeProvider>().user_identifier.toString(),
+      "request_fp": requestData['request_fp'].toString(),
+    };
+
+    try {
+      Response response = await post(mainUrl, body: bundleData);
+
+      if (response.statusCode == 200) //Got some results
+      {
+        log(response.body.toString());
+        Map<String, dynamic> tmpResponse = json.decode(response.body)[0];
+        //? Update
+        if (tmpResponse['response'] == 'success') {
+          Timer(Duration(seconds: 3), () {
+            Navigator.of(context).popAndPushNamed('/home');
+          });
+        } else //Some error
+        {
+          showErrorModal_cancellation(context: context);
+        }
+      } else //Has some errors
+      {
+        log(response.toString());
+        showErrorModal_cancellation(context: context);
+      }
+    } catch (e) {
+      log('8');
+      log(e.toString());
+      showErrorModal_cancellation(context: context);
+    }
+  }
+
+  //Show error modal
+  void showErrorModal_cancellation({required BuildContext context}) {
+    //! Swhitch loader to false
+    setState(() {
+      isLoadingSubmission = false;
+    });
+    //...
+    showMaterialModalBottomSheet(
+      expand: false,
+      bounce: true,
+      enableDrag: false,
+      duration: Duration(milliseconds: 250),
+      context: context,
+      builder: (context) => SafeArea(
+        top: false,
         child: Container(
             height: MediaQuery.of(context).size.height * 0.5,
             child: Padding(
@@ -824,7 +952,7 @@ class _LocalModalState extends State<LocalModal> {
                     height: 15,
                   ),
                   Text(
-                    'Unable to rate driver',
+                    'Unable to cancel',
                     style: TextStyle(
                       fontFamily: 'MoveTextMedium',
                       fontSize: 19,
@@ -836,7 +964,7 @@ class _LocalModalState extends State<LocalModal> {
                   Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Text(
-                      "We were unable to submit your rating due to an unexpected error, please try again and if it persists, please contact us through the Support tab.",
+                      "We were unable to cancel your shopping request due to an unexpected error, please try again and if it persists, please contact us through the Support tab.",
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
@@ -853,13 +981,15 @@ class _LocalModalState extends State<LocalModal> {
               ),
             )),
       ),
-    );
+    ).whenComplete(() => Navigator.of(context).pop());
   }
 
   @override
   Widget build(BuildContext context) {
     Map<String, dynamic> requestData =
-        context.watch<HomeProvider>().requestShoppingData[0];
+        context.watch<HomeProvider>().requestShoppingData.isNotEmpty
+            ? context.watch<HomeProvider>().requestShoppingData[0]
+            : {};
 
     switch (scenario) {
       case 'payment_details_ewallet':
@@ -1655,6 +1785,86 @@ class _LocalModalState extends State<LocalModal> {
             ))
           ],
         ));
+
+      case 'cancel_request':
+        return SafeArea(
+          top: false,
+          child: Container(
+            height: MediaQuery.of(context).size.height * 0.5,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 20,
+                ),
+                Align(
+                  child: Container(
+                      // color: Colors.red,
+                      child: Text('Cancel shopping?',
+                          style: TextStyle(
+                              fontFamily: 'MoveTextBold', fontSize: 20))),
+                ),
+                Divider(
+                  height: 30,
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                  child: Container(
+                    child: Text(
+                        'Do you really want to cancel your shopping request?',
+                        style: TextStyle(
+                          fontSize: 16,
+                        )),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Container(
+                    child: Text(
+                        'By doing so you will not be able to get your items shopped and shipped to you.',
+                        style: TextStyle(fontSize: 16)),
+                  ),
+                ),
+                Expanded(child: SizedBox.shrink()),
+                GenericRectButton(
+                    label: isLoadingSubmission ? 'LOADING' : 'Cancel shopping',
+                    labelFontSize: 20,
+                    horizontalPadding: 20,
+                    verticalPadding: 0,
+                    isArrowShow: !isLoadingSubmission,
+                    backgroundColor: AppTheme().getErrorColor(),
+                    actuatorFunctionl: isLoadingSubmission
+                        ? () => {}
+                        : () => cancelRequest(context: context)),
+                Divider(
+                  height: 20,
+                  color: Colors.white,
+                ),
+                Opacity(
+                  opacity: isLoadingSubmission
+                      ? AppTheme().getFadedOpacityValue()
+                      : 1,
+                  child: GenericRectButton(
+                      label: 'Don\'t cancel',
+                      labelFontSize: 20,
+                      horizontalPadding: 20,
+                      verticalPadding: 0,
+                      isArrowShow: false,
+                      backgroundColor: AppTheme().getGenericGrey(),
+                      textColor: Colors.black,
+                      labelFontFamily: 'MoveTextBold',
+                      actuatorFunctionl: isLoadingSubmission
+                          ? () => {}
+                          : () => Navigator.of(context).pop()),
+                ),
+                SizedBox(
+                  height: 20,
+                )
+              ],
+            ),
+          ),
+        );
       default:
         return SizedBox.shrink();
     }
