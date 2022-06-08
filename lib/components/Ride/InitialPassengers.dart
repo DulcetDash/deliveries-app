@@ -264,29 +264,37 @@ class GoingSameDestination extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        // color: Colors.red,
-        alignment: Alignment.centerLeft,
-        child: CheckboxListTile(
-          contentPadding: EdgeInsets.zero,
-          activeColor: AppTheme().getPrimaryColor(),
-          title: Text(
-            isChecked ? 'Same destination' : 'Not same destination',
-            style: TextStyle(
-                fontFamily: 'MoveTextRegular',
-                fontSize: 16,
-                color: isChecked ? AppTheme().getPrimaryColor() : Colors.black),
-          ),
-          subtitle: null,
-          value: isChecked,
-          onChanged: (value) {
-            context
-                .read<HomeProvider>()
-                .updateGoingSameDestinationOrNot(value: value);
-          },
-          controlAffinity:
-              ListTileControlAffinity.leading, //  <-- leading Checkbox
-        ));
+    return Opacity(
+      opacity: context.watch<HomeProvider>().passengersNumber > 1
+          ? 1
+          : AppTheme().getFadedOpacityValue(),
+      child: Container(
+          // color: Colors.red,
+          alignment: Alignment.centerLeft,
+          child: CheckboxListTile(
+            contentPadding: EdgeInsets.zero,
+            activeColor: AppTheme().getPrimaryColor(),
+            title: Text(
+              isChecked ? 'Same destination' : 'Not same destination',
+              style: TextStyle(
+                  fontFamily: 'MoveTextRegular',
+                  fontSize: 16,
+                  color:
+                      isChecked ? AppTheme().getPrimaryColor() : Colors.black),
+            ),
+            subtitle: null,
+            value: isChecked,
+            onChanged: context.watch<HomeProvider>().passengersNumber == 1
+                ? (v) {}
+                : (value) {
+                    context
+                        .read<HomeProvider>()
+                        .updateGoingSameDestinationOrNot(value: value);
+                  },
+            controlAffinity:
+                ListTileControlAffinity.leading, //  <-- leading Checkbox
+          )),
+    );
   }
 }
 
@@ -710,7 +718,11 @@ class _HeaderSearchState extends State<HeaderSearch> {
   List<Widget> generateDropOffLocation({required BuildContext context}) {
     List<Widget> dropoffFields = [];
 
-    for (var i = 0; i < context.read<HomeProvider>().passengersNumber; i++) {
+    int limit = context.read<HomeProvider>().isGoingTheSameWay!
+        ? 1
+        : context.read<HomeProvider>().passengersNumber;
+
+    for (var i = 0; i < limit; i++) {
       _editingControllersList[i].value = TextEditingValue(
           text: context.read<HomeProvider>().getManualLocationSetted_ride(
               location_type: 'dropoff', index: i));
@@ -888,13 +900,17 @@ class SearchResultsRenderer extends StatelessWidget {
                             .length),
                   ),
             //!Show move next if valid
-            // Expanded(child: SizedBox.shrink()),
-            GenericRectButton(
-                label: 'Next',
-                labelFontSize: 20,
-                actuatorFunctionl: areAllLocationsValid(context: context)
-                    ? () => Navigator.of(context).pushNamed('/FareDisplay')
-                    : () {})
+            Visibility(
+              visible:
+                  context.watch<HomeProvider>().pricing_computed.isNotEmpty &&
+                      areAllLocationsValid(context: context),
+              child: GenericRectButton(
+                  label: 'Next',
+                  labelFontSize: 20,
+                  actuatorFunctionl: areAllLocationsValid(context: context)
+                      ? () => Navigator.of(context).pushNamed('/FareDisplay')
+                      : () {}),
+            )
           ],
         ),
       ),

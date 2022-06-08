@@ -16,7 +16,7 @@ import 'package:provider/src/provider.dart';
 // Will hold all the home related globals - only!
 
 class HomeProvider with ChangeNotifier {
-  final String bridge = 'http://192.168.178.119:9697';
+  final String bridge = 'http://localhost:9697';
   // final String bridge = 'https://taxiconnectnanetwork.com:9999';
 
   String selectedService =
@@ -24,6 +24,19 @@ class HomeProvider with ChangeNotifier {
 
   String user_identifier =
       '8246a726f668f5471a797175116f04e38b33f2fd1ec2f74ebd3936c3938a3778daa71b0b71c43880e6d02df7aec129cb3576d07ebe46d93788b9c8ea6ec4555e'; //The user's identifier
+
+  //! Search for items in store
+  String shops_search_item_key =
+      ''; //Will hold the typed key to search for items globally
+  List<dynamic> shops_items_searched =
+      []; //Will hold the results for the searched items
+  bool isLoadingForItemsSearch =
+      false; //When loading for item search in a store.
+
+  //! Search for stores
+  String stores_search_key = ''; //Will hold the typed key to search for stores
+  List<dynamic> stores_searched =
+      []; //Will hold the results for the searched stores.
 
   Map selected_store = {
     "store_fp": "kfc9537807322322",
@@ -467,8 +480,17 @@ class HomeProvider with ChangeNotifier {
       ride_location_pickup = location;
       notifyListeners();
     } else if (location_type == 'dropoff') {
-      ride_location_dropoff[selectedLocationField_index] = location;
-      notifyListeners();
+      //! More passengers going the same way
+      if (isGoingTheSameWay! && passengersNumber > 1) {
+        for (var i = 0; i < passengersNumber; i++) {
+          ride_location_dropoff[i] = location;
+        }
+        notifyListeners();
+      } else //Just 1 passenger
+      {
+        ride_location_dropoff[selectedLocationField_index] = location;
+        notifyListeners();
+      }
     }
   }
 
@@ -985,6 +1007,40 @@ class HomeProvider with ChangeNotifier {
     } catch (e) {
       customFareEntered = customFareValue;
     }
+    notifyListeners();
+  }
+
+  //?51. Update the typed key to search for items in shops
+  void updateShopsKeyItemsSearch({required String value}) {
+    shops_search_item_key = value;
+    print(value);
+    notifyListeners();
+  }
+
+  //?52. Update the items searched results for shops
+  void updateItemsSearchResults({required List<dynamic> value}) {
+    shops_items_searched = value;
+    notifyListeners();
+  }
+
+  //?53. Update loading items search in a store status
+  void updateLoaderStatusItems_shop({required bool status}) {
+    isLoadingForItemsSearch = status;
+  }
+
+  //?54. Update the typed key to search for stores
+  void updateStoresKeyItemsSearch({required String value}) {
+    stores_search_key = value;
+
+    //!Filter the array
+    List filteredStored = List.from(mainStores);
+    filteredStored.removeWhere((el) =>
+        el['name'].toString().toLowerCase().contains(value.toLowerCase()) ==
+        false);
+    //? Update the searched stores
+    stores_searched = filteredStored;
+    // print(filteredStored);
+
     notifyListeners();
   }
 }

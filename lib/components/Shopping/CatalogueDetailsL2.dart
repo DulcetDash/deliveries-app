@@ -151,7 +151,22 @@ class _CatalogueDetailsL2State extends State<CatalogueDetailsL2> {
                             ),
                           ),
                         )
-                      : ShowCaseMainCat(),
+                      : context
+                              .watch<HomeProvider>()
+                              .shops_search_item_key
+                              .isNotEmpty
+                          ? Expanded(
+                              child: ListView(
+                              padding: EdgeInsets.only(top: 10, bottom: 50),
+                              children: [
+                                GenericTitle(title: 'Search results'),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                searchedCatalogue(context: context),
+                              ],
+                            ))
+                          : ShowCaseMainCat(),
             ],
           ),
         ),
@@ -163,11 +178,68 @@ class _CatalogueDetailsL2State extends State<CatalogueDetailsL2> {
   String ucFirst(String text) {
     return "${text[0].toUpperCase()}${text.substring(1).toLowerCase()}";
   }
+
+  //? Show searched catalogue
+  Widget searchedCatalogue({required BuildContext context}) {
+    List searchedData = context.watch<HomeProvider>().shops_items_searched;
+
+    return context.watch<HomeProvider>().isLoadingForItemsSearch
+        ? Padding(
+            padding:
+                EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.1),
+            child: Align(
+              child: Container(
+                child: CircularProgressIndicator(
+                  strokeWidth: 3,
+                  color: AppTheme().getPrimaryColor(),
+                ),
+              ),
+            ))
+        : Container(
+            // color: Colors.red,
+            child: GridView.count(
+              padding: EdgeInsets.only(left: 20, right: 20),
+              physics:
+                  NeverScrollableScrollPhysics(), // to disable GridView's scrolling
+              shrinkWrap: true, // You won't see infinite size error
+              // Create a grid with 2 columns. If you change the scrollDirection to
+              // horizontal, this produces 2 rows.
+              crossAxisCount: 2,
+              mainAxisSpacing: 40,
+              crossAxisSpacing: 20, childAspectRatio: 0.89,
+              // Generate 100 widgets that display their index in the List.
+              children: List.generate(searchedData.length, (index) {
+                Map<String, dynamic> productData = searchedData[index];
+
+                // print(productData['product_picture']);
+
+                return ProductDisplayModel_search(
+                  index: index,
+                  productImage:
+                      productData['product_picture'].runtimeType.toString() ==
+                              'String'
+                          ? productData['product_picture']
+                          : productData['product_picture'][0]
+                                      .runtimeType
+                                      .toString() ==
+                                  'List<dynamic>'
+                              ? productData['product_picture'][0][0]
+                              : productData['product_picture'][0],
+                  productName: productData['product_name'],
+                  productPrice: productData['product_price'],
+                  productData: productData,
+                );
+                // return Text('item');
+              }),
+            ),
+          );
+  }
 }
 
 //Genetic title
 class GenericTitle extends StatelessWidget {
-  const GenericTitle({Key? key}) : super(key: key);
+  final String title;
+  const GenericTitle({Key? key, required this.title}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -176,8 +248,7 @@ class GenericTitle extends StatelessWidget {
         padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
         child: Row(
           children: [
-            Text('New Stores',
-                style: TextStyle(fontFamily: 'MoveTextBold', fontSize: 19)),
+            Text(title, style: TextStyle(fontFamily: 'MoveBold', fontSize: 16)),
           ],
         ),
       ),
@@ -212,6 +283,14 @@ class _HeaderState extends State<Header> {
                       context
                           .read<HomeProvider>()
                           .updateCatalogueLevel2_structured(data: []);
+
+                      //! Clear the search data
+                      context
+                          .read<HomeProvider>()
+                          .updateShopsKeyItemsSearch(value: '');
+                      context
+                          .read<HomeProvider>()
+                          .updateItemsSearchResults(value: []);
                       //...
                       Navigator.of(context).pop();
                     },
@@ -249,6 +328,89 @@ class SearchBar extends StatefulWidget {
 }
 
 class _SearchBarState extends State<SearchBar> {
+  //!Search for items in a specific store
+  Future SearchForItemsInAStore({required BuildContext context}) async {
+    //Start the loader
+    context.read<HomeProvider>().updateLoaderStatusItems_shop(status: true);
+
+    Uri mainUrl = Uri.parse(Uri.encodeFull(
+        '${context.read<HomeProvider>().bridge}/getResultsForKeywords'));
+
+    //Assemble the bundle data
+    //* @param type: the type of request (past, scheduled, business)
+    Map<String, String> bundleData = {
+      "store": context
+          .read<HomeProvider>()
+          .selected_store['name']
+          .toString()
+          .toUpperCase(),
+      "key": context.read<HomeProvider>().shops_search_item_key.toString(),
+      'category': context
+          .read<HomeProvider>()
+          .catalogueData_level2_structured[0]['meta']['category']
+          .toString()
+          .toUpperCase(),
+      "user_fingerprint":
+          context.read<HomeProvider>().user_identifier.toString()
+    };
+
+    print(bundleData);
+
+    try {
+      http.Response response = await http.post(mainUrl, body: bundleData);
+
+      if (response.statusCode == 200) //Got some results
+      {
+        context
+            .read<HomeProvider>()
+            .updateLoaderStatusItems_shop(status: false);
+        // log(response.body.toString());
+        List<dynamic> tmpResponse = json.decode(response.body)['response'];
+        //? Update
+        if (tmpResponse.isNotEmpty) //Found some products
+        {
+          context
+              .read<HomeProvider>()
+              .updateItemsSearchResults(value: tmpResponse);
+        } else //No items
+        {
+          context.read<HomeProvider>().updateItemsSearchResults(value: []);
+        }
+      } else //Has some errors
+      {
+        print(response.toString());
+        // showErrorModal(context: context);
+        context.read<HomeProvider>().updateItemsSearchResults(value: []);
+        context
+            .read<HomeProvider>()
+            .updateLoaderStatusItems_shop(status: false);
+      }
+    } catch (e) {
+      print('8');
+      print(e.toString());
+      // showErrorModal(context: context);
+      context.read<HomeProvider>().updateItemsSearchResults(value: []);
+      context.read<HomeProvider>().updateLoaderStatusItems_shop(status: false);
+    }
+  }
+
+  Timer? searchOnStoppedTyping;
+
+  _onChangeHandler(value) {
+    const duration = Duration(
+        milliseconds:
+            800); // set the duration that you want call search() after that.
+    if (searchOnStoppedTyping != null) {
+      setState(() => searchOnStoppedTyping!.cancel()); // clear timer
+    }
+    setState(() => searchOnStoppedTyping = new Timer(duration, () {
+          //! Update the typed key
+          context.read<HomeProvider>().updateShopsKeyItemsSearch(value: value);
+          //...Search
+          SearchForItemsInAStore(context: context);
+        }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -256,8 +418,11 @@ class _SearchBarState extends State<SearchBar> {
       child: Container(
         height: 45,
         child: TextField(
+          onChanged: _onChangeHandler,
+          maxLength: 150,
           style: TextStyle(fontSize: 18),
           decoration: InputDecoration(
+              counterText: "",
               contentPadding: EdgeInsets.only(bottom: 5),
               prefixIcon: Icon(Icons.search, color: Colors.black),
               prefixIconColor: Colors.black,
@@ -515,6 +680,99 @@ class ProductDisplayModel extends StatelessWidget {
           Text(productPrice,
               style: TextStyle(fontSize: 16, color: Colors.grey.shade700))
         ]),
+      ),
+    );
+  }
+}
+
+//Product display model search
+class ProductDisplayModel_search extends StatelessWidget {
+  final String productImage;
+  final String productName;
+  final String productPrice;
+  final int index;
+  final Map productData;
+
+  const ProductDisplayModel_search(
+      {Key? key,
+      required this.productImage,
+      required this.productName,
+      required this.productPrice,
+      required this.productData,
+      required this.index})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      // color: Colors.amber,
+      // height: 800,
+      child: InkWell(
+        onTap: () {
+          //! Form the saving data object for the selected item
+          Map<String, dynamic> tmpData = {
+            "index": index,
+            "name": productData['product_name'],
+            "price": productData['product_price'],
+            "pictures": productData['product_picture'],
+            "sku": productData['sku'],
+            "meta": productData['meta']
+          };
+          //...
+          context.read<HomeProvider>().updateSelectedProduct(data: tmpData);
+          //Move
+          Navigator.of(context).pushNamed('/product_view');
+        },
+        child: Container(
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 15),
+              child: Align(
+                child: SizedBox(
+                  // width: MediaQuery.of(context).size.width,
+                  height: 90.0,
+                  child: CachedNetworkImage(
+                    fit: BoxFit.cover,
+                    imageUrl: productImage,
+                    progressIndicatorBuilder:
+                        (context, url, downloadProgress) => SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: 20.0,
+                      child: Shimmer.fromColors(
+                        baseColor: Colors.grey.shade300,
+                        highlightColor: Colors.grey.shade100,
+                        child: Container(
+                          width: 20.0,
+                          height: 20.0,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => const Icon(
+                      Icons.error,
+                      size: 30,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              // color: Colors.red,
+              height: 55,
+              child: Text(productName,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 3,
+                  style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 15)),
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Text(productPrice,
+                style: TextStyle(fontSize: 16, color: Colors.grey.shade700))
+          ]),
+        ),
       ),
     );
   }

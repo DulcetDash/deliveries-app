@@ -133,7 +133,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                             },
                             child: const Text('Legal',
                                 style: TextStyle(fontSize: 16))),
-                        trailing: const Text('v1.2.1',
+                        trailing: const Text('v1.2.4',
                             style: TextStyle(fontSize: 16, color: Colors.grey)),
                       ),
                     ))),
@@ -206,7 +206,10 @@ class DriverForNej extends StatelessWidget {
                 ),
                 Text(
                   'Drive or deliver with Nej',
-                  style: TextStyle(fontSize: 15, color: Colors.white),
+                  style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.white,
+                      fontFamily: 'MoveTextMedium'),
                 ),
                 Expanded(child: SizedBox.shrink()),
                 Icon(

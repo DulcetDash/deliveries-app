@@ -31,12 +31,12 @@ class _HomeScreenState extends State<HomeScreen> {
     //Location operation handlers
     locationOpsHandler = LocationOpsHandler(context: context);
     //Ask once for the location permission
-    locationOpsHandler.requestLocationPermission();
-    //globalDataFetcher.getCoreDate(context: context);
-    watcher.startWatcher(context: context, actuatorFunctions: [
-      {'name': 'LocationOpsHandler', 'actuator': locationOpsHandler},
-      {'name': 'getShoppingData', 'actuator': _getShoppingData}
-    ]);
+    // locationOpsHandler.requestLocationPermission();
+    //!globalDataFetcher.getCoreDate(context: context);
+    //! watcher.startWatcher(context: context, actuatorFunctions: [
+    //   {'name': 'LocationOpsHandler', 'actuator': locationOpsHandler},
+    //   {'name': 'getShoppingData', 'actuator': _getShoppingData}
+    // ]);
   }
 
   @override

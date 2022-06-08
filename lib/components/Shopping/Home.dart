@@ -93,8 +93,8 @@ class _HomeState extends State<Home> {
               SearchBar(),
               Divider(
                 color: Colors.white,
+                height: 35,
               ),
-              AddressBar(),
               isLoading
                   ? Padding(
                       padding: EdgeInsets.only(
@@ -127,53 +127,86 @@ class _HomeState extends State<Home> {
                             ),
                           ),
                         )
-                      : Expanded(
-                          child: ListView(
-                            children: [
-                              Divider(
-                                height: 30,
-                                color: Colors.white,
+                      : context
+                              .watch<HomeProvider>()
+                              .stores_search_key
+                              .isNotEmpty
+                          ? searchedStores(context: context)
+                          : Expanded(
+                              child: ListView(
+                                padding: EdgeInsets.only(bottom: 55),
+                                children: [
+                                  GenericTitle(title: 'Frequent'),
+                                  StoresListingMain(),
+                                  Visibility(
+                                    visible: context
+                                            .watch<HomeProvider>()
+                                            .mainStores
+                                            .length >
+                                        4,
+                                    child: Divider(
+                                      height: 60,
+                                      thickness: 1,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  Visibility(
+                                      visible: context
+                                              .watch<HomeProvider>()
+                                              .mainStores
+                                              .length >
+                                          4,
+                                      child: GenericTitle(
+                                        title: 'New Stores',
+                                      )),
+                                  Visibility(
+                                      visible: context
+                                              .watch<HomeProvider>()
+                                              .mainStores
+                                              .length >
+                                          4,
+                                      child: NewStores())
+                                ],
                               ),
-                              StoresListingMain(),
-                              Visibility(
-                                visible: context
-                                        .watch<HomeProvider>()
-                                        .mainStores
-                                        .length >
-                                    4,
-                                child: Divider(
-                                  height: 60,
-                                  thickness: 1,
-                                ),
-                              ),
-                              Visibility(
-                                  visible: context
-                                          .watch<HomeProvider>()
-                                          .mainStores
-                                          .length >
-                                      4,
-                                  child: GenericTitle()),
-                              Visibility(
-                                  visible: context
-                                          .watch<HomeProvider>()
-                                          .mainStores
-                                          .length >
-                                      4,
-                                  child: NewStores())
-                            ],
-                          ),
-                        )
+                            )
             ],
           ),
         ),
       ),
     );
   }
+
+  //? Show searched catalogue
+  Widget searchedStores({required BuildContext context}) {
+    List searchedData = context.watch<HomeProvider>().stores_searched;
+
+    return Container(
+        // color: Colors.red,
+        child: Expanded(
+            child: ListView.separated(
+                itemBuilder: (context, index) {
+                  Map<String, dynamic> storeData = searchedData[index];
+
+                  return NewStoreDisplay(
+                    storeName: storeData['name'],
+                    imagePath: storeData['logo'],
+                    backgroundColor: HexColor(storeData['background']),
+                    borderColor: HexColor(storeData['border']),
+                    closingTime: storeData['times']['string'],
+                    productData: storeData,
+                  );
+                },
+                separatorBuilder: (context, index) => Divider(
+                      height: 50,
+                    ),
+                itemCount: searchedData.length)));
+  }
 }
 
 //Genetic title
 class GenericTitle extends StatelessWidget {
-  const GenericTitle({Key? key}) : super(key: key);
+  final String title;
+  const GenericTitle({Key? key, required this.title}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -182,8 +215,7 @@ class GenericTitle extends StatelessWidget {
         padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
         child: Row(
           children: [
-            Text('New Stores',
-                style: TextStyle(fontFamily: 'MoveTextBold', fontSize: 19)),
+            Text(title, style: TextStyle(fontFamily: 'MoveBold', fontSize: 16)),
           ],
         ),
       ),
@@ -268,6 +300,11 @@ class _SearchBarState extends State<SearchBar> {
       child: Container(
         height: 45,
         child: TextField(
+          onChanged: (value) {
+            context
+                .read<HomeProvider>()
+                .updateStoresKeyItemsSearch(value: value);
+          },
           style: TextStyle(fontSize: 18),
           decoration: InputDecoration(
               contentPadding: EdgeInsets.only(bottom: 5),
@@ -340,102 +377,33 @@ class StoresListingMain extends StatefulWidget {
 class _StoresListingMainState extends State<StoresListingMain> {
   @override
   Widget build(BuildContext context) {
+    List<dynamic> newStoresList =
+        context.watch<HomeProvider>().mainStores.sublist(0, 4);
+
     return Container(
-      child: Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20),
-        child: Column(
-          children: [
-            Row(
-              children: context.watch<HomeProvider>().mainStores.isEmpty
-                  ? []
-                  : [
-                      BigStoreShow(
-                        imagePath: context.watch<HomeProvider>().mainStores[0]
-                            ['logo'],
-                        backgroundColor: HexColor(context
-                            .watch<HomeProvider>()
-                            .mainStores[0]['background']),
-                        borderColor: HexColor(context
-                            .watch<HomeProvider>()
-                            .mainStores[0]['border']),
-                        closingTime: context.watch<HomeProvider>().mainStores[0]
-                            ['times']['string'],
-                        productData:
-                            context.watch<HomeProvider>().mainStores[0],
-                      ),
-                      Visibility(
-                        visible:
-                            context.watch<HomeProvider>().mainStores.length > 1,
-                        child: SizedBox(
-                          width: 20,
-                        ),
-                      ),
-                      Visibility(
-                        visible:
-                            context.watch<HomeProvider>().mainStores.length > 1,
-                        child: BigStoreShow(
-                          imagePath: context.watch<HomeProvider>().mainStores[1]
-                              ['logo'],
-                          backgroundColor: HexColor(context
-                              .watch<HomeProvider>()
-                              .mainStores[1]['background']),
-                          borderColor: HexColor(context
-                              .watch<HomeProvider>()
-                              .mainStores[1]['border']),
-                          closingTime: context
-                              .watch<HomeProvider>()
-                              .mainStores[1]['times']['string'],
-                          productData:
-                              context.watch<HomeProvider>().mainStores[1],
-                        ),
-                      ),
-                    ],
-            ),
-            Divider(
-              color: Colors.white,
-            ),
-            Row(
-              children: [
-                Visibility(
-                  visible: context.watch<HomeProvider>().mainStores.length > 2,
-                  child: BigStoreShow(
-                    imagePath: context.watch<HomeProvider>().mainStores[2]
-                        ['logo'],
-                    backgroundColor: HexColor(context
-                        .watch<HomeProvider>()
-                        .mainStores[2]['background']),
-                    borderColor: HexColor(
-                        context.watch<HomeProvider>().mainStores[2]['border']),
-                    closingTime: context.watch<HomeProvider>().mainStores[2]
-                        ['times']['string'],
-                    productData: context.watch<HomeProvider>().mainStores[2],
-                  ),
-                ),
-                Visibility(
-                  visible: context.watch<HomeProvider>().mainStores.length > 3,
-                  child: SizedBox(
-                    width: 20,
-                  ),
-                ),
-                Visibility(
-                  visible: context.watch<HomeProvider>().mainStores.length > 3,
-                  child: BigStoreShow(
-                    imagePath: context.watch<HomeProvider>().mainStores[3]
-                        ['logo'],
-                    backgroundColor: HexColor(context
-                        .watch<HomeProvider>()
-                        .mainStores[3]['background']),
-                    borderColor: HexColor(
-                        context.watch<HomeProvider>().mainStores[3]['border']),
-                    closingTime: context.watch<HomeProvider>().mainStores[3]
-                        ['times']['string'],
-                    productData: context.watch<HomeProvider>().mainStores[3],
-                  ),
-                ),
-              ],
-            )
-          ],
+      child: GridView.count(
+        padding: EdgeInsets.only(
+          left: 20,
+          right: 20,
         ),
+        physics:
+            NeverScrollableScrollPhysics(), // to disable GridView's scrolling
+        shrinkWrap: true, // You won't see infinite size error
+        // Create a grid with 2 columns. If you change the scrollDirection to
+        // horizontal, this produces 2 rows.
+        crossAxisCount: 2,
+        mainAxisSpacing: 20,
+        crossAxisSpacing: 20,
+        // Generate 100 widgets that display their index in the List.
+        children: List.generate(newStoresList.length, (index) {
+          return BigStoreShow(
+            imagePath: newStoresList[index]['logo'],
+            backgroundColor: HexColor(newStoresList[index]['background']),
+            borderColor: HexColor(newStoresList[index]['border']),
+            closingTime: newStoresList[index]['times']['string'],
+            productData: newStoresList[index],
+          );
+        }),
       ),
     );
   }
@@ -460,73 +428,71 @@ class BigStoreShow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: InkWell(
-        onTap: () {
-          //! Save the store fp and store name
-          Map tmpData = productData;
-          tmpData['store_fp'] = productData['fp'];
-          tmpData['name'] = productData['fd_name'];
-          //...
-          context.read<HomeProvider>().updateSelectedStoreData(data: tmpData);
-          //...
-          Navigator.of(context).pushNamed('/catalogue');
-        },
-        child: Container(
-          decoration: BoxDecoration(
-              color: backgroundColor, border: Border.all(color: borderColor)),
-          height: 150,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 15, right: 15),
-                  child: SizedBox(
-                    height: 50,
-                    child: CachedNetworkImage(
-                      imageUrl: imagePath,
-                      progressIndicatorBuilder:
-                          (context, url, downloadProgress) => SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        height: 20.0,
-                        child: Shimmer.fromColors(
-                          baseColor: Colors.grey.shade300,
-                          highlightColor: Colors.grey.shade100,
-                          child: Container(
-                            width: 48.0,
-                            height: 48.0,
-                            color: Colors.white,
-                          ),
+    return InkWell(
+      onTap: () {
+        //! Save the store fp and store name
+        Map tmpData = productData;
+        tmpData['store_fp'] = productData['fp'];
+        tmpData['name'] = productData['fd_name'];
+        //...
+        context.read<HomeProvider>().updateSelectedStoreData(data: tmpData);
+        //...
+        Navigator.of(context).pushNamed('/catalogue');
+      },
+      child: Container(
+        decoration: BoxDecoration(
+            color: backgroundColor, border: Border.all(color: borderColor)),
+        height: 150,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 15, right: 15),
+                child: SizedBox(
+                  height: 50,
+                  child: CachedNetworkImage(
+                    imageUrl: imagePath,
+                    progressIndicatorBuilder:
+                        (context, url, downloadProgress) => SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: 20.0,
+                      child: Shimmer.fromColors(
+                        baseColor: Colors.grey.shade300,
+                        highlightColor: Colors.grey.shade100,
+                        child: Container(
+                          width: 48.0,
+                          height: 48.0,
+                          color: Colors.white,
                         ),
                       ),
-                      errorWidget: (context, url, error) => const Icon(
-                        Icons.error,
-                        size: 30,
-                        color: Colors.grey,
-                      ),
+                    ),
+                    errorWidget: (context, url, error) => const Icon(
+                      Icons.error,
+                      size: 30,
+                      color: Colors.grey,
                     ),
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 20),
-                child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100),
-                        color: Colors.black.withOpacity(0.7)),
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          left: 10, right: 10, top: 3, bottom: 3),
-                      child: Text(closingTime,
-                          style: TextStyle(
-                              fontFamily: 'MoveTextRegular',
-                              fontSize: 13,
-                              color: Colors.white)),
-                    )),
-              )
-            ],
-          ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100),
+                      color: Colors.black.withOpacity(0.7)),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 10, right: 10, top: 3, bottom: 3),
+                    child: Text(closingTime,
+                        style: TextStyle(
+                            fontFamily: 'MoveTextRegular',
+                            fontSize: 13,
+                            color: Colors.white)),
+                  )),
+            )
+          ],
         ),
       ),
     );
@@ -537,41 +503,38 @@ class BigStoreShow extends StatelessWidget {
 class NewStores extends StatelessWidget {
   const NewStores({Key? key}) : super(key: key);
 
+  //int indexAdjusted = index + 4;
+  //context.watch<HomeProvider>().mainStores.length - 4
+
   @override
   Widget build(BuildContext context) {
+    List<dynamic> newStoresList =
+        context.watch<HomeProvider>().mainStores.sublist(4);
+
     return Container(
-        height: 70.0,
-        // color: Colors.red,
-        child: ListView.builder(
-            shrinkWrap: true,
-            physics: ClampingScrollPhysics(),
-            scrollDirection: Axis.horizontal,
-            itemCount: context.watch<HomeProvider>().mainStores.length - 4,
-            itemBuilder: ((context, index) {
-              int indexAdjusted = index + 4;
-              return NewStoreDisplay(
-                productData:
-                    context.watch<HomeProvider>().mainStores[indexAdjusted],
-                storeName: context
-                    .watch<HomeProvider>()
-                    .mainStores[indexAdjusted]['fd_name'],
-                storeType: context
-                    .watch<HomeProvider>()
-                    .mainStores[indexAdjusted]['type'],
-                imagePath: context
-                    .watch<HomeProvider>()
-                    .mainStores[indexAdjusted]['logo'],
-                backgroundColor: HexColor(context
-                    .watch<HomeProvider>()
-                    .mainStores[indexAdjusted]['background']),
-                borderColor: HexColor(context
-                    .watch<HomeProvider>()
-                    .mainStores[indexAdjusted]['border']),
-                closingTime: context
-                    .watch<HomeProvider>()
-                    .mainStores[indexAdjusted]['times']['string'],
-              );
-            })));
+      // color: Colors.red,
+      child: GridView.count(
+        padding: EdgeInsets.only(left: 20, right: 20),
+        physics:
+            NeverScrollableScrollPhysics(), // to disable GridView's scrolling
+        shrinkWrap: true, // You won't see infinite size error
+        // Create a grid with 2 columns. If you change the scrollDirection to
+        // horizontal, this produces 2 rows.
+        crossAxisCount: 2,
+        mainAxisSpacing: 20,
+        crossAxisSpacing: 20,
+        // Generate 100 widgets that display their index in the List.
+        children: List.generate(newStoresList.length, (index) {
+          return BigStoreShow(
+            imagePath: newStoresList[index]['logo'],
+            backgroundColor: HexColor(newStoresList[index]['background']),
+            borderColor: HexColor(newStoresList[index]['border']),
+            closingTime: newStoresList[index]['times']['string'],
+            productData: newStoresList[index],
+          );
+        }),
+      ),
+    );
   }
 
   // //?Get the new stores
@@ -604,78 +567,90 @@ class NewStoreDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 20, right: 30),
-      child: InkWell(
-        onTap: () {
-          //! Save the store fp and store name
-          Map tmpData = {
-            'store_fp': productData['fp'],
-            'name': productData['fd_name'],
-            'structured': productData['structured']
-          };
-          //...
-          context.read<HomeProvider>().updateSelectedStoreData(data: tmpData);
-          //...
-          Navigator.of(context).pushNamed('/catalogue');
-        },
-        child: Row(
-          children: [
-            Container(
-                decoration: BoxDecoration(
-                    color: backgroundColor,
-                    border: Border.all(color: borderColor)),
-                width: 70,
-                height: 70,
-                child: Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: CachedNetworkImage(
-                    imageUrl: imagePath,
-                    progressIndicatorBuilder:
-                        (context, url, downloadProgress) => SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      height: 20.0,
-                      child: Shimmer.fromColors(
-                        baseColor: Colors.grey.shade300,
-                        highlightColor: Colors.grey.shade100,
-                        child: Container(
-                          width: 20.0,
-                          height: 20.0,
-                          color: Colors.white,
+      padding: const EdgeInsets.only(left: 20, right: 20),
+      child: Container(
+        height: 70,
+        child: InkWell(
+          onTap: () {
+            //! Save the store fp and store name
+            Map tmpData = {
+              'store_fp': productData['fp'],
+              'name': productData['fd_name'],
+              'structured': productData['structured']
+            };
+            //...
+            context.read<HomeProvider>().updateSelectedStoreData(data: tmpData);
+            //...
+            // context.read<HomeProvider>().updateStoresKeyItemsSearch(value: '');
+            //...
+            Navigator.of(context).pushNamed('/catalogue');
+          },
+          child: Row(
+            children: [
+              Container(
+                  decoration: BoxDecoration(
+                      color: backgroundColor,
+                      border: Border.all(color: borderColor)),
+                  width: 70,
+                  height: 70,
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: CachedNetworkImage(
+                      imageUrl: imagePath,
+                      progressIndicatorBuilder:
+                          (context, url, downloadProgress) => SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: 20.0,
+                        child: Shimmer.fromColors(
+                          baseColor: Colors.grey.shade300,
+                          highlightColor: Colors.grey.shade100,
+                          child: Container(
+                            width: 20.0,
+                            height: 20.0,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
+                      errorWidget: (context, url, error) => const Icon(
+                        Icons.error,
+                        size: 30,
+                        color: Colors.grey,
+                      ),
                     ),
-                    errorWidget: (context, url, error) => const Icon(
-                      Icons.error,
-                      size: 30,
-                      color: Colors.grey,
+                  )),
+              SizedBox(
+                width: 15,
+              ),
+              Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      storeName,
+                      style:
+                          TextStyle(fontFamily: 'MoveTextMedium', fontSize: 17),
                     ),
-                  ),
-                )),
-            SizedBox(
-              width: 15,
-            ),
-            Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    storeName,
-                    style:
-                        TextStyle(fontFamily: 'MoveTextMedium', fontSize: 17),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    storeType,
-                    style: TextStyle(color: Colors.grey.shade600),
-                  ),
-                  Expanded(
-                      child: Container(
-                          alignment: Alignment.bottomLeft,
-                          child: Text(closingTime)))
-                ])
-          ],
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      storeType,
+                      style: TextStyle(color: Colors.grey.shade600),
+                    ),
+                    Expanded(
+                        child: Container(
+                            alignment: Alignment.bottomLeft,
+                            child: Text(closingTime)))
+                  ]),
+              Expanded(
+                child: SizedBox.shrink(),
+              ),
+              Icon(
+                Icons.arrow_forward_ios,
+                size: 15,
+              )
+            ],
+          ),
         ),
       ),
     );
