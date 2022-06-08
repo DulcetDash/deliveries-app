@@ -5,6 +5,7 @@ import 'package:nej/components/Delivery/RequestWindow_delivery.dart';
 import 'package:nej/components/Ride/FareDisplay.dart';
 import 'package:nej/components/Ride/RequestWindow_ride.dart';
 import 'package:nej/components/Ride/RideSummary.dart';
+import 'package:nej/components/Share/Share.dart';
 import 'package:nej/components/Shopping/Catalogue.dart';
 import 'package:nej/components/Shopping/CatalogueDetailsL2.dart';
 import 'package:nej/components/Delivery/DelRecipients.dart';
@@ -20,6 +21,8 @@ import 'package:nej/components/PaymentSetting.dart';
 import 'package:nej/components/Shopping/ProductView.dart';
 import 'package:nej/components/Shopping/RequestWindow.dart';
 import 'package:nej/components/SuccessRequest.dart';
+import 'package:nej/components/Support/Support.dart';
+import 'package:nej/components/YourRides/YourRides.dart';
 import 'package:provider/src/provider.dart';
 import 'package:nej/ThemesAndRoutes/AppTheme.dart' as AppTheme;
 
@@ -68,7 +71,13 @@ class _AppGeneralEntryState extends State<AppGeneralEntry> {
           '/PassengersInput': (context) => const InitialPassengers(),
           '/FareDisplay': (context) => const FareDisplay(),
           '/RideSummary': (context) => const RideSummary(),
-          '/RequestWindow_ride': (context) => const RequestWindow_ride()
+          '/RequestWindow_ride': (context) => const RequestWindow_ride(),
+          //Share
+          '/Share': (context) => const Share(),
+          //Support
+          '/Support': (context) => const Support(),
+          //YourRides
+          '/YourRides': (context) => const YourRides()
         });
   }
 }

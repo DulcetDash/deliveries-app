@@ -129,6 +129,7 @@ class GenericRectButton extends StatelessWidget {
               Visibility(
                 visible: this.activateTrailing,
                 child: Container(
+                  height: 60,
                   child: AddTrailingButton(
                     activateTrailing: this.activateTrailing,
                     trailingIcon: this.trailingIcon,

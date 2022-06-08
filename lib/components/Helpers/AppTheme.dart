@@ -47,4 +47,9 @@ class AppTheme {
   Color getGoldColor() {
     return Colors.yellow.shade800;
   }
+
+  //8. Get header pages title size
+  double getHeaderPagesTitleSize() {
+    return 25.0;
+  }
 }

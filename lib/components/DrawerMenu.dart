@@ -105,7 +105,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
             titleOption: 'Share',
             showDivider: false,
             actuatorFnc: () =>
-                Navigator.of(context).pushReplacementNamed('/Support'),
+                Navigator.of(context).pushReplacementNamed('/Share'),
           ),
           Expanded(
               child: SafeArea(

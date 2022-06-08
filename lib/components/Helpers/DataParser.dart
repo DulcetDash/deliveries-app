@@ -77,4 +77,23 @@ class DataParser {
     //...
     return tmpFinal;
   }
+
+  //? Only upper the first char
+  String ucFirst(String text) {
+    return "${text[0].toUpperCase()}${text.substring(1).toLowerCase()}";
+  }
+
+  //?. Get normal readable time
+  String getReadableTime({required String dateString}) {
+    DateTime dateTime = DateTime.parse(dateString);
+
+    return '${dateTime.hour}:${dateTime.minute}';
+  }
+
+  //? Get normal readable date
+  String getReadableDate({required String dateString}) {
+    DateTime dateTime = DateTime.parse(dateString);
+
+    return '${dateTime.day < 10 ? '0${dateTime.day}' : dateTime.day}-${dateTime.month < 10 ? '0${dateTime.month}' : dateTime.month}-${dateTime.year} at ${getReadableTime(dateString: dateString)}';
+  }
 }
