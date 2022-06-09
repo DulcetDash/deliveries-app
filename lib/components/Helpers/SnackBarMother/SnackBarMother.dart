@@ -25,12 +25,15 @@ class SnackBarMother {
     if (this.isSnackBarInitialized == false) {
       this.snackBarMotherInstance = SnackBar(
           duration: Duration(seconds: 2),
-          padding:
-              EdgeInsets.only(bottom: this.snackPaddingBottom - 15, top: 0),
+          padding: EdgeInsets.only(
+              bottom: snackPaddingBottom, top: 0, left: 15, right: 15),
           backgroundColor: Colors.black.withOpacity(0),
           elevation: 0,
           content: Container(
-            decoration: BoxDecoration(color: this.snackBackgroundcolor),
+            height: 60,
+            decoration: BoxDecoration(
+                color: this.snackBackgroundcolor,
+                borderRadius: BorderRadius.circular(500)),
             child: Padding(
               padding: const EdgeInsets.only(
                   left: 10, right: 10, top: 15, bottom: 15),
@@ -40,7 +43,7 @@ class SnackBarMother {
                   SizedBox(
                     width: 5,
                   ),
-                  this.snackChild,
+                  Flexible(child: this.snackChild),
                 ],
               ),
             ),

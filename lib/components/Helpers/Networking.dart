@@ -83,3 +83,35 @@ class GetShoppingData {
     }
   }
 }
+
+//?2. Get user data
+class GetUserData {
+  //Get shopping data
+  Future exec({required BuildContext context}) async {
+    Uri mainUrl = Uri.parse(Uri.encodeFull(
+        '${context.read<HomeProvider>().bridge}/getGenericUserData'));
+
+    //? For the request
+    Map<String, String> bundleData = {
+      "user_identifier": context.read<HomeProvider>().user_identifier,
+    };
+
+    try {
+      Response response = await post(mainUrl, body: bundleData);
+
+      if (response.statusCode == 200) //Got some results
+      {
+        // log(response.body.toString());
+        Map<String, dynamic> tmpResponse =
+            json.decode(response.body)[0]['response'];
+        context.read<HomeProvider>().updateUserDataErrorless(data: tmpResponse);
+      } else //Has some errors
+      {
+        log(response.toString());
+      }
+    } catch (e) {
+      log('8');
+      log(e.toString());
+    }
+  }
+}

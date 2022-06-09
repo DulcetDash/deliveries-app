@@ -11,6 +11,7 @@ import 'package:nej/components/Helpers/DataParser.dart';
 import 'package:nej/components/Helpers/MapMarkerFactory/place_to_marker.dart';
 import 'package:phone_number/phone_number.dart';
 import 'package:provider/src/provider.dart';
+import 'package:collection/collection.dart';
 
 //? HOME PROVIDER
 // Will hold all the home related globals - only!
@@ -24,6 +25,8 @@ class HomeProvider with ChangeNotifier {
 
   String user_identifier =
       '8246a726f668f5471a797175116f04e38b33f2fd1ec2f74ebd3936c3938a3778daa71b0b71c43880e6d02df7aec129cb3576d07ebe46d93788b9c8ea6ec4555e'; //The user's identifier
+
+  Map<String, dynamic> userData = {}; //Will hold all the dynamic user data
 
   //! Search for items in store
   String shops_search_item_key =
@@ -1042,5 +1045,15 @@ class HomeProvider with ChangeNotifier {
     // print(filteredStored);
 
     notifyListeners();
+  }
+
+  //?55. Update the user data only if has no errors
+  void updateUserDataErrorless({required Map<String, dynamic> data}) {
+    if (data['user_identifier'] != null &&
+        DeepCollectionEquality().equals(data, userData) == false) //!Errorless
+    {
+      userData = data;
+      notifyListeners();
+    }
   }
 }

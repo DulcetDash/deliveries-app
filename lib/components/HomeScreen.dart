@@ -17,36 +17,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // Create a new networking instance
-  late LocationOpsHandler locationOpsHandler;
-  GetShoppingData _getShoppingData = GetShoppingData();
-  Watcher watcher = Watcher();
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-    //Start with the timers
-    //Location operation handlers
-    locationOpsHandler = LocationOpsHandler(context: context);
-    //Ask once for the location permission
-    // locationOpsHandler.requestLocationPermission();
-    //!globalDataFetcher.getCoreDate(context: context);
-    //! watcher.startWatcher(context: context, actuatorFunctions: [
-    //   {'name': 'LocationOpsHandler', 'actuator': locationOpsHandler},
-    //   {'name': 'getShoppingData', 'actuator': _getShoppingData}
-    // ]);
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    locationOpsHandler.dispose();
-    watcher.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

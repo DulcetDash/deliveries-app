@@ -2,9 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:nej/components/Delivery/RequestWindow_delivery.dart';
+import 'package:nej/components/Helpers/LocationOpsHandler.dart';
+import 'package:nej/components/Helpers/Networking.dart';
+import 'package:nej/components/Helpers/Watcher.dart';
 import 'package:nej/components/Ride/FareDisplay.dart';
 import 'package:nej/components/Ride/RequestWindow_ride.dart';
 import 'package:nej/components/Ride/RideSummary.dart';
+import 'package:nej/components/Settings/Settings.dart';
 import 'package:nej/components/Share/Share.dart';
 import 'package:nej/components/Shopping/Catalogue.dart';
 import 'package:nej/components/Shopping/CatalogueDetailsL2.dart';
@@ -28,6 +32,10 @@ import 'package:nej/ThemesAndRoutes/AppTheme.dart' as AppTheme;
 
 import '../Components/Providers/RegistrationProvider.dart';
 
+class NavigationService {
+  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+}
+
 class AppGeneralEntry extends StatefulWidget {
   const AppGeneralEntry({Key? key}) : super(key: key);
 
@@ -36,15 +44,42 @@ class AppGeneralEntry extends StatefulWidget {
 }
 
 class _AppGeneralEntryState extends State<AppGeneralEntry> {
+  // Create a new networking instance
+  late LocationOpsHandler locationOpsHandler;
+  GetShoppingData _getShoppingData = GetShoppingData();
+  GetUserData _getUserData = GetUserData();
+  Watcher watcher = Watcher();
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    //Start with the timers
+    //Location operation handlers
+    locationOpsHandler = LocationOpsHandler(context: context);
+    //Ask once for the location permission
+    locationOpsHandler.requestLocationPermission();
+    //globalDataFetcher.getCoreDate(context: context);
+    watcher.startWatcher(context: context, actuatorFunctions: [
+      {'name': 'LocationOpsHandler', 'actuator': locationOpsHandler},
+      {'name': 'getShoppingData', 'actuator': _getShoppingData},
+      {'name': 'getUserData', 'actuator': _getUserData}
+    ]);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    locationOpsHandler.dispose();
+    watcher.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        navigatorKey: NavigationService.navigatorKey,
         theme: AppTheme.appTheme,
         initialRoute: '/home',
         routes: {
@@ -77,7 +112,9 @@ class _AppGeneralEntryState extends State<AppGeneralEntry> {
           //Support
           '/Support': (context) => const Support(),
           //YourRides
-          '/YourRides': (context) => const YourRides()
+          '/YourRides': (context) => const YourRides(),
+          //Settings
+          '/Settings': (context) => const Settings()
         });
   }
 }
