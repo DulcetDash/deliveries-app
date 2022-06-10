@@ -18,6 +18,8 @@ class DrawerMenu extends StatefulWidget {
 class _DrawerMenuState extends State<DrawerMenu> {
   @override
   Widget build(BuildContext context) {
+    Map<String, dynamic> userData = context.watch<HomeProvider>().userData;
+
     return Drawer(
       backgroundColor: Colors.white,
       child: Column(
@@ -37,27 +39,48 @@ class _DrawerMenuState extends State<DrawerMenu> {
                         onTap: () => Navigator.of(context)
                             .pushReplacementNamed('/Settings'),
                         horizontalTitleGap: 10,
-                        leading: CircleAvatar(
-                            radius: 35,
-                            backgroundColor: Colors.black,
-                            // backgroundImage: Image.network(context.watch<HomeProvider>().userAccountDetails['profile_pciture']),
-                            child: Image.network(
-                              '',
-                              fit: BoxFit.cover,
-                              width: 70.0,
-                              height: 70.0,
-                              errorBuilder: (context, error, stackTrace) {
-                                return const CircleAvatar(
-                                  radius: 25,
-                                  backgroundColor: Colors.white,
-                                  backgroundImage: AssetImage(
-                                    'assets/Images/user.png',
-                                  ),
-                                );
-                              },
-                            )),
+                        leading: Container(
+                          width: 70,
+                          height: 70,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.grey.withOpacity(0.4),
+                                  blurRadius: 7,
+                                  spreadRadius: 0)
+                            ],
+                          ),
+                          child: CircleAvatar(
+                              radius: 35,
+                              backgroundColor: Colors.black,
+                              backgroundImage: NetworkImage(
+                                userData['profile_picture'],
+                              ),
+                              child: Container(
+                                width: 70,
+                                height: 70,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(1000)),
+                                // child: Image.network(
+                                //   userData['profile_picture'],
+                                //   fit: BoxFit.cover,
+                                //   width: 70.0,
+                                //   height: 70.0,
+                                //   errorBuilder: (context, error, stackTrace) {
+                                //     return const CircleAvatar(
+                                //       radius: 25,
+                                //       backgroundColor: Colors.white,
+                                //       backgroundImage: AssetImage(
+                                //         'assets/Images/user.png',
+                                //       ),
+                                //     );
+                                //   },
+                                // ),
+                              )),
+                        ),
                         title: Text(
-                          'Dominique',
+                          userData['name'],
                           style: const TextStyle(
                               fontFamily: 'MoveBold',
                               fontSize: 20,

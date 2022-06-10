@@ -19,6 +19,8 @@ PODS:
     - GoogleMaps/Base
   - hexcolor (0.0.1):
     - Flutter
+  - image_picker_ios (0.0.1):
+    - Flutter
   - path_provider_ios (0.0.1):
     - Flutter
   - phone_number (0.12.0):
@@ -40,6 +42,7 @@ DEPENDENCIES:
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
   - hexcolor (from `.symlinks/plugins/hexcolor/ios`)
+  - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
   - phone_number (from `.symlinks/plugins/phone_number/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
@@ -65,6 +68,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/google_maps_flutter/ios"
   hexcolor:
     :path: ".symlinks/plugins/hexcolor/ios"
+  image_picker_ios:
+    :path: ".symlinks/plugins/image_picker_ios/ios"
   path_provider_ios:
     :path: ".symlinks/plugins/path_provider_ios/ios"
   phone_number:
@@ -85,6 +90,7 @@ SPEC CHECKSUMS:
   google_maps_flutter: c59fc576c0d0c7f4dc4bd63832c862d22d5a7c6d
   GoogleMaps: 008e2c80e38605b56b560e8deb73d4194ff30bef
   hexcolor: fdfb9c4258ad96e949c2dbcdf790a62194b8aa89
+  image_picker_ios: b786a5dcf033a8336a657191401bfdf12017dabb
   path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
   phone_number: 7e56d6e4e43fbe37507512a3aab3f11cf082af69
   PhoneNumberKit: 441e8b26ec88d598e3591de9061eff18f5dd12e8

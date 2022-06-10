@@ -5,6 +5,10 @@ import 'package:nej/components/Delivery/RequestWindow_delivery.dart';
 import 'package:nej/components/Helpers/LocationOpsHandler.dart';
 import 'package:nej/components/Helpers/Networking.dart';
 import 'package:nej/components/Helpers/Watcher.dart';
+import 'package:nej/components/Login/CreateAccount.dart';
+import 'package:nej/components/Login/Entry.dart';
+import 'package:nej/components/Login/OTPCheck.dart';
+import 'package:nej/components/Login/PhoneInput.dart';
 import 'package:nej/components/Ride/FareDisplay.dart';
 import 'package:nej/components/Ride/RequestWindow_ride.dart';
 import 'package:nej/components/Ride/RideSummary.dart';
@@ -57,23 +61,23 @@ class _AppGeneralEntryState extends State<AppGeneralEntry> {
 
     //Start with the timers
     //Location operation handlers
-    locationOpsHandler = LocationOpsHandler(context: context);
+    //!locationOpsHandler = LocationOpsHandler(context: context);
     //Ask once for the location permission
-    locationOpsHandler.requestLocationPermission();
+    //!locationOpsHandler.requestLocationPermission();
     //globalDataFetcher.getCoreDate(context: context);
-    watcher.startWatcher(context: context, actuatorFunctions: [
-      {'name': 'LocationOpsHandler', 'actuator': locationOpsHandler},
-      {'name': 'getShoppingData', 'actuator': _getShoppingData},
-      {'name': 'getUserData', 'actuator': _getUserData}
-    ]);
+    //! watcher.startWatcher(context: context, actuatorFunctions: [
+    //   {'name': 'LocationOpsHandler', 'actuator': locationOpsHandler},
+    //   {'name': 'getShoppingData', 'actuator': _getShoppingData},
+    //   {'name': 'getUserData', 'actuator': _getUserData}
+    // ]);
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    locationOpsHandler.dispose();
-    watcher.dispose();
+    // locationOpsHandler.dispose();
+    // watcher.dispose();
   }
 
   @override
@@ -81,8 +85,14 @@ class _AppGeneralEntryState extends State<AppGeneralEntry> {
     return MaterialApp(
         navigatorKey: NavigationService.navigatorKey,
         theme: AppTheme.appTheme,
-        initialRoute: '/home',
+        initialRoute: '/CreateAccount',
         routes: {
+          //Login
+          '/Entry': (context) => const Entry(),
+          '/PhoneInput': (context) => const PhoneInput(),
+          '/OTPCheck': (context) => const OTPCheck(),
+          '/CreateAccount': (context) => const CreateAccount(),
+          //Core
           '/home': (context) => const HomeScreen(),
           '/shopping': (context) => const Home(),
           '/catalogue': (context) => const Catalogue(),

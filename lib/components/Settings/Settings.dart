@@ -7,6 +7,7 @@ import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:nej/components/GenericRectButton.dart';
 import 'package:nej/components/Helpers/AppTheme.dart';
@@ -24,6 +25,113 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
+  final ImagePicker _picker = ImagePicker();
+  XFile? _imageSelected;
+
+  bool isLoading = false; //If a process is loading or not
+
+  //Request for information update only for profile picture
+  Future RequestForInformationUpdateProfile(
+      {required BuildContext context}) async {
+    setState(() {
+      isLoading = true;
+    });
+    //....
+    Uri mainUrl = Uri.parse(Uri.encodeFull(
+        '${context.read<HomeProvider>().bridge}/updateUsersInformation'));
+
+    String profilePhotoExtension = _imageSelected!.path
+        .split('.')[_imageSelected!.path.split('.').length - 1];
+    List<int> profilePhotoBytes =
+        await XFile(_imageSelected!.path).readAsBytes();
+    String profilePhotoBase64 = base64Encode(profilePhotoBytes);
+
+    //Assemble the bundle data
+    //* @param type: the type of request (past, scheduled, business)
+    Map<String, String> bundleData = {
+      'user_identifier': context.read<HomeProvider>().user_identifier,
+      'data_type': 'profile_picture',
+      'data_value': profilePhotoBase64,
+      'extension': profilePhotoExtension
+    };
+
+    try {
+      http.Response response = await http.post(mainUrl, body: bundleData);
+
+      if (response.statusCode == 200) //Got some results
+      {
+        log(response.body.toString());
+        String tmpResponse = json.decode(response.body)['response'];
+
+        if (tmpResponse == 'success') {
+          dismissModalSuccess(context: context);
+        } else //Some error
+        {
+          dismissModalError(context: context);
+        }
+      } else //Has some errors
+      {
+        dismissModalError(context: context);
+        log(response.toString());
+      }
+    } catch (e) {
+      log('8');
+      log(e.toString());
+      dismissModalError(context: context);
+    }
+  }
+
+  //Dismiss modal - error
+  void dismissModalError({required BuildContext context}) {
+    SnackBarMother _snackBarMother = SnackBarMother(
+        context: context,
+        snackChild: Text('Unable to change the profile. Try again later.'),
+        snackPaddingBottom: 0,
+        snackBackgroundcolor: AppTheme().getErrorColor());
+    _snackBarMother.showSnackBarMotherChild();
+    //...
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  //Success
+  void dismissModalSuccess({required BuildContext context}) {
+    SnackBarMother _snackBarMother = SnackBarMother(
+        context: context,
+        snackChild: Text('Successfully changed the profile.'),
+        snackPaddingBottom: 0,
+        snackBackgroundcolor: AppTheme().getSecondaryColor());
+    _snackBarMother.showSnackBarMotherChild();
+    //...
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  //Camera
+  void openCameraHandler(
+      {required BuildContext context, required bool shouldOpenCam}) async {
+    final XFile? image = await _picker.pickImage(
+        source: shouldOpenCam ? ImageSource.camera : ImageSource.gallery,
+        maxWidth: 700,
+        maxHeight: 700,
+        imageQuality: 70,
+        preferredCameraDevice: CameraDevice.front);
+    // final XFile? image = await _picker.pickImage(
+    //     maxWidth: 700,
+    //     maxHeight: 700,
+    //     imageQuality: 70,
+    //     source: ImageSource.gallery);
+    print(image);
+    setState(() {
+      _imageSelected = image;
+      isLoading = true;
+    });
+    //...Update
+    RequestForInformationUpdateProfile(context: context);
+  }
+
   @override
   Widget build(BuildContext context) {
     Map<String, dynamic> userData = context.watch<HomeProvider>().userData;
@@ -47,19 +155,43 @@ class _SettingsState extends State<Settings> {
                           ),
                           ListTile(
                             horizontalTitleGap: 20,
-                            leading: Badge(
-                              badgeContent: Icon(
-                                Icons.edit,
-                                size: 15,
-                                color: Colors.white,
-                              ),
-                              badgeColor: Colors.black,
-                              position: BadgePosition.bottomEnd(),
-                              child: Container(
-                                width: 70,
-                                height: 70,
-                                decoration: BoxDecoration(
-                                    color: Colors.grey, shape: BoxShape.circle),
+                            leading: InkWell(
+                              onTap: () => openCameraHandler(
+                                  context: context, shouldOpenCam: false),
+                              child: Badge(
+                                badgeContent: Icon(
+                                  Icons.edit,
+                                  size: 15,
+                                  color: Colors.white,
+                                ),
+                                badgeColor: Colors.black,
+                                position: BadgePosition.bottomEnd(),
+                                child: Container(
+                                  width: 70,
+                                  height: 70,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Colors.grey.withOpacity(0.4),
+                                          blurRadius: 7,
+                                          spreadRadius: 0)
+                                    ],
+                                  ),
+                                  child: CircleAvatar(
+                                      radius: 35,
+                                      backgroundColor: Colors.black,
+                                      backgroundImage: NetworkImage(
+                                        userData['profile_picture'],
+                                      ),
+                                      child: Container(
+                                        width: 70,
+                                        height: 70,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(1000)),
+                                      )),
+                                ),
                               ),
                             ),
                             title: Text(
@@ -74,6 +206,15 @@ class _SettingsState extends State<Settings> {
                                 style: TextStyle(fontSize: 16),
                               ),
                             ),
+                            trailing: isLoading
+                                ? SizedBox(
+                                    width: 15,
+                                    height: 15,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 1,
+                                      color: AppTheme().getSecondaryColor(),
+                                    ))
+                                : null,
                           ),
                           Divider(
                             height: 30,

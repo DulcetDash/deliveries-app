@@ -47,6 +47,12 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Nej needs access your camera in order for you to take a picture for your profile picture.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Nej needs access your gallery in order to change your profile picture.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Nej needs access your gallery in order to change your profile picture.</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>tel</string>
