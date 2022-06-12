@@ -7,6 +7,7 @@ import 'package:nej/components/Helpers/Networking.dart';
 import 'package:nej/components/Helpers/Watcher.dart';
 import 'package:nej/components/Login/CreateAccount.dart';
 import 'package:nej/components/Login/Entry.dart';
+import 'package:nej/components/Login/NewAccountAddiDetails.dart';
 import 'package:nej/components/Login/OTPCheck.dart';
 import 'package:nej/components/Login/PhoneInput.dart';
 import 'package:nej/components/Ride/FareDisplay.dart';
@@ -85,13 +86,14 @@ class _AppGeneralEntryState extends State<AppGeneralEntry> {
     return MaterialApp(
         navigatorKey: NavigationService.navigatorKey,
         theme: AppTheme.appTheme,
-        initialRoute: '/CreateAccount',
+        initialRoute: '/Entry',
         routes: {
           //Login
           '/Entry': (context) => const Entry(),
           '/PhoneInput': (context) => const PhoneInput(),
           '/OTPCheck': (context) => const OTPCheck(),
           '/CreateAccount': (context) => const CreateAccount(),
+          '/NewAccountDetails': (context) => const NewAccountAddiDetails(),
           //Core
           '/home': (context) => const HomeScreen(),
           '/shopping': (context) => const Home(),

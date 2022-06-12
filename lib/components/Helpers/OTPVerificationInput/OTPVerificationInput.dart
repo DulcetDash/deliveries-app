@@ -67,7 +67,7 @@ class _OTPVerificationInputState extends State<OTPVerificationInput> {
 class TimerAndErrorNotifiyer extends StatelessWidget {
   TimerAndErrorNotifiyer({Key? key}) : super(key: key);
 
-  final int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 5;
+  final int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 60;
 
   @override
   Widget build(BuildContext context) {
@@ -90,10 +90,10 @@ class TimerAndErrorNotifiyer extends StatelessWidget {
                                 fontFamily: 'MoveTextMedium',
                                 color: AppTheme().getPrimaryColor())));
                   }
-                  print(time);
+                  // print(time);
                   //...
                   return Text(
-                      'Resend the code in ${time.min == null ? '00' : time.min}:${time.sec}',
+                      'Resend the code in ${time.min == null ? '00' : time.min}:${time.sec! >= 10 ? time.sec : '0${time.sec}'}',
                       style: TextStyle(
                         fontSize: 17,
                         fontFamily: 'MoveTextRegular',

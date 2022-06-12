@@ -62,12 +62,27 @@ class _PhoneInputState extends State<PhoneInput> {
               ),
             ),
           ),
-          GenericRectButton(
-              horizontalPadding: 20,
-              label: 'Next',
-              labelFontSize: 20,
-              isArrowShow: false,
-              actuatorFunctionl: () {})
+          Opacity(
+            opacity:
+                context.watch<HomeProvider>().enteredPhoneNumber.isNotEmpty &&
+                        context.watch<HomeProvider>().isPhoneEnteredValid
+                    ? 1
+                    : AppTheme().getFadedOpacityValue(),
+            child: GenericRectButton(
+                horizontalPadding: 20,
+                label: 'Next',
+                labelFontSize: 20,
+                isArrowShow: false,
+                actuatorFunctionl: context
+                            .watch<HomeProvider>()
+                            .enteredPhoneNumber
+                            .isNotEmpty &&
+                        context.watch<HomeProvider>().isPhoneEnteredValid
+                    ? () {
+                        Navigator.of(context).pushNamed('/OTPCheck');
+                      }
+                    : () {}),
+          )
         ],
       )),
     );
