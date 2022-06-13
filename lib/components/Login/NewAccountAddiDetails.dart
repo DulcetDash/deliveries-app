@@ -166,7 +166,7 @@ class ButtonUpdateMinimalAccount extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: EdgeInsets.symmetric(horizontal: 25, vertical: 16),
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         child: Container(
           width: MediaQuery.of(context).size.width,
           child: ElevatedButton(

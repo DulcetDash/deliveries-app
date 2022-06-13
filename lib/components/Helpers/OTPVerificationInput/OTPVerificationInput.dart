@@ -2,22 +2,41 @@ import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/current_remaining_time.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:nej/components/Helpers/AppTheme.dart';
+import 'package:nej/components/Providers/HomeProvider.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:provider/provider.dart';
 
 class OTPVerificationInput extends StatefulWidget {
-  const OTPVerificationInput({Key? key}) : super(key: key);
+  final sendAgain_actuator;
+  final checkOTP_actuator;
+  const OTPVerificationInput(
+      {Key? key,
+      required this.sendAgain_actuator,
+      required this.checkOTP_actuator})
+      : super(key: key);
 
   @override
-  _OTPVerificationInputState createState() => _OTPVerificationInputState();
+  _OTPVerificationInputState createState() => _OTPVerificationInputState(
+      sendAgain_actuator: sendAgain_actuator,
+      checkOTP_actuator: checkOTP_actuator);
 }
 
 class _OTPVerificationInputState extends State<OTPVerificationInput> {
+  final sendAgain_actuator;
+  final checkOTP_actuator;
+
+  _OTPVerificationInputState(
+      {Key? key,
+      required this.sendAgain_actuator,
+      required this.checkOTP_actuator});
+
   @override
   Widget build(BuildContext context) {
     return Column(children: [
       Container(
         color: Colors.white,
         child: PinCodeTextField(
+          controller: context.watch<HomeProvider>().otpFieldController,
           enablePinAutofill: true,
           showCursor: false,
           autoFocus: true,
@@ -46,9 +65,11 @@ class _OTPVerificationInputState extends State<OTPVerificationInput> {
           backgroundColor: Colors.white,
           onCompleted: (v) {
             print("Completed");
+            checkOTP_actuator();
           },
           onChanged: (value) {
             print(value);
+            context.read<HomeProvider>().updateOTPCode(data: value);
           },
           beforeTextPaste: (text) {
             print("Allowing to paste $text");
@@ -58,14 +79,16 @@ class _OTPVerificationInputState extends State<OTPVerificationInput> {
           },
         ),
       ),
-      TimerAndErrorNotifiyer()
+      TimerAndErrorNotifiyer(sendAgain_actuator: sendAgain_actuator)
     ]);
   }
 }
 
 //Counter and error notifiyer class
 class TimerAndErrorNotifiyer extends StatelessWidget {
-  TimerAndErrorNotifiyer({Key? key}) : super(key: key);
+  final sendAgain_actuator;
+  TimerAndErrorNotifiyer({Key? key, required this.sendAgain_actuator})
+      : super(key: key);
 
   final int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 60;
 
@@ -83,7 +106,7 @@ class TimerAndErrorNotifiyer extends StatelessWidget {
                     (BuildContext context, CurrentRemainingTime? time) {
                   if (time == null) {
                     return InkWell(
-                        onTap: () => print('Pressed on resend OTP'),
+                        onTap: sendAgain_actuator,
                         child: Text('Resend the code',
                             style: TextStyle(
                                 fontSize: 17,

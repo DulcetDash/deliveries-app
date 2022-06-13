@@ -93,7 +93,8 @@ class _EntryState extends State<Entry> {
                 GenericRectButton(
                     label: 'Get started',
                     labelFontSize: 19,
-                    actuatorFunctionl: () {})
+                    actuatorFunctionl: () =>
+                        Navigator.of(context).pushNamed('/PhoneInput'))
               ],
             ))),
       ),

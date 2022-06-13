@@ -26,6 +26,11 @@ class HomeProvider with ChangeNotifier {
   String user_identifier =
       '8246a726f668f5471a797175116f04e38b33f2fd1ec2f74ebd3936c3938a3778daa71b0b71c43880e6d02df7aec129cb3576d07ebe46d93788b9c8ea6ec4555e'; //The user's identifier
 
+  Map<String, dynamic> loginPhase1Data =
+      {}; //Will hold the first checking data after the phone number check
+  String otp_code = ''; //Will hold globally the otp entered
+  TextEditingController otpFieldController = TextEditingController();
+
   Map<String, dynamic> userData = {}; //Will hold all the dynamic user data
 
   //! Search for items in store
@@ -1055,5 +1060,17 @@ class HomeProvider with ChangeNotifier {
       userData = data;
       notifyListeners();
     }
+  }
+
+  //?56. Update login phase 1 data
+  void updateLoginPhase1Data({required Map<String, dynamic> data}) {
+    loginPhase1Data = data;
+    notifyListeners();
+  }
+
+  //?57. Update the otp code
+  void updateOTPCode({required String data}) {
+    otp_code = data;
+    notifyListeners();
   }
 }
