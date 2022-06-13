@@ -4,7 +4,9 @@ import 'package:hexcolor/hexcolor.dart';
 class AppTheme {
   //1. Get the primary color
   Color getPrimaryColor() {
-    return HexColor('#CD8600');
+    // return HexColor('#CD8600');
+    // return Color.fromRGBO(9, 110, 212, 1);
+    return HexColor('#11A05A');
   }
 
   //1b. Get the secondary color

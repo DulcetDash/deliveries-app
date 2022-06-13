@@ -43,40 +43,62 @@ class _HomeScreenState extends State<HomeScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Hi, Vanessa',
+                                'Shop seamlessly',
                                 style: TextStyle(
                                     fontFamily: 'MoveTextMedium',
                                     fontSize: 27,
                                     color: Colors.white),
                               ),
                               SizedBox(
-                                height: 15,
+                                height: 10,
                               ),
                               SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.65,
+                                width: MediaQuery.of(context).size.width * 0.58,
                                 child: Text(
-                                  'Ride, shop or make deliveries anywhere with Nej.',
+                                  'Shop anywhere from you anywhere with Nej',
                                   style: TextStyle(
-                                      fontSize: 15, color: Colors.white),
+                                      fontSize: 14, color: Colors.white),
                                 ),
                               ),
+                              SizedBox(
+                                height: 13,
+                              ),
+                              Container(
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    color: Colors.black,
+                                    borderRadius: BorderRadius.circular(1000)),
+                                width: 103,
+                                height: 36,
+                                child: Text(
+                                  'Shop now',
+                                  style: TextStyle(
+                                      fontFamily: 'MoveTextMedium',
+                                      color: Colors.white,
+                                      fontSize: 15),
+                                ),
+                              )
                             ],
                           ),
                         ),
-                        Expanded(child: SizedBox.shrink()),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Container(
-                              // color: Colors.amber,
-                              height: MediaQuery.of(context).size.height * 0.12,
-                              width: 180,
-                              child: Image.asset(
-                                'assets/Images/package.png',
-                                fit: BoxFit.fitHeight,
-                              ),
-                            )
-                          ],
+                        // Expanded(child: SizedBox.shrink()),
+                        Flexible(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Container(
+                                alignment: Alignment.centerRight,
+                                // color: Colors.amber,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.35,
+                                width: 180,
+                                child: Image.asset(
+                                  'assets/Images/packagecp.png',
+                                  fit: BoxFit.fitHeight,
+                                ),
+                              )
+                            ],
+                          ),
                         )
                       ],
                     ),

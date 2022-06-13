@@ -10,6 +10,8 @@ import 'package:nej/components/Login/Entry.dart';
 import 'package:nej/components/Login/NewAccountAddiDetails.dart';
 import 'package:nej/components/Login/OTPCheck.dart';
 import 'package:nej/components/Login/PhoneInput.dart';
+import 'package:nej/components/Login/SplashScreen.dart';
+import 'package:nej/components/Providers/HomeProvider.dart';
 import 'package:nej/components/Ride/FareDisplay.dart';
 import 'package:nej/components/Ride/RequestWindow_ride.dart';
 import 'package:nej/components/Ride/RideSummary.dart';
@@ -62,23 +64,23 @@ class _AppGeneralEntryState extends State<AppGeneralEntry> {
 
     //Start with the timers
     //Location operation handlers
-    //!locationOpsHandler = LocationOpsHandler(context: context);
+    locationOpsHandler = LocationOpsHandler(context: context);
     //Ask once for the location permission
-    //!locationOpsHandler.requestLocationPermission();
+    locationOpsHandler.requestLocationPermission();
     //globalDataFetcher.getCoreDate(context: context);
-    //! watcher.startWatcher(context: context, actuatorFunctions: [
-    //   {'name': 'LocationOpsHandler', 'actuator': locationOpsHandler},
-    //   {'name': 'getShoppingData', 'actuator': _getShoppingData},
-    //   {'name': 'getUserData', 'actuator': _getUserData}
-    // ]);
+    watcher.startWatcher(context: context, actuatorFunctions: [
+      {'name': 'LocationOpsHandler', 'actuator': locationOpsHandler},
+      {'name': 'getShoppingData', 'actuator': _getShoppingData},
+      {'name': 'getUserData', 'actuator': _getUserData}
+    ]);
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    // locationOpsHandler.dispose();
-    // watcher.dispose();
+    locationOpsHandler.dispose();
+    watcher.dispose();
   }
 
   @override
@@ -86,8 +88,9 @@ class _AppGeneralEntryState extends State<AppGeneralEntry> {
     return MaterialApp(
         navigatorKey: NavigationService.navigatorKey,
         theme: AppTheme.appTheme,
-        initialRoute: '/Entry',
+        initialRoute: '/',
         routes: {
+          '/': (context) => const SplashScreen(),
           //Login
           '/Entry': (context) => const Entry(),
           '/PhoneInput': (context) => const PhoneInput(),

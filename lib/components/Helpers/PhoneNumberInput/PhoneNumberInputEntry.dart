@@ -52,7 +52,7 @@ class _PhoneNumberInputEntryState extends State<PhoneNumberInputEntry> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    textInputController.dispose();
+    // textInputController.dispose();
   }
 }
 

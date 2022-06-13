@@ -156,7 +156,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                             },
                             child: const Text('Legal',
                                 style: TextStyle(fontSize: 16))),
-                        trailing: const Text('v1.2.6',
+                        trailing: const Text('v1.3.0',
                             style: TextStyle(fontSize: 16, color: Colors.grey)),
                       ),
                     ))),

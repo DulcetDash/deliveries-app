@@ -237,7 +237,7 @@ class SummaryPreview extends StatelessWidget {
       enableDrag: false,
       backgroundColor: Colors.white,
       bounce: true,
-      duration: Duration(milliseconds: 400),
+      duration: Duration(milliseconds: 250),
       context: context,
       builder: (context) => Container(
         height: 400,
@@ -311,7 +311,7 @@ class SummaryPreview extends StatelessWidget {
           showMaterialModalBottomSheet(
             expand: true,
             bounce: true,
-            duration: Duration(milliseconds: 400),
+            duration: Duration(milliseconds: 250),
             context: context,
             builder: (context) => SuccessRequest(),
           );
@@ -342,7 +342,7 @@ class SummaryPreview extends StatelessWidget {
     showMaterialModalBottomSheet(
       expand: true,
       bounce: true,
-      duration: Duration(milliseconds: 400),
+      duration: Duration(milliseconds: 250),
       context: context,
       builder: (context) => LocalModal(
         scenario: scenario,

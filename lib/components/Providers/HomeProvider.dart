@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:nej/components/Helpers/DataParser.dart';
 import 'package:nej/components/Helpers/MapMarkerFactory/place_to_marker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:phone_number/phone_number.dart';
 import 'package:provider/src/provider.dart';
 import 'package:collection/collection.dart';
@@ -23,13 +24,24 @@ class HomeProvider with ChangeNotifier {
   String selectedService =
       'ride'; //! The selected service that the user selected: ride, delivery and shopping - default: ''
 
-  String user_identifier =
-      '8246a726f668f5471a797175116f04e38b33f2fd1ec2f74ebd3936c3938a3778daa71b0b71c43880e6d02df7aec129cb3576d07ebe46d93788b9c8ea6ec4555e'; //The user's identifier
+  String user_identifier = 'empty_fingerprint'; //The user's identifier
 
   Map<String, dynamic> loginPhase1Data =
       {}; //Will hold the first checking data after the phone number check
   String otp_code = ''; //Will hold globally the otp entered
   TextEditingController otpFieldController = TextEditingController();
+
+  //? Additional data for the login completion
+  String name = '';
+  String surname = '';
+  String gender = 'male'; //Default: male
+  String email = '';
+  bool is_additional_emailValid =
+      false; //If the email entered above is valid or not
+  //------
+
+  //! Data restoration
+  bool isLoadingForDataRestoration = true; //Actively loading
 
   Map<String, dynamic> userData = {}; //Will hold all the dynamic user data
 
@@ -199,6 +211,133 @@ class HomeProvider with ChangeNotifier {
   double? definitiveCustomFare; //The unchanging custom fare after validatiion
   bool isCustomFareConsidered =
       false; //Whether or not a custom fare was applied by the user.
+
+  //The higher order absolute class
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+
+    return directory.path;
+  }
+
+  //The full file path
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/NejHomeProvider.txt');
+  }
+
+  //Write to file
+  Future<File> writeStateToFile(String state) async {
+    final file = await _localFile;
+
+    // Write the file
+    return file.writeAsString(state);
+  }
+
+  //Read file
+  Future<Map<String, dynamic>> readStateFile() async {
+    try {
+      final file = await _localFile;
+
+      // Read the file
+      final contents = await file.readAsString();
+
+      return json.decode(contents);
+    } catch (e) {
+      log('6');
+      log(e.toString());
+      // If encountering an error, return 0
+      return {};
+    }
+  }
+
+  //! Restore data map
+  void restoreStateData({required BuildContext context}) {
+    // print('Restore registration provider state');
+    Future<Map<String, dynamic>> restoredState = readStateFile();
+    restoredState.then((state) {
+      if (mapEquals({}, state['userData']) ||
+          state['userData'] == null) //?No state saved yet
+      {
+        log('No state saved found');
+        //? Close loader
+        isLoadingForDataRestoration = false;
+        Navigator.of(context).pushNamed('/Entry');
+        //?....
+        notifyListeners();
+      } else //Found a saved state
+      {
+        isLoadingForDataRestoration = false;
+
+        print(state);
+
+        //! user_identifier
+        user_identifier = state['user_identifier'] != null
+            ? state['user_identifier']
+            : 'empty_fingerprint';
+
+        //! userData
+        userData = state['userData'] != null ? state['userData'] : {};
+        //?....
+        //Reroute
+        if (userData['account_state'] != null) //Has a state
+        {
+          if (user_identifier != 'empty_fingerprint' &&
+              user_identifier.length > 10 &&
+              userData['account_state'] == 'full') //logged in
+          {
+            Navigator.of(context).pushNamed('/home');
+          } else //Not logged in
+          {
+            Navigator.of(context).pushNamed('/Entry');
+          }
+        } else //No state - not logged in
+        {
+          Navigator.of(context).pushNamed('/Entry');
+        }
+
+        notifyListeners();
+      }
+    });
+  }
+
+  //! Get fingerprint back
+  Future<Map<String, dynamic>> getFileSavedFingerprintBack() {
+    Future<Map<String, dynamic>> restoredState = readStateFile();
+    return restoredState;
+  }
+
+  //! Persist data map
+  void peristDataMap() {
+    Map<String, dynamic> globalStateData = toMap();
+    print(globalStateData);
+    String stateString = json.encode(globalStateData).toString();
+
+    //Write
+    writeStateToFile(stateString);
+  }
+
+  //! Convert class to Map
+  Map<String, dynamic> toMap() {
+    //? Intelligently figure out the correct user_identifier
+    String user_identifier_deduced = loginPhase1Data['userData'] != null
+        ? loginPhase1Data['userData']['user_identifier']
+        : loginPhase1Data['response'] != null
+            ? loginPhase1Data['response']['user_identifier']
+            : user_identifier;
+
+    return {"user_identifier": user_identifier_deduced, "userData": userData};
+  }
+
+  //! Clear everything
+  void clearEverything() {
+    user_identifier = 'empty_fingerprint';
+    userData = {};
+    //...
+    peristDataMap();
+    //...
+    //notifyListeners();
+  }
+  //!-----------------
 
   //Updaters
   //?1. Update the main stores
@@ -1065,12 +1204,46 @@ class HomeProvider with ChangeNotifier {
   //?56. Update login phase 1 data
   void updateLoginPhase1Data({required Map<String, dynamic> data}) {
     loginPhase1Data = data;
+    //...
     notifyListeners();
   }
 
   //?57. Update the otp code
   void updateOTPCode({required String data}) {
     otp_code = data;
+    notifyListeners();
+  }
+
+  //?58. Update additional new account infos
+  void updateAdditionalAccountInfos(
+      {required String data, required String type}) {
+    switch (type) {
+      case 'name':
+        name = data;
+        notifyListeners();
+        break;
+      case 'surname':
+        surname = data;
+        notifyListeners();
+        break;
+      case 'gender':
+        gender = data;
+        notifyListeners();
+        break;
+      case 'email':
+        email = data;
+        //! validate
+        is_additional_emailValid = DataParser().isEmailValid(email: data);
+        print(is_additional_emailValid);
+        notifyListeners();
+        break;
+      default:
+    }
+  }
+
+  //!60. Update the general user indetifier
+  void updateGeneral_userIdenfier({required String data}) {
+    user_identifier = data;
     notifyListeners();
   }
 }

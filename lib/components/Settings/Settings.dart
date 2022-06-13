@@ -126,10 +126,9 @@ class _SettingsState extends State<Settings> {
     print(image);
     setState(() {
       _imageSelected = image;
-      isLoading = true;
     });
     //...Update
-    RequestForInformationUpdateProfile(context: context);
+    if (image != null) RequestForInformationUpdateProfile(context: context);
   }
 
   @override

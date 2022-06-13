@@ -162,7 +162,7 @@ class _CreateAccountState extends State<CreateAccount> {
     showMaterialModalBottomSheet(
       expand: false,
       bounce: true,
-      duration: Duration(milliseconds: 400),
+      duration: Duration(milliseconds: 250),
       context: context,
       builder: (context) => SafeArea(
         child: Container(
@@ -218,7 +218,7 @@ class _CreateAccountState extends State<CreateAccount> {
     showMaterialModalBottomSheet(
       expand: false,
       bounce: true,
-      duration: Duration(milliseconds: 400),
+      duration: Duration(milliseconds: 250),
       context: context,
       builder: (context) => SafeArea(
         child: Container(

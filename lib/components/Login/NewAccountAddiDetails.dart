@@ -1,6 +1,14 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:nej/components/GenericRectButton.dart';
 import 'package:nej/components/Helpers/AppTheme.dart';
+import 'package:nej/components/Helpers/DataParser.dart';
+import 'package:nej/components/Providers/HomeProvider.dart';
+import 'package:provider/provider.dart';
 
 class NewAccountAddiDetails extends StatefulWidget {
   const NewAccountAddiDetails({Key? key}) : super(key: key);
@@ -75,6 +83,9 @@ class InputUserDetails extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
                   autocorrect: false,
+                  onChanged: (value) => context
+                      .read<HomeProvider>()
+                      .updateAdditionalAccountInfos(data: value, type: 'name'),
                   style: TextStyle(fontFamily: 'MoveTextRegular', fontSize: 20),
                   decoration: InputDecoration(
                       // prefixIcon: Icon(
@@ -85,6 +96,11 @@ class InputUserDetails extends StatelessWidget {
                       labelText: "What's your name?",
                       floatingLabelBehavior: FloatingLabelBehavior.auto)),
             ),
+            Visibility(
+                visible: context.watch<HomeProvider>().name.isNotEmpty &&
+                    context.watch<HomeProvider>().name.length < 2,
+                child: ErrorValidation(
+                    message: 'Should be at least 2 characters long.')),
             SizedBox(
               height: 18,
             ),
@@ -119,7 +135,8 @@ class InputUserDetails extends StatelessWidget {
                         helperText: 'Choose your gender',
                         helperStyle:
                             TextStyle(color: Colors.grey, fontSize: 15),
-                        labelText: 'Male',
+                        labelText: DataParser()
+                            .ucFirst(context.watch<HomeProvider>().gender),
                         labelStyle: TextStyle(
                             color: Colors.black, fontFamily: 'MoveTextMedium'),
                         suffixIcon: Icon(Icons.arrow_drop_down_outlined,
@@ -134,6 +151,9 @@ class InputUserDetails extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
                   autocorrect: false,
+                  onChanged: (value) => context
+                      .read<HomeProvider>()
+                      .updateAdditionalAccountInfos(data: value, type: 'email'),
                   style: TextStyle(fontFamily: 'MoveTextRegular', fontSize: 20),
                   decoration: InputDecoration(
                       // prefixIcon: Icon(
@@ -144,6 +164,12 @@ class InputUserDetails extends StatelessWidget {
                       labelText: 'Email',
                       floatingLabelBehavior: FloatingLabelBehavior.auto)),
             ),
+            Visibility(
+                visible:
+                    context.watch<HomeProvider>().is_additional_emailValid ==
+                            false &&
+                        context.watch<HomeProvider>().email.isNotEmpty,
+                child: ErrorValidation(message: 'Invalid email.')),
             Expanded(
               child: Container(
                 child: SizedBox(
@@ -151,36 +177,184 @@ class InputUserDetails extends StatelessWidget {
                 ),
               ),
             ),
-            ButtonUpdateMinimalAccount()
+            //BUTTON
+            Opacity(
+              opacity: context.watch<HomeProvider>().is_additional_emailValid &&
+                      context.watch<HomeProvider>().name.isNotEmpty &&
+                      context.watch<HomeProvider>().name.length >= 2
+                  ? 1
+                  : AppTheme().getFadedOpacityValue(),
+              child: GenericRectButton(
+                  label: context.watch<HomeProvider>().isLoadingForRequest
+                      ? 'LOADING'
+                      : 'Finish',
+                  labelFontSize: 20,
+                  isArrowShow: false,
+                  actuatorFunctionl:
+                      context.watch<HomeProvider>().isLoadingForRequest
+                          ? () {}
+                          : () {
+                              updateBasicAccount(context: context);
+                            }),
+            )
           ],
         ),
       ),
     );
   }
+
+  //...
+  Future updateBasicAccount({required BuildContext context}) async {
+    //? Start the loader
+    context.read<HomeProvider>().updateLoadingRequestStatus(status: true);
+
+    Uri mainUrl = Uri.parse(Uri.encodeFull(
+        '${context.read<HomeProvider>().bridge}/addAdditionalUserAccDetails'));
+
+    //Assemble the bundle data
+    List surnameTmp = context.read<HomeProvider>().name.split(' ');
+    surnameTmp.removeAt(0);
+
+    Map<String, String> additionalData = {
+      "name": context.read<HomeProvider>().name.split(' ')[0],
+      "surname": surnameTmp.join(' ').trim(),
+      "gender": context.read<HomeProvider>().gender,
+      "email": context.read<HomeProvider>().email,
+      "profile_picture_generic":
+          '${context.read<HomeProvider>().gender.toLowerCase()}.png'
+    };
+    //? For the request
+    String user_identifierTMP =
+        context.read<HomeProvider>().loginPhase1Data['userData'] != null
+            ? context.read<HomeProvider>().loginPhase1Data['userData']
+                ['user_identifier']
+            : context.read<HomeProvider>().loginPhase1Data['response']
+                ['user_identifier'];
+
+    Map<String, String> bundleData = {
+      'user_identifier': user_identifierTMP,
+      "additional_data": json.encode(additionalData).toString()
+    };
+
+    print(bundleData);
+    try {
+      Response response = await post(mainUrl, body: bundleData);
+
+      if (response.statusCode == 200) //Got some results
+      {
+        context.read<HomeProvider>().updateLoadingRequestStatus(status: false);
+        log(response.body.toString());
+        Map<String, dynamic> responseInfo = json.decode(response.body);
+
+        if (responseInfo['response'] == 'success') //Success
+        {
+          //! Update the general user_fingerprint
+          context
+              .read<HomeProvider>()
+              .updateGeneral_userIdenfier(data: user_identifierTMP);
+          //! Persist data
+          context.read<HomeProvider>().peristDataMap();
+          //Move to home
+          Navigator.of(context).pushNamed('/home');
+        } else //An error happened
+        {
+          showErrorModalError(context: context);
+        }
+      } else //Has some errors
+      {
+        log(response.toString());
+        showErrorModalError(context: context);
+      }
+    } catch (e) {
+      log('8');
+      log(e.toString());
+      showErrorModalError(context: context);
+    }
+  }
+
+  //Show error modal
+  void showErrorModalError({required BuildContext context}) {
+    //! Swhitch loader to false
+    context.read<HomeProvider>().updateLoadingRequestStatus(status: false);
+    //...
+    showMaterialModalBottomSheet(
+      expand: false,
+      bounce: true,
+      duration: Duration(milliseconds: 250),
+      context: context,
+      builder: (context) => SafeArea(
+        child: Container(
+            height: MediaQuery.of(context).size.height * 0.5,
+            child: Padding(
+              padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * 0.05),
+              child: Column(
+                children: [
+                  Icon(Icons.warning,
+                      size: 50, color: AppTheme().getErrorColor()),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Text(
+                    'Unable to update account',
+                    style: TextStyle(
+                      fontFamily: 'MoveTextMedium',
+                      fontSize: 19,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: Text(
+                      "We were unable to update your account due to an unexpected error, please check your internet connection and try again.",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  Expanded(child: SizedBox.shrink()),
+                  GenericRectButton(
+                    label: 'Try again',
+                    labelFontSize: 20,
+                    actuatorFunctionl: () {
+                      Navigator.of(context).pop();
+                    },
+                    isArrowShow: false,
+                  )
+                ],
+              ),
+            )),
+      ),
+    );
+  }
 }
 
-//Button update minimal account
-class ButtonUpdateMinimalAccount extends StatelessWidget {
-  const ButtonUpdateMinimalAccount({Key? key}) : super(key: key);
+//Error data
+class ErrorValidation extends StatelessWidget {
+  final String message;
+  const ErrorValidation({Key? key, required this.message}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          child: ElevatedButton(
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.black)),
-            onPressed: () => print('pressed'),
-            child: Padding(
-                padding: EdgeInsets.only(bottom: 15, top: 15),
-                child: Text(
-                  'Finish',
-                  style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 20),
-                )),
+      padding: const EdgeInsets.only(top: 15, left: 20, right: 20),
+      child: Container(
+        child: Row(children: [
+          Icon(
+            Icons.error,
+            size: 15,
+            color: AppTheme().getErrorColor(),
           ),
-        ));
+          SizedBox(
+            width: 5,
+          ),
+          Text(
+            message,
+            style: TextStyle(fontSize: 15, color: AppTheme().getErrorColor()),
+          )
+        ]),
+      ),
+    );
   }
 }
 
@@ -251,7 +425,12 @@ class GenericGenderSelectButtons extends StatelessWidget {
             style: ButtonStyle(
                 backgroundColor:
                     MaterialStateProperty.all(this.backgroundColor)),
-            onPressed: () => print(this.genderValue),
+            onPressed: () {
+              context.read<HomeProvider>().updateAdditionalAccountInfos(
+                  data: genderValue, type: 'gender');
+              //Close modal
+              Navigator.of(context).pop();
+            },
             child: Padding(
                 padding: EdgeInsets.only(bottom: 15, top: 15),
                 child:

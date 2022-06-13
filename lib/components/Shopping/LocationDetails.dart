@@ -49,7 +49,7 @@ class _LocationDetailsState extends State<LocationDetails> {
                               null,
                           actuator: () => showMaterialModalBottomSheet(
                                 bounce: true,
-                                duration: Duration(milliseconds: 400),
+                                duration: Duration(milliseconds: 250),
                                 context: context,
                                 builder: (context) => LocalModal(
                                   scenario: 'pickup',
@@ -78,7 +78,7 @@ class _LocationDetailsState extends State<LocationDetails> {
                               null,
                           actuator: () => showMaterialModalBottomSheet(
                                 bounce: true,
-                                duration: Duration(milliseconds: 400),
+                                duration: Duration(milliseconds: 250),
                                 context: context,
                                 builder: (context) => LocalModal(
                                   scenario: 'dropoff',
@@ -93,7 +93,7 @@ class _LocationDetailsState extends State<LocationDetails> {
                             'Tell us any specifications you want about your shopping.',
                         actuator: () => showMaterialModalBottomSheet(
                           bounce: true,
-                          duration: Duration(milliseconds: 400),
+                          duration: Duration(milliseconds: 250),
                           context: context,
                           builder: (context) => LocalModal(
                             scenario: 'note',

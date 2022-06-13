@@ -96,4 +96,11 @@ class DataParser {
 
     return '${dateTime.day < 10 ? '0${dateTime.day}' : dateTime.day}-${dateTime.month < 10 ? '0${dateTime.month}' : dateTime.month}-${dateTime.year} at ${getReadableTime(dateString: dateString)}';
   }
+
+  //? Validate email
+  bool isEmailValid({required String email}) {
+    return RegExp(
+            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        .hasMatch(email);
+  }
 }

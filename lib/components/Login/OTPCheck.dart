@@ -101,7 +101,7 @@ class _OTPCheckState extends State<OTPCheck> {
     showMaterialModalBottomSheet(
       expand: false,
       bounce: true,
-      duration: Duration(milliseconds: 400),
+      duration: Duration(milliseconds: 250),
       context: context,
       builder: (context) => SafeArea(
         child: Container(
@@ -193,6 +193,8 @@ class _OTPCheckState extends State<OTPCheck> {
           {
             context.read<HomeProvider>().updateUserDataErrorless(
                 data: responseInfo['userData'][0]['response']);
+            //! Persist data
+            context.read<HomeProvider>().peristDataMap();
             // //?Move to home
             Navigator.of(context).pushNamed('/home');
           } else if (responseInfo['account_state'] == 'half') {
@@ -232,7 +234,7 @@ class _OTPCheckState extends State<OTPCheck> {
     showMaterialModalBottomSheet(
       expand: false,
       bounce: true,
-      duration: Duration(milliseconds: 400),
+      duration: Duration(milliseconds: 250),
       context: context,
       builder: (context) => SafeArea(
         child: Container(
