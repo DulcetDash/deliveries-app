@@ -269,7 +269,8 @@ class _DeliverySummaryState extends State<DeliverySummary> {
     List shopping_list = context.read<HomeProvider>().CART;
     //? For the request
     Map<String, String> bundleData = {
-      "user_identifier": context.read<HomeProvider>().user_identifier,
+      "user_identifier":
+          context.read<HomeProvider>().userData['user_identifier'],
       "payment_method": context.read<HomeProvider>().paymentMethod,
       "note": context.read<HomeProvider>().noteTyped_delivery,
       "dropOff_data":

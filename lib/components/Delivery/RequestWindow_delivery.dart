@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:http/http.dart';
@@ -266,6 +267,8 @@ class DeliveryList extends StatelessWidget {
 
     List dropoffs = dropoffsTMP.toList();
 
+    if (dropoffs.isEmpty) return SizedBox.shrink();
+
     return InkWell(
       onTap: () => showMaterialModalBottomSheet(
         backgroundColor: Colors.white,
@@ -487,7 +490,11 @@ class PaymentSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Map<String, dynamic> requestData =
-        context.watch<HomeProvider>().requestShoppingData[0];
+        context.watch<HomeProvider>().requestShoppingData.isNotEmpty
+            ? context.watch<HomeProvider>().requestShoppingData[0]
+            : {};
+
+    if (requestData['totals_request'] == null) return SizedBox.shrink();
 
     return Container(
         child: Padding(
@@ -896,7 +903,8 @@ class _LocalModalState extends State<LocalModal> {
       "rating": rating.toString(),
       "badges": json.encode(selectedBadges).toString(),
       "note": note,
-      "user_fingerprint": context.read<HomeProvider>().user_identifier
+      "user_fingerprint":
+          context.read<HomeProvider>().userData['user_identifier']
     };
 
     print(bundleData);
@@ -1005,7 +1013,7 @@ class _LocalModalState extends State<LocalModal> {
     //? For the request
     Map<String, String> bundleData = {
       "user_identifier":
-          context.read<HomeProvider>().user_identifier.toString(),
+          context.read<HomeProvider>().userData['user_identifier'].toString(),
       "request_fp": requestData['request_fp'].toString(),
     };
 
@@ -1107,883 +1115,899 @@ class _LocalModalState extends State<LocalModal> {
   @override
   Widget build(BuildContext context) {
     Map<String, dynamic> requestData =
-        context.watch<HomeProvider>().requestShoppingData[0];
+        context.watch<HomeProvider>().requestShoppingData.isNotEmpty
+            ? context.watch<HomeProvider>().requestShoppingData[0]
+            : {};
 
-    switch (scenario) {
-      case 'payment_details_ewallet':
-        return SafeArea(
-            child: Container(
-                child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
-              child: InkWell(
-                onTap: () => Navigator.of(context).pop(),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.arrow_back,
-                      size: AppTheme().getArrowBackSize() - 3,
-                    ),
-                    Text(
-                      'Payment details',
-                      style:
-                          TextStyle(fontFamily: 'MoveTextBold', fontSize: 18),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Divider(
-              height: 30,
-              color: Colors.white,
-            ),
-            Expanded(
-                child: ListView(
-              children: [
-                Align(
-                  child: Container(
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(1000)),
-                    width: 70,
-                    height: 70,
-                    child: Image.asset(
-                      'assets/Images/ewallet.png',
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ),
-                Divider(
-                  color: Colors.white,
-                  height: 20,
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  child: Text(
-                    'Ewallet',
-                    style: TextStyle(fontFamily: 'MoveBold', fontSize: 24),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 25, right: 25, top: 15),
-                  child: Container(
-                    child: Text(
-                      'Please end your shopping money to us before we can start with your shopping.',
-                      style: TextStyle(
-                          fontSize: 16, color: AppTheme().getGenericDarkGrey()),
-                    ),
-                  ),
-                ),
-                Divider(
-                  height: 30,
-                  color: Colors.white,
-                ),
-                //?Payment
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 25, right: 25, top: 15, bottom: 5),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Send to',
-                        style: TextStyle(
-                            fontFamily: 'MoveTextMedium',
-                            fontSize: 16,
-                            color: AppTheme().getGenericDarkGrey()),
-                      ),
-                    ],
-                  ),
-                ),
-                Divider(
-                  height: 5,
-                  color: Colors.white,
-                ),
-                Padding(
-                    padding: const EdgeInsets.only(left: 25, right: 25),
-                    child: Container(
-                      // color: Colors.amber,
-                      child: ListTile(
-                        onTap: () => print('Copy ewallet number'),
-                        contentPadding: EdgeInsets.zero,
-                        horizontalTitleGap: 0,
-                        leading: Icon(
-                          Icons.phone,
-                          color: AppTheme().getPrimaryColor(),
-                          size: 20,
-                        ),
-                        title: Text(
-                            requestData['ewallet_details']['phone'].toString(),
-                            style: TextStyle(
-                                fontFamily: 'MoveTextBold', fontSize: 20)),
-                        trailing: Icon(Icons.copy),
-                      ),
-                    )),
-                Divider(),
-                //?Amount
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 25, right: 25, top: 15, bottom: 5),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Amount',
-                        style: TextStyle(
-                            fontFamily: 'MoveTextMedium',
-                            fontSize: 16,
-                            color: AppTheme().getGenericDarkGrey()),
-                      ),
-                    ],
-                  ),
-                ),
-                Divider(
-                  height: 5,
-                  color: Colors.white,
-                ),
-                Padding(
-                    padding: const EdgeInsets.only(left: 25, right: 25),
-                    child: Container(
-                      // color: Colors.amber,
-                      child: ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        horizontalTitleGap: 0,
-                        leading: Padding(
-                          padding: const EdgeInsets.only(top: 6.0),
-                          child: Icon(
-                            Icons.square,
-                            color: AppTheme().getPrimaryColor(),
-                            size: 10,
-                          ),
-                        ),
-                        title: Text(
-                            requestData['totals_request']['total'].toString(),
-                            style: TextStyle(
-                                fontFamily: 'MoveTextBold', fontSize: 20)),
-                      ),
-                    )),
-                Divider(
-                  height: 15,
-                  color: Colors.white,
-                ),
-                //?Notice
-                Padding(
-                    padding: const EdgeInsets.only(left: 25, right: 25),
-                    child: Container(
-                      // color: Colors.amber,
-                      child: ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        horizontalTitleGap: 0,
-                        leading: Icon(
-                          Icons.info,
-                          color: AppTheme().getGenericDarkGrey(),
-                          size: 20,
-                        ),
-                        title: Padding(
-                          padding: const EdgeInsets.only(top: 12),
-                          child: Text(
-                              'Please send the full amount before we can proceed.',
-                              style: TextStyle(
-                                  fontFamily: 'MoveTextRegular',
-                                  fontSize: 15,
-                                  color: AppTheme().getGenericDarkGrey())),
-                        ),
-                      ),
-                    )),
-                Divider(
-                  height: 30,
-                ),
-                //?Support
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 25, right: 25, top: 15, bottom: 5),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Support',
-                        style: TextStyle(
-                            fontFamily: 'MoveTextMedium',
-                            fontSize: 16,
-                            color: AppTheme().getGenericDarkGrey()),
-                      ),
-                    ],
-                  ),
-                ),
-                Divider(
-                  height: 5,
-                  color: Colors.white,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 25, right: 25),
-                  child: ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: Icon(Icons.support, color: Colors.black),
-                    horizontalTitleGap: 0,
-                    title: Text(
-                      'Call us',
-                      style: TextStyle(
-                        fontFamily: 'MoveTextMedium',
-                        fontSize: 17,
-                      ),
-                    ),
-                    subtitle: Text('For more assistance, please call us.'),
-                    trailing: Icon(
-                      Icons.arrow_forward_ios,
-                      size: 15,
-                    ),
-                  ),
-                )
-              ],
-            ))
-          ],
-        )));
-      case 'payment_details_cash':
-        return SafeArea(
-            child: Container(
-                child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
-              child: InkWell(
-                onTap: () => Navigator.of(context).pop(),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.arrow_back,
-                      size: AppTheme().getArrowBackSize() - 3,
-                    ),
-                    Text(
-                      'Payment details',
-                      style:
-                          TextStyle(fontFamily: 'MoveTextBold', fontSize: 18),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Divider(
-              height: 30,
-              color: Colors.white,
-            ),
-            Expanded(
-                child: ListView(
-              children: [
-                Align(
-                  child: Container(
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(1000)),
-                    width: 70,
-                    height: 70,
-                    child: Image.asset(
-                      'assets/Images/money.png',
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ),
-                Divider(
-                  color: Colors.white,
-                  height: 20,
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  child: Text(
-                    'Cash',
-                    style: TextStyle(fontFamily: 'MoveBold', fontSize: 24),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 25, right: 25, top: 15),
-                  child: Container(
-                    child: Text(
-                      'Your shopper will pickup the cash from you before starting your shopping.',
-                      style: TextStyle(
-                          fontSize: 16, color: AppTheme().getGenericDarkGrey()),
-                    ),
-                  ),
-                ),
-                Divider(
-                  height: 30,
-                  color: Colors.white,
-                ),
-                //?Payment
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 25, right: 25, top: 15, bottom: 5),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Security PIN',
-                        style: TextStyle(
-                            fontFamily: 'MoveTextMedium',
-                            fontSize: 16,
-                            color: AppTheme().getGenericDarkGrey()),
-                      ),
-                    ],
-                  ),
-                ),
-                Divider(
-                  height: 5,
-                  color: Colors.white,
-                ),
-                Padding(
-                    padding: const EdgeInsets.only(left: 25, right: 25),
-                    child: Container(
-                      // color: Colors.amber,
-                      child: ListTile(
-                        onTap: () => print('Copy PIN number'),
-                        contentPadding: EdgeInsets.zero,
-                        horizontalTitleGap: 0,
-                        leading: Icon(
-                          Icons.shield,
-                          color: AppTheme().getPrimaryColor(),
-                          size: 20,
-                        ),
-                        title: Text(
-                            requestData['ewallet_details']['security']
-                                .toString(),
-                            style: TextStyle(
-                                fontFamily: 'MoveTextBold',
-                                fontSize: 20,
-                                letterSpacing: 3)),
-                        trailing: Icon(Icons.copy),
-                      ),
-                    )),
-                Divider(
-                  height: 15,
-                ),
-                //?Notice
-                Padding(
-                    padding: const EdgeInsets.only(left: 25, right: 25),
-                    child: Container(
-                      // color: Colors.amber,
-                      child: ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        horizontalTitleGap: 0,
-                        leading: Icon(
-                          Icons.info,
-                          color: AppTheme().getGenericDarkGrey(),
-                          size: 20,
-                        ),
-                        title: Padding(
-                          padding: const EdgeInsets.only(top: 12),
-                          child: Text(
-                              'Ask your shopper to provide the security PIN displayed here first before giving any money.',
-                              style: TextStyle(
-                                  fontFamily: 'MoveTextRegular',
-                                  fontSize: 15,
-                                  color: AppTheme().getGenericDarkGrey())),
-                        ),
-                      ),
-                    )),
-                Divider(
-                  height: 30,
-                ),
-                //?Support
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 25, right: 25, top: 15, bottom: 5),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Support',
-                        style: TextStyle(
-                            fontFamily: 'MoveTextMedium',
-                            fontSize: 16,
-                            color: AppTheme().getGenericDarkGrey()),
-                      ),
-                    ],
-                  ),
-                ),
-                Divider(
-                  height: 5,
-                  color: Colors.white,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 25, right: 25),
-                  child: ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: Icon(Icons.support, color: Colors.black),
-                    horizontalTitleGap: 0,
-                    title: Text(
-                      'Call us',
-                      style: TextStyle(
-                        fontFamily: 'MoveTextMedium',
-                        fontSize: 17,
-                      ),
-                    ),
-                    subtitle: Text('For more assistance, please call us.'),
-                    trailing: Icon(
-                      Icons.arrow_forward_ios,
-                      size: 15,
-                    ),
-                  ),
-                )
-              ],
-            ))
-          ],
-        )));
-      case 'delivery_list':
-        return SafeArea(
-            child: Container(
-          child: Column(
+    if (mapEquals({}, requestData)) {
+      return SizedBox.shrink();
+    } else {
+      switch (scenario) {
+        case 'payment_details_ewallet':
+          return SafeArea(
+              child: Container(
+                  child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.only(
-                    left: 20, right: 20, top: 10, bottom: 15),
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
                 child: InkWell(
                   onTap: () => Navigator.of(context).pop(),
-                  child: Container(
-                    // color: Colors.red,
-                    child: Row(
-                      children: [
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          width: 100,
-                          child: Icon(
-                            Icons.arrow_back,
-                            size: AppTheme().getArrowBackSize() - 3,
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            child: Text(
-                              'Delivery status',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontFamily: 'MoveTextBold', fontSize: 18),
-                            ),
-                          ),
-                        ),
-                        Container(width: 100, child: Text(''))
-                      ],
-                    ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.arrow_back,
+                        size: AppTheme().getArrowBackSize() - 3,
+                      ),
+                      Text(
+                        'Payment details',
+                        style:
+                            TextStyle(fontFamily: 'MoveTextBold', fontSize: 18),
+                      ),
+                    ],
                   ),
                 ),
               ),
               Divider(
-                height: 0,
-                thickness: 1,
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                height: 40,
-                color: AppTheme().getGenericGrey().withOpacity(0.5),
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Text('You can see which packages are delivered.'),
-                ),
+                height: 30,
+                color: Colors.white,
               ),
               Expanded(
-                  child: Container(
-                child: ListView.separated(
-                    padding: EdgeInsets.only(left: 20, right: 20, top: 35),
-                    itemBuilder: (context, index) {
-                      return LocationPackageModel(
-                          packageData: requestData['trip_locations']['dropoff']
-                              [index]);
-                    },
-                    separatorBuilder: (context, index) => Divider(
-                          height: 50,
-                        ),
-                    itemCount: requestData['trip_locations']['dropoff'].length),
-              ))
-            ],
-          ),
-        ));
-      case 'rating':
-        return SafeArea(
-            child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
-              child: InkWell(
-                onTap: isLoadingSubmission
-                    ? () {}
-                    : () => Navigator.of(context).pop(),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.arrow_back,
-                      size: AppTheme().getArrowBackSize() - 3,
-                    ),
-                    Text(
-                      'Rate courier',
-                      style:
-                          TextStyle(fontFamily: 'MoveTextBold', fontSize: 18),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Divider(
-              height: 20,
-              thickness: 1,
-            ),
-            Expanded(
-                child: ListView(
-              padding: EdgeInsets.only(top: 15),
-              children: [
-                Align(
-                    alignment: Alignment.center,
+                  child: ListView(
+                children: [
+                  Align(
                     child: Container(
                       alignment: Alignment.center,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10000),
-                        child: CachedNetworkImage(
-                          fit: BoxFit.cover,
-                          width: 80,
-                          height: 80,
-                          imageUrl:
-                              // 'https://picsum.photos/200/300',
-                              requestData['driver_details']['picture'],
-                          progressIndicatorBuilder:
-                              (context, url, downloadProgress) => Container(
-                            width: 60,
-                            height: 20.0,
-                            child: Shimmer.fromColors(
-                              baseColor: Colors.grey.shade300,
-                              highlightColor: Colors.grey.shade100,
-                              child: Container(
-                                width: 20.0,
-                                height: 20.0,
-                                color: Colors.white,
-                              ),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(1000)),
+                      width: 70,
+                      height: 70,
+                      child: Image.asset(
+                        'assets/Images/ewallet.png',
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                  Divider(
+                    color: Colors.white,
+                    height: 20,
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Ewallet',
+                      style: TextStyle(fontFamily: 'MoveBold', fontSize: 24),
+                    ),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 25, right: 25, top: 15),
+                    child: Container(
+                      child: Text(
+                        'Please end your shopping money to us before we can start with your shopping.',
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: AppTheme().getGenericDarkGrey()),
+                      ),
+                    ),
+                  ),
+                  Divider(
+                    height: 30,
+                    color: Colors.white,
+                  ),
+                  //?Payment
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 25, right: 25, top: 15, bottom: 5),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Send to',
+                          style: TextStyle(
+                              fontFamily: 'MoveTextMedium',
+                              fontSize: 16,
+                              color: AppTheme().getGenericDarkGrey()),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(
+                    height: 5,
+                    color: Colors.white,
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.only(left: 25, right: 25),
+                      child: Container(
+                        // color: Colors.amber,
+                        child: ListTile(
+                          onTap: () => print('Copy ewallet number'),
+                          contentPadding: EdgeInsets.zero,
+                          horizontalTitleGap: 0,
+                          leading: Icon(
+                            Icons.phone,
+                            color: AppTheme().getPrimaryColor(),
+                            size: 20,
+                          ),
+                          title: Text(
+                              requestData['ewallet_details']['phone']
+                                  .toString(),
+                              style: TextStyle(
+                                  fontFamily: 'MoveTextBold', fontSize: 20)),
+                          trailing: Icon(Icons.copy),
+                        ),
+                      )),
+                  Divider(),
+                  //?Amount
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 25, right: 25, top: 15, bottom: 5),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Amount',
+                          style: TextStyle(
+                              fontFamily: 'MoveTextMedium',
+                              fontSize: 16,
+                              color: AppTheme().getGenericDarkGrey()),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(
+                    height: 5,
+                    color: Colors.white,
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.only(left: 25, right: 25),
+                      child: Container(
+                        // color: Colors.amber,
+                        child: ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          horizontalTitleGap: 0,
+                          leading: Padding(
+                            padding: const EdgeInsets.only(top: 6.0),
+                            child: Icon(
+                              Icons.square,
+                              color: AppTheme().getPrimaryColor(),
+                              size: 10,
                             ),
                           ),
-                          errorWidget: (context, url, error) => const Icon(
-                            Icons.error,
-                            size: 30,
-                            color: Colors.grey,
+                          title: Text(
+                              requestData['totals_request']['total'].toString(),
+                              style: TextStyle(
+                                  fontFamily: 'MoveTextBold', fontSize: 20)),
+                        ),
+                      )),
+                  Divider(
+                    height: 15,
+                    color: Colors.white,
+                  ),
+                  //?Notice
+                  Padding(
+                      padding: const EdgeInsets.only(left: 25, right: 25),
+                      child: Container(
+                        // color: Colors.amber,
+                        child: ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          horizontalTitleGap: 0,
+                          leading: Icon(
+                            Icons.info,
+                            color: AppTheme().getGenericDarkGrey(),
+                            size: 20,
+                          ),
+                          title: Padding(
+                            padding: const EdgeInsets.only(top: 12),
+                            child: Text(
+                                'Please send the full amount before we can proceed.',
+                                style: TextStyle(
+                                    fontFamily: 'MoveTextRegular',
+                                    fontSize: 15,
+                                    color: AppTheme().getGenericDarkGrey())),
                           ),
                         ),
-                      ),
-                    )),
-                SizedBox(
-                  height: 15,
-                ),
-                Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      requestData['driver_details']['name'],
-                      style: TextStyle(fontFamily: 'MoveBold', fontSize: 22),
-                    )),
-                SizedBox(
-                  height: 35,
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  child: RatingBar.builder(
-                    initialRating: 4,
-                    minRating: 1,
-                    direction: Axis.horizontal,
-                    allowHalfRating: false,
-                    itemCount: 5,
-                    itemSize: 42,
-                    itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                    itemBuilder: (context, _) => Icon(
-                      Icons.star,
-                      color: AppTheme().getGoldColor(),
-                    ),
-                    onRatingUpdate: isLoadingSubmission
-                        ? (v) {}
-                        : (val) {
-                            setState(() {
-                              rating = int.parse(val.toStringAsFixed(0));
-                              print(rating);
-                            });
-                          },
+                      )),
+                  Divider(
+                    height: 30,
                   ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      ratingStrings[rating - 1],
-                      style: TextStyle(
-                          fontFamily: 'MoveTextRegular', fontSize: 17),
-                    )),
-                Divider(
-                  height: 50,
-                ),
-                //?BADGES
-                Padding(
-                  padding:
-                      const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                  //?Support
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 25, right: 25, top: 15, bottom: 5),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Support',
+                          style: TextStyle(
+                              fontFamily: 'MoveTextMedium',
+                              fontSize: 16,
+                              color: AppTheme().getGenericDarkGrey()),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(
+                    height: 5,
+                    color: Colors.white,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 25, right: 25),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: Icon(Icons.support, color: Colors.black),
+                      horizontalTitleGap: 0,
+                      title: Text(
+                        'Call us',
+                        style: TextStyle(
+                          fontFamily: 'MoveTextMedium',
+                          fontSize: 17,
+                        ),
+                      ),
+                      subtitle: Text('For more assistance, please call us.'),
+                      trailing: Icon(
+                        Icons.arrow_forward_ios,
+                        size: 15,
+                      ),
+                    ),
+                  )
+                ],
+              ))
+            ],
+          )));
+        case 'payment_details_cash':
+          return SafeArea(
+              child: Container(
+                  child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+                child: InkWell(
+                  onTap: () => Navigator.of(context).pop(),
                   child: Row(
                     children: [
+                      Icon(
+                        Icons.arrow_back,
+                        size: AppTheme().getArrowBackSize() - 3,
+                      ),
                       Text(
-                        'Give a badge',
-                        style: TextStyle(
-                            fontFamily: 'MoveTextMedium',
-                            fontSize: 16,
-                            color: Colors.grey.shade600),
+                        'Payment details',
+                        style:
+                            TextStyle(fontFamily: 'MoveTextBold', fontSize: 18),
                       ),
                     ],
                   ),
                 ),
+              ),
+              Divider(
+                height: 30,
+                color: Colors.white,
+              ),
+              Expanded(
+                  child: ListView(
+                children: [
+                  Align(
+                    child: Container(
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(1000)),
+                      width: 70,
+                      height: 70,
+                      child: Image.asset(
+                        'assets/Images/money.png',
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                  Divider(
+                    color: Colors.white,
+                    height: 20,
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Cash',
+                      style: TextStyle(fontFamily: 'MoveBold', fontSize: 24),
+                    ),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 25, right: 25, top: 15),
+                    child: Container(
+                      child: Text(
+                        'Your shopper will pickup the cash from you before starting your shopping.',
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: AppTheme().getGenericDarkGrey()),
+                      ),
+                    ),
+                  ),
+                  Divider(
+                    height: 30,
+                    color: Colors.white,
+                  ),
+                  //?Payment
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 25, right: 25, top: 15, bottom: 5),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Security PIN',
+                          style: TextStyle(
+                              fontFamily: 'MoveTextMedium',
+                              fontSize: 16,
+                              color: AppTheme().getGenericDarkGrey()),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(
+                    height: 5,
+                    color: Colors.white,
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.only(left: 25, right: 25),
+                      child: Container(
+                        // color: Colors.amber,
+                        child: ListTile(
+                          onTap: () => print('Copy PIN number'),
+                          contentPadding: EdgeInsets.zero,
+                          horizontalTitleGap: 0,
+                          leading: Icon(
+                            Icons.shield,
+                            color: AppTheme().getPrimaryColor(),
+                            size: 20,
+                          ),
+                          title: Text(
+                              requestData['ewallet_details']['security']
+                                  .toString(),
+                              style: TextStyle(
+                                  fontFamily: 'MoveTextBold',
+                                  fontSize: 20,
+                                  letterSpacing: 3)),
+                          trailing: Icon(Icons.copy),
+                        ),
+                      )),
+                  Divider(
+                    height: 15,
+                  ),
+                  //?Notice
+                  Padding(
+                      padding: const EdgeInsets.only(left: 25, right: 25),
+                      child: Container(
+                        // color: Colors.amber,
+                        child: ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          horizontalTitleGap: 0,
+                          leading: Icon(
+                            Icons.info,
+                            color: AppTheme().getGenericDarkGrey(),
+                            size: 20,
+                          ),
+                          title: Padding(
+                            padding: const EdgeInsets.only(top: 12),
+                            child: Text(
+                                'Ask your shopper to provide the security PIN displayed here first before giving any money.',
+                                style: TextStyle(
+                                    fontFamily: 'MoveTextRegular',
+                                    fontSize: 15,
+                                    color: AppTheme().getGenericDarkGrey())),
+                          ),
+                        ),
+                      )),
+                  Divider(
+                    height: 30,
+                  ),
+                  //?Support
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 25, right: 25, top: 15, bottom: 5),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Support',
+                          style: TextStyle(
+                              fontFamily: 'MoveTextMedium',
+                              fontSize: 16,
+                              color: AppTheme().getGenericDarkGrey()),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(
+                    height: 5,
+                    color: Colors.white,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 25, right: 25),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: Icon(Icons.support, color: Colors.black),
+                      horizontalTitleGap: 0,
+                      title: Text(
+                        'Call us',
+                        style: TextStyle(
+                          fontFamily: 'MoveTextMedium',
+                          fontSize: 17,
+                        ),
+                      ),
+                      subtitle: Text('For more assistance, please call us.'),
+                      trailing: Icon(
+                        Icons.arrow_forward_ios,
+                        size: 15,
+                      ),
+                    ),
+                  )
+                ],
+              ))
+            ],
+          )));
+        case 'delivery_list':
+          return SafeArea(
+              child: Container(
+            child: Column(
+              children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 20, top: 20),
-                  child: Container(
-                    height: 130,
-                    // color: Colors.red,
-                    child: ListView.separated(
-                        padding: EdgeInsets.only(right: 30),
-                        shrinkWrap: false,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) => InkWell(
-                              onTap: isLoadingSubmission
-                                  ? () {}
-                                  : () {
-                                      setState(() {
-                                        if (selectedBadges.contains(
-                                            badges[index]['title']
-                                                .toString())) //!Remove
-                                        {
-                                          selectedBadges.removeAt(selectedBadges
-                                              .indexOf(badges[index]['title']
-                                                  .toString()));
-                                        } else //!Add
-                                        {
-                                          selectedBadges.add(badges[index]
-                                                  ['title']
-                                              .toString());
-                                        }
-                                      });
-                                    },
-                              child: Opacity(
-                                opacity: selectedBadges.contains(
-                                        badges[index]['title'].toString())
-                                    ? 1
-                                    : AppTheme().getFadedOpacityValue() + 0.1,
+                  padding: const EdgeInsets.only(
+                      left: 20, right: 20, top: 10, bottom: 15),
+                  child: InkWell(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: Container(
+                      // color: Colors.red,
+                      child: Row(
+                        children: [
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            width: 100,
+                            child: Icon(
+                              Icons.arrow_back,
+                              size: AppTheme().getArrowBackSize() - 3,
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              child: Text(
+                                'Delivery status',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontFamily: 'MoveTextBold', fontSize: 18),
+                              ),
+                            ),
+                          ),
+                          Container(width: 100, child: Text(''))
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Divider(
+                  height: 0,
+                  thickness: 1,
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 40,
+                  color: AppTheme().getGenericGrey().withOpacity(0.5),
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: Text('You can see which packages are delivered.'),
+                  ),
+                ),
+                Expanded(
+                    child: Container(
+                  child: ListView.separated(
+                      padding: EdgeInsets.only(left: 20, right: 20, top: 35),
+                      itemBuilder: (context, index) {
+                        return LocationPackageModel(
+                            packageData: requestData['trip_locations']
+                                ['dropoff'][index]);
+                      },
+                      separatorBuilder: (context, index) => Divider(
+                            height: 50,
+                          ),
+                      itemCount:
+                          requestData['trip_locations']['dropoff'].length),
+                ))
+              ],
+            ),
+          ));
+        case 'rating':
+          return SafeArea(
+              child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+                child: InkWell(
+                  onTap: isLoadingSubmission
+                      ? () {}
+                      : () => Navigator.of(context).pop(),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.arrow_back,
+                        size: AppTheme().getArrowBackSize() - 3,
+                      ),
+                      Text(
+                        'Rate courier',
+                        style:
+                            TextStyle(fontFamily: 'MoveTextBold', fontSize: 18),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Divider(
+                height: 20,
+                thickness: 1,
+              ),
+              Expanded(
+                  child: ListView(
+                padding: EdgeInsets.only(top: 15),
+                children: [
+                  Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10000),
+                          child: CachedNetworkImage(
+                            fit: BoxFit.cover,
+                            width: 80,
+                            height: 80,
+                            imageUrl:
+                                // 'https://picsum.photos/200/300',
+                                requestData['driver_details']['picture'],
+                            progressIndicatorBuilder:
+                                (context, url, downloadProgress) => Container(
+                              width: 60,
+                              height: 20.0,
+                              child: Shimmer.fromColors(
+                                baseColor: Colors.grey.shade300,
+                                highlightColor: Colors.grey.shade100,
                                 child: Container(
-                                  // color: Colors.amber,
-                                  width: 95,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(1000),
-                                        child: Container(
-                                          decoration: BoxDecoration(
+                                  width: 20.0,
+                                  height: 20.0,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            errorWidget: (context, url, error) => const Icon(
+                              Icons.error,
+                              size: 30,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                      )),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        requestData['driver_details']['name'],
+                        style: TextStyle(fontFamily: 'MoveBold', fontSize: 22),
+                      )),
+                  SizedBox(
+                    height: 35,
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    child: RatingBar.builder(
+                      initialRating: 4,
+                      minRating: 1,
+                      direction: Axis.horizontal,
+                      allowHalfRating: false,
+                      itemCount: 5,
+                      itemSize: 42,
+                      itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                      itemBuilder: (context, _) => Icon(
+                        Icons.star,
+                        color: AppTheme().getGoldColor(),
+                      ),
+                      onRatingUpdate: isLoadingSubmission
+                          ? (v) {}
+                          : (val) {
+                              setState(() {
+                                rating = int.parse(val.toStringAsFixed(0));
+                                print(rating);
+                              });
+                            },
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        ratingStrings[rating - 1],
+                        style: TextStyle(
+                            fontFamily: 'MoveTextRegular', fontSize: 17),
+                      )),
+                  Divider(
+                    height: 50,
+                  ),
+                  //?BADGES
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Give a badge',
+                          style: TextStyle(
+                              fontFamily: 'MoveTextMedium',
+                              fontSize: 16,
+                              color: Colors.grey.shade600),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, top: 20),
+                    child: Container(
+                      height: 130,
+                      // color: Colors.red,
+                      child: ListView.separated(
+                          padding: EdgeInsets.only(right: 30),
+                          shrinkWrap: false,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) => InkWell(
+                                onTap: isLoadingSubmission
+                                    ? () {}
+                                    : () {
+                                        setState(() {
+                                          if (selectedBadges.contains(
+                                              badges[index]['title']
+                                                  .toString())) //!Remove
+                                          {
+                                            selectedBadges.removeAt(
+                                                selectedBadges.indexOf(
+                                                    badges[index]['title']
+                                                        .toString()));
+                                          } else //!Add
+                                          {
+                                            selectedBadges.add(badges[index]
+                                                    ['title']
+                                                .toString());
+                                          }
+                                        });
+                                      },
+                                child: Opacity(
+                                  opacity: selectedBadges.contains(
+                                          badges[index]['title'].toString())
+                                      ? 1
+                                      : AppTheme().getFadedOpacityValue() + 0.1,
+                                  child: Container(
+                                    // color: Colors.amber,
+                                    width: 95,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(1000),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(1000),
+                                                color: Colors.white,
+                                                border: Border.all(
+                                                    width: 2,
+                                                    color: Colors.grey
+                                                        .withOpacity(AppTheme()
+                                                            .getFadedOpacityValue()))),
+                                            height: 65,
+                                            width: 65,
+                                            child: ClipRRect(
                                               borderRadius:
                                                   BorderRadius.circular(1000),
-                                              color: Colors.white,
-                                              border: Border.all(
-                                                  width: 2,
-                                                  color: Colors.grey
-                                                      .withOpacity(AppTheme()
-                                                          .getFadedOpacityValue()))),
-                                          height: 65,
-                                          width: 65,
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(1000),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Image.asset(
-                                                badges[index]['image']
-                                                    .toString(),
-                                                fit: BoxFit.contain,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Image.asset(
+                                                  badges[index]['image']
+                                                      .toString(),
+                                                  fit: BoxFit.contain,
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Text(
-                                        badges[index]['title'].toString(),
-                                        textAlign: TextAlign.center,
-                                        maxLines: 3,
-                                        style: TextStyle(
-                                            fontFamily: 'MoveTextMedium',
-                                            fontSize: 15),
-                                      )
-                                    ],
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                          badges[index]['title'].toString(),
+                                          textAlign: TextAlign.center,
+                                          maxLines: 3,
+                                          style: TextStyle(
+                                              fontFamily: 'MoveTextMedium',
+                                              fontSize: 15),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                        separatorBuilder: (context, index) => SizedBox(
-                              width: 20,
-                            ),
-                        itemCount: badges.length),
-                  ),
-                ),
-                //Note
-                Divider(
-                  height: 30,
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.only(left: 20, right: 20, bottom: 10),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Note',
-                        style: TextStyle(
-                            fontFamily: 'MoveTextMedium',
-                            fontSize: 16,
-                            color: Colors.grey.shade600),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20, top: 5),
-                  child: SizedBox(
-                    height: 100,
-                    child: TextField(
-                        autocorrect: false,
-                        onChanged: (value) {
-                          //! Update the change for the typed
-                          setState(() {
-                            note = value;
-                          });
-                        },
-                        maxLength: 500,
-                        style: TextStyle(
-                            fontFamily: 'MoveTextRegular',
-                            fontSize: 18,
-                            color: Colors.black),
-                        maxLines: 45,
-                        decoration: InputDecoration(
-                            contentPadding:
-                                EdgeInsets.only(top: 25, left: 10, right: 10),
-                            filled: true,
-                            fillColor: Colors.grey.shade200,
-                            floatingLabelStyle:
-                                const TextStyle(color: Colors.black),
-                            label: Align(
-                              alignment: Alignment.topLeft,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 25),
-                                child: Text("Enter your note here."),
+                          separatorBuilder: (context, index) => SizedBox(
+                                width: 20,
                               ),
-                            ),
-                            floatingLabelBehavior: FloatingLabelBehavior.never,
-                            enabledBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade200)),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade200),
-                                borderRadius: BorderRadius.circular(1)),
-                            border: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade200),
-                                borderRadius: BorderRadius.circular(1)))),
+                          itemCount: badges.length),
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                GenericRectButton(
-                    label: isLoadingSubmission ? 'LOADING' : 'Done',
-                    labelFontSize: 22,
-                    isArrowShow: false,
-                    actuatorFunctionl: isLoadingSubmission
-                        ? () {}
-                        : () => SubmitUserRating(context: context)),
-                SizedBox(
-                  height: 30,
-                )
-              ],
-            ))
-          ],
-        ));
-
-      case 'cancel_request':
-        return SafeArea(
-          top: false,
-          child: Container(
-            height: MediaQuery.of(context).size.height * 0.5,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 20,
-                ),
-                Align(
-                  child: Container(
-                      // color: Colors.red,
-                      child: Text('Cancel delivery?',
+                  //Note
+                  Divider(
+                    height: 30,
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Note',
                           style: TextStyle(
-                              fontFamily: 'MoveTextBold', fontSize: 20))),
-                ),
-                Divider(
-                  height: 30,
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.only(left: 20, right: 20, bottom: 10),
-                  child: Container(
-                    child: Text(
-                        'Do you really want to cancel your delivery request?',
-                        style: TextStyle(
-                          fontSize: 16,
-                        )),
+                              fontFamily: 'MoveTextMedium',
+                              fontSize: 16,
+                              color: Colors.grey.shade600),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Container(
-                    child: Text(
-                        'By doing so you will not be able to send your packages to your recipients.',
-                        style: TextStyle(fontSize: 16)),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20, top: 5),
+                    child: SizedBox(
+                      height: 100,
+                      child: TextField(
+                          autocorrect: false,
+                          onChanged: (value) {
+                            //! Update the change for the typed
+                            setState(() {
+                              note = value;
+                            });
+                          },
+                          maxLength: 500,
+                          style: TextStyle(
+                              fontFamily: 'MoveTextRegular',
+                              fontSize: 18,
+                              color: Colors.black),
+                          maxLines: 45,
+                          decoration: InputDecoration(
+                              contentPadding:
+                                  EdgeInsets.only(top: 25, left: 10, right: 10),
+                              filled: true,
+                              fillColor: Colors.grey.shade200,
+                              floatingLabelStyle:
+                                  const TextStyle(color: Colors.black),
+                              label: Align(
+                                alignment: Alignment.topLeft,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 25),
+                                  child: Text("Enter your note here."),
+                                ),
+                              ),
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.never,
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade200)),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade200),
+                                  borderRadius: BorderRadius.circular(1)),
+                              border: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade200),
+                                  borderRadius: BorderRadius.circular(1)))),
+                    ),
                   ),
-                ),
-                Expanded(child: SizedBox.shrink()),
-                GenericRectButton(
-                    label: isLoadingSubmission ? 'LOADING' : 'Cancel delivery',
-                    labelFontSize: 20,
-                    horizontalPadding: 20,
-                    verticalPadding: 0,
-                    isArrowShow: !isLoadingSubmission,
-                    backgroundColor: AppTheme().getErrorColor(),
-                    actuatorFunctionl: isLoadingSubmission
-                        ? () => {}
-                        : () => cancelRequest(context: context)),
-                Divider(
-                  height: 20,
-                  color: Colors.white,
-                ),
-                Opacity(
-                  opacity: isLoadingSubmission
-                      ? AppTheme().getFadedOpacityValue()
-                      : 1,
-                  child: GenericRectButton(
-                      label: 'Don\'t cancel',
+                  SizedBox(
+                    height: 30,
+                  ),
+                  GenericRectButton(
+                      label: isLoadingSubmission ? 'LOADING' : 'Done',
+                      labelFontSize: 22,
+                      isArrowShow: false,
+                      actuatorFunctionl: isLoadingSubmission
+                          ? () {}
+                          : () => SubmitUserRating(context: context)),
+                  SizedBox(
+                    height: 30,
+                  )
+                ],
+              ))
+            ],
+          ));
+
+        case 'cancel_request':
+          return SafeArea(
+            top: false,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.5,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Align(
+                    child: Container(
+                        // color: Colors.red,
+                        child: Text('Cancel delivery?',
+                            style: TextStyle(
+                                fontFamily: 'MoveTextBold', fontSize: 20))),
+                  ),
+                  Divider(
+                    height: 30,
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                    child: Container(
+                      child: Text(
+                          'Do you really want to cancel your delivery request?',
+                          style: TextStyle(
+                            fontSize: 16,
+                          )),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: Container(
+                      child: Text(
+                          'By doing so you will not be able to send your packages to your recipients.',
+                          style: TextStyle(fontSize: 16)),
+                    ),
+                  ),
+                  Expanded(child: SizedBox.shrink()),
+                  GenericRectButton(
+                      label:
+                          isLoadingSubmission ? 'LOADING' : 'Cancel delivery',
                       labelFontSize: 20,
                       horizontalPadding: 20,
                       verticalPadding: 0,
-                      isArrowShow: false,
-                      backgroundColor: AppTheme().getGenericGrey(),
-                      textColor: Colors.black,
-                      labelFontFamily: 'MoveTextBold',
+                      isArrowShow: !isLoadingSubmission,
+                      backgroundColor: AppTheme().getErrorColor(),
                       actuatorFunctionl: isLoadingSubmission
                           ? () => {}
-                          : () => Navigator.of(context).pop()),
-                ),
-                SizedBox(
-                  height: 20,
-                )
-              ],
+                          : () => cancelRequest(context: context)),
+                  Divider(
+                    height: 20,
+                    color: Colors.white,
+                  ),
+                  Opacity(
+                    opacity: isLoadingSubmission
+                        ? AppTheme().getFadedOpacityValue()
+                        : 1,
+                    child: GenericRectButton(
+                        label: 'Don\'t cancel',
+                        labelFontSize: 20,
+                        horizontalPadding: 20,
+                        verticalPadding: 0,
+                        isArrowShow: false,
+                        backgroundColor: AppTheme().getGenericGrey(),
+                        textColor: Colors.black,
+                        labelFontFamily: 'MoveTextBold',
+                        actuatorFunctionl: isLoadingSubmission
+                            ? () => {}
+                            : () => Navigator.of(context).pop()),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  )
+                ],
+              ),
             ),
-          ),
-        );
-      default:
-        return SizedBox.shrink();
+          );
+        default:
+          return SizedBox.shrink();
+      }
     }
   }
 }

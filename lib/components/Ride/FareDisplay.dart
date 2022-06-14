@@ -95,7 +95,8 @@ class _MapPreviewState extends State<MapPreview> {
           .read<HomeProvider>()
           .ride_location_dropoff[0]['coordinates'][1]
           .toString(),
-      "user_fingerprint": context.read<HomeProvider>().user_identifier
+      "user_fingerprint":
+          context.read<HomeProvider>().userData['user_identifier']
     };
 
     // print(bundleData);
@@ -197,7 +198,8 @@ class _MapPreviewState extends State<MapPreview> {
           .encode(context.read<HomeProvider>().ride_location_dropoff)
           .toString(),
       "ride_type": context.read<HomeProvider>().selectedService,
-      "user_fingerprint": context.read<HomeProvider>().user_identifier
+      "user_fingerprint":
+          context.read<HomeProvider>().userData['user_identifier']
     };
 
     // print(bundleData);

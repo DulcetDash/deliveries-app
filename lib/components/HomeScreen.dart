@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:nej/ThemesAndRoutes/AppRoutes.dart';
 import 'package:nej/components/DrawerMenu.dart';
 import 'package:nej/components/Helpers/AppTheme.dart';
 import 'package:nej/components/Helpers/LocationOpsHandler.dart';
@@ -18,6 +19,18 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int refresher = 0;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        refresher = 100;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -295,6 +308,12 @@ class ProductsSelection extends StatelessWidget {
             title: 'Ride',
             actuator: () {
               print('Ride');
+              //!Cleanse
+              context.read<HomeProvider>().clearEveryRequestsRelatedData();
+              //...
+              context
+                  .read<HomeProvider>()
+                  .updateLoadingRequestStatus(status: false);
               //! Update the selected service
               context
                   .read<HomeProvider>()
@@ -307,6 +326,12 @@ class ProductsSelection extends StatelessWidget {
             imagePath: 'assets/Images/box_delivery.png',
             title: 'Delivery',
             actuator: () {
+              //!Cleanse
+              context.read<HomeProvider>().clearEveryRequestsRelatedData();
+              //...
+              context
+                  .read<HomeProvider>()
+                  .updateLoadingRequestStatus(status: false);
               //! Update the selected service
               context
                   .read<HomeProvider>()
@@ -319,6 +344,12 @@ class ProductsSelection extends StatelessWidget {
             imagePath: 'assets/Images/cart.jpg',
             title: 'Shopping',
             actuator: () {
+              //!Cleanse
+              context.read<HomeProvider>().clearEveryRequestsRelatedData();
+              //...
+              context
+                  .read<HomeProvider>()
+                  .updateLoadingRequestStatus(status: false);
               //! Update the selected service
               context
                   .read<HomeProvider>()

@@ -117,7 +117,8 @@ class _PhoneInputChangeState extends State<PhoneInputChange> {
     Map<String, String> bundleData = {
       "phone":
           '${context.read<HomeProvider>().selectedCountryCodeData['dial_code']}${context.read<HomeProvider>().enteredPhoneNumber}',
-      "user_identifier": context.read<HomeProvider>().user_identifier
+      "user_identifier":
+          context.read<HomeProvider>().userData['user_identifier']
     };
 
     print(bundleData);

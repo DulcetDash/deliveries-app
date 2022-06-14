@@ -6,6 +6,7 @@ import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -57,8 +58,14 @@ class _RequestWindow_rideState extends State<RequestWindow_ride> {
                           width: MediaQuery.of(context).size.width,
                           child: RenderBottomPreview(
                               scenario: context
-                                  .watch<HomeProvider>()
-                                  .requestShoppingData[0]['step_name']),
+                                              .watch<HomeProvider>()
+                                              .requestShoppingData[0]
+                                          ['step_name'] !=
+                                      null
+                                  ? context
+                                      .watch<HomeProvider>()
+                                      .requestShoppingData[0]['step_name']
+                                  : ''),
                         ),
                       ),
                     )
@@ -1192,7 +1199,8 @@ class _LocalModalState extends State<LocalModal> {
       "rating": rating.toString(),
       "badges": json.encode(selectedBadges).toString(),
       "note": note,
-      "user_fingerprint": context.read<HomeProvider>().user_identifier
+      "user_fingerprint":
+          context.read<HomeProvider>().userData['user_identifier']
     };
 
     print(bundleData);
@@ -1301,7 +1309,7 @@ class _LocalModalState extends State<LocalModal> {
     //? For the request
     Map<String, String> bundleData = {
       "user_identifier":
-          context.read<HomeProvider>().user_identifier.toString(),
+          context.read<HomeProvider>().userData['user_identifier'].toString(),
       "request_fp": requestData['request_fp'].toString(),
     };
 
@@ -1402,251 +1410,317 @@ class _LocalModalState extends State<LocalModal> {
 
   @override
   Widget build(BuildContext context) {
-    final RequestCardHelper requestCardHelper = RequestCardHelper();
-    final Map<String, dynamic> requestData =
-        context.watch<HomeProvider>().requestShoppingData[0];
+    try {
+      final RequestCardHelper requestCardHelper = RequestCardHelper();
+      final Map<String, dynamic> requestData =
+          context.watch<HomeProvider>().requestShoppingData.isNotEmpty
+              ? context.watch<HomeProvider>().requestShoppingData[0]
+              : {};
 
-    switch (scenario) {
-      case 'trip_details':
-        return SafeArea(
-          child: Container(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
-                  child: InkWell(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.arrow_back,
-                          size: AppTheme().getArrowBackSize() - 3,
-                        ),
-                        Text(
-                          'Trip details',
-                          style: TextStyle(
-                              fontFamily: 'MoveTextBold', fontSize: 18),
-                        ),
-                      ],
+      if (mapEquals(requestData, {})) return SizedBox.shrink();
+
+      switch (scenario) {
+        case 'trip_details':
+          if (context.read<HomeProvider>().requestShoppingData[0]
+                  ['trip_locations']['dropoff'] ==
+              null) return SizedBox.shrink();
+
+          return SafeArea(
+            child: Container(
+              child: Column(
+                children: [
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 20, right: 20, top: 10),
+                    child: InkWell(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.arrow_back,
+                            size: AppTheme().getArrowBackSize() - 3,
+                          ),
+                          Text(
+                            'Trip details',
+                            style: TextStyle(
+                                fontFamily: 'MoveTextBold', fontSize: 18),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Divider(
-                  height: 20,
-                  thickness: 1,
-                ),
-                Expanded(
-                  child: ListView(
-                    padding: const EdgeInsets.only(bottom: 50),
-                    children: [
-                      //DRIVER DETAILS IF ANY
-                      requestData['state_vars']['isAccepted'] == false
-                          ? SizedBox.shrink()
-                          : Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 20, right: 30, top: 15),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(10000.0),
-                                        child: Container(
-                                          width: 60,
-                                          height: 60,
-                                          child: CachedNetworkImage(
-                                            fit: BoxFit.cover,
-                                            imageUrl:
-                                                requestData['driver_details']
-                                                    ['picture'],
-                                            progressIndicatorBuilder: (context,
-                                                    url, downloadProgress) =>
-                                                Container(
-                                              width: MediaQuery.of(context)
-                                                  .size
-                                                  .width,
-                                              height: 20.0,
-                                              child: Shimmer.fromColors(
-                                                baseColor: Colors.grey.shade300,
-                                                highlightColor:
-                                                    Colors.grey.shade100,
-                                                child: Container(
-                                                  width: 20.0,
-                                                  height: 20.0,
-                                                  color: Colors.white,
+                  Divider(
+                    height: 20,
+                    thickness: 1,
+                  ),
+                  Expanded(
+                    child: ListView(
+                      padding: const EdgeInsets.only(bottom: 50),
+                      children: [
+                        //DRIVER DETAILS IF ANY
+                        requestData['state_vars']['isAccepted'] == false
+                            ? SizedBox.shrink()
+                            : Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 20, right: 30, top: 15),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(10000.0),
+                                          child: Container(
+                                            width: 60,
+                                            height: 60,
+                                            child: CachedNetworkImage(
+                                              fit: BoxFit.cover,
+                                              imageUrl:
+                                                  requestData['driver_details']
+                                                      ['picture'],
+                                              progressIndicatorBuilder:
+                                                  (context, url,
+                                                          downloadProgress) =>
+                                                      Container(
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                height: 20.0,
+                                                child: Shimmer.fromColors(
+                                                  baseColor:
+                                                      Colors.grey.shade300,
+                                                  highlightColor:
+                                                      Colors.grey.shade100,
+                                                  child: Container(
+                                                    width: 20.0,
+                                                    height: 20.0,
+                                                    color: Colors.white,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    const Icon(
-                                              Icons.error,
-                                              size: 30,
-                                              color: Colors.grey,
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      const Icon(
+                                                Icons.error,
+                                                size: 30,
+                                                color: Colors.grey,
+                                              ),
                                             ),
                                           ),
                                         ),
+                                        SizedBox(
+                                          width: 15,
+                                        ),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              requestData['driver_details']
+                                                  ['name'],
+                                              style: TextStyle(
+                                                  fontFamily: 'MoveTextMedium',
+                                                  fontSize: 17),
+                                            ),
+                                            SizedBox(
+                                              height: 5,
+                                            ),
+                                            Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                Icon(
+                                                  Icons.star,
+                                                  size: 17,
+                                                  color:
+                                                      AppTheme().getGoldColor(),
+                                                ),
+                                                SizedBox(
+                                                  width: 2,
+                                                ),
+                                                Text(
+                                                  '${double.parse(requestData['driver_details']['rating'].toString()).toStringAsFixed(1)}',
+                                                  style: TextStyle(
+                                                      fontFamily:
+                                                          'MoveTextBold',
+                                                      fontSize: 16),
+                                                )
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    Icon(
+                                      Icons.phone,
+                                      size: 35,
+                                      color: AppTheme().getSecondaryColor(),
+                                    )
+                                  ],
+                                ),
+                              ),
+                        requestData['state_vars']['isAccepted'] == false
+                            ? SizedBox.shrink()
+                            : Divider(
+                                height: 35,
+                              ),
+                        requestData['state_vars']['isAccepted'] == false
+                            ? SizedBox.shrink()
+                            : Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 20, right: 20, bottom: 10),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      'Vehicle',
+                                      style: TextStyle(
+                                          fontFamily: 'MoveTextMedium',
+                                          fontSize: 16,
+                                          color: Colors.grey.shade600),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                        requestData['state_vars']['isAccepted'] == false
+                            ? SizedBox.shrink()
+                            : DisplayCarInformation(
+                                plateNumber: requestData['driver_details']
+                                    ['vehicle']['plate_no'],
+                                carBrand: requestData['driver_details']
+                                    ['vehicle']['brand'],
+                                carImageURL: requestData['driver_details']
+                                    ['vehicle']['picture']),
+                        requestData['state_vars']['isAccepted'] == false
+                            ? Divider(
+                                height: 10,
+                                color: Colors.white,
+                              )
+                            : Divider(
+                                height: 30,
+                                color: Colors.white,
+                              ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20, right: 20, top: 5, bottom: 5),
+                          child: Row(
+                            children: [
+                              Text(
+                                'Itinerary',
+                                style: TextStyle(
+                                    fontFamily: 'MoveTextMedium',
+                                    fontSize: 16,
+                                    color: Colors.grey.shade600),
+                              ),
+                            ],
+                          ),
+                        ),
+                        //PICKUP -> DROP OFF DETAILS
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20, right: 20, top: 20, bottom: 20),
+                          child: IntrinsicHeight(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Column(
+                                  children: [
+                                    const Padding(
+                                      padding: EdgeInsets.only(top: 6),
+                                      child: Icon(
+                                        Icons.circle,
+                                        size: 8,
                                       ),
-                                      SizedBox(
-                                        width: 15,
+                                    ),
+                                    Flexible(
+                                      child: DottedBorder(
+                                        color: Colors.black,
+                                        strokeWidth: 0.5,
+                                        padding: EdgeInsets.all(0.5),
+                                        borderType: BorderType.RRect,
+                                        dashPattern: [4, 0],
+                                        child: Container(
+                                          // width: 1,
+                                          height: 48,
+                                        ),
                                       ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(bottom: 23),
+                                      child: Icon(
+                                        Icons.stop,
+                                        size: 15,
+                                        color: AppTheme().getSecondaryColor(),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    children: [
                                       Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            requestData['driver_details']
-                                                ['name'],
-                                            style: TextStyle(
-                                                fontFamily: 'MoveTextMedium',
-                                                fontSize: 17),
-                                          ),
-                                          SizedBox(
-                                            height: 5,
-                                          ),
-                                          Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Icon(
-                                                Icons.star,
-                                                size: 17,
-                                                color:
-                                                    AppTheme().getGoldColor(),
-                                              ),
-                                              SizedBox(
-                                                width: 2,
-                                              ),
-                                              Text(
-                                                '${double.parse(requestData['driver_details']['rating'].toString()).toStringAsFixed(1)}',
-                                                style: TextStyle(
-                                                    fontFamily: 'MoveTextBold',
-                                                    fontSize: 16),
-                                              )
-                                            ],
+                                          Container(
+                                            // color: Colors.orange,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                  // color: Colors.green,
+                                                  height: 33,
+                                                  child: const Padding(
+                                                    padding:
+                                                        EdgeInsets.only(top: 2),
+                                                    child: SizedBox(
+                                                        width: 45,
+                                                        child: Text(
+                                                          'From',
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                                  'MoveTextLight'),
+                                                        )),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  child: Container(
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    // color: Colors.amber,
+                                                    child: Column(
+                                                      children: requestCardHelper
+                                                          .fitLocationWidgetsToList(
+                                                              context: context,
+                                                              locationData: [
+                                                            context
+                                                                    .read<
+                                                                        HomeProvider>()
+                                                                    .requestShoppingData[0]
+                                                                [
+                                                                'trip_locations']['pickup']
+                                                          ]),
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
                                           )
                                         ],
                                       ),
-                                    ],
-                                  ),
-                                  Icon(
-                                    Icons.phone,
-                                    size: 35,
-                                    color: AppTheme().getSecondaryColor(),
-                                  )
-                                ],
-                              ),
-                            ),
-                      requestData['state_vars']['isAccepted'] == false
-                          ? SizedBox.shrink()
-                          : Divider(
-                              height: 35,
-                            ),
-                      requestData['state_vars']['isAccepted'] == false
-                          ? SizedBox.shrink()
-                          : Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 20, right: 20, bottom: 10),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    'Vehicle',
-                                    style: TextStyle(
-                                        fontFamily: 'MoveTextMedium',
-                                        fontSize: 16,
-                                        color: Colors.grey.shade600),
-                                  ),
-                                ],
-                              ),
-                            ),
-                      requestData['state_vars']['isAccepted'] == false
-                          ? SizedBox.shrink()
-                          : DisplayCarInformation(
-                              plateNumber: requestData['driver_details']
-                                  ['vehicle']['plate_no'],
-                              carBrand: requestData['driver_details']['vehicle']
-                                  ['brand'],
-                              carImageURL: requestData['driver_details']
-                                  ['vehicle']['picture']),
-                      requestData['state_vars']['isAccepted'] == false
-                          ? Divider(
-                              height: 10,
-                              color: Colors.white,
-                            )
-                          : Divider(
-                              height: 30,
-                              color: Colors.white,
-                            ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 20, right: 20, top: 5, bottom: 5),
-                        child: Row(
-                          children: [
-                            Text(
-                              'Itinerary',
-                              style: TextStyle(
-                                  fontFamily: 'MoveTextMedium',
-                                  fontSize: 16,
-                                  color: Colors.grey.shade600),
-                            ),
-                          ],
-                        ),
-                      ),
-                      //PICKUP -> DROP OFF DETAILS
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 20, right: 20, top: 20, bottom: 20),
-                        child: IntrinsicHeight(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Column(
-                                children: [
-                                  const Padding(
-                                    padding: EdgeInsets.only(top: 6),
-                                    child: Icon(
-                                      Icons.circle,
-                                      size: 8,
-                                    ),
-                                  ),
-                                  Flexible(
-                                    child: DottedBorder(
-                                      color: Colors.black,
-                                      strokeWidth: 0.5,
-                                      padding: EdgeInsets.all(0.5),
-                                      borderType: BorderType.RRect,
-                                      dashPattern: [4, 0],
-                                      child: Container(
-                                        // width: 1,
-                                        height: 48,
+                                      const SizedBox(
+                                        height: 20,
                                       ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(bottom: 23),
-                                    child: Icon(
-                                      Icons.stop,
-                                      size: 15,
-                                      color: AppTheme().getSecondaryColor(),
-                                    ),
-                                  )
-                                ],
-                              ),
-                              Expanded(
-                                child: Column(
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          // color: Colors.orange,
-                                          child: Row(
+                                      //Destination
+                                      Column(
+                                        children: [
+                                          Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.start,
                                             crossAxisAlignment:
@@ -1654,14 +1728,14 @@ class _LocalModalState extends State<LocalModal> {
                                             children: [
                                               Container(
                                                 // color: Colors.green,
-                                                height: 33,
+                                                height: 34,
                                                 child: const Padding(
                                                   padding:
-                                                      EdgeInsets.only(top: 2),
+                                                      EdgeInsets.only(top: 3),
                                                   child: SizedBox(
                                                       width: 45,
                                                       child: Text(
-                                                        'From',
+                                                        'To',
                                                         style: TextStyle(
                                                             fontFamily:
                                                                 'MoveTextLight'),
@@ -1674,698 +1748,654 @@ class _LocalModalState extends State<LocalModal> {
                                                       Alignment.centerLeft,
                                                   // color: Colors.amber,
                                                   child: Column(
-                                                    children: requestCardHelper
-                                                        .fitLocationWidgetsToList(
-                                                            context: context,
-                                                            locationData: [
-                                                          context
-                                                                  .read<
-                                                                      HomeProvider>()
-                                                                  .requestShoppingData[0]
-                                                              [
-                                                              'trip_locations']['pickup']
-                                                        ]),
-                                                  ),
+                                                      children: requestCardHelper
+                                                          .fitLocationWidgetsToList(
+                                                              context: context,
+                                                              locationData: context
+                                                                          .read<
+                                                                              HomeProvider>()
+                                                                          .requestShoppingData[0]
+                                                                      [
+                                                                      'trip_locations']
+                                                                  ['dropoff'])),
                                                 ),
                                               )
                                             ],
-                                          ),
-                                        )
-                                      ],
+                                          )
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        //?ETA
+                        Container(
+                          color: Colors.grey.withOpacity(
+                              AppTheme().getFadedOpacityValue() - 0.1),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 15),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.timer,
+                                  size: 17,
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  'About ${requestData['route_details'] != null ? requestData['route_details']['eta'] : '~'}',
+                                  style: TextStyle(fontSize: 16),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                        //?RIDE INFOS
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Container(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 15),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(Icons.person),
+                                    SizedBox(
+                                      width: 5,
                                     ),
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    //Destination
-                                    Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Container(
-                                              // color: Colors.green,
-                                              height: 34,
-                                              child: const Padding(
-                                                padding:
-                                                    EdgeInsets.only(top: 3),
-                                                child: SizedBox(
-                                                    width: 45,
-                                                    child: Text(
-                                                      'To',
-                                                      style: TextStyle(
-                                                          fontFamily:
-                                                              'MoveTextLight'),
-                                                    )),
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Container(
-                                                alignment: Alignment.centerLeft,
-                                                // color: Colors.amber,
-                                                child: Column(
-                                                    children: requestCardHelper
-                                                        .fitLocationWidgetsToList(
-                                                            context: context,
-                                                            locationData: context
-                                                                        .read<
-                                                                            HomeProvider>()
-                                                                        .requestShoppingData[0]
-                                                                    [
-                                                                    'trip_locations']
-                                                                ['dropoff'])),
-                                              ),
-                                            )
-                                          ],
-                                        )
-                                      ],
+                                    Text(
+                                      requestData['passengers'].toString(),
+                                      style: TextStyle(
+                                        fontFamily: 'MoveTextMedium',
+                                        fontSize: 18,
+                                      ),
                                     ),
                                   ],
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      //?ETA
-                      Container(
-                        color: Colors.grey.withOpacity(
-                            AppTheme().getFadedOpacityValue() - 0.1),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 15),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.timer,
-                                size: 17,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                'About ${requestData['route_details']['eta']}',
-                                style: TextStyle(fontSize: 16),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      //?RIDE INFOS
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Container(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 15),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Icon(Icons.person),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text(
-                                    requestData['passengers'].toString(),
-                                    style: TextStyle(
-                                      fontFamily: 'MoveTextMedium',
-                                      fontSize: 18,
+                                SizedBox(
+                                  width: 7,
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.circle,
+                                      size: 7,
                                     ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                width: 7,
-                              ),
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.circle,
-                                    size: 7,
-                                  ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text(
-                                    '${requestData['ride_style'].toString().substring(0, 1).toUpperCase()}${requestData['ride_style'].toString().substring(1, requestData['ride_style'].toString().length)} ride',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontFamily: 'MoveTextMedium',
-                                        color: AppTheme().getPrimaryColor()),
-                                  ),
-                                ],
-                              )
-                            ],
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      '${requestData['ride_style'].toString().substring(0, 1).toUpperCase()}${requestData['ride_style'].toString().substring(1, requestData['ride_style'].toString().length)} ride',
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontFamily: 'MoveTextMedium',
+                                          color: AppTheme().getPrimaryColor()),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      Divider(
-                        height: 20,
-                      ),
-                      //?Payment
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 20, right: 20, top: 25, bottom: 5),
-                        child: Row(
-                          children: [
-                            Text(
-                              'Payment',
-                              style: TextStyle(
-                                  fontFamily: 'MoveTextMedium',
-                                  fontSize: 16,
-                                  color: Colors.grey.shade600),
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Icon(
-                              Icons.info,
-                              size: 15,
-                              color: Colors.grey.shade500,
-                            )
-                          ],
+                        Divider(
+                          height: 20,
                         ),
-                      ),
-                      Container(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 15),
+                        //?Payment
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20, right: 20, top: 25, bottom: 5),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Row(
-                                children: [
-                                  SizedBox(
-                                    width: 25,
-                                    height: 25,
-                                    child: Image.asset(context
-                                        .watch<HomeProvider>()
-                                        .getCleanPaymentMethod_nameAndImage(
-                                            payment: requestData[
-                                                'payment_method'])['image']!),
-                                  ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text(
-                                    context
-                                        .watch<HomeProvider>()
-                                        .getCleanPaymentMethod_nameAndImage(
-                                            payment: requestData[
-                                                'payment_method'])['name']!,
-                                    style: TextStyle(
-                                        fontFamily: 'MoveTextMedium',
-                                        fontSize: 18,
-                                        color: AppTheme().getPrimaryColor()),
-                                  ),
-                                ],
+                              Text(
+                                'Payment',
+                                style: TextStyle(
+                                    fontFamily: 'MoveTextMedium',
+                                    fontSize: 16,
+                                    color: Colors.grey.shade600),
                               ),
                               SizedBox(
                                 width: 5,
                               ),
-                              Text(
-                                'N\$${double.parse(requestData['fare'].toString()).toStringAsFixed(1)}',
-                                style: TextStyle(
-                                    fontSize: 20, fontFamily: 'MoveTextBold'),
+                              Icon(
+                                Icons.info,
+                                size: 15,
+                                color: Colors.grey.shade500,
                               )
                             ],
                           ),
                         ),
-                      ),
-                      Divider(
-                        height: 35,
-                      ),
-                      //? Safety
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 20, right: 20, top: 15, bottom: 5),
-                        child: Row(
-                          children: [
-                            Text(
-                              'Safety',
-                              style: TextStyle(
-                                  fontFamily: 'MoveTextMedium',
-                                  fontSize: 16,
-                                  color: Colors.grey.shade600),
+                        Container(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 15),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 25,
+                                      height: 25,
+                                      child: Image.asset(context
+                                          .watch<HomeProvider>()
+                                          .getCleanPaymentMethod_nameAndImage(
+                                              payment: requestData[
+                                                  'payment_method'])['image']!),
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      context
+                                          .watch<HomeProvider>()
+                                          .getCleanPaymentMethod_nameAndImage(
+                                              payment: requestData[
+                                                  'payment_method'])['name']!,
+                                      style: TextStyle(
+                                          fontFamily: 'MoveTextMedium',
+                                          fontSize: 18,
+                                          color: AppTheme().getPrimaryColor()),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  'N\$${double.parse(requestData['fare'].toString()).toStringAsFixed(1)}',
+                                  style: TextStyle(
+                                      fontSize: 20, fontFamily: 'MoveTextBold'),
+                                )
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
-                      ListTile(
-                        contentPadding: EdgeInsets.only(left: 20, right: 20),
-                        leading: Icon(Icons.shield,
-                            color: AppTheme().getErrorColor()),
-                        horizontalTitleGap: 0,
-                        title: Text(
-                          'Call the Police',
-                          style: TextStyle(
-                            fontFamily: 'MoveTextMedium',
-                            fontSize: 17,
                           ),
                         ),
-                        subtitle: Text('Reach the local authorities quickly.'),
-                        trailing: Icon(
-                          Icons.arrow_forward_ios,
-                          size: 15,
-                        ),
-                      ),
-                      Visibility(
-                        visible: requestData['state_vars']
-                                ['inRouteToDropoff'] ==
-                            false,
-                        child: Divider(
+                        Divider(
                           height: 35,
                         ),
-                      ),
-                      Visibility(
-                        visible: requestData['state_vars']
-                                ['inRouteToDropoff'] ==
-                            false,
-                        child: ListTile(
-                          onTap: () => showMaterialModalBottomSheet(
-                            backgroundColor: Colors.white,
-                            expand: false,
-                            bounce: true,
-                            duration: Duration(milliseconds: 250),
-                            context: context,
-                            builder: (context) => LocalModal(
-                              scenario: 'cancel_request',
-                            ),
-                          ),
-                          contentPadding: EdgeInsets.only(left: 20),
-                          title: Text(
-                            'Cancel your ride',
-                            style: TextStyle(
-                                fontFamily: 'MoveTextMedium',
-                                fontSize: 17,
-                                color: AppTheme().getErrorColor()),
+                        //? Safety
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20, right: 20, top: 15, bottom: 5),
+                          child: Row(
+                            children: [
+                              Text(
+                                'Safety',
+                                style: TextStyle(
+                                    fontFamily: 'MoveTextMedium',
+                                    fontSize: 16,
+                                    color: Colors.grey.shade600),
+                              ),
+                            ],
                           ),
                         ),
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-
-      case 'rating':
-        return SafeArea(
-            child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
-              child: InkWell(
-                onTap: isLoadingSubmission
-                    ? () {}
-                    : () => Navigator.of(context).pop(),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.arrow_back,
-                      size: AppTheme().getArrowBackSize() - 3,
-                    ),
-                    Text(
-                      'Rate driver',
-                      style:
-                          TextStyle(fontFamily: 'MoveTextBold', fontSize: 18),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Divider(
-              height: 20,
-              thickness: 1,
-            ),
-            Expanded(
-                child: ListView(
-              padding: EdgeInsets.only(top: 15),
-              children: [
-                Align(
-                    alignment: Alignment.center,
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10000),
-                        child: CachedNetworkImage(
-                          fit: BoxFit.cover,
-                          width: 80,
-                          height: 80,
-                          imageUrl:
-                              // 'https://picsum.photos/200/300',
-                              requestData['driver_details']['picture'],
-                          progressIndicatorBuilder:
-                              (context, url, downloadProgress) => Container(
-                            width: 60,
-                            height: 20.0,
-                            child: Shimmer.fromColors(
-                              baseColor: Colors.grey.shade300,
-                              highlightColor: Colors.grey.shade100,
-                              child: Container(
-                                width: 20.0,
-                                height: 20.0,
-                                color: Colors.white,
+                        ListTile(
+                          contentPadding: EdgeInsets.only(left: 20, right: 20),
+                          leading: Icon(Icons.shield,
+                              color: AppTheme().getErrorColor()),
+                          horizontalTitleGap: 0,
+                          title: Text(
+                            'Call the Police',
+                            style: TextStyle(
+                              fontFamily: 'MoveTextMedium',
+                              fontSize: 17,
+                            ),
+                          ),
+                          subtitle:
+                              Text('Reach the local authorities quickly.'),
+                          trailing: Icon(
+                            Icons.arrow_forward_ios,
+                            size: 15,
+                          ),
+                        ),
+                        Visibility(
+                          visible: requestData['state_vars']
+                                  ['inRouteToDropoff'] ==
+                              false,
+                          child: Divider(
+                            height: 35,
+                          ),
+                        ),
+                        Visibility(
+                          visible: requestData['state_vars']
+                                  ['inRouteToDropoff'] ==
+                              false,
+                          child: ListTile(
+                            onTap: () => showMaterialModalBottomSheet(
+                              backgroundColor: Colors.white,
+                              expand: false,
+                              bounce: true,
+                              duration: Duration(milliseconds: 250),
+                              context: context,
+                              builder: (context) => LocalModal(
+                                scenario: 'cancel_request',
                               ),
                             ),
+                            contentPadding: EdgeInsets.only(left: 20),
+                            title: Text(
+                              'Cancel your ride',
+                              style: TextStyle(
+                                  fontFamily: 'MoveTextMedium',
+                                  fontSize: 17,
+                                  color: AppTheme().getErrorColor()),
+                            ),
                           ),
-                          errorWidget: (context, url, error) => const Icon(
-                            Icons.error,
-                            size: 30,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ),
-                    )),
-                SizedBox(
-                  height: 15,
-                ),
-                Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      requestData['driver_details']['name'],
-                      style: TextStyle(fontFamily: 'MoveBold', fontSize: 22),
-                    )),
-                SizedBox(
-                  height: 35,
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  child: RatingBar.builder(
-                    initialRating: 4,
-                    minRating: 1,
-                    direction: Axis.horizontal,
-                    allowHalfRating: false,
-                    itemCount: 5,
-                    itemSize: 42,
-                    itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                    itemBuilder: (context, _) => Icon(
-                      Icons.star,
-                      color: AppTheme().getGoldColor(),
+                        )
+                      ],
                     ),
-                    onRatingUpdate: isLoadingSubmission
-                        ? (v) {}
-                        : (val) {
-                            setState(() {
-                              rating = int.parse(val.toStringAsFixed(0));
-                              print(rating);
-                            });
-                          },
                   ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      ratingStrings[rating - 1],
-                      style: TextStyle(
-                          fontFamily: 'MoveTextRegular', fontSize: 17),
-                    )),
-                Divider(
-                  height: 50,
-                ),
-                //?BADGES
-                Padding(
-                  padding:
-                      const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                ],
+              ),
+            ),
+          );
+
+        case 'rating':
+          return SafeArea(
+              child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+                child: InkWell(
+                  onTap: isLoadingSubmission
+                      ? () {}
+                      : () => Navigator.of(context).pop(),
                   child: Row(
                     children: [
+                      Icon(
+                        Icons.arrow_back,
+                        size: AppTheme().getArrowBackSize() - 3,
+                      ),
                       Text(
-                        'Give a badge',
-                        style: TextStyle(
-                            fontFamily: 'MoveTextMedium',
-                            fontSize: 16,
-                            color: Colors.grey.shade600),
+                        'Rate driver',
+                        style:
+                            TextStyle(fontFamily: 'MoveTextBold', fontSize: 18),
                       ),
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, top: 20),
-                  child: Container(
-                    height: 130,
-                    // color: Colors.red,
-                    child: ListView.separated(
-                        padding: EdgeInsets.only(right: 30),
-                        shrinkWrap: false,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) => InkWell(
-                              onTap: isLoadingSubmission
-                                  ? () {}
-                                  : () {
-                                      setState(() {
-                                        if (selectedBadges.contains(
-                                            badges[index]['title']
-                                                .toString())) //!Remove
-                                        {
-                                          selectedBadges.removeAt(selectedBadges
-                                              .indexOf(badges[index]['title']
-                                                  .toString()));
-                                        } else //!Add
-                                        {
-                                          selectedBadges.add(badges[index]
-                                                  ['title']
-                                              .toString());
-                                        }
-                                      });
-                                    },
-                              child: Opacity(
-                                opacity: selectedBadges.contains(
-                                        badges[index]['title'].toString())
-                                    ? 1
-                                    : AppTheme().getFadedOpacityValue() + 0.1,
+              ),
+              Divider(
+                height: 20,
+                thickness: 1,
+              ),
+              Expanded(
+                  child: ListView(
+                padding: EdgeInsets.only(top: 15),
+                children: [
+                  Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10000),
+                          child: CachedNetworkImage(
+                            fit: BoxFit.cover,
+                            width: 80,
+                            height: 80,
+                            imageUrl:
+                                // 'https://picsum.photos/200/300',
+                                requestData['driver_details']['picture'],
+                            progressIndicatorBuilder:
+                                (context, url, downloadProgress) => Container(
+                              width: 60,
+                              height: 20.0,
+                              child: Shimmer.fromColors(
+                                baseColor: Colors.grey.shade300,
+                                highlightColor: Colors.grey.shade100,
                                 child: Container(
-                                  // color: Colors.amber,
-                                  width: 95,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(1000),
-                                        child: Container(
-                                          decoration: BoxDecoration(
+                                  width: 20.0,
+                                  height: 20.0,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            errorWidget: (context, url, error) => const Icon(
+                              Icons.error,
+                              size: 30,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                      )),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        requestData['driver_details']['name'],
+                        style: TextStyle(fontFamily: 'MoveBold', fontSize: 22),
+                      )),
+                  SizedBox(
+                    height: 35,
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    child: RatingBar.builder(
+                      initialRating: 4,
+                      minRating: 1,
+                      direction: Axis.horizontal,
+                      allowHalfRating: false,
+                      itemCount: 5,
+                      itemSize: 42,
+                      itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                      itemBuilder: (context, _) => Icon(
+                        Icons.star,
+                        color: AppTheme().getGoldColor(),
+                      ),
+                      onRatingUpdate: isLoadingSubmission
+                          ? (v) {}
+                          : (val) {
+                              setState(() {
+                                rating = int.parse(val.toStringAsFixed(0));
+                                print(rating);
+                              });
+                            },
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        ratingStrings[rating - 1],
+                        style: TextStyle(
+                            fontFamily: 'MoveTextRegular', fontSize: 17),
+                      )),
+                  Divider(
+                    height: 50,
+                  ),
+                  //?BADGES
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Give a badge',
+                          style: TextStyle(
+                              fontFamily: 'MoveTextMedium',
+                              fontSize: 16,
+                              color: Colors.grey.shade600),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, top: 20),
+                    child: Container(
+                      height: 130,
+                      // color: Colors.red,
+                      child: ListView.separated(
+                          padding: EdgeInsets.only(right: 30),
+                          shrinkWrap: false,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) => InkWell(
+                                onTap: isLoadingSubmission
+                                    ? () {}
+                                    : () {
+                                        setState(() {
+                                          if (selectedBadges.contains(
+                                              badges[index]['title']
+                                                  .toString())) //!Remove
+                                          {
+                                            selectedBadges.removeAt(
+                                                selectedBadges.indexOf(
+                                                    badges[index]['title']
+                                                        .toString()));
+                                          } else //!Add
+                                          {
+                                            selectedBadges.add(badges[index]
+                                                    ['title']
+                                                .toString());
+                                          }
+                                        });
+                                      },
+                                child: Opacity(
+                                  opacity: selectedBadges.contains(
+                                          badges[index]['title'].toString())
+                                      ? 1
+                                      : AppTheme().getFadedOpacityValue() + 0.1,
+                                  child: Container(
+                                    // color: Colors.amber,
+                                    width: 95,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(1000),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(1000),
+                                                color: Colors.white,
+                                                border: Border.all(
+                                                    width: 2,
+                                                    color: Colors.grey
+                                                        .withOpacity(AppTheme()
+                                                            .getFadedOpacityValue()))),
+                                            height: 65,
+                                            width: 65,
+                                            child: ClipRRect(
                                               borderRadius:
                                                   BorderRadius.circular(1000),
-                                              color: Colors.white,
-                                              border: Border.all(
-                                                  width: 2,
-                                                  color: Colors.grey
-                                                      .withOpacity(AppTheme()
-                                                          .getFadedOpacityValue()))),
-                                          height: 65,
-                                          width: 65,
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(1000),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Image.asset(
-                                                badges[index]['image']
-                                                    .toString(),
-                                                fit: BoxFit.contain,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Image.asset(
+                                                  badges[index]['image']
+                                                      .toString(),
+                                                  fit: BoxFit.contain,
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Text(
-                                        badges[index]['title'].toString(),
-                                        textAlign: TextAlign.center,
-                                        maxLines: 3,
-                                        style: TextStyle(
-                                            fontFamily: 'MoveTextMedium',
-                                            fontSize: 15),
-                                      )
-                                    ],
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                          badges[index]['title'].toString(),
+                                          textAlign: TextAlign.center,
+                                          maxLines: 3,
+                                          style: TextStyle(
+                                              fontFamily: 'MoveTextMedium',
+                                              fontSize: 15),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                        separatorBuilder: (context, index) => SizedBox(
-                              width: 20,
-                            ),
-                        itemCount: badges.length),
-                  ),
-                ),
-                //Note
-                Divider(
-                  height: 30,
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.only(left: 20, right: 20, bottom: 10),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Note',
-                        style: TextStyle(
-                            fontFamily: 'MoveTextMedium',
-                            fontSize: 16,
-                            color: Colors.grey.shade600),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20, top: 5),
-                  child: SizedBox(
-                    height: 100,
-                    child: TextField(
-                        autocorrect: false,
-                        onChanged: (value) {
-                          //! Update the change for the typed
-                          setState(() {
-                            note = value;
-                          });
-                        },
-                        maxLength: 500,
-                        style: TextStyle(
-                            fontFamily: 'MoveTextRegular',
-                            fontSize: 18,
-                            color: Colors.black),
-                        maxLines: 45,
-                        decoration: InputDecoration(
-                            contentPadding:
-                                EdgeInsets.only(top: 25, left: 10, right: 10),
-                            filled: true,
-                            fillColor: Colors.grey.shade200,
-                            floatingLabelStyle:
-                                const TextStyle(color: Colors.black),
-                            label: Align(
-                              alignment: Alignment.topLeft,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 25),
-                                child: Text("Enter your note here."),
+                          separatorBuilder: (context, index) => SizedBox(
+                                width: 20,
                               ),
-                            ),
-                            floatingLabelBehavior: FloatingLabelBehavior.never,
-                            enabledBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade200)),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade200),
-                                borderRadius: BorderRadius.circular(1)),
-                            border: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade200),
-                                borderRadius: BorderRadius.circular(1)))),
+                          itemCount: badges.length),
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                GenericRectButton(
-                    label: isLoadingSubmission ? 'LOADING' : 'Done',
-                    labelFontSize: 22,
-                    isArrowShow: false,
-                    actuatorFunctionl: isLoadingSubmission
-                        ? () {}
-                        : () => SubmitUserRating(context: context)),
-                SizedBox(
-                  height: 30,
-                )
-              ],
-            ))
-          ],
-        ));
-
-      case 'cancel_request':
-        return SafeArea(
-          top: false,
-          child: Container(
-            height: MediaQuery.of(context).size.height * 0.5,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 20,
-                ),
-                Align(
-                  child: Container(
-                      // color: Colors.red,
-                      child: Text('Cancel ride?',
+                  //Note
+                  Divider(
+                    height: 30,
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Note',
                           style: TextStyle(
-                              fontFamily: 'MoveTextBold', fontSize: 20))),
-                ),
-                Divider(
-                  height: 30,
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.only(left: 20, right: 20, bottom: 10),
-                  child: Container(
-                    child:
-                        Text('Do you really want to cancel your ride request?',
-                            style: TextStyle(
+                              fontFamily: 'MoveTextMedium',
                               fontSize: 16,
-                            )),
+                              color: Colors.grey.shade600),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Container(
-                    child: Text(
-                        'By doing so you will not be able to get a driver to move you to your destination.',
-                        style: TextStyle(fontSize: 16)),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20, top: 5),
+                    child: SizedBox(
+                      height: 100,
+                      child: TextField(
+                          autocorrect: false,
+                          onChanged: (value) {
+                            //! Update the change for the typed
+                            setState(() {
+                              note = value;
+                            });
+                          },
+                          maxLength: 500,
+                          style: TextStyle(
+                              fontFamily: 'MoveTextRegular',
+                              fontSize: 18,
+                              color: Colors.black),
+                          maxLines: 45,
+                          decoration: InputDecoration(
+                              contentPadding:
+                                  EdgeInsets.only(top: 25, left: 10, right: 10),
+                              filled: true,
+                              fillColor: Colors.grey.shade200,
+                              floatingLabelStyle:
+                                  const TextStyle(color: Colors.black),
+                              label: Align(
+                                alignment: Alignment.topLeft,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 25),
+                                  child: Text("Enter your note here."),
+                                ),
+                              ),
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.never,
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade200)),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade200),
+                                  borderRadius: BorderRadius.circular(1)),
+                              border: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade200),
+                                  borderRadius: BorderRadius.circular(1)))),
+                    ),
                   ),
-                ),
-                Expanded(child: SizedBox.shrink()),
-                GenericRectButton(
-                    label: isLoadingSubmission ? 'LOADING' : 'Cancel ride',
-                    labelFontSize: 20,
-                    horizontalPadding: 20,
-                    verticalPadding: 0,
-                    isArrowShow: !isLoadingSubmission,
-                    backgroundColor: AppTheme().getErrorColor(),
-                    actuatorFunctionl: isLoadingSubmission
-                        ? () => {}
-                        : () => cancelRequest(context: context)),
-                Divider(
-                  height: 20,
-                  color: Colors.white,
-                ),
-                Opacity(
-                  opacity: isLoadingSubmission
-                      ? AppTheme().getFadedOpacityValue()
-                      : 1,
-                  child: GenericRectButton(
-                      label: 'Don\'t cancel',
+                  SizedBox(
+                    height: 30,
+                  ),
+                  GenericRectButton(
+                      label: isLoadingSubmission ? 'LOADING' : 'Done',
+                      labelFontSize: 22,
+                      isArrowShow: false,
+                      actuatorFunctionl: isLoadingSubmission
+                          ? () {}
+                          : () => SubmitUserRating(context: context)),
+                  SizedBox(
+                    height: 30,
+                  )
+                ],
+              ))
+            ],
+          ));
+
+        case 'cancel_request':
+          return SafeArea(
+            top: false,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.5,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Align(
+                    child: Container(
+                        // color: Colors.red,
+                        child: Text('Cancel ride?',
+                            style: TextStyle(
+                                fontFamily: 'MoveTextBold', fontSize: 20))),
+                  ),
+                  Divider(
+                    height: 30,
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                    child: Container(
+                      child: Text(
+                          'Do you really want to cancel your ride request?',
+                          style: TextStyle(
+                            fontSize: 16,
+                          )),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: Container(
+                      child: Text(
+                          'By doing so you will not be able to get a driver to move you to your destination.',
+                          style: TextStyle(fontSize: 16)),
+                    ),
+                  ),
+                  Expanded(child: SizedBox.shrink()),
+                  GenericRectButton(
+                      label: isLoadingSubmission ? 'LOADING' : 'Cancel ride',
                       labelFontSize: 20,
                       horizontalPadding: 20,
                       verticalPadding: 0,
-                      isArrowShow: false,
-                      backgroundColor: AppTheme().getGenericGrey(),
-                      textColor: Colors.black,
-                      labelFontFamily: 'MoveTextBold',
+                      isArrowShow: !isLoadingSubmission,
+                      backgroundColor: AppTheme().getErrorColor(),
                       actuatorFunctionl: isLoadingSubmission
                           ? () => {}
-                          : () => Navigator.of(context).pop()),
-                ),
-                SizedBox(
-                  height: 20,
-                )
-              ],
+                          : () => cancelRequest(context: context)),
+                  Divider(
+                    height: 20,
+                    color: Colors.white,
+                  ),
+                  Opacity(
+                    opacity: isLoadingSubmission
+                        ? AppTheme().getFadedOpacityValue()
+                        : 1,
+                    child: GenericRectButton(
+                        label: 'Don\'t cancel',
+                        labelFontSize: 20,
+                        horizontalPadding: 20,
+                        verticalPadding: 0,
+                        isArrowShow: false,
+                        backgroundColor: AppTheme().getGenericGrey(),
+                        textColor: Colors.black,
+                        labelFontFamily: 'MoveTextBold',
+                        actuatorFunctionl: isLoadingSubmission
+                            ? () => {}
+                            : () => Navigator.of(context).pop()),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  )
+                ],
+              ),
             ),
-          ),
-        );
-      default:
-        return SizedBox.shrink();
+          );
+        default:
+          return SizedBox.shrink();
+      }
+    } on Exception catch (e) {
+      // TODO
+      return SizedBox.shrink();
     }
   }
 }

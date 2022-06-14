@@ -351,7 +351,7 @@ class _SearchBarState extends State<SearchBar> {
           .toString()
           .toUpperCase(),
       "user_fingerprint":
-          context.read<HomeProvider>().user_identifier.toString()
+          context.read<HomeProvider>().userData['user_identifier'].toString()
     };
 
     print(bundleData);

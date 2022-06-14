@@ -15,6 +15,7 @@ class RequestCardHelper {
 
     for (int i = 0; i < locationData.length; i++) {
       //? Essentials
+      if (locationData[i] == null) continue;
       //1. Suburb
       String suburb = locationData[i]['suburb'] != false &&
               locationData[i]['suburb'] != 'false' &&

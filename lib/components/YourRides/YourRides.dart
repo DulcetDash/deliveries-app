@@ -50,7 +50,8 @@ class _YourRidesState extends State<YourRides> {
     //Assemble the bundle data
     //* @param type: the type of request (past, scheduled, business)
     Map<String, String> bundleData = {
-      'user_identifier': context.read<HomeProvider>().user_identifier,
+      'user_identifier':
+          context.read<HomeProvider>().userData['user_identifier'],
     };
 
     try {

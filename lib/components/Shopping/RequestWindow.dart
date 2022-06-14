@@ -42,6 +42,16 @@ class _RequestWindowState extends State<RequestWindow> {
                   ? context.watch<HomeProvider>().requestShoppingData[0]
                   : {};
 
+      if (context.watch<HomeProvider>().requestShoppingData == null)
+        return SizedBox.shrink();
+
+      if (context.watch<HomeProvider>().requestShoppingData.isEmpty)
+        return SizedBox.shrink();
+
+      if (context.watch<HomeProvider>().requestShoppingData[0]
+              ['shopping_list'] ==
+          null) return SizedBox.shrink();
+
       return context.watch<HomeProvider>().requestShoppingData == null ||
               context.watch<HomeProvider>().requestShoppingData[0]
                       ['shopping_list'] ==
@@ -110,11 +120,11 @@ class Header extends StatelessWidget {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // LoadingAnimationWidget.stretchedDots(
-          //     color: AppTheme().getPrimaryColor(), size: 50),
-          Placeholder(
-            fallbackHeight: 50,
-          ),
+          LoadingAnimationWidget.stretchedDots(
+              color: AppTheme().getPrimaryColor(), size: 50),
+          // Placeholder(
+          //   fallbackHeight: 50,
+          // ),
           SizedBox(
             height: 15,
           ),
@@ -788,7 +798,8 @@ class _LocalModalState extends State<LocalModal> {
       "rating": rating.toString(),
       "badges": json.encode(selectedBadges).toString(),
       "note": note,
-      "user_fingerprint": context.read<HomeProvider>().user_identifier
+      "user_fingerprint":
+          context.read<HomeProvider>().userData['user_identifier']
     };
 
     print(bundleData);
@@ -899,7 +910,7 @@ class _LocalModalState extends State<LocalModal> {
     //? For the request
     Map<String, String> bundleData = {
       "user_identifier":
-          context.read<HomeProvider>().user_identifier.toString(),
+          context.read<HomeProvider>().userData['user_identifier'].toString(),
       "request_fp": requestData['request_fp'].toString(),
     };
 

@@ -266,7 +266,8 @@ class SummaryPreview extends StatelessWidget {
     //Assemble the bundle data
     //? For the request
     Map<String, String> bundleData = {
-      "user_identifier": context.read<HomeProvider>().user_identifier,
+      "user_identifier":
+          context.read<HomeProvider>().userData['user_identifier'],
       "payment_method": context.read<HomeProvider>().paymentMethod,
       "ride_style": context.read<HomeProvider>().rideStyle,
       "passengers_number":

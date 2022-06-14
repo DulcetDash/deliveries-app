@@ -49,7 +49,8 @@ class _SettingsState extends State<Settings> {
     //Assemble the bundle data
     //* @param type: the type of request (past, scheduled, business)
     Map<String, String> bundleData = {
-      'user_identifier': context.read<HomeProvider>().user_identifier,
+      'user_identifier':
+          context.read<HomeProvider>().userData['user_identifier'],
       'data_type': 'profile_picture',
       'data_value': profilePhotoBase64,
       'extension': profilePhotoExtension
@@ -534,7 +535,8 @@ class _LocalModalState extends State<LocalModal> {
     //Assemble the bundle data
     //* @param type: the type of request (past, scheduled, business)
     Map<String, String> bundleData = {
-      'user_identifier': context.read<HomeProvider>().user_identifier,
+      'user_identifier':
+          context.read<HomeProvider>().userData['user_identifier'],
       'data_type': scenario,
       'data_value': _editingController.text.toString()
     };

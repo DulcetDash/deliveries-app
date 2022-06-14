@@ -341,6 +341,63 @@ class HomeProvider with ChangeNotifier {
     //...
     //notifyListeners();
   }
+
+  //! Clear every related to requests
+  void clearEveryRequestsRelatedData() {
+    shops_search_item_key = '';
+    shops_items_searched = [];
+    isLoadingForItemsSearch = false;
+    stores_search_key = '';
+    stores_searched = [];
+    selected_store = {};
+    catalogueData_level1_structured = {};
+    catalogueData_level2_structured = [];
+    selectedDataL2ToShow = {};
+    selectedProduct = {};
+    tmp_selectedProduct = {};
+    CART = [];
+    manuallySettedCurrentLocation_pickup = {};
+    manuallySettedCurrentLocation_dropoff = {};
+    typedSearchLocation = '';
+    suggestedLocationSearches = [];
+    isLoadingForSearch = false;
+    noteTyped = '';
+    noteTyped_delivery = '';
+    noteTyped_ride = '';
+    isLoadingForRequest = false;
+    requestShoppingData = [];
+    delivery_pickup = {'empty': 0};
+    recipients_infos = [
+      {
+        'name': '',
+        'phone': '',
+        'dropoff_location': {'empty': 0}
+      }
+    ];
+    selectedRecipient_index = 0;
+    enteredPhoneNumber = '';
+    isPhoneEnteredValid = true;
+    isGenerally_phoneNumbersValid = false;
+    passengersNumber = 1;
+    isGoingTheSameWay = false;
+    selectedLocationField_index = -1;
+    ride_location_pickup = {'item': 0};
+    ride_location_dropoff = [
+      {'item': 0}
+    ];
+    routeSnapshotData = [];
+    polylines_snapshot = {};
+    markers_snapshot = {};
+    eta_informationSnap = {"eta": "", "point1": {}, "point2": {}};
+    pricing_computed = [];
+    selected_pricing_model = {};
+    isLoadingFor_fareComputation = true;
+    customFareEntered = null;
+    definitiveCustomFare = null;
+    isCustomFareConsidered = false;
+    //....
+    notifyListeners();
+  }
   //!-----------------
 
   //Updaters
