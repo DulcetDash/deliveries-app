@@ -71,6 +71,8 @@ class _MapPreviewState extends State<MapPreview> {
   }
 
   void updateMapOrientation({required BuildContext context}) {
+    if (context.read<HomeProvider>().routeSnapshotData.isEmpty) return;
+
     try {
       if (context.read<HomeProvider>().routeSnapshotData[0].latitude >=
           context
@@ -175,6 +177,9 @@ class SummaryPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (context.watch<HomeProvider>().pricing_computed.isEmpty)
+      return SizedBox.shrink();
+
     return Expanded(
       child: Container(
         decoration: BoxDecoration(

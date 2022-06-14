@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -164,6 +165,8 @@ class ShowProductMain extends StatelessWidget {
   Widget build(BuildContext context) {
     Map<String, dynamic> productData =
         context.watch<HomeProvider>().selectedProduct;
+
+    if (mapEquals({}, productData)) return SizedBox.shrink();
 
     return Flexible(
       child: Padding(

@@ -195,6 +195,11 @@ class QuickAccess extends StatelessWidget {
 
                           return ListTile(
                             onTap: () {
+                              //!Cleanse
+                              context
+                                  .read<HomeProvider>()
+                                  .clearEveryRequestsRelatedData();
+                              //...
                               //! Save the store fp and store name
                               Map tmpData = {
                                 'store_fp': storeData['fp'],
