@@ -9,7 +9,7 @@ import 'package:http/http.dart';
 import 'package:nej/ThemesAndRoutes/AppRoutes.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:collection/collection.dart';
 import '../Providers/HomeProvider.dart';
 
 class GetShoppingData {
@@ -82,17 +82,41 @@ class GetShoppingData {
         } else //? Found some data
         {
           List responseData = json.decode(response.body);
-          context
-              .read<HomeProvider>()
-              .updateRealtimeShoppingData(data: responseData);
-          //? MOVE TO THE REQUEST WINDOW
-          if (context.read<HomeProvider>().isThereARequestLockedIn['locked'] ==
+          // context
+          //     .read<HomeProvider>()
+          //     .updateRealtimeShoppingData(data: responseData);
+
+          print(DeepCollectionEquality().equals(
+                      responseData[0],
+                      context
+                              .read<HomeProvider>()
+                              .requestShoppingData
+                              .isNotEmpty
+                          ? context.read<HomeProvider>().requestShoppingData[0]
+                          : {}) ==
                   false &&
-              context
-                      .read<HomeProvider>()
-                      .isThereARequestLockedIn['makeException'] ==
-                  false) //!Auto redirect to the request windhoek
-          {
+              responseData.isNotEmpty);
+          //? MOVE TO THE REQUEST WINDOW
+          // if (context.read<HomeProvider>().isThereARequestLockedIn['locked'] ==
+          //         false &&
+          //     context
+          //             .read<HomeProvider>()
+          //             .isThereARequestLockedIn['makeException'] ==
+          //         false) //!Auto redirect to the request windhoek
+          // {
+          if (DeepCollectionEquality().equals(
+                      responseData[0],
+                      context
+                              .read<HomeProvider>()
+                              .requestShoppingData
+                              .isNotEmpty
+                          ? context.read<HomeProvider>().requestShoppingData[0]
+                          : {}) ==
+                  false &&
+              responseData.isNotEmpty) {
+            context
+                .read<HomeProvider>()
+                .updateRealtimeShoppingData(data: responseData);
             log('REROUTE INSIDE');
             //! LOCK IN REQUEST WINDOW
             context

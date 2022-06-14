@@ -35,47 +35,52 @@ class _RequestWindow_deliveryState extends State<RequestWindow_delivery> {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> requestData =
-        context.watch<HomeProvider>().requestShoppingData.length > 0
-            ? context.watch<HomeProvider>().requestShoppingData[0]
-            : {};
+    try {
+      Map<String, dynamic> requestData =
+          context.watch<HomeProvider>().requestShoppingData.length > 0
+              ? context.watch<HomeProvider>().requestShoppingData[0]
+              : {};
 
-    return context.watch<HomeProvider>().requestShoppingData == null
-        ? SizedBox.shrink()
-        : context.watch<HomeProvider>().requestShoppingData.length == 0
-            ? SizedBox.shrink()
-            : Scaffold(
-                body: SafeArea(
-                    child: ListView(
-                  children: [
-                    Header(),
-                    DeliveryList(),
-                    PaymentSection(),
-                    // DeliverySection(),
-                    CancellationSection(),
-                    requestData['state_vars']['completedDropoff'] == false
-                        ? SizedBox.shrink()
-                        : GenericRectButton(
-                            label: 'Rate your courier',
-                            horizontalPadding: 20,
-                            labelFontSize: 25,
-                            labelFontFamily: "MoveBold",
-                            backgroundColor: AppTheme().getSecondaryColor(),
-                            actuatorFunctionl: () =>
-                                showMaterialModalBottomSheet(
-                                  backgroundColor: Colors.white,
-                                  enableDrag: false,
-                                  expand: true,
-                                  bounce: true,
-                                  duration: Duration(milliseconds: 250),
-                                  context: context,
-                                  builder: (context) => LocalModal(
-                                    scenario: 'rating',
-                                  ),
-                                ))
-                  ],
-                )),
-              );
+      return context.watch<HomeProvider>().requestShoppingData == null
+          ? SizedBox.shrink()
+          : context.watch<HomeProvider>().requestShoppingData.length == 0
+              ? SizedBox.shrink()
+              : Scaffold(
+                  body: SafeArea(
+                      child: ListView(
+                    children: [
+                      Header(),
+                      DeliveryList(),
+                      PaymentSection(),
+                      // DeliverySection(),
+                      CancellationSection(),
+                      requestData['state_vars']['completedDropoff'] == false
+                          ? SizedBox.shrink()
+                          : GenericRectButton(
+                              label: 'Rate your courier',
+                              horizontalPadding: 20,
+                              labelFontSize: 25,
+                              labelFontFamily: "MoveBold",
+                              backgroundColor: AppTheme().getSecondaryColor(),
+                              actuatorFunctionl: () =>
+                                  showMaterialModalBottomSheet(
+                                    backgroundColor: Colors.white,
+                                    enableDrag: false,
+                                    expand: true,
+                                    bounce: true,
+                                    duration: Duration(milliseconds: 250),
+                                    context: context,
+                                    builder: (context) => LocalModal(
+                                      scenario: 'rating',
+                                    ),
+                                  ))
+                    ],
+                  )),
+                );
+    } on Exception catch (e) {
+      // TODO
+      return SizedBox.shrink();
+    }
   }
 }
 
@@ -101,11 +106,11 @@ class Header extends StatelessWidget {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // LoadingAnimationWidget.stretchedDots(
-          //     color: AppTheme().getPrimaryColor(), size: 50),
-          Placeholder(
-            fallbackHeight: 50,
-          ),
+          LoadingAnimationWidget.stretchedDots(
+              color: AppTheme().getPrimaryColor(), size: 50),
+          // Placeholder(
+          //   fallbackHeight: 50,
+          // ),
           SizedBox(
             height: 15,
           ),
@@ -793,43 +798,48 @@ class CancellationSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> requestData =
-        context.watch<HomeProvider>().requestShoppingData[0];
+    try {
+      Map<String, dynamic> requestData =
+          context.watch<HomeProvider>().requestShoppingData[0];
 
-    return Visibility(
-      visible: requestData['state_vars']['inRouteToDropoff'] == false,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Divider(),
-          InkWell(
-            onTap: () => showMaterialModalBottomSheet(
-              backgroundColor: Colors.white,
-              expand: false,
-              bounce: true,
-              duration: Duration(milliseconds: 250),
-              context: context,
-              builder: (context) => LocalModal(
-                scenario: 'cancel_request',
+      return Visibility(
+        visible: requestData['state_vars']['inRouteToDropoff'] == false,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Divider(),
+            InkWell(
+              onTap: () => showMaterialModalBottomSheet(
+                backgroundColor: Colors.white,
+                expand: false,
+                bounce: true,
+                duration: Duration(milliseconds: 250),
+                context: context,
+                builder: (context) => LocalModal(
+                  scenario: 'cancel_request',
+                ),
               ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  left: 20, right: 20, top: 30, bottom: 60),
-              child: Container(
-                child: Text(
-                  'Cancel the delivery',
-                  style: TextStyle(
-                      fontFamily: 'MoveTextMedium',
-                      fontSize: 17,
-                      color: AppTheme().getErrorColor()),
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    left: 20, right: 20, top: 30, bottom: 60),
+                child: Container(
+                  child: Text(
+                    'Cancel the delivery',
+                    style: TextStyle(
+                        fontFamily: 'MoveTextMedium',
+                        fontSize: 17,
+                        color: AppTheme().getErrorColor()),
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    } on Exception catch (e) {
+      // TODO
+      return SizedBox.shrink();
+    }
   }
 }
 
@@ -1008,6 +1018,12 @@ class _LocalModalState extends State<LocalModal> {
         Map<String, dynamic> tmpResponse = json.decode(response.body)[0];
         //? Update
         if (tmpResponse['response'] == 'success') {
+          //! Unlock the fates
+          context
+              .read<HomeProvider>()
+              .updateRequestWindowLockState(state: false);
+          //!---
+
           Timer(Duration(seconds: 3), () {
             Navigator.of(context).popAndPushNamed('/home');
           });

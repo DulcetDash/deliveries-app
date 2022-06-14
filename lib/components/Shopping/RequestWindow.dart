@@ -34,52 +34,57 @@ class _RequestWindowState extends State<RequestWindow> {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> requestData =
-        context.watch<HomeProvider>().requestShoppingData == null
-            ? {}
-            : context.watch<HomeProvider>().requestShoppingData.isNotEmpty
-                ? context.watch<HomeProvider>().requestShoppingData[0]
-                : {};
+    try {
+      Map<String, dynamic> requestData =
+          context.watch<HomeProvider>().requestShoppingData == null
+              ? {}
+              : context.watch<HomeProvider>().requestShoppingData.isNotEmpty
+                  ? context.watch<HomeProvider>().requestShoppingData[0]
+                  : {};
 
-    return context.watch<HomeProvider>().requestShoppingData == null ||
-            context.watch<HomeProvider>().requestShoppingData[0]
-                    ['shopping_list'] ==
-                null
-        ? SizedBox.shrink()
-        : context.watch<HomeProvider>().requestShoppingData.length == 0
-            ? SizedBox.shrink()
-            : Scaffold(
-                body: SafeArea(
-                    child: ListView(
-                  children: [
-                    Header(),
-                    ShoppingList(),
-                    PaymentSection(),
-                    DeliverySection(),
-                    CancellationSection(),
-                    requestData['state_vars']['completedShopping'] == false
-                        ? SizedBox.shrink()
-                        : GenericRectButton(
-                            label: 'Rate your shopper',
-                            horizontalPadding: 20,
-                            labelFontSize: 25,
-                            labelFontFamily: "MoveBold",
-                            backgroundColor: AppTheme().getSecondaryColor(),
-                            actuatorFunctionl: () =>
-                                showMaterialModalBottomSheet(
-                                  backgroundColor: Colors.white,
-                                  enableDrag: false,
-                                  expand: true,
-                                  bounce: true,
-                                  duration: Duration(milliseconds: 250),
-                                  context: context,
-                                  builder: (context) => LocalModal(
-                                    scenario: 'rating',
-                                  ),
-                                ))
-                  ],
-                )),
-              );
+      return context.watch<HomeProvider>().requestShoppingData == null ||
+              context.watch<HomeProvider>().requestShoppingData[0]
+                      ['shopping_list'] ==
+                  null
+          ? SizedBox.shrink()
+          : context.watch<HomeProvider>().requestShoppingData.length == 0
+              ? SizedBox.shrink()
+              : Scaffold(
+                  body: SafeArea(
+                      child: ListView(
+                    children: [
+                      Header(),
+                      ShoppingList(),
+                      PaymentSection(),
+                      DeliverySection(),
+                      CancellationSection(),
+                      requestData['state_vars']['completedShopping'] == false
+                          ? SizedBox.shrink()
+                          : GenericRectButton(
+                              label: 'Rate your shopper',
+                              horizontalPadding: 20,
+                              labelFontSize: 25,
+                              labelFontFamily: "MoveBold",
+                              backgroundColor: AppTheme().getSecondaryColor(),
+                              actuatorFunctionl: () =>
+                                  showMaterialModalBottomSheet(
+                                    backgroundColor: Colors.white,
+                                    enableDrag: false,
+                                    expand: true,
+                                    bounce: true,
+                                    duration: Duration(milliseconds: 250),
+                                    context: context,
+                                    builder: (context) => LocalModal(
+                                      scenario: 'rating',
+                                    ),
+                                  ))
+                    ],
+                  )),
+                );
+    } on Exception catch (e) {
+      // TODO
+      return SizedBox.shrink();
+    }
   }
 }
 
@@ -907,6 +912,12 @@ class _LocalModalState extends State<LocalModal> {
         Map<String, dynamic> tmpResponse = json.decode(response.body)[0];
         //? Update
         if (tmpResponse['response'] == 'success') {
+          //! Unlock the fates
+          context
+              .read<HomeProvider>()
+              .updateRequestWindowLockState(state: false);
+          //!---
+
           Timer(Duration(seconds: 3), () {
             Navigator.of(context).popAndPushNamed('/home');
           });
