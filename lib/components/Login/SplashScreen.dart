@@ -53,7 +53,7 @@ class _SplashScreenState extends State<SplashScreen>
     });
 
     //Debug start
-    Future.delayed(Duration(seconds: 2), () {
+    Future.delayed(Duration(seconds: 1), () {
       _controller.forward().whenComplete(() {
         //Restore the home flow
         //Restore the registration flow
@@ -70,47 +70,52 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Opacity(
-        opacity: globalOpacityAnimation.value,
-        child: Container(
-          alignment: Alignment.center,
-          width: MediaQuery.of(context).size.width,
-          decoration:
-              BoxDecoration(color: Colors.black, border: Border.all(width: 1)),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                  child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  ScaleTransition(
-                    scale: superScaleAnimation,
-                    child: Container(
-                      alignment: Alignment.center,
-                      width: superSideLength,
-                      height: superSideLength,
-                      decoration: const BoxDecoration(
-                          color: Colors.white, shape: BoxShape.circle),
-                    ),
-                  ),
-                  ScaleTransition(
-                    scale: logoScaleAnimation,
-                    child: Container(
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false);
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Opacity(
+          opacity: globalOpacityAnimation.value,
+          child: Container(
+            alignment: Alignment.center,
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+                color: Colors.black, border: Border.all(width: 1)),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                    child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    ScaleTransition(
+                      scale: superScaleAnimation,
+                      child: Container(
                         alignment: Alignment.center,
-                        width: sideLength,
-                        height: sideLength,
-                        decoration: const BoxDecoration(color: Colors.black),
-                        child: Image.asset(
-                          'assets/Images/nejb.jpeg',
-                          fit: BoxFit.contain,
-                        )),
-                  )
-                ],
-              )),
-            ],
+                        width: superSideLength,
+                        height: superSideLength,
+                        decoration: const BoxDecoration(
+                            color: Colors.white, shape: BoxShape.circle),
+                      ),
+                    ),
+                    ScaleTransition(
+                      scale: logoScaleAnimation,
+                      child: Container(
+                          alignment: Alignment.center,
+                          width: sideLength,
+                          height: sideLength,
+                          decoration: const BoxDecoration(color: Colors.black),
+                          child: Image.asset(
+                            'assets/Images/nejb.jpeg',
+                            fit: BoxFit.contain,
+                          )),
+                    )
+                  ],
+                )),
+              ],
+            ),
           ),
         ),
       ),

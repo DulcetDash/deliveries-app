@@ -449,6 +449,11 @@ class GenericInformationLogOUT extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: ListTile(
+        onTap: () {
+          context.read<HomeProvider>().clearEverything();
+          //..
+          Navigator.of(context).pushNamed('/Entry');
+        },
         contentPadding: EdgeInsets.only(left: 20, right: 20),
         horizontalTitleGap: -15,
         leading: Padding(

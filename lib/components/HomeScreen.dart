@@ -20,122 +20,129 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      drawer: DrawerMenu(),
-      body: SafeArea(
-          top: false,
-          child: Column(
-            children: [
-              Container(
-                  color: AppTheme().getPrimaryColor(),
-                  height: MediaQuery.of(context).size.height * 0.42,
-                  child: SafeArea(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Header(),
-                        Padding(
-                          padding: EdgeInsets.only(
-                              left: 20,
-                              right: 20,
-                              top: MediaQuery.of(context).size.height * 0.04),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Shop seamlessly',
-                                style: TextStyle(
-                                    fontFamily: 'MoveTextMedium',
-                                    fontSize: 27,
-                                    color: Colors.white),
-                              ),
-                              SizedBox(
-                                height: 8,
-                              ),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.58,
-                                child: Text(
-                                  'Shop anywhere from anywhere with Nej',
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false);
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        drawer: DrawerMenu(),
+        body: SafeArea(
+            top: false,
+            child: Column(
+              children: [
+                Container(
+                    color: AppTheme().getPrimaryColor(),
+                    height: MediaQuery.of(context).size.height * 0.42,
+                    child: SafeArea(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Header(),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: 20,
+                                right: 20,
+                                top: MediaQuery.of(context).size.height * 0.04),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Shop seamlessly',
                                   style: TextStyle(
-                                    height: 1.3,
-                                    fontSize: 14.5,
-                                    color: Colors.white,
-                                  ),
+                                      fontFamily: 'MoveTextMedium',
+                                      fontSize: 27,
+                                      color: Colors.white),
                                 ),
-                              ),
-                              SizedBox(
-                                height: 14,
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  //! Update the selected service
-                                  context
-                                      .read<HomeProvider>()
-                                      .updateSelectedService(
-                                          service: 'shopping');
-                                  //...
-                                  Navigator.of(context).pushNamed('/shopping');
-                                },
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                      color: Colors.black,
-                                      borderRadius:
-                                          BorderRadius.circular(1000)),
-                                  width: 103,
-                                  height: 38,
+                                SizedBox(
+                                  height: 8,
+                                ),
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.58,
                                   child: Text(
-                                    'Shop now',
+                                    'Shop anywhere from anywhere with Nej',
                                     style: TextStyle(
-                                        fontFamily: 'MoveTextMedium',
-                                        color: Colors.white,
-                                        fontSize: 15),
+                                      height: 1.3,
+                                      fontSize: 14.5,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
-                              )
-                            ],
-                          ),
-                        ),
-                        // Expanded(child: SizedBox.shrink()),
-                        Flexible(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Container(
-                                alignment: Alignment.centerRight,
-                                // color: Colors.amber,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.37,
-                                width: 180,
-                                child: Image.asset(
-                                  'assets/Images/packagecp.png',
-                                  fit: BoxFit.fitHeight,
+                                SizedBox(
+                                  height: 14,
                                 ),
-                              )
-                            ],
+                                InkWell(
+                                  onTap: () {
+                                    //! Update the selected service
+                                    context
+                                        .read<HomeProvider>()
+                                        .updateSelectedService(
+                                            service: 'shopping');
+                                    //...
+                                    Navigator.of(context)
+                                        .pushNamed('/shopping');
+                                  },
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                        color: Colors.black,
+                                        borderRadius:
+                                            BorderRadius.circular(1000)),
+                                    width: 103,
+                                    height: 38,
+                                    child: Text(
+                                      'Shop now',
+                                      style: TextStyle(
+                                          fontFamily: 'MoveTextMedium',
+                                          color: Colors.white,
+                                          fontSize: 15),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
-                        )
-                      ],
-                    ),
-                  )),
-              SizedBox(
-                height: 35,
-              ),
-              ProductsSelection(),
-              SizedBox(
-                height: 35,
-              ),
-              Divider(
-                thickness: 10,
-                color: Colors.grey.shade100,
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              QuickAccess()
-            ],
-          )),
+                          // Expanded(child: SizedBox.shrink()),
+                          Flexible(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Container(
+                                  alignment: Alignment.centerRight,
+                                  // color: Colors.amber,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.37,
+                                  width: 180,
+                                  child: Image.asset(
+                                    'assets/Images/packagecp.png',
+                                    fit: BoxFit.fitHeight,
+                                  ),
+                                )
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    )),
+                SizedBox(
+                  height: 35,
+                ),
+                ProductsSelection(),
+                SizedBox(
+                  height: 35,
+                ),
+                Divider(
+                  thickness: 10,
+                  color: Colors.grey.shade100,
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                QuickAccess()
+              ],
+            )),
+      ),
     );
   }
 }
