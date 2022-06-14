@@ -81,7 +81,6 @@ class GetShoppingData {
           }
         } else //? Found some data
         {
-          // log(response.body.toString());
           List responseData = json.decode(response.body);
           context
               .read<HomeProvider>()
@@ -94,6 +93,7 @@ class GetShoppingData {
                       .isThereARequestLockedIn['makeException'] ==
                   false) //!Auto redirect to the request windhoek
           {
+            log('REROUTE INSIDE');
             //! LOCK IN REQUEST WINDOW
             context
                 .read<HomeProvider>()
@@ -103,6 +103,7 @@ class GetShoppingData {
             if (responseData[0]['ride_mode'] == 'SHOPPING') {
               Navigator.of(context).pushNamed('/requestWindow');
             } else if (responseData[0]['ride_mode'] == 'RIDE') {
+              log('REROUTE RIDE');
               Navigator.of(context).pushNamed('/RequestWindow_ride');
             } else //DELIVERY
             {

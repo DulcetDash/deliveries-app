@@ -53,44 +53,6 @@ class AppGeneralEntry extends StatefulWidget {
 }
 
 class _AppGeneralEntryState extends State<AppGeneralEntry> {
-  // Create a new networking instance
-  late LocationOpsHandler locationOpsHandler;
-  final GetShoppingData _getShoppingData = GetShoppingData();
-  final GetUserData _getUserData = GetUserData();
-  final GetRecentlyVisitedStores _getRecentlyVisitedStores =
-      GetRecentlyVisitedStores();
-  final Watcher watcher = Watcher();
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-    //Start with the timers
-    //Location operation handlers
-    locationOpsHandler = LocationOpsHandler(context: context);
-    //Ask once for the location permission
-    locationOpsHandler.requestLocationPermission();
-    //globalDataFetcher.getCoreDate(context: context);
-    watcher.startWatcher(context: context, actuatorFunctions: [
-      {'name': 'LocationOpsHandler', 'actuator': locationOpsHandler},
-      {'name': 'getShoppingData', 'actuator': _getShoppingData},
-      {'name': 'getUserData', 'actuator': _getUserData},
-      {
-        'name': 'getRecentlyVisitedStores',
-        'actuator': _getRecentlyVisitedStores
-      }
-    ]);
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    locationOpsHandler.dispose();
-    watcher.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

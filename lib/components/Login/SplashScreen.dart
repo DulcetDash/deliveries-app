@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:nej/components/Helpers/LocationOpsHandler.dart';
+import 'package:nej/components/Helpers/Networking.dart';
+import 'package:nej/components/Helpers/Watcher.dart';
 import 'package:nej/components/Providers/HomeProvider.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/src/provider.dart';
@@ -29,9 +32,36 @@ class _SplashScreenState extends State<SplashScreen>
       const Interval(0.4, 1.0, curve: Curves.easeInOutCubic);
   final Interval opacityInterval = const Interval(0.6, 1.0, curve: Curves.ease);
 
+  //! CORE PROCESSES
+  // Create a new networking instance
+  late LocationOpsHandler locationOpsHandler;
+  final GetShoppingData _getShoppingData = GetShoppingData();
+  final GetUserData _getUserData = GetUserData();
+  final GetRecentlyVisitedStores _getRecentlyVisitedStores =
+      GetRecentlyVisitedStores();
+  final Watcher watcher = Watcher();
+
   @override
   void initState() {
     super.initState();
+    //! core
+    //Start with the timers
+    //Location operation handlers
+    locationOpsHandler = LocationOpsHandler(context: context);
+    //Ask once for the location permission
+    locationOpsHandler.requestLocationPermission();
+    //globalDataFetcher.getCoreDate(context: context);
+    watcher.startWatcher(context: context, actuatorFunctions: [
+      {'name': 'LocationOpsHandler', 'actuator': locationOpsHandler},
+      {'name': 'getShoppingData', 'actuator': _getShoppingData},
+      {'name': 'getUserData', 'actuator': _getUserData},
+      {
+        'name': 'getRecentlyVisitedStores',
+        'actuator': _getRecentlyVisitedStores
+      }
+    ]);
+    //!---
+
     _controller = AnimationController(
         duration: const Duration(milliseconds: 800), vsync: this);
 
@@ -64,9 +94,19 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   void dispose() {
+    // TODO: implement dispose
     super.dispose();
     _controller.dispose();
+
+    locationOpsHandler.dispose();
+    watcher.dispose();
   }
+
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  //   _controller.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {

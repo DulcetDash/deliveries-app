@@ -342,7 +342,7 @@ class SummaryPreview extends StatelessWidget {
     //...
     showMaterialModalBottomSheet(
       backgroundColor: Colors.white,
-      expand: true,
+      expand: false,
       bounce: true,
       duration: Duration(milliseconds: 250),
       context: context,
@@ -364,87 +364,91 @@ class LocalModal extends StatelessWidget {
     if (scenario == 'already_requested') {
       return SafeArea(
         child: Container(
+            height: MediaQuery.of(context).size.height * 0.5,
             child: Padding(
-          padding:
-              EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.15),
-          child: Column(
-            children: [
-              Icon(Icons.warning, size: 50, color: AppTheme().getErrorColor()),
-              SizedBox(
-                height: 15,
+              padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * 0.05),
+              child: Column(
+                children: [
+                  Icon(Icons.warning,
+                      size: 50, color: AppTheme().getErrorColor()),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Text(
+                    'You have a request in progress',
+                    style: TextStyle(
+                      fontFamily: 'MoveTextMedium',
+                      fontSize: 19,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: Text(
+                      "We were unable to go forward with this ride request because it seems like you have an unconfirmed ride request in progress, please confirm it and try again.",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  Expanded(child: SizedBox.shrink()),
+                  GenericRectButton(
+                    label: 'Try again',
+                    labelFontSize: 20,
+                    actuatorFunctionl: () {
+                      Navigator.of(context).pop();
+                    },
+                    isArrowShow: false,
+                  )
+                ],
               ),
-              Text(
-                'You have a request in progress',
-                style: TextStyle(
-                  fontFamily: 'MoveTextMedium',
-                  fontSize: 19,
-                ),
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: Text(
-                  "We were unable to go forward with this ride request because it seems like you have an unconfirmed ride request in progress, please confirm it and try again.",
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-              Expanded(child: SizedBox.shrink()),
-              GenericRectButton(
-                label: 'Try again',
-                labelFontSize: 20,
-                actuatorFunctionl: () {
-                  Navigator.of(context).pop();
-                },
-                isArrowShow: false,
-              )
-            ],
-          ),
-        )),
+            )),
       );
     } else //Unknown error
     {
       return SafeArea(
         child: Container(
+            height: MediaQuery.of(context).size.height * 0.5,
             child: Padding(
-          padding:
-              EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.15),
-          child: Column(
-            children: [
-              Icon(Icons.error, size: 50, color: AppTheme().getErrorColor()),
-              SizedBox(
-                height: 15,
+              padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * 0.05),
+              child: Column(
+                children: [
+                  Icon(Icons.error,
+                      size: 50, color: AppTheme().getErrorColor()),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Text(
+                    'Unable to request',
+                    style: TextStyle(
+                      fontFamily: 'MoveTextMedium',
+                      fontSize: 19,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: Text(
+                      "We were unable to go forward with your ride request due to an unexpected error, please try again and if it persists, please contact us through the Support tab.",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  Expanded(child: SizedBox.shrink()),
+                  GenericRectButton(
+                    label: 'Try again',
+                    labelFontSize: 20,
+                    actuatorFunctionl: () {
+                      Navigator.of(context).pop();
+                    },
+                    isArrowShow: false,
+                  )
+                ],
               ),
-              Text(
-                'Unable to request',
-                style: TextStyle(
-                  fontFamily: 'MoveTextMedium',
-                  fontSize: 19,
-                ),
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: Text(
-                  "We were unable to go forward with your ride request due to an unexpected error, please try again and if it persists, please contact us through the Support tab.",
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-              Expanded(child: SizedBox.shrink()),
-              GenericRectButton(
-                label: 'Try again',
-                labelFontSize: 20,
-                actuatorFunctionl: () {
-                  Navigator.of(context).pop();
-                },
-                isArrowShow: false,
-              )
-            ],
-          ),
-        )),
+            )),
       );
     }
   }
