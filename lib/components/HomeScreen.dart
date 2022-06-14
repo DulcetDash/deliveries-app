@@ -29,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Container(
                   color: AppTheme().getPrimaryColor(),
-                  height: MediaQuery.of(context).size.height * 0.4,
+                  height: MediaQuery.of(context).size.height * 0.42,
                   child: SafeArea(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,20 +51,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                     color: Colors.white),
                               ),
                               SizedBox(
-                                height: 7,
+                                height: 8,
                               ),
                               SizedBox(
                                 width: MediaQuery.of(context).size.width * 0.58,
                                 child: Text(
                                   'Shop anywhere from anywhere with Nej',
                                   style: TextStyle(
-                                      height: 1.2,
-                                      fontSize: 14.5,
-                                      color: Colors.white),
+                                    height: 1.3,
+                                    fontSize: 14.5,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                               SizedBox(
-                                height: 13,
+                                height: 14,
                               ),
                               InkWell(
                                 onTap: () {
@@ -105,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 alignment: Alignment.centerRight,
                                 // color: Colors.amber,
                                 height:
-                                    MediaQuery.of(context).size.height * 0.35,
+                                    MediaQuery.of(context).size.height * 0.37,
                                 width: 180,
                                 child: Image.asset(
                                   'assets/Images/packagecp.png',
@@ -174,16 +175,33 @@ class QuickAccess extends StatelessWidget {
 
                           return ListTile(
                             onTap: () {
-                              print('One of the go again pressed.');
+                              //! Save the store fp and store name
+                              Map tmpData = {
+                                'store_fp': storeData['fp'],
+                                'name': storeData['fd_name'],
+                                'structured': storeData['structured'] != null
+                                    ? storeData['structured']
+                                    : false
+                              };
+                              //...
+                              context
+                                  .read<HomeProvider>()
+                                  .updateSelectedStoreData(data: tmpData);
+                              //...
+                              Navigator.of(context).pushNamed('/catalogue');
                             },
                             contentPadding: EdgeInsets.zero,
                             leading: Container(
                                 width: 60,
                                 height: 50,
-                                color: Colors.grey,
+                                decoration: BoxDecoration(
+                                    color: HexColor(storeData['background']),
+                                    border: Border.all(
+                                        width: 1,
+                                        color: HexColor(storeData['border']))),
                                 child: CachedNetworkImage(
                                   // fit: BoxFit.contain,
-                                  imageUrl: '',
+                                  imageUrl: storeData['logo'],
                                   progressIndicatorBuilder:
                                       (context, url, downloadProgress) =>
                                           SizedBox(
@@ -207,7 +225,7 @@ class QuickAccess extends StatelessWidget {
                                   ),
                                 )),
                             title: Text(
-                              'Edgars',
+                              storeData['fd_name'],
                               style: TextStyle(fontSize: 16),
                             ),
                             subtitle: Text('You were here.'),

@@ -250,7 +250,7 @@ class GetRecentlyVisitedStores {
 
       if (response.statusCode == 200) //Got some results
       {
-        log(response.body.toString());
+        // log(response.body.toString());
         List tmpResponse = json.decode(response.body)['response'];
         context.read<HomeProvider>().recentlyVisitedStores(data: tmpResponse);
       } else //Has some errors

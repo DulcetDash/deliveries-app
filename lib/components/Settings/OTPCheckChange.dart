@@ -300,8 +300,7 @@ class _OTPCheckChangeState extends State<OTPCheckChange> {
                     label: 'Done',
                     labelFontSize: 20,
                     actuatorFunctionl: () {
-                      Navigator.of(context)
-                          .popUntil(ModalRoute.withName('/Settings'));
+                      Navigator.of(context).pushNamed('/Settings');
                     },
                     isArrowShow: false,
                   )
