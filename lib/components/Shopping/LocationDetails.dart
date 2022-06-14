@@ -48,6 +48,7 @@ class _LocationDetailsState extends State<LocationDetails> {
                                   'street'] !=
                               null,
                           actuator: () => showMaterialModalBottomSheet(
+                                backgroundColor: Colors.white,
                                 bounce: true,
                                 duration: Duration(milliseconds: 250),
                                 context: context,
@@ -77,6 +78,7 @@ class _LocationDetailsState extends State<LocationDetails> {
                                   'street'] !=
                               null,
                           actuator: () => showMaterialModalBottomSheet(
+                                backgroundColor: Colors.white,
                                 bounce: true,
                                 duration: Duration(milliseconds: 250),
                                 context: context,
@@ -92,6 +94,7 @@ class _LocationDetailsState extends State<LocationDetails> {
                         subtitle:
                             'Tell us any specifications you want about your shopping.',
                         actuator: () => showMaterialModalBottomSheet(
+                          backgroundColor: Colors.white,
                           bounce: true,
                           duration: Duration(milliseconds: 250),
                           context: context,

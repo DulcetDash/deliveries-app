@@ -99,6 +99,7 @@ class _OTPCheckState extends State<OTPCheck> {
     context.read<HomeProvider>().updateLoadingRequestStatus(status: false);
     //...
     showMaterialModalBottomSheet(
+      backgroundColor: Colors.white,
       expand: false,
       bounce: true,
       duration: Duration(milliseconds: 250),
@@ -232,6 +233,7 @@ class _OTPCheckState extends State<OTPCheck> {
     context.read<HomeProvider>().updateOTPCode(data: '');
     //...
     showMaterialModalBottomSheet(
+      backgroundColor: Colors.white,
       expand: false,
       bounce: true,
       duration: Duration(milliseconds: 250),

@@ -1222,6 +1222,7 @@ class _LocalModalState extends State<LocalModal> {
     });
     //...
     showMaterialModalBottomSheet(
+      backgroundColor: Colors.white,
       expand: false,
       bounce: true,
       duration: Duration(milliseconds: 250),
@@ -1330,6 +1331,7 @@ class _LocalModalState extends State<LocalModal> {
     });
     //...
     showMaterialModalBottomSheet(
+      backgroundColor: Colors.white,
       expand: false,
       bounce: true,
       enableDrag: false,
@@ -1930,6 +1932,7 @@ class _LocalModalState extends State<LocalModal> {
                             false,
                         child: ListTile(
                           onTap: () => showMaterialModalBottomSheet(
+                            backgroundColor: Colors.white,
                             expand: false,
                             bounce: true,
                             duration: Duration(milliseconds: 250),

@@ -321,6 +321,7 @@ class _DeliverySummaryState extends State<DeliverySummary> {
     context.read<HomeProvider>().updateLoadingRequestStatus(status: false);
     //...
     showMaterialModalBottomSheet(
+      backgroundColor: Colors.white,
       expand: false,
       bounce: true,
       duration: Duration(milliseconds: 250),

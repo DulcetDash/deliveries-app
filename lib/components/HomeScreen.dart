@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:nej/components/DrawerMenu.dart';
 import 'package:nej/components/Helpers/AppTheme.dart';
 import 'package:nej/components/Helpers/LocationOpsHandler.dart';
@@ -50,32 +51,46 @@ class _HomeScreenState extends State<HomeScreen> {
                                     color: Colors.white),
                               ),
                               SizedBox(
-                                height: 10,
+                                height: 7,
                               ),
                               SizedBox(
                                 width: MediaQuery.of(context).size.width * 0.58,
                                 child: Text(
-                                  'Shop anywhere from you anywhere with Nej',
+                                  'Shop anywhere from anywhere with Nej',
                                   style: TextStyle(
-                                      fontSize: 14, color: Colors.white),
+                                      height: 1.2,
+                                      fontSize: 14.5,
+                                      color: Colors.white),
                                 ),
                               ),
                               SizedBox(
                                 height: 13,
                               ),
-                              Container(
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                    color: Colors.black,
-                                    borderRadius: BorderRadius.circular(1000)),
-                                width: 103,
-                                height: 36,
-                                child: Text(
-                                  'Shop now',
-                                  style: TextStyle(
-                                      fontFamily: 'MoveTextMedium',
-                                      color: Colors.white,
-                                      fontSize: 15),
+                              InkWell(
+                                onTap: () {
+                                  //! Update the selected service
+                                  context
+                                      .read<HomeProvider>()
+                                      .updateSelectedService(
+                                          service: 'shopping');
+                                  //...
+                                  Navigator.of(context).pushNamed('/shopping');
+                                },
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                      color: Colors.black,
+                                      borderRadius:
+                                          BorderRadius.circular(1000)),
+                                  width: 103,
+                                  height: 38,
+                                  child: Text(
+                                    'Shop now',
+                                    style: TextStyle(
+                                        fontFamily: 'MoveTextMedium',
+                                        color: Colors.white,
+                                        fontSize: 15),
+                                  ),
                                 ),
                               )
                             ],
@@ -130,6 +145,8 @@ class QuickAccess extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List recentData = context.watch<HomeProvider>().recentlyVisitedShops;
+
     return Expanded(
       child: Container(
         // color: Colors.red,
@@ -139,64 +156,99 @@ class QuickAccess extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Go again',
-                  style: TextStyle(
-                      fontFamily: 'MoveTextBold',
-                      fontSize: 18,
-                      color: Colors.grey.shade600)),
+              Visibility(
+                visible: recentData.isNotEmpty,
+                child: Text('Go again',
+                    style: TextStyle(
+                        fontFamily: 'MoveTextBold',
+                        fontSize: 18,
+                        color: Colors.grey.shade600)),
+              ),
               Expanded(
-                child: ListView.separated(
-                    padding: EdgeInsets.only(top: 25),
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        onTap: () {
-                          print('One of the go again pressed.');
-                        },
-                        contentPadding: EdgeInsets.zero,
-                        leading: Container(
-                            width: 60,
-                            height: 50,
-                            color: Colors.grey,
-                            child: CachedNetworkImage(
-                              // fit: BoxFit.contain,
-                              imageUrl: '',
-                              progressIndicatorBuilder:
-                                  (context, url, downloadProgress) => SizedBox(
-                                width: MediaQuery.of(context).size.width,
-                                height: 20.0,
-                                child: Shimmer.fromColors(
-                                  baseColor: Colors.grey.shade300,
-                                  highlightColor: Colors.grey.shade100,
-                                  child: Container(
-                                    width: 40.0,
-                                    height: 40.0,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                              errorWidget: (context, url, error) => const Icon(
-                                Icons.error,
-                                size: 30,
+                child: recentData.isEmpty
+                    ? renderEmptyRecent(context: context)
+                    : ListView.separated(
+                        padding: EdgeInsets.only(top: 25),
+                        itemBuilder: (context, index) {
+                          Map<String, dynamic> storeData = recentData[index];
+
+                          return ListTile(
+                            onTap: () {
+                              print('One of the go again pressed.');
+                            },
+                            contentPadding: EdgeInsets.zero,
+                            leading: Container(
+                                width: 60,
+                                height: 50,
                                 color: Colors.grey,
-                              ),
-                            )),
-                        title: Text(
-                          'Edgars',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        subtitle: Text('You were here.'),
-                        trailing: Icon(
-                          Icons.arrow_forward_ios_sharp,
-                          size: 15,
-                        ),
-                      );
-                    },
-                    separatorBuilder: (context, index) => Divider(),
-                    itemCount: 2),
+                                child: CachedNetworkImage(
+                                  // fit: BoxFit.contain,
+                                  imageUrl: '',
+                                  progressIndicatorBuilder:
+                                      (context, url, downloadProgress) =>
+                                          SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 20.0,
+                                    child: Shimmer.fromColors(
+                                      baseColor: Colors.grey.shade300,
+                                      highlightColor: Colors.grey.shade100,
+                                      child: Container(
+                                        width: 40.0,
+                                        height: 40.0,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(
+                                    Icons.error,
+                                    size: 30,
+                                    color: Colors.grey,
+                                  ),
+                                )),
+                            title: Text(
+                              'Edgars',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            subtitle: Text('You were here.'),
+                            trailing: Icon(
+                              Icons.arrow_forward_ios_sharp,
+                              size: 15,
+                            ),
+                          );
+                        },
+                        separatorBuilder: (context, index) => Divider(),
+                        itemCount: recentData.length),
               )
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  //Render Empty recent data
+  Widget renderEmptyRecent({required BuildContext context}) {
+    return Container(
+      // color: Colors.red,
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.shopping_bag,
+            size: 45,
+            color: AppTheme().getGenericDarkGrey(),
+          ),
+          SizedBox(
+            height: 15,
+          ),
+          Text(
+            'No recents shopping',
+            style:
+                TextStyle(fontSize: 15, color: AppTheme().getGenericDarkGrey()),
+          ),
+        ],
       ),
     );
   }

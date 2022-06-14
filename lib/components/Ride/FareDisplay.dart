@@ -403,6 +403,7 @@ class PaymentMethodSelector extends StatelessWidget {
       padding: const EdgeInsets.only(left: 20, right: 20),
       child: InkWell(
         onTap: () => showMaterialModalBottomSheet(
+          backgroundColor: Colors.white,
           bounce: true,
           duration: Duration(milliseconds: 250),
           context: context,

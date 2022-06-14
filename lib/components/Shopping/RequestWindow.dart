@@ -702,6 +702,7 @@ class CancellationSection extends StatelessWidget {
       visible: requestData['state_vars']['inRouteToShop'] == false,
       child: InkWell(
         onTap: () => showMaterialModalBottomSheet(
+          backgroundColor: Colors.white,
           expand: false,
           bounce: true,
           duration: Duration(milliseconds: 250),
@@ -822,6 +823,7 @@ class _LocalModalState extends State<LocalModal> {
     });
     //...
     showMaterialModalBottomSheet(
+      backgroundColor: Colors.white,
       expand: false,
       bounce: true,
       duration: Duration(milliseconds: 250),
@@ -932,6 +934,7 @@ class _LocalModalState extends State<LocalModal> {
     });
     //...
     showMaterialModalBottomSheet(
+      backgroundColor: Colors.white,
       expand: false,
       bounce: true,
       enableDrag: false,

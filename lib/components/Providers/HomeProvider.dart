@@ -45,6 +45,10 @@ class HomeProvider with ChangeNotifier {
 
   Map<String, dynamic> userData = {}; //Will hold all the dynamic user data
 
+  //? Recently visited shops
+  List recentlyVisitedShops =
+      []; //Will have the list of the 2 recently visited shops.
+
   //! Search for items in store
   String shops_search_item_key =
       ''; //Will hold the typed key to search for items globally
@@ -1244,6 +1248,12 @@ class HomeProvider with ChangeNotifier {
   //!60. Update the general user indetifier
   void updateGeneral_userIdenfier({required String data}) {
     user_identifier = data;
+    notifyListeners();
+  }
+
+  //?61. Update recently visited stores data
+  void recentlyVisitedStores({required List data}) {
+    recentlyVisitedShops = data;
     notifyListeners();
   }
 }

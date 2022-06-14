@@ -498,6 +498,7 @@ class LocalModal extends StatelessWidget {
                               nature_data: 'dropoff_location')[0]['street'] !=
                           null,
                       actuator: () => showMaterialModalBottomSheet(
+                            backgroundColor: Colors.white,
                             bounce: true,
                             duration: Duration(milliseconds: 250),
                             context: context,

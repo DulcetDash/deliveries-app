@@ -151,6 +151,7 @@ class _PhoneInputState extends State<PhoneInput> {
     context.read<HomeProvider>().updateLoadingRequestStatus(status: false);
     //...
     showMaterialModalBottomSheet(
+      backgroundColor: Colors.white,
       expand: false,
       bounce: true,
       duration: Duration(milliseconds: 250),

@@ -42,6 +42,7 @@ class _DeliveryPickupLocationState extends State<DeliveryPickupLocation> {
                     context.watch<HomeProvider>().delivery_pickup['street'] !=
                         null,
                 actuator: () => showMaterialModalBottomSheet(
+                      backgroundColor: Colors.white,
                       bounce: true,
                       duration: Duration(milliseconds: 250),
                       context: context,
@@ -61,6 +62,7 @@ class _DeliveryPickupLocationState extends State<DeliveryPickupLocation> {
                 ? 'Tell us any specifications you want about your delivery.'
                 : context.read<HomeProvider>().noteTyped_delivery,
             actuator: () => showMaterialModalBottomSheet(
+              backgroundColor: Colors.white,
               bounce: true,
               duration: Duration(milliseconds: 250),
               context: context,

@@ -220,8 +220,8 @@ class DriverForNej extends StatelessWidget {
             child: Row(
               children: [
                 Icon(
-                  Icons.star_rate,
-                  size: 16,
+                  Icons.square,
+                  size: 10,
                   color: Colors.white,
                 ),
                 SizedBox(

@@ -12,7 +12,8 @@ class AppTheme {
   //1b. Get the secondary color
   Color getSecondaryColor() {
     // return Color.fromRGBO(9, 110, 212, 1);
-    return HexColor('#339900');
+    // return HexColor('#339900');
+    return Color.fromRGBO(9, 110, 212, 1);
   }
 
   //2. Get the error color

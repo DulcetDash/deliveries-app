@@ -278,6 +278,7 @@ class InputUserDetails extends StatelessWidget {
     context.read<HomeProvider>().updateLoadingRequestStatus(status: false);
     //...
     showMaterialModalBottomSheet(
+      backgroundColor: Colors.white,
       expand: false,
       bounce: true,
       duration: Duration(milliseconds: 250),

@@ -160,6 +160,7 @@ class _CreateAccountState extends State<CreateAccount> {
     context.read<HomeProvider>().updateLoadingRequestStatus(status: false);
     //...
     showMaterialModalBottomSheet(
+      backgroundColor: Colors.white,
       expand: false,
       bounce: true,
       duration: Duration(milliseconds: 250),
@@ -216,6 +217,7 @@ class _CreateAccountState extends State<CreateAccount> {
     context.read<HomeProvider>().updateLoadingRequestStatus(status: false);
     //...
     showMaterialModalBottomSheet(
+      backgroundColor: Colors.white,
       expand: false,
       bounce: true,
       duration: Duration(milliseconds: 250),

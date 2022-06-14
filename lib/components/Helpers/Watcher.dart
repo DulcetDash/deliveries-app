@@ -37,6 +37,9 @@ class Watcher with ChangeNotifier {
               case 'getUserData':
                 actuatorFunctions[i]['actuator'].exec(context: context);
                 break;
+              case 'getRecentlyVisitedStores':
+                actuatorFunctions[i]['actuator'].exec(context: context);
+                break;
               default:
             }
           } else //No valid context

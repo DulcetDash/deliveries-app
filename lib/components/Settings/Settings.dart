@@ -223,6 +223,7 @@ class _SettingsState extends State<Settings> {
                             fieldName: 'Name',
                             valueText: userData['name'].toString(),
                             actuator: () => showMaterialModalBottomSheet(
+                              backgroundColor: Colors.white,
                               expand: false,
                               bounce: true,
                               duration: Duration(milliseconds: 250),
@@ -237,6 +238,7 @@ class _SettingsState extends State<Settings> {
                             fieldName: 'Surname',
                             valueText: userData['surname'].toString(),
                             actuator: () => showMaterialModalBottomSheet(
+                              backgroundColor: Colors.white,
                               expand: false,
                               bounce: true,
                               duration: Duration(milliseconds: 250),
@@ -260,6 +262,7 @@ class _SettingsState extends State<Settings> {
                             fieldName: 'Email',
                             valueText: userData['email'].toString(),
                             actuator: () => showMaterialModalBottomSheet(
+                              backgroundColor: Colors.white,
                               expand: false,
                               bounce: true,
                               duration: Duration(milliseconds: 250),

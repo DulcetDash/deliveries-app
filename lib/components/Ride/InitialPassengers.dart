@@ -65,6 +65,7 @@ class _InitialPassengersState extends State<InitialPassengers> {
                   ? 'Anything you want to driver to do for your ride?'
                   : context.read<HomeProvider>().noteTyped_delivery,
               actuator: () => showMaterialModalBottomSheet(
+                backgroundColor: Colors.white,
                 bounce: true,
                 duration: Duration(milliseconds: 250),
                 context: context,
@@ -95,6 +96,7 @@ class _InitialPassengersState extends State<InitialPassengers> {
                       .updateFareComputation_status(status: true);
                   //!
                   return showMaterialModalBottomSheet(
+                    backgroundColor: Colors.white,
                     bounce: true,
                     duration: Duration(milliseconds: 250),
                     context: context,

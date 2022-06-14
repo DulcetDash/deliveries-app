@@ -55,6 +55,8 @@ class _AppGeneralEntryState extends State<AppGeneralEntry> {
   late LocationOpsHandler locationOpsHandler;
   GetShoppingData _getShoppingData = GetShoppingData();
   GetUserData _getUserData = GetUserData();
+  GetRecentlyVisitedStores _getRecentlyVisitedStores =
+      GetRecentlyVisitedStores();
   Watcher watcher = Watcher();
 
   @override
@@ -71,7 +73,11 @@ class _AppGeneralEntryState extends State<AppGeneralEntry> {
     watcher.startWatcher(context: context, actuatorFunctions: [
       {'name': 'LocationOpsHandler', 'actuator': locationOpsHandler},
       {'name': 'getShoppingData', 'actuator': _getShoppingData},
-      {'name': 'getUserData', 'actuator': _getUserData}
+      {'name': 'getUserData', 'actuator': _getUserData},
+      {
+        'name': 'getRecentlyVisitedStores',
+        'actuator': _getRecentlyVisitedStores
+      }
     ]);
   }
 

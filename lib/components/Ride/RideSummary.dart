@@ -309,6 +309,7 @@ class SummaryPreview extends StatelessWidget {
           //? Go to the successful request page
           // Navigator.of(context).pushNamed('/successfulRequest');
           showMaterialModalBottomSheet(
+            backgroundColor: Colors.white,
             expand: true,
             bounce: true,
             duration: Duration(milliseconds: 250),
@@ -340,6 +341,7 @@ class SummaryPreview extends StatelessWidget {
     context.read<HomeProvider>().updateLoadingRequestStatus(status: false);
     //...
     showMaterialModalBottomSheet(
+      backgroundColor: Colors.white,
       expand: true,
       bounce: true,
       duration: Duration(milliseconds: 250),
@@ -458,6 +460,7 @@ class PaymentMethodSelector extends StatelessWidget {
       padding: const EdgeInsets.only(left: 20, right: 20),
       child: InkWell(
         onTap: () => showMaterialModalBottomSheet(
+          backgroundColor: Colors.white,
           bounce: true,
           duration: Duration(milliseconds: 250),
           context: context,

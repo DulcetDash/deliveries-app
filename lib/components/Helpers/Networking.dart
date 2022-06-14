@@ -129,9 +129,6 @@ class GetUserData {
   Future exec({
     required BuildContext context,
   }) async {
-    Uri mainUrl = Uri.parse(Uri.encodeFull(
-        '${context.read<HomeProvider>().bridge}/getGenericUserData'));
-
     //? For the request
     //! Make sure that it has the correct user_identifier
     if (context.read<HomeProvider>().user_identifier == 'empty_fingerprint') {
@@ -155,25 +152,7 @@ class GetUserData {
             "user_identifier": userId,
           };
           //...
-          try {
-            Response response = await post(mainUrl, body: bundleData);
-
-            if (response.statusCode == 200) //Got some results
-            {
-              // log(response.body.toString());
-              Map<String, dynamic> tmpResponse =
-                  json.decode(response.body)[0]['response'];
-              context
-                  .read<HomeProvider>()
-                  .updateUserDataErrorless(data: tmpResponse);
-            } else //Has some errors
-            {
-              log(response.toString());
-            }
-          } catch (e) {
-            log('8');
-            log(e.toString());
-          }
+          requestBlock(context: context, bundleData: bundleData);
         }
       }).catchError((err) {
         print('empty_fingerprint');
@@ -184,25 +163,103 @@ class GetUserData {
         "user_identifier": context.read<HomeProvider>().user_identifier,
       };
 
-      try {
-        Response response = await post(mainUrl, body: bundleData);
+      requestBlock(context: context, bundleData: bundleData);
+    }
+  }
 
-        if (response.statusCode == 200) //Got some results
-        {
-          // log(response.body.toString());
-          Map<String, dynamic> tmpResponse =
-              json.decode(response.body)[0]['response'];
-          context
-              .read<HomeProvider>()
-              .updateUserDataErrorless(data: tmpResponse);
-        } else //Has some errors
-        {
-          log(response.toString());
-        }
-      } catch (e) {
-        log('8');
-        log(e.toString());
+  //Request
+  void requestBlock(
+      {required BuildContext context,
+      required Map<String, String> bundleData}) async {
+    Uri mainUrl = Uri.parse(Uri.encodeFull(
+        '${context.read<HomeProvider>().bridge}/getGenericUserData'));
+
+    try {
+      Response response = await post(mainUrl, body: bundleData);
+
+      if (response.statusCode == 200) //Got some results
+      {
+        // log(response.body.toString());
+        Map<String, dynamic> tmpResponse =
+            json.decode(response.body)[0]['response'];
+        context.read<HomeProvider>().updateUserDataErrorless(data: tmpResponse);
+      } else //Has some errors
+      {
+        log(response.toString());
       }
+    } catch (e) {
+      log('8');
+      log(e.toString());
+    }
+  }
+}
+
+//?2. Get recently visited store data
+class GetRecentlyVisitedStores {
+  //Get shopping data
+  Future exec({
+    required BuildContext context,
+  }) async {
+    //? For the request
+    //! Make sure that it has the correct user_identifier
+    if (context.read<HomeProvider>().user_identifier == 'empty_fingerprint') {
+      context
+          .read<HomeProvider>()
+          .getFileSavedFingerprintBack()
+          .then((state) async {
+        if (mapEquals({}, state['userData']) ||
+            state['userData'] == null) //?No state saved yet
+        {
+          log('No state saved found');
+          print('empty_fingerprint');
+        } else //Found a saved state
+        {
+          //! user_identifier
+          String userId = state['user_identifier'] != null
+              ? state['user_identifier']
+              : 'empty_fingerprint';
+          //...
+          Map<String, String> bundleData = {
+            "user_identifier": userId,
+          };
+          //...
+          requestBlock(context: context, bundleData: bundleData);
+        }
+      }).catchError((err) {
+        print('empty_fingerprint');
+      });
+    } else //Has normally the user id
+    {
+      Map<String, String> bundleData = {
+        "user_identifier": context.read<HomeProvider>().user_identifier,
+      };
+
+      requestBlock(context: context, bundleData: bundleData);
+    }
+  }
+
+  //Request
+  void requestBlock(
+      {required BuildContext context,
+      required Map<String, String> bundleData}) async {
+    Uri mainUrl = Uri.parse(Uri.encodeFull(
+        '${context.read<HomeProvider>().bridge}/getRecentlyVisitedShops'));
+
+    try {
+      Response response = await post(mainUrl, body: bundleData);
+
+      if (response.statusCode == 200) //Got some results
+      {
+        log(response.body.toString());
+        List tmpResponse = json.decode(response.body)['response'];
+        context.read<HomeProvider>().recentlyVisitedStores(data: tmpResponse);
+      } else //Has some errors
+      {
+        log(response.toString());
+      }
+    } catch (e) {
+      log('8');
+      log(e.toString());
     }
   }
 }

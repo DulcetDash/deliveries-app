@@ -64,6 +64,7 @@ class FlagPartPhoneEntry extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
         onTap: () => showMaterialModalBottomSheet(
+            backgroundColor: Colors.white,
             duration: const Duration(milliseconds: 350),
             context: context,
             builder: (context) {
