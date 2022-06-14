@@ -62,7 +62,7 @@ class _InitialPassengersState extends State<InitialPassengers> {
                   ? 'Add a note'
                   : 'Your note',
               subtitle: context.read<HomeProvider>().noteTyped_delivery.isEmpty
-                  ? 'Anything you want to driver to do for your ride?'
+                  ? 'Anything you want your driver to do for your ride?'
                   : context.read<HomeProvider>().noteTyped_delivery,
               actuator: () => showMaterialModalBottomSheet(
                 backgroundColor: Colors.white,

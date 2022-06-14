@@ -14,14 +14,14 @@ import 'package:nej/components/Helpers/TopLoader.dart';
 import 'package:nej/components/Providers/HomeProvider.dart';
 import 'package:provider/provider.dart';
 
-class OTPCheck extends StatefulWidget {
-  const OTPCheck({Key? key}) : super(key: key);
+class OTPCheckChange extends StatefulWidget {
+  const OTPCheckChange({Key? key}) : super(key: key);
 
   @override
-  State<OTPCheck> createState() => _OTPCheckState();
+  State<OTPCheckChange> createState() => _OTPCheckChangeState();
 }
 
-class _OTPCheckState extends State<OTPCheck> {
+class _OTPCheckChangeState extends State<OTPCheckChange> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,13 +58,14 @@ class _OTPCheckState extends State<OTPCheck> {
     context.read<HomeProvider>().updateLoadingRequestStatus(status: true);
 
     Uri mainUrl = Uri.parse(Uri.encodeFull(
-        '${context.read<HomeProvider>().bridge}/checkPhoneAndSendOTP_status'));
+        '${context.read<HomeProvider>().bridge}/checkPhoneAndSendOTP_changeNumber_status'));
 
     //Assemble the bundle data
     //? For the request
     Map<String, String> bundleData = {
       "phone":
-          '${context.read<HomeProvider>().selectedCountryCodeData['dial_code']}${context.read<HomeProvider>().enteredPhoneNumber}'
+          '${context.read<HomeProvider>().selectedCountryCodeData['dial_code']}${context.read<HomeProvider>().enteredPhoneNumber}',
+      "user_identifier": context.read<HomeProvider>().user_identifier
     };
 
     print(bundleData);
@@ -75,10 +76,6 @@ class _OTPCheckState extends State<OTPCheck> {
       {
         context.read<HomeProvider>().updateLoadingRequestStatus(status: false);
         log(response.body.toString());
-        Map<String, dynamic> responseInfo = json.decode(response.body);
-
-        //Update the login phase 1 check data
-        context.read<HomeProvider>().updateLoginPhase1Data(data: responseInfo);
       } else //Has some errors
       {
         log(response.toString());
@@ -154,25 +151,16 @@ class _OTPCheckState extends State<OTPCheck> {
     context.read<HomeProvider>().updateLoadingRequestStatus(status: true);
 
     Uri mainUrl = Uri.parse(Uri.encodeFull(
-        '${context.read<HomeProvider>().bridge}/validateUserOTP'));
+        '${context.read<HomeProvider>().bridge}/validateUserOTP_changeNumber'));
 
     //Assemble the bundle data
     //? For the request
     Map<String, String> bundleData = {
       "phone":
           '${context.read<HomeProvider>().selectedCountryCodeData['dial_code']}${context.read<HomeProvider>().enteredPhoneNumber}',
-      "hasAccount": context
-          .read<HomeProvider>()
-          .loginPhase1Data['response']['hasAccount']
-          .toString(),
+      "hasAccount": 'true',
       "otp": context.read<HomeProvider>().otp_code.toString(),
-      "user_identifier": context
-                  .read<HomeProvider>()
-                  .loginPhase1Data['response']['user_identifier'] !=
-              null
-          ? context.read<HomeProvider>().loginPhase1Data['response']
-              ['user_identifier']
-          : "false"
+      "user_identifier": context.read<HomeProvider>().user_identifier
     };
 
     print(bundleData);
@@ -185,27 +173,9 @@ class _OTPCheckState extends State<OTPCheck> {
         log(response.body.toString());
         Map<String, dynamic> responseInfo = json.decode(response.body);
 
-        if (responseInfo['response'] == 'success') //?Correct
+        if (responseInfo['response']['status'] == 'success') //?Correct
         {
-          if (responseInfo['account_state'] ==
-              'full') //Already has an account - update
-          {
-            context.read<HomeProvider>().updateUserDataErrorless(
-                data: responseInfo['userData'][0]['response']);
-            //! Persist data
-            context.read<HomeProvider>().peristDataMap();
-            // //?Move to home
-            Navigator.of(context).pushNamed('/home');
-          } else if (responseInfo['account_state'] == 'half') {
-            //Move to additional details
-            context.read<HomeProvider>().updateUserDataErrorless(
-                data: responseInfo['userData'][0]['response']);
-            // //?Move to home
-            Navigator.of(context).pushNamed('/NewAccountDetails');
-          } else //New account
-          {
-            Navigator.of(context).pushNamed('/CreateAccount');
-          }
+          showSuccessModal(context: context);
         } else //!Wrong code
         {
           showErrorModalError_otpCheck(context: context);
@@ -271,6 +241,67 @@ class _OTPCheckState extends State<OTPCheck> {
                     labelFontSize: 20,
                     actuatorFunctionl: () {
                       Navigator.of(context).pop();
+                    },
+                    isArrowShow: false,
+                  )
+                ],
+              ),
+            )),
+      ),
+    );
+  }
+
+  void showSuccessModal({required BuildContext context}) {
+    //! Swhitch loader to false
+    context.read<HomeProvider>().updateLoadingRequestStatus(status: false);
+    //! Clear the OTP field and code
+    context.read<HomeProvider>().otpFieldController.clear();
+    context.read<HomeProvider>().updateOTPCode(data: '');
+    //...
+    showMaterialModalBottomSheet(
+      backgroundColor: Colors.white,
+      expand: false,
+      bounce: true,
+      enableDrag: false,
+      duration: Duration(milliseconds: 250),
+      context: context,
+      builder: (context) => SafeArea(
+        child: Container(
+            height: MediaQuery.of(context).size.height * 0.5,
+            child: Padding(
+              padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * 0.05),
+              child: Column(
+                children: [
+                  Icon(Icons.check_circle,
+                      size: 50, color: AppTheme().getPrimaryColor()),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Text(
+                    'Successfully changed',
+                    style: TextStyle(
+                      fontFamily: 'MoveTextMedium',
+                      fontSize: 19,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: Text(
+                      "Your phone number has been successfully changed to ${context.read<HomeProvider>().selectedCountryCodeData['dial_code']}${context.read<HomeProvider>().enteredPhoneNumber}",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  Expanded(child: SizedBox.shrink()),
+                  GenericRectButton(
+                    label: 'Done',
+                    labelFontSize: 20,
+                    actuatorFunctionl: () {
+                      Navigator.of(context)
+                          .popUntil(ModalRoute.withName('/Settings'));
                     },
                     isArrowShow: false,
                   )

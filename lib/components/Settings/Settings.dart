@@ -256,7 +256,8 @@ class _SettingsState extends State<Settings> {
                           GenericInformationDisplayer(
                             fieldName: 'Phone',
                             valueText: userData['phone'].toString(),
-                            actuator: () => {},
+                            actuator: () => Navigator.of(context)
+                                .pushNamed('/PhoneInputChange'),
                           ),
                           GenericInformationDisplayer(
                             fieldName: 'Email',

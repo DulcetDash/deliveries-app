@@ -15,6 +15,8 @@ import 'package:nej/components/Providers/HomeProvider.dart';
 import 'package:nej/components/Ride/FareDisplay.dart';
 import 'package:nej/components/Ride/RequestWindow_ride.dart';
 import 'package:nej/components/Ride/RideSummary.dart';
+import 'package:nej/components/Settings/OTPCheckChange.dart';
+import 'package:nej/components/Settings/PhoneInputChange.dart';
 import 'package:nej/components/Settings/Settings.dart';
 import 'package:nej/components/Share/Share.dart';
 import 'package:nej/components/Shopping/Catalogue.dart';
@@ -53,11 +55,11 @@ class AppGeneralEntry extends StatefulWidget {
 class _AppGeneralEntryState extends State<AppGeneralEntry> {
   // Create a new networking instance
   late LocationOpsHandler locationOpsHandler;
-  GetShoppingData _getShoppingData = GetShoppingData();
-  GetUserData _getUserData = GetUserData();
-  GetRecentlyVisitedStores _getRecentlyVisitedStores =
+  final GetShoppingData _getShoppingData = GetShoppingData();
+  final GetUserData _getUserData = GetUserData();
+  final GetRecentlyVisitedStores _getRecentlyVisitedStores =
       GetRecentlyVisitedStores();
-  Watcher watcher = Watcher();
+  final Watcher watcher = Watcher();
 
   @override
   void initState() {
@@ -135,7 +137,9 @@ class _AppGeneralEntryState extends State<AppGeneralEntry> {
           //YourRides
           '/YourRides': (context) => const YourRides(),
           //Settings
-          '/Settings': (context) => const Settings()
+          '/Settings': (context) => const Settings(),
+          '/PhoneInputChange': (context) => const PhoneInputChange(),
+          '/OTPCheckChange': (context) => const OTPCheckChange()
         });
   }
 }
