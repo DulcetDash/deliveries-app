@@ -254,11 +254,17 @@ class _SettingsState extends State<Settings> {
                           ),
                           GenericTitle(title: 'Contact'),
                           GenericInformationDisplayer(
-                            fieldName: 'Phone',
-                            valueText: userData['phone'].toString(),
-                            actuator: () => Navigator.of(context)
-                                .pushNamed('/PhoneInputChange'),
-                          ),
+                              fieldName: 'Phone',
+                              valueText: userData['phone'].toString(),
+                              actuator: () {
+                                //! Clear the tmp phone number entered
+                                context
+                                    .read<HomeProvider>()
+                                    .updateEnteredPhoneNumber(phone: '');
+                                //...
+                                Navigator.of(context)
+                                    .pushNamed('/PhoneInputChange');
+                              }),
                           GenericInformationDisplayer(
                             fieldName: 'Email',
                             valueText: userData['email'].toString(),
