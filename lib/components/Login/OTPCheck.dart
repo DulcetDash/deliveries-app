@@ -187,6 +187,10 @@ class _OTPCheckState extends State<OTPCheck> {
 
         if (responseInfo['response'] == 'success') //?Correct
         {
+          //! Clear the OTP field and code
+          context.read<HomeProvider>().otpFieldController.clear();
+          context.read<HomeProvider>().updateOTPCode(data: '');
+
           if (responseInfo['account_state'] ==
               'full') //Already has an account - update
           {

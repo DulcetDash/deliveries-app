@@ -302,28 +302,30 @@ class SummaryPreview extends StatelessWidget {
 
       if (response.statusCode == 200) //Got some results
       {
-        Navigator.of(context).pop(); //Hide initial loader
         log(response.body.toString());
         Map<String, dynamic> responseInfo = json.decode(response.body);
 
         if (responseInfo['response'] == 'unable_to_request') {
+          Navigator.of(context).pop(); //Hide initial loader
           showErrorModal(context: context, scenario: 'internet_error');
         } else if (responseInfo['response'] == 'has_a_pending_shopping') {
+          Navigator.of(context).pop(); //Hide initial loader
           showErrorModal(context: context, scenario: 'already_requested');
         } else if (responseInfo['response'] == 'successful') //?SUCCESSFUL
         {
           //? Go to the successful request page
           // Navigator.of(context).pushNamed('/successfulRequest');
-          showMaterialModalBottomSheet(
-            backgroundColor: Colors.white,
-            expand: true,
-            bounce: true,
-            duration: Duration(milliseconds: 250),
-            context: context,
-            builder: (context) => SuccessRequest(),
-          );
+          // showMaterialModalBottomSheet(
+          //   backgroundColor: Colors.white,
+          //   expand: true,
+          //   bounce: true,
+          //   duration: Duration(milliseconds: 250),
+          //   context: context,
+          //   builder: (context) => SuccessRequest(),
+          // );
         } else //Some weird error
         {
+          Navigator.of(context).pop(); //Hide initial loader
           showErrorModal(context: context, scenario: 'internet_error');
         }
       } else //Has some errors

@@ -694,7 +694,7 @@ class HeaderNote extends StatelessWidget {
             child: SizedBox(
               height: 250,
               child: TextField(
-                  controller: _editingController,
+                  // controller: _editingController,
                   autocorrect: false,
                   onChanged: (value) {
                     //! Update the change for the typed

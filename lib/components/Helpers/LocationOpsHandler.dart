@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart';
@@ -147,23 +148,64 @@ class LocationOpsHandler with ChangeNotifier {
   //? 5 . Geocode the current point
   void geocodeThisPoint(
       {required double latitude, required double longitude}) async {
+    log(latitude.toString());
+    log(longitude.toString());
+    //! Make sure that it has the correct user_identifier
+    if (context.read<HomeProvider>().user_identifier == 'empty_fingerprint') {
+      context
+          .read<HomeProvider>()
+          .getFileSavedFingerprintBack()
+          .then((state) async {
+        if (mapEquals({}, state['userData']) ||
+            state['userData'] == null) //?No state saved yet
+        {
+          log('No state saved found');
+          print('empty_fingerprint');
+        } else //Found a saved state
+        {
+          //! user_identifier
+          String userId = state['user_identifier'] != null
+              ? state['user_identifier']
+              : 'empty_fingerprint';
+          //...
+          Map<String, String> bundleData = {
+            'latitude': latitude.toString(),
+            'longitude': longitude.toString(),
+            'user_fingerprint': userId
+          };
+          //...
+          requestBlock(context: context, bundleData: bundleData);
+        }
+      }).catchError((err) {
+        print('empty_fingerprint');
+      });
+    } else //Has normally the user id
+    {
+      Map<String, String> bundleData = {
+        'latitude': latitude.toString(),
+        'longitude': longitude.toString(),
+        'user_fingerprint': context.read<HomeProvider>().user_identifier
+      };
+
+      requestBlock(context: context, bundleData: bundleData);
+    }
+  }
+
+  //Request
+  void requestBlock(
+      {required BuildContext context,
+      required Map<String, String> bundleData}) async {
     String urlString =
         '${context.read<HomeProvider>().bridge}/geocode_this_point';
-
-    Map<String, String> bundleData = {
-      'latitude': latitude.toString(),
-      'longitude': longitude.toString(),
-      'user_fingerprint': context.read<HomeProvider>().user_identifier
-    };
-
     // log(urlString);
     try {
       Response response =
           await post(Uri.parse(Uri.encodeFull(urlString)), body: bundleData);
 
+      log(response.body);
       if (response.statusCode == 200 &&
           json.decode(response.body).runtimeType != bool) {
-        // log(response.body);
+        log(response.body);
         if (context.toString().contains('no widget') == false) {
           context.read<HomeProvider>().updateUsersCurrentLocation(
               newCurrentLocation: json.decode(response.body));
@@ -203,6 +245,7 @@ class LocationOpsHandler with ChangeNotifier {
         // print('All permissions approved');
         Future userPosition = getUserLocation();
         userPosition.then((value) {
+          print(value);
           if (value != null) {
             value =
                 positionConverter.parseToMap(positionString: value.toString());

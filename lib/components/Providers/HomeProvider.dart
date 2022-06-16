@@ -1258,6 +1258,7 @@ class HomeProvider with ChangeNotifier {
         DeepCollectionEquality().equals(data, userData) == false) //!Errorless
     {
       userData = data;
+      peristDataMap(); //! Paramount
       notifyListeners();
     }
   }

@@ -34,6 +34,11 @@ class _RequestWindowState extends State<RequestWindow> {
 
   @override
   Widget build(BuildContext context) {
+    if (context.watch<HomeProvider>().requestShoppingData == null ||
+        context.watch<HomeProvider>().requestShoppingData.isEmpty) {
+      Navigator.of(context).pushNamed('/home');
+    }
+
     try {
       Map<String, dynamic> requestData =
           context.watch<HomeProvider>().requestShoppingData == null

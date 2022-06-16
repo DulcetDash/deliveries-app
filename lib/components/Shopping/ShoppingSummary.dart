@@ -230,7 +230,7 @@ class _ShoppingSummaryState extends State<ShoppingSummary> {
         } else if (responseInfo['response'] == 'successful') //?SUCCESSFUL
         {
           //? Go to the successful request page
-          Navigator.of(context).pushNamed('/successfulRequest');
+          // Navigator.of(context).pushNamed('/successfulRequest');
         } else //Some weird error
         {
           showErrorModal(context: context, scenario: 'internet_error');

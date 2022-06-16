@@ -53,8 +53,7 @@ class _CreateAccountState extends State<CreateAccount> {
             child: Text(
               'With a Nej account you will be able to make seamless rides, deliveries a even shop from various stores from the comfort of your couch.',
               style: TextStyle(
-                fontSize: 15,
-              ),
+                  fontSize: 15, color: AppTheme().getGenericDarkGrey()),
             ),
           ),
           Expanded(child: SizedBox.shrink()),

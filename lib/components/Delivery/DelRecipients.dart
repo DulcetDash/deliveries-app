@@ -4,6 +4,7 @@ import 'package:nej/components/GenericRectButton.dart';
 import 'package:nej/components/Helpers/AppTheme.dart';
 import 'package:nej/components/Helpers/DataParser.dart';
 import 'package:nej/components/Helpers/PhoneNumberInput/PhoneNumberInputEntry.dart';
+import 'package:nej/components/Helpers/TextEditingControllerWorkaroud.dart';
 import 'package:nej/components/Providers/HomeProvider.dart';
 import 'package:provider/provider.dart';
 
@@ -372,19 +373,25 @@ class LocalModal extends StatelessWidget {
 
   LocalModal({Key? key, required this.scenario}) : super(key: key);
 
-  TextEditingController _editingController_name = TextEditingController();
   DataParser _dataParser = DataParser();
+  TextEditingController _editingController_name = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     if (scenario == 'setRecipient') {
+      // TextEditingControllerWorkaroud _editingController_name =
+      //     TextEditingControllerWorkaroud(
+      //         text: context.read<HomeProvider>().getRecipientDetails_indexBased(
+      //             index: context.read<HomeProvider>().selectedRecipient_index,
+      //             nature_data: 'name')[0]);
+
       //Auto get the relevant data infos if any
-      _editingController_name.value = TextEditingValue(
-          text: context.read<HomeProvider>().getRecipientDetails_indexBased(
-              index: context.read<HomeProvider>().selectedRecipient_index,
-              nature_data: 'name')[0]);
-      _editingController_name.selection = TextSelection.fromPosition(
-          TextPosition(offset: _editingController_name.text.length));
+      // _editingController_name.value = TextEditingValue(
+      //     text: context.watch<HomeProvider>().getRecipientDetails_indexBased(
+      //         index: context.watch<HomeProvider>().selectedRecipient_index,
+      //         nature_data: 'name')[0]);
+      // _editingController_name.selection = TextSelection.fromPosition(
+      //     TextPosition(offset: _editingController_name.text.length));
 
       //! 1. Set tyhe recipient infos
       return SafeArea(
@@ -419,14 +426,9 @@ class LocalModal extends StatelessWidget {
                     color: Colors.white,
                   ),
                   TextField(
-                      controller: _editingController_name,
+                      // controller: _editingController_name,
                       autocorrect: false,
                       onChanged: (value) {
-                        //! Place the cursor at the end
-                        _editingController_name.text = value;
-                        _editingController_name.selection =
-                            TextSelection.fromPosition(TextPosition(
-                                offset: _editingController_name.text.length));
                         //! Update the change for the typed
                         context
                             .read<HomeProvider>()

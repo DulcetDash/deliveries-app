@@ -37,6 +37,11 @@ class RequestWindow_ride extends StatefulWidget {
 class _RequestWindow_rideState extends State<RequestWindow_ride> {
   @override
   Widget build(BuildContext context) {
+    if (context.watch<HomeProvider>().requestShoppingData == null ||
+        context.watch<HomeProvider>().requestShoppingData.isEmpty) {
+      Navigator.of(context).pushNamed('/home');
+    }
+
     return context.watch<HomeProvider>().requestShoppingData == null
         ? SizedBox.shrink()
         : context.watch<HomeProvider>().requestShoppingData.isEmpty

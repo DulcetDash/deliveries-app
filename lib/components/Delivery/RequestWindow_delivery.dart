@@ -36,6 +36,11 @@ class _RequestWindow_deliveryState extends State<RequestWindow_delivery> {
 
   @override
   Widget build(BuildContext context) {
+    if (context.watch<HomeProvider>().requestShoppingData == null ||
+        context.watch<HomeProvider>().requestShoppingData.isEmpty) {
+      Navigator.of(context).pushNamed('/home');
+    }
+
     try {
       Map<String, dynamic> requestData =
           context.watch<HomeProvider>().requestShoppingData.length > 0
@@ -44,7 +49,7 @@ class _RequestWindow_deliveryState extends State<RequestWindow_delivery> {
 
       return context.watch<HomeProvider>().requestShoppingData == null
           ? SizedBox.shrink()
-          : context.watch<HomeProvider>().requestShoppingData.length == 0
+          : context.watch<HomeProvider>().requestShoppingData.isEmpty
               ? SizedBox.shrink()
               : Scaffold(
                   body: SafeArea(
