@@ -148,8 +148,6 @@ class LocationOpsHandler with ChangeNotifier {
   //? 5 . Geocode the current point
   void geocodeThisPoint(
       {required double latitude, required double longitude}) async {
-    log(latitude.toString());
-    log(longitude.toString());
     //! Make sure that it has the correct user_identifier
     if (context.read<HomeProvider>().user_identifier == 'empty_fingerprint') {
       context
@@ -202,10 +200,9 @@ class LocationOpsHandler with ChangeNotifier {
       Response response =
           await post(Uri.parse(Uri.encodeFull(urlString)), body: bundleData);
 
-      log(response.body);
       if (response.statusCode == 200 &&
           json.decode(response.body).runtimeType != bool) {
-        log(response.body);
+        // log(response.body);
         if (context.toString().contains('no widget') == false) {
           context.read<HomeProvider>().updateUsersCurrentLocation(
               newCurrentLocation: json.decode(response.body));
@@ -245,7 +242,6 @@ class LocationOpsHandler with ChangeNotifier {
         // print('All permissions approved');
         Future userPosition = getUserLocation();
         userPosition.then((value) {
-          print(value);
           if (value != null) {
             value =
                 positionConverter.parseToMap(positionString: value.toString());
