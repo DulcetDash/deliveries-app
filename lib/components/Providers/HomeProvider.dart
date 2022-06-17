@@ -18,7 +18,7 @@ import 'package:collection/collection.dart';
 // Will hold all the home related globals - only!
 
 class HomeProvider with ChangeNotifier {
-  final String bridge = 'http://localhost:9697';
+  final String bridge = 'http://192.168.178.119:9697';
   // final String bridge = 'https://taxiconnectnanetwork.com:9999';
 
   String selectedService =
@@ -39,6 +39,8 @@ class HomeProvider with ChangeNotifier {
   bool is_additional_emailValid =
       false; //If the email entered above is valid or not
   //------
+
+  Map pushnotif_token = {}; //Notification token
 
   //! Data restoration
   bool isLoadingForDataRestoration = true; //Actively loading
@@ -247,8 +249,8 @@ class HomeProvider with ChangeNotifier {
 
       return json.decode(contents);
     } catch (e) {
-      log('6');
-      log(e.toString());
+      // log('6');
+      // log(e.toString());
       // If encountering an error, return 0
       return {};
     }
@@ -281,6 +283,9 @@ class HomeProvider with ChangeNotifier {
 
         //! userData
         userData = state['userData'] != null ? state['userData'] : {};
+        //! Notification token
+        pushnotif_token =
+            state['pushnotif_token'] != null ? state['pushnotif_token'] : {};
         //?....
         //Reroute
         if (userData['account_state'] != null) //Has a state
@@ -329,13 +334,18 @@ class HomeProvider with ChangeNotifier {
             ? loginPhase1Data['response']['user_identifier']
             : user_identifier;
 
-    return {"user_identifier": user_identifier_deduced, "userData": userData};
+    return {
+      "user_identifier": user_identifier_deduced,
+      "userData": userData,
+      "pushnotif_token": pushnotif_token
+    };
   }
 
   //! Clear everything
   void clearEverything() {
     user_identifier = 'empty_fingerprint';
     userData = {};
+    pushnotif_token = {};
     //...
     peristDataMap();
     //...
@@ -1255,8 +1265,10 @@ class HomeProvider with ChangeNotifier {
   //?55. Update the user data only if has no errors
   void updateUserDataErrorless({required Map<String, dynamic> data}) {
     if (data['user_identifier'] != null &&
+        data['user_identifier'] != 'empty_fingerprint' &&
         DeepCollectionEquality().equals(data, userData) == false) //!Errorless
     {
+      user_identifier = data['user_identifier'];
       userData = data;
       peristDataMap(); //! Paramount
       notifyListeners();
@@ -1313,5 +1325,64 @@ class HomeProvider with ChangeNotifier {
   void recentlyVisitedStores({required List data}) {
     recentlyVisitedShops = data;
     notifyListeners();
+  }
+
+  //?62. Update the pushnotif_token
+  void updatePushnotification_token({required var data}) async {
+    // log(data.toString());
+    pushnotif_token = data;
+    // peristDataMap();
+    //...Upload
+    Uri mainUrl =
+        Uri.parse(Uri.encodeFull('$bridge/receivePushNotification_token'));
+
+    Map<String, String> bundleData = {
+      'pushnotif_token': json.encode(pushnotif_token).toString(),
+      'user_identifier': user_identifier
+    };
+
+    log(bundleData.toString());
+
+    try {
+      Response response = await post(mainUrl, body: bundleData);
+
+      if (response.statusCode == 200) //Got some results
+      {
+        log(response.body.toString());
+      } else //Has some errors
+      {
+        log(response.toString());
+      }
+    } catch (e) {
+      log('8');
+      log(e.toString());
+    }
+  }
+
+  void requestBlockPushNotifToken() async {
+    Uri mainUrl =
+        Uri.parse(Uri.encodeFull('$bridge/receivePushNotification_token'));
+
+    Map<String, String> bundleData = {
+      'pushnotif_token': json.encode(pushnotif_token).toString(),
+      'user_identifier': user_identifier
+    };
+
+    print(bundleData);
+
+    try {
+      Response response = await post(mainUrl, body: bundleData);
+
+      if (response.statusCode == 200) //Got some results
+      {
+        log(response.body.toString());
+      } else //Has some errors
+      {
+        log(response.toString());
+      }
+    } catch (e) {
+      log('8');
+      log(e.toString());
+    }
   }
 }

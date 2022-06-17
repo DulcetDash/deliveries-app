@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -8,6 +10,7 @@ import 'package:nej/components/Helpers/LocationOpsHandler.dart';
 import 'package:nej/components/Helpers/Networking.dart';
 import 'package:nej/components/Helpers/Watcher.dart';
 import 'package:nej/components/Providers/HomeProvider.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -27,6 +30,26 @@ class _HomeScreenState extends State<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
         refresher = 100;
+      });
+      OneSignal.shared.setAppId("f7493da7-b0bc-4c27-ae8a-8673e1699b02");
+
+      // The promptForPushNotificationsWithUserResponse function will show the iOS push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission
+      OneSignal.shared
+          .promptUserForPushNotificationPermission()
+          .then((accepted) {
+        // print("Accepted permission: $accepted");
+      });
+
+      OneSignal.shared
+          .setSubscriptionObserver((OSSubscriptionStateChanges changes) {
+        // Will be called whenever the subscription changes
+        // (ie. user gets registered with OneSignal and gets a user ID)
+        print(changes);
+      });
+      OneSignal.shared.getDeviceState().then((deviceState) {
+        context.read<HomeProvider>().updatePushnotification_token(
+            data: json.decode(deviceState?.jsonRepresentation() as String));
+        // print("DeviceState: ${deviceState?.jsonRepresentation()}");
       });
     });
   }
@@ -87,6 +110,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                                 InkWell(
                                   onTap: () {
+                                    //!Cleanse
+                                    context
+                                        .read<HomeProvider>()
+                                        .clearEveryRequestsRelatedData();
                                     //! Update the selected service
                                     context
                                         .read<HomeProvider>()

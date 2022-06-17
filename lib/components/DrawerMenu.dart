@@ -26,7 +26,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
         children: [
           Container(
             width: MediaQuery.of(context).size.width,
-            height: 200,
+            height: 150,
             alignment: Alignment.centerLeft,
             child: DrawerHeader(
                 padding: const EdgeInsets.only(left: 0, top: 30),
@@ -137,15 +137,17 @@ class _DrawerMenuState extends State<DrawerMenu> {
                 // decoration:
                 //     BoxDecoration(border: Border.all(color: Colors.red)),
                 child: Container(
+                    alignment: Alignment.centerLeft,
                     width: MediaQuery.of(context).size.width,
                     height: 50,
                     decoration: BoxDecoration(
+                        // color: Colors.red,
                         border: Border(
                             top: BorderSide(
                                 width: 1,
                                 color: Colors.grey.withOpacity(0.2)))),
                     child: Padding(
-                      padding: EdgeInsets.only(top: 10),
+                      padding: EdgeInsets.only(top: 0),
                       child: ListTile(
                         leading: InkWell(
                             onTap: () async {

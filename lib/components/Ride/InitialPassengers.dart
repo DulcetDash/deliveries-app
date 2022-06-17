@@ -26,62 +26,72 @@ class _InitialPassengersState extends State<InitialPassengers> {
         children: [
           Header(),
           //? Select passenger
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 50),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: passengersNode(context: context),
-            ),
-          ),
-          //? Going to the same destination
-          Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10, top: 25),
-            child: GoingSameDestination(
-              isChecked:
-                  context.watch<HomeProvider>().isGoingTheSameWay as bool,
-            ),
-          ),
-          //? Ride type
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20, top: 25),
-            child: Container(
-                alignment: Alignment.centerLeft,
-                child: Text("What's your style?",
-                    style:
-                        TextStyle(fontFamily: 'MoveTextMedium', fontSize: 17))),
-          ),
-          RideStyleSelect(),
-          Divider(
-            height: 30,
-          ),
-          //? Note
-          Padding(
-            padding: const EdgeInsets.only(right: 25),
-            child: LocationChoice(
-              title: context.read<HomeProvider>().noteTyped_delivery.isEmpty
-                  ? 'Add a note'
-                  : 'Your note',
-              subtitle: context.read<HomeProvider>().noteTyped_delivery.isEmpty
-                  ? 'Anything you want your driver to do for your ride?'
-                  : context.read<HomeProvider>().noteTyped_delivery,
-              actuator: () => showMaterialModalBottomSheet(
-                backgroundColor: Colors.white,
-                bounce: true,
-                duration: Duration(milliseconds: 250),
-                context: context,
-                builder: (context) => SafeArea(
-                  child: Container(
-                      color: Colors.white,
-                      height: MediaQuery.of(context).size.height,
-                      child: Column(
-                        children: [HeaderNote()],
-                      )),
+          Expanded(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 50),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: passengersNode(context: context),
+                  ),
                 ),
-              ),
-              tracked: false,
+                //? Going to the same destination
+                Padding(
+                  padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
+                  child: GoingSameDestination(
+                    isChecked:
+                        context.watch<HomeProvider>().isGoingTheSameWay as bool,
+                  ),
+                ),
+                //? Ride type
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20, top: 25),
+                  child: Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text("What's your style?",
+                          style: TextStyle(
+                              fontFamily: 'MoveTextMedium', fontSize: 17))),
+                ),
+                RideStyleSelect(),
+                Divider(
+                  height: 30,
+                ),
+                //? Note
+                Padding(
+                  padding: const EdgeInsets.only(right: 25),
+                  child: LocationChoice(
+                    title:
+                        context.read<HomeProvider>().noteTyped_delivery.isEmpty
+                            ? 'Add a note'
+                            : 'Your note',
+                    subtitle: context
+                            .read<HomeProvider>()
+                            .noteTyped_delivery
+                            .isEmpty
+                        ? 'Anything you want your driver to do for your ride?'
+                        : context.read<HomeProvider>().noteTyped_delivery,
+                    actuator: () => showMaterialModalBottomSheet(
+                      backgroundColor: Colors.white,
+                      bounce: true,
+                      duration: Duration(milliseconds: 250),
+                      context: context,
+                      builder: (context) => SafeArea(
+                        child: Container(
+                            color: Colors.white,
+                            height: MediaQuery.of(context).size.height,
+                            child: Column(
+                              children: [HeaderNote()],
+                            )),
+                      ),
+                    ),
+                    tracked: false,
+                  ),
+                ),
+              ],
             ),
           ),
-          Expanded(child: SizedBox.shrink()),
+          // Expanded(child: SizedBox.shrink()),
           //? Done button
           Opacity(
             opacity: 1,
@@ -222,7 +232,8 @@ class RideStyleSelect extends StatelessWidget {
                         : Colors.grey),
                 borderRadius: BorderRadius.circular(5)),
             width: 120,
-            height: 180,
+            // height: 180,
+            height: MediaQuery.of(context).size.height * 0.23,
             child: Column(
               children: [
                 SizedBox(
@@ -231,7 +242,8 @@ class RideStyleSelect extends StatelessWidget {
                 Container(
                     decoration: BoxDecoration(color: Colors.white),
                     width: 80,
-                    height: 60,
+                    // height: 60,
+                    height: MediaQuery.of(context).size.height * 0.07,
                     child: Image.asset(
                       imagePath,
                       fit: BoxFit.contain,

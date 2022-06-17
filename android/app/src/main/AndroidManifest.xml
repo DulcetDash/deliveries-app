@@ -3,7 +3,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
    <application
-        android:label="nej"
+        android:label="Nej"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -32,5 +32,7 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+            <meta-data android:name="com.google.android.geo.API_KEY"
+               android:value="AIzaSyBdnPO0Hw5MQ1G3QA5jY1Xr-xqp2jMcvEQ"/>
     </application>
 </manifest>
