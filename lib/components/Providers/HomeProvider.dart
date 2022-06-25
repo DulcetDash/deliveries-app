@@ -18,7 +18,8 @@ import 'package:collection/collection.dart';
 // Will hold all the home related globals - only!
 
 class HomeProvider with ChangeNotifier {
-  final String bridge = 'http://4f89-41-182-120-244.sa.ngrok.io';
+  final String bridge =
+      'http://Graphhopper-ClusterLB-2102461283.us-east-1.elb.amazonaws.com';
   // final String bridge = 'http://192.168.178.119:9697';
   // final String bridge = 'https://taxiconnectnanetwork.com:9999';
 
