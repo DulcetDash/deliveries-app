@@ -100,6 +100,8 @@ class _InitialPassengersState extends State<InitialPassengers> {
                 labelFontSize: 20,
                 horizontalPadding: 20,
                 actuatorFunctionl: () {
+                  //! Clear the previous dropoff and and reset the pickup the the current user location
+                  context.read<HomeProvider>().clearPickupAndDropoffs();
                   //!Reset the fare loading status to true
                   context
                       .read<HomeProvider>()
@@ -667,7 +669,12 @@ class _HeaderSearchState extends State<HeaderSearch> {
               child: SizedBox(
                 height: 35,
                 child: TextField(
-                    controller: _editingController_pickup,
+                    controller: context
+                                .watch<HomeProvider>()
+                                .selectedLocationField_index !=
+                            -1
+                        ? _editingController_pickup
+                        : null,
                     autocorrect: false,
                     onTap: () => context
                         .read<HomeProvider>()
@@ -737,12 +744,12 @@ class _HeaderSearchState extends State<HeaderSearch> {
         : context.read<HomeProvider>().passengersNumber;
 
     for (var i = 0; i < limit; i++) {
-      _editingControllersList[i].value = TextEditingValue(
-          text: context.read<HomeProvider>().getManualLocationSetted_ride(
-              location_type: 'dropoff', index: i));
+      // _editingControllersList[i].value = TextEditingValue(
+      //     text: context.read<HomeProvider>().getManualLocationSetted_ride(
+      //         location_type: 'dropoff', index: i));
 
-      _editingControllersList[i].selection = TextSelection.fromPosition(
-          TextPosition(offset: _editingControllersList[i].text.length));
+      // _editingControllersList[i].selection = TextSelection.fromPosition(
+      //     TextPosition(offset: _editingControllersList[i].text.length));
       //...
       Widget field = Padding(
         padding: const EdgeInsets.only(bottom: 15),
@@ -750,16 +757,21 @@ class _HeaderSearchState extends State<HeaderSearch> {
           height: 35,
           child: TextField(
               controller: _editingControllersList[i],
+              // controller:
+              //     context.watch<HomeProvider>().selectedLocationField_index != i
+              //         ? _editingControllersList[i]
+              //         : null,
               autocorrect: false,
+              // keyboardType: TextInputType.text,
               onTap: () => context
                   .read<HomeProvider>()
                   .updateSelectedLocationField_index(index: i),
               onChanged: (value) {
                 //! Place the cursor at the end
-                _editingControllersList[i].text = value;
-                _editingControllersList[i].selection =
-                    TextSelection.fromPosition(TextPosition(
-                        offset: _editingControllersList[i].text.length));
+                // _editingControllersList[i].text = value;
+                // _editingControllersList[i].selection =
+                //     TextSelection.fromPosition(TextPosition(
+                //         offset: _editingControllersList[i].text.length));
                 //! Update the change for the typed
                 context
                     .read<HomeProvider>()

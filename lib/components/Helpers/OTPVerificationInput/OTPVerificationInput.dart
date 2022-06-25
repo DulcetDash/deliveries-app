@@ -30,6 +30,8 @@ class _OTPVerificationInputState extends State<OTPVerificationInput> {
       required this.sendAgain_actuator,
       required this.checkOTP_actuator});
 
+  final int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 60;
+
   @override
   Widget build(BuildContext context) {
     return Column(children: [
@@ -79,18 +81,32 @@ class _OTPVerificationInputState extends State<OTPVerificationInput> {
           },
         ),
       ),
-      TimerAndErrorNotifiyer(sendAgain_actuator: sendAgain_actuator)
+      TimerAndErrorNotifiyer(
+        sendAgain_actuator: sendAgain_actuator,
+        endTime: endTime,
+      )
     ]);
   }
 }
 
 //Counter and error notifiyer class
-class TimerAndErrorNotifiyer extends StatelessWidget {
+class TimerAndErrorNotifiyer extends StatefulWidget {
   final sendAgain_actuator;
-  TimerAndErrorNotifiyer({Key? key, required this.sendAgain_actuator})
+  int endTime;
+  TimerAndErrorNotifiyer(
+      {Key? key, required this.sendAgain_actuator, required this.endTime})
       : super(key: key);
 
-  final int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 60;
+  @override
+  State<TimerAndErrorNotifiyer> createState() => _TimerAndErrorNotifiyerState(
+      sendAgain_actuator: sendAgain_actuator, endTime: endTime);
+}
+
+class _TimerAndErrorNotifiyerState extends State<TimerAndErrorNotifiyer> {
+  final sendAgain_actuator;
+  int endTime;
+  _TimerAndErrorNotifiyerState(
+      {Key? key, required this.sendAgain_actuator, required this.endTime});
 
   @override
   Widget build(BuildContext context) {
@@ -107,6 +123,12 @@ class TimerAndErrorNotifiyer extends StatelessWidget {
                   if (time == null) {
                     return InkWell(
                         onTap: sendAgain_actuator,
+                        onTapUp: (d) {
+                          setState(() {
+                            endTime = DateTime.now().millisecondsSinceEpoch +
+                                1000 * 60;
+                          });
+                        },
                         child: Text('Resend the code',
                             style: TextStyle(
                                 fontSize: 17,

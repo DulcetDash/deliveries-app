@@ -187,7 +187,7 @@ class HomeProvider with ChangeNotifier {
       'shared'; //The type of ride: private or shared - default: shared - economical
   String noteTyped_ride = ''; //The note typed for the driver in a ride
   int selectedLocationField_index =
-      -1; //The selected field for the locations - default: -1 (pickup location)
+      -45; //The selected field for the locations - default: -1 (pickup location)
   Map<String, dynamic> ride_location_pickup = {'item': 0}; //OLD: ride_locations
 
   List<Map<String, dynamic>> ride_location_dropoff = [
@@ -392,7 +392,7 @@ class HomeProvider with ChangeNotifier {
     isGenerally_phoneNumbersValid = false;
     passengersNumber = 1;
     isGoingTheSameWay = false;
-    selectedLocationField_index = -1;
+    // selectedLocationField_index = -1;
     ride_location_pickup = {'item': 0};
     ride_location_dropoff = [
       {'item': 0}
@@ -712,6 +712,18 @@ class HomeProvider with ChangeNotifier {
         notifyListeners();
       }
     }
+  }
+
+  //?16d. Clear the ride drop off, ride pickup location
+  void clearPickupAndDropoffs() {
+    ride_location_dropoff = [
+      {'item': 0}
+    ];
+    ride_location_pickup = userLocationDetails;
+    manuallySettedCurrentLocation_dropoff = {};
+    manuallySettedCurrentLocation_pickup = {};
+    //...
+    notifyListeners();
   }
 
   //?17. Get manual location data
