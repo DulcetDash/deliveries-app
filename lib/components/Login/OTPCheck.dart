@@ -67,7 +67,7 @@ class _OTPCheckState extends State<OTPCheck> {
           '${context.read<HomeProvider>().selectedCountryCodeData['dial_code']}${context.read<HomeProvider>().enteredPhoneNumber}'
     };
 
-    print(bundleData);
+    // print(bundleData);
     try {
       Response response = await post(mainUrl, body: bundleData);
 
@@ -175,7 +175,7 @@ class _OTPCheckState extends State<OTPCheck> {
           : "false"
     };
 
-    print(bundleData);
+    // print(bundleData);
     try {
       Response response = await post(mainUrl, body: bundleData);
 

@@ -325,7 +325,7 @@ class _SearchBarState extends State<SearchBar> {
           context.read<HomeProvider>().userData['user_identifier'].toString()
     };
 
-    print(bundleData);
+    // print(bundleData);
 
     try {
       http.Response response = await http.post(mainUrl, body: bundleData);
@@ -349,7 +349,7 @@ class _SearchBarState extends State<SearchBar> {
         }
       } else //Has some errors
       {
-        print(response.toString());
+        // print(response.toString());
         // showErrorModal(context: context);
         context.read<HomeProvider>().updateItemsSearchResults(value: []);
         context
@@ -357,8 +357,8 @@ class _SearchBarState extends State<SearchBar> {
             .updateLoaderStatusItems_shop(status: false);
       }
     } catch (e) {
-      print('8');
-      print(e.toString());
+      // print('8');
+      // print(e.toString());
       // showErrorModal(context: context);
       context.read<HomeProvider>().updateItemsSearchResults(value: []);
       context.read<HomeProvider>().updateLoaderStatusItems_shop(status: false);

@@ -12,10 +12,10 @@ if (flutterRoot == null) {
 }
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
-    flutterVersionCode = '16'
+    flutterVersionCode = '17'
 
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
-    flutterVersionName = '1.4.5'
+    flutterVersionName = '1.4.6'
 
 apply plugin: 'com.android.application'
 apply plugin: 'com.onesignal.androidsdk.onesignal-gradle-plugin'
@@ -69,9 +69,9 @@ android {
        release {
            signingConfig signingConfigs.release
 
-           ndk {
-                debugSymbolLevel 'SYMBOL_TABLE'
-            }
+        //    ndk {
+        //         debugSymbolLevel 'SYMBOL_TABLE'
+        //     }
        }
    }
 

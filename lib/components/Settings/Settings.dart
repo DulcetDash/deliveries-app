@@ -124,7 +124,7 @@ class _SettingsState extends State<Settings> {
     //     maxHeight: 700,
     //     imageQuality: 70,
     //     source: ImageSource.gallery);
-    print(image);
+    // print(image);
     setState(() {
       _imageSelected = image;
     });
@@ -819,7 +819,7 @@ class _GenericTextFieldState extends State<GenericTextField> {
               controller.selection = TextSelection.fromPosition(
                   TextPosition(offset: controller.text.length));
 
-              print(value);
+              // print(value);
             },
             style: TextStyle(
                 fontFamily: 'MoveTextRegular',

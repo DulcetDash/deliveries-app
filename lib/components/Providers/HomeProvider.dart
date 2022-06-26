@@ -276,7 +276,7 @@ class HomeProvider with ChangeNotifier {
       {
         isLoadingForDataRestoration = false;
 
-        print(state);
+        // print(state);
 
         //! user_identifier
         user_identifier = state['user_identifier'] != null
@@ -320,7 +320,7 @@ class HomeProvider with ChangeNotifier {
   //! Persist data map
   void peristDataMap() {
     Map<String, dynamic> globalStateData = toMap();
-    print(globalStateData);
+    // print(globalStateData);
     String stateString = json.encode(globalStateData).toString();
 
     //Write
@@ -453,7 +453,7 @@ class HomeProvider with ChangeNotifier {
     product['items'] = product['items'] != null ? product['items'] : 1;
     //...
     CART.add(product);
-    print(CART);
+    // print(CART);
     notifyListeners();
   }
 
@@ -905,35 +905,43 @@ class HomeProvider with ChangeNotifier {
 
   //?27. Update phone number status
   void updatePhoneNumberStatus() async {
-    String phoneNumber =
-        '${selectedCountryCodeData['dial_code']}${enteredPhoneNumber}';
+    try {
+      String phoneNumber =
+          '${selectedCountryCodeData['dial_code']}${enteredPhoneNumber}';
 
-    PhoneNumberUtil plugin = PhoneNumberUtil();
-    RegionInfo region = RegionInfo(
-        prefix: int.parse(selectedCountryCodeData['dial_code']
-            .toString()
-            .replaceAll('+', '')),
-        name: selectedCountryCodeData['name'],
-        code: selectedCountryCodeData['code']);
+      PhoneNumberUtil plugin = PhoneNumberUtil();
+      RegionInfo region = RegionInfo(
+          prefix: int.parse(selectedCountryCodeData['dial_code']
+              .toString()
+              .replaceAll('+', '')),
+          name: selectedCountryCodeData['name'],
+          code: selectedCountryCodeData['code']);
 
-    bool isValid = await plugin.validate(phoneNumber, region.code);
+      bool isValid = await plugin.validate(phoneNumber, region.code);
 
-    isPhoneEnteredValid = enteredPhoneNumber.isEmpty ? true : isValid;
-    notifyListeners();
+      isPhoneEnteredValid = enteredPhoneNumber.isEmpty ? true : isValid;
+      notifyListeners();
+    } catch (e) {
+      // log(e.toString());
+    }
   }
 
   //?27b. Update phone number status - with a precise phone number
   void updatePhoneNumberStatus_custom({required String phone_custom}) async {
-    String phoneNumber = phone_custom;
+    try {
+      String phoneNumber = phone_custom;
 
-    PhoneNumberUtil plugin = PhoneNumberUtil();
-    RegionInfo region = RegionInfo(
-        prefix: int.parse('+264'.toString().replaceAll('+', '')),
-        name: 'Namibia',
-        code: 'NA');
+      PhoneNumberUtil plugin = PhoneNumberUtil();
+      RegionInfo region = RegionInfo(
+          prefix: int.parse('+264'.toString().replaceAll('+', '')),
+          name: 'Namibia',
+          code: 'NA');
 
-    bool isValid = await plugin.validate(phoneNumber, region.code);
-    isGenerally_phoneNumbersValid = isValid;
+      bool isValid = await plugin.validate(phoneNumber, region.code);
+      isGenerally_phoneNumbersValid = isValid;
+    } catch (e) {
+      // log(e.toString());
+    }
   }
 
   //?28. Update the recipient index
@@ -1108,7 +1116,7 @@ class HomeProvider with ChangeNotifier {
       zIndex: 100,
       points: points,
       onTap: () {
-        print(polylineId);
+        // print(polylineId);
       },
     );
     //! Update
@@ -1245,7 +1253,7 @@ class HomeProvider with ChangeNotifier {
   //?51. Update the typed key to search for items in shops
   void updateShopsKeyItemsSearch({required String value}) {
     shops_search_item_key = value;
-    print(value);
+    // print(value);
     notifyListeners();
   }
 
@@ -1322,7 +1330,7 @@ class HomeProvider with ChangeNotifier {
         email = data;
         //! validate
         is_additional_emailValid = DataParser().isEmailValid(email: data);
-        print(is_additional_emailValid);
+        // print(is_additional_emailValid);
         notifyListeners();
         break;
       default:
@@ -1382,7 +1390,7 @@ class HomeProvider with ChangeNotifier {
       'user_identifier': user_identifier
     };
 
-    print(bundleData);
+    // print(bundleData);
 
     try {
       Response response = await post(mainUrl, body: bundleData);

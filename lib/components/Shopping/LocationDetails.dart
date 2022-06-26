@@ -579,7 +579,7 @@ class _HeaderSearchState extends State<HeaderSearch> {
                           .read<HomeProvider>()
                           .updateTypedSeachQueries(data: value);
 
-                      print(value);
+                      // print(value);
                     },
                     style: TextStyle(
                         fontFamily: 'MoveTextRegular',

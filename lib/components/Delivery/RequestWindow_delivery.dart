@@ -912,7 +912,7 @@ class _LocalModalState extends State<LocalModal> {
           context.read<HomeProvider>().userData['user_identifier']
     };
 
-    print(bundleData);
+    // print(bundleData.toString());
 
     try {
       http.Response response = await http.post(mainUrl, body: bundleData);
@@ -931,12 +931,12 @@ class _LocalModalState extends State<LocalModal> {
         }
       } else //Has some errors
       {
-        print(response.toString());
+        // print(response.toString());
         showErrorModal(context: context);
       }
     } catch (e) {
-      print('8');
-      print(e.toString());
+      // print('8');
+      // print(e.toString());
       showErrorModal(context: context);
     }
   }
@@ -1716,7 +1716,7 @@ class _LocalModalState extends State<LocalModal> {
                           : (val) {
                               setState(() {
                                 rating = int.parse(val.toStringAsFixed(0));
-                                print(rating);
+                                // print(rating.toString());
                               });
                             },
                     ),

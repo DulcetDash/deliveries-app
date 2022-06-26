@@ -44,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
           .setSubscriptionObserver((OSSubscriptionStateChanges changes) {
         // Will be called whenever the subscription changes
         // (ie. user gets registered with OneSignal and gets a user ID)
-        print(changes);
+        // print(changes);
       });
       OneSignal.shared.getDeviceState().then((deviceState) {
         context.read<HomeProvider>().updatePushnotification_token(
@@ -339,7 +339,7 @@ class ProductsSelection extends StatelessWidget {
             imagePath: 'assets/Images/normalTaxiEconomy.jpeg',
             title: 'Ride',
             actuator: () {
-              print('Ride');
+              // print('Ride');
               //!Cleanse
               context.read<HomeProvider>().clearEveryRequestsRelatedData();
               //...

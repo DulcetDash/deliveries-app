@@ -736,19 +736,19 @@ class _HeaderSearchState extends State<HeaderSearch> {
               child: SizedBox(
                 height: 50,
                 child: TextField(
-                    controller: _editingController,
+                    // controller: _editingController,
                     autocorrect: false,
                     onChanged: (value) {
                       //! Place the cursor at the end
-                      _editingController.text = value;
-                      _editingController.selection = TextSelection.fromPosition(
-                          TextPosition(offset: _editingController.text.length));
+                      // _editingController.text = value;
+                      // _editingController.selection = TextSelection.fromPosition(
+                      //     TextPosition(offset: _editingController.text.length));
                       //! Update the change for the typed
                       context
                           .read<HomeProvider>()
                           .updateTypedSeachQueries(data: value);
 
-                      print(value);
+                      // print(value);
                     },
                     style: TextStyle(
                         fontFamily: 'MoveTextRegular',

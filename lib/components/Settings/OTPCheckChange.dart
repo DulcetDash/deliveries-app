@@ -69,7 +69,7 @@ class _OTPCheckChangeState extends State<OTPCheckChange> {
           context.read<HomeProvider>().userData['user_identifier']
     };
 
-    print(bundleData);
+    // print(bundleData);
     try {
       Response response = await post(mainUrl, body: bundleData);
 
@@ -165,7 +165,7 @@ class _OTPCheckChangeState extends State<OTPCheckChange> {
           context.read<HomeProvider>().userData['user_identifier']
     };
 
-    print(bundleData);
+    // print(bundleData);
     try {
       Response response = await post(mainUrl, body: bundleData);
 

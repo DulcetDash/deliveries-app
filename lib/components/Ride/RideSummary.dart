@@ -104,7 +104,7 @@ class _MapPreviewState extends State<MapPreview> {
       }
     } on Exception catch (e) {
       // TODO
-      print(e);
+      // print(e);
     }
   }
 

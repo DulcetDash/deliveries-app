@@ -62,14 +62,14 @@ class _CatalogueState extends State<Catalogue> {
         });
       } else //Has some errors
       {
-        log(response.toString());
+        // log(response.toString());
         Timer(const Duration(milliseconds: 500), () {
           GetCatalogueL1(context: context);
         });
       }
     } catch (e) {
-      log('8');
-      log(e.toString());
+      // log('8');
+      // log(e.toString());
       Timer(const Duration(milliseconds: 500), () {
         GetCatalogueL1(context: context);
       });

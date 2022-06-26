@@ -488,7 +488,7 @@ class RenderBottomPreview extends StatelessWidget {
       }
     } on Exception catch (e) {
       // TODO
-      print(e);
+      // print(e);
       return SizedBox.shrink();
     }
   }
@@ -609,8 +609,8 @@ class _MapPreviewState extends State<MapPreview> {
 
         //!Lock in sumulation
         isPickupLocked = true;
-        print('GET UPDATED ROUTE');
-        print('SIMULATION LOCKED');
+        // print('GET UPDATED ROUTE');
+        // print('SIMULATION LOCKED');
         //? Convert the route point to be compatible with google maps
         List<LatLng> points = <LatLng>[];
         List snapsPoints = requestData['route_details']['routePoints'];
@@ -648,7 +648,7 @@ class _MapPreviewState extends State<MapPreview> {
                     ? routeSnapshotData[routeSnapshotData.length - 1]
                     : routeSnapshotData[0];
 
-            print(routeSnapshotData.length);
+            // print(routeSnapshotData.length);
 
             final String polylineIdVal = 'polyline_id_route_snapshot';
             final PolylineId polylineId = PolylineId(polylineIdVal);
@@ -734,7 +734,7 @@ class _MapPreviewState extends State<MapPreview> {
                     prevDriverCoords.latitude, prevDriverCoords.longitude),
                 MapToolkit.LatLng(driverPoint.latitude, driverPoint.longitude));
 
-            print('BEARING ANGLE: $headingAngle');
+            // print('BEARING ANGLE: $headingAngle');
 
             // print(angleFromCoordinate(
             //     double.parse(requestData['route_details']['origin']['latitude']),
@@ -784,7 +784,7 @@ class _MapPreviewState extends State<MapPreview> {
               );
             }
           } catch (e) {
-            print(e);
+            // print(e);
             simulationTimer.cancel();
             polylines_snapshot = <PolylineId, Polyline>{};
           }
@@ -938,7 +938,7 @@ class _MapPreviewState extends State<MapPreview> {
                 prevDriverCoords.latitude, prevDriverCoords.longitude),
             MapToolkit.LatLng(driverPoint.latitude, driverPoint.longitude));
 
-        print('BEARING ANGLE: $headingAngle');
+        // print('BEARING ANGLE: $headingAngle');
 
         // print(angleFromCoordinate(
         //     double.parse(requestData['route_details']['origin']['latitude']),
@@ -988,7 +988,7 @@ class _MapPreviewState extends State<MapPreview> {
           );
         }
       } catch (e) {
-        print(e);
+        // print(e);
         polylines_snapshot = <PolylineId, Polyline>{};
       }
     } else //Empty the data
@@ -1208,7 +1208,7 @@ class _LocalModalState extends State<LocalModal> {
           context.read<HomeProvider>().userData['user_identifier']
     };
 
-    print(bundleData);
+    // print(bundleData);
 
     try {
       http.Response response = await http.post(mainUrl, body: bundleData);
@@ -1227,12 +1227,12 @@ class _LocalModalState extends State<LocalModal> {
         }
       } else //Has some errors
       {
-        print(response.toString());
+        // print(response.toString());
         showErrorModal(context: context);
       }
     } catch (e) {
-      print('8');
-      print(e.toString());
+      // print('8');
+      // print(e.toString());
       showErrorModal(context: context);
     }
   }
@@ -1323,7 +1323,7 @@ class _LocalModalState extends State<LocalModal> {
 
       if (response.statusCode == 200) //Got some results
       {
-        print(response.body.toString());
+        // print(response.body.toString());
         Map<String, dynamic> tmpResponse = json.decode(response.body)[0];
         //? Update
         if (tmpResponse['response'] == 'success') {
@@ -1342,12 +1342,12 @@ class _LocalModalState extends State<LocalModal> {
         }
       } else //Has some errors
       {
-        print(response.toString());
+        // print(response.toString());
         showErrorModal_cancellation(context: context);
       }
     } catch (e) {
-      print('8');
-      print(e.toString());
+      // print('8');
+      // print(e.toString());
       showErrorModal_cancellation(context: context);
     }
   }
@@ -2102,7 +2102,7 @@ class _LocalModalState extends State<LocalModal> {
                           : (val) {
                               setState(() {
                                 rating = int.parse(val.toStringAsFixed(0));
-                                print(rating);
+                                // print(rating);
                               });
                             },
                     ),

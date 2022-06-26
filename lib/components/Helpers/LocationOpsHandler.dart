@@ -158,7 +158,7 @@ class LocationOpsHandler with ChangeNotifier {
             state['userData'] == null) //?No state saved yet
         {
           log('No state saved found');
-          print('empty_fingerprint');
+          // print('empty_fingerprint');
         } else //Found a saved state
         {
           //! user_identifier
@@ -175,7 +175,7 @@ class LocationOpsHandler with ChangeNotifier {
           requestBlock(context: context, bundleData: bundleData);
         }
       }).catchError((err) {
-        print('empty_fingerprint');
+        // print('empty_fingerprint');
       });
     } else //Has normally the user id
     {
@@ -256,7 +256,7 @@ class LocationOpsHandler with ChangeNotifier {
         });
       } else //Is missing one Permission - get the last coordinates
       {
-        print('Some permissions are missing - lock the interface');
+        // print('Some permissions are missing - lock the interface');
         requestLocationPermission();
       }
     });

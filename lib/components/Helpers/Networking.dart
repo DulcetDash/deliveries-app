@@ -26,7 +26,7 @@ class GetShoppingData {
             state['userData'] == null) //?No state saved yet
         {
           log('No state saved found');
-          print('empty_fingerprint');
+          // print('empty_fingerprint');
         } else //Found a saved state
         {
           //! user_identifier
@@ -41,7 +41,7 @@ class GetShoppingData {
           requestBlock(context: context, bundleData: bundleData);
         }
       }).catchError((err) {
-        print('empty_fingerprint');
+        // print('empty_fingerprint');
       });
     } else //Has normally the user id
     {
@@ -86,16 +86,6 @@ class GetShoppingData {
           //     .read<HomeProvider>()
           //     .updateRealtimeShoppingData(data: responseData);
 
-          print(DeepCollectionEquality().equals(
-                      responseData[0],
-                      context
-                              .read<HomeProvider>()
-                              .requestShoppingData
-                              .isNotEmpty
-                          ? context.read<HomeProvider>().requestShoppingData[0]
-                          : {}) ==
-                  false &&
-              responseData.isNotEmpty);
           //? MOVE TO THE REQUEST WINDOW
           // if (context.read<HomeProvider>().isThereARequestLockedIn['locked'] ==
           //         false &&
@@ -165,7 +155,7 @@ class GetUserData {
             state['userData'] == null) //?No state saved yet
         {
           log('No state saved found');
-          print('empty_fingerprint');
+          // print('empty_fingerprint');
         } else //Found a saved state
         {
           //! user_identifier
@@ -180,7 +170,7 @@ class GetUserData {
           requestBlock(context: context, bundleData: bundleData);
         }
       }).catchError((err) {
-        print('empty_fingerprint');
+        // print('empty_fingerprint');
       });
     } else //Has normally the user id
     {
@@ -236,7 +226,7 @@ class GetRecentlyVisitedStores {
             state['userData'] == null) //?No state saved yet
         {
           log('No state saved found');
-          print('empty_fingerprint');
+          // print('empty_fingerprint');
         } else //Found a saved state
         {
           //! user_identifier
@@ -251,7 +241,7 @@ class GetRecentlyVisitedStores {
           requestBlock(context: context, bundleData: bundleData);
         }
       }).catchError((err) {
-        print('empty_fingerprint');
+        // print('empty_fingerprint');
       });
     } else //Has normally the user id
     {
