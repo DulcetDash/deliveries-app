@@ -7,8 +7,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:nej/components/Helpers/DataParser.dart';
-import 'package:nej/components/Helpers/MapMarkerFactory/place_to_marker.dart';
+import 'package:orniss/components/Helpers/DataParser.dart';
+import 'package:orniss/components/Helpers/MapMarkerFactory/place_to_marker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:phone_number/phone_number.dart';
 import 'package:provider/src/provider.dart';
@@ -18,9 +18,8 @@ import 'package:collection/collection.dart';
 // Will hold all the home related globals - only!
 
 class HomeProvider with ChangeNotifier {
-  final String bridge =
-      'http://Graphhopper-ClusterLB-2102461283.us-east-1.elb.amazonaws.com';
-  // final String bridge = 'http://192.168.178.119:9697';
+  // final String bridge = 'http://Graphhopper-ClusterLB-2102461283.us-east-1.elb.amazonaws.com';
+  final String bridge = 'http://localhost:9697';
   // final String bridge = 'https://taxiconnectnanetwork.com:9999';
 
   String selectedService =

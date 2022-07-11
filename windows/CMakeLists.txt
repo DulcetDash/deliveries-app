@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
-project(nej LANGUAGES CXX)
+project(orniss LANGUAGES CXX)
 
-set(BINARY_NAME "nej")
+set(BINARY_NAME "orniss")
 
 cmake_policy(SET CMP0063 NEW)
 

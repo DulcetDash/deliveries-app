@@ -6,13 +6,13 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:nej/components/Helpers/AppTheme.dart';
-import 'package:nej/components/Helpers/DataParser.dart';
-import 'package:nej/components/Helpers/LocationOpsHandler.dart';
-import 'package:nej/components/Helpers/Networking.dart';
-import 'package:nej/components/Helpers/Watcher.dart';
-import 'package:nej/components/Providers/HomeProvider.dart';
-import 'package:nej/components/Shopping/CartIcon.dart';
+import 'package:orniss/components/Helpers/AppTheme.dart';
+import 'package:orniss/components/Helpers/DataParser.dart';
+import 'package:orniss/components/Helpers/LocationOpsHandler.dart';
+import 'package:orniss/components/Helpers/Networking.dart';
+import 'package:orniss/components/Helpers/Watcher.dart';
+import 'package:orniss/components/Providers/HomeProvider.dart';
+import 'package:orniss/components/Shopping/CartIcon.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -56,7 +56,7 @@ class _HomeState extends State<Home> {
       if (response.statusCode == 200) //Got some results
       {
         // log(response.body.toString());
-        List tmpResponse = json.decode(response.body);
+        List tmpResponse = json.decode(response.body)['response'];
         //? Update
         context.read<HomeProvider>().updateMainStores(data: tmpResponse);
         setState(() {
@@ -65,14 +65,14 @@ class _HomeState extends State<Home> {
       } else //Has some errors
       {
         log(response.toString());
-        Timer(const Duration(milliseconds: 500), () {
+        Timer(const Duration(milliseconds: 2500), () {
           GetMainStores(context: context);
         });
       }
     } catch (e) {
       log('8');
       log(e.toString());
-      Timer(const Duration(milliseconds: 500), () {
+      Timer(const Duration(milliseconds: 2500), () {
         GetMainStores(context: context);
       });
     }

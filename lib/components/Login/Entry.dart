@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:nej/components/GenericRectButton.dart';
+import 'package:orniss/components/GenericRectButton.dart';
 
 class Entry extends StatefulWidget {
   const Entry({Key? key}) : super(key: key);
@@ -43,7 +43,7 @@ class _EntryState extends State<Entry> {
                       width: 105,
                       height: 105,
                       child: Image.asset(
-                        'assets/Images/nej.jpeg',
+                        'assets/Images/nej.png',
                         fit: BoxFit.contain,
                       ),
                     ),

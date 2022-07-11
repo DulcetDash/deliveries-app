@@ -1,43 +1,43 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
-import 'package:nej/components/Delivery/RequestWindow_delivery.dart';
-import 'package:nej/components/Helpers/LocationOpsHandler.dart';
-import 'package:nej/components/Helpers/Networking.dart';
-import 'package:nej/components/Helpers/Watcher.dart';
-import 'package:nej/components/Login/CreateAccount.dart';
-import 'package:nej/components/Login/Entry.dart';
-import 'package:nej/components/Login/NewAccountAddiDetails.dart';
-import 'package:nej/components/Login/OTPCheck.dart';
-import 'package:nej/components/Login/PhoneInput.dart';
-import 'package:nej/components/Login/SplashScreen.dart';
-import 'package:nej/components/Providers/HomeProvider.dart';
-import 'package:nej/components/Ride/FareDisplay.dart';
-import 'package:nej/components/Ride/RequestWindow_ride.dart';
-import 'package:nej/components/Ride/RideSummary.dart';
-import 'package:nej/components/Settings/OTPCheckChange.dart';
-import 'package:nej/components/Settings/PhoneInputChange.dart';
-import 'package:nej/components/Settings/Settings.dart';
-import 'package:nej/components/Share/Share.dart';
-import 'package:nej/components/Shopping/Catalogue.dart';
-import 'package:nej/components/Shopping/CatalogueDetailsL2.dart';
-import 'package:nej/components/Delivery/DelRecipients.dart';
-import 'package:nej/components/Delivery/DeliveryPickupLocation.dart';
-import 'package:nej/components/Delivery/DeliverySummary.dart';
-import 'package:nej/components/Shopping/ShoppingSummary.dart';
-import 'package:nej/components/Ride/InitialPassengers.dart';
-import 'package:nej/components/Shopping/Cart.dart';
-import 'package:nej/components/Shopping/Home.dart';
-import 'package:nej/components/HomeScreen.dart';
-import 'package:nej/components/Shopping/LocationDetails.dart';
-import 'package:nej/components/PaymentSetting.dart';
-import 'package:nej/components/Shopping/ProductView.dart';
-import 'package:nej/components/Shopping/RequestWindow.dart';
-import 'package:nej/components/SuccessRequest.dart';
-import 'package:nej/components/Support/Support.dart';
-import 'package:nej/components/YourRides/YourRides.dart';
+import 'package:orniss/components/Delivery/RequestWindow_delivery.dart';
+import 'package:orniss/components/Helpers/LocationOpsHandler.dart';
+import 'package:orniss/components/Helpers/Networking.dart';
+import 'package:orniss/components/Helpers/Watcher.dart';
+import 'package:orniss/components/Login/CreateAccount.dart';
+import 'package:orniss/components/Login/Entry.dart';
+import 'package:orniss/components/Login/NewAccountAddiDetails.dart';
+import 'package:orniss/components/Login/OTPCheck.dart';
+import 'package:orniss/components/Login/PhoneInput.dart';
+import 'package:orniss/components/Login/SplashScreen.dart';
+import 'package:orniss/components/Providers/HomeProvider.dart';
+import 'package:orniss/components/Ride/FareDisplay.dart';
+import 'package:orniss/components/Ride/RequestWindow_ride.dart';
+import 'package:orniss/components/Ride/RideSummary.dart';
+import 'package:orniss/components/Settings/OTPCheckChange.dart';
+import 'package:orniss/components/Settings/PhoneInputChange.dart';
+import 'package:orniss/components/Settings/Settings.dart';
+import 'package:orniss/components/Share/Share.dart';
+import 'package:orniss/components/Shopping/Catalogue.dart';
+import 'package:orniss/components/Shopping/CatalogueDetailsL2.dart';
+import 'package:orniss/components/Delivery/DelRecipients.dart';
+import 'package:orniss/components/Delivery/DeliveryPickupLocation.dart';
+import 'package:orniss/components/Delivery/DeliverySummary.dart';
+import 'package:orniss/components/Shopping/ShoppingSummary.dart';
+import 'package:orniss/components/Ride/InitialPassengers.dart';
+import 'package:orniss/components/Shopping/Cart.dart';
+import 'package:orniss/components/Shopping/Home.dart';
+import 'package:orniss/components/HomeScreen.dart';
+import 'package:orniss/components/Shopping/LocationDetails.dart';
+import 'package:orniss/components/PaymentSetting.dart';
+import 'package:orniss/components/Shopping/ProductView.dart';
+import 'package:orniss/components/Shopping/RequestWindow.dart';
+import 'package:orniss/components/SuccessRequest.dart';
+import 'package:orniss/components/Support/Support.dart';
+import 'package:orniss/components/YourRides/YourRides.dart';
 import 'package:provider/src/provider.dart';
-import 'package:nej/ThemesAndRoutes/AppTheme.dart' as AppTheme;
+import 'package:orniss/ThemesAndRoutes/AppTheme.dart' as AppTheme;
 
 import '../Components/Providers/RegistrationProvider.dart';
 
@@ -56,6 +56,7 @@ class _AppGeneralEntryState extends State<AppGeneralEntry> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         navigatorKey: NavigationService.navigatorKey,
         theme: AppTheme.appTheme,
         initialRoute: '/',

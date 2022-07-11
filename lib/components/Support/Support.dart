@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:nej/components/GenericRectButton.dart';
-import 'package:nej/components/Helpers/AppTheme.dart';
+import 'package:orniss/components/GenericRectButton.dart';
+import 'package:orniss/components/Helpers/AppTheme.dart';
 import 'package:share_plus/share_plus.dart' as share_external;
 
 class Support extends StatefulWidget {
@@ -55,7 +55,7 @@ class _SupportState extends State<Support> {
                 padding: const EdgeInsets.only(left: 20, right: 20),
                 child: Container(
                   child: Text(
-                    'If you have any concerns when it comes to your rides, deliveries or shopping, or for any additional information about Nej, feel free to call or drop us a Whatsapp message.',
+                    'If you have any concerns when it comes to your rides, deliveries or shopping, or for any additional information about Orniss, feel free to call or drop us a Whatsapp message.',
                     style: TextStyle(fontSize: 17),
                   ),
                 ),

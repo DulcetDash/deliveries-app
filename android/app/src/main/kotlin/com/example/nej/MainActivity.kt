@@ -1,4 +1,4 @@
-package com.example.nej
+package com.orniss.riders
 
 import io.flutter.embedding.android.FlutterActivity
 

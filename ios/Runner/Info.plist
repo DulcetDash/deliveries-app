@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Nej</string>
+	<string>Orniss</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -15,7 +15,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>nej</string>
+	<string>Orniss</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -45,17 +45,17 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Nej needs access your camera in order for you to take a picture for your profile picture.</string>
+	<string>Orniss needs access your camera in order for you to take a picture for your profile picture.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Nej needs your location to give you accurate price estimates, track your orders and for a better navigation experience.</string>
+	<string>Orniss needs your location to give you accurate price estimates, track your orders and for a better navigation experience.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Nej needs your location to give you accurate price estimates, track your orders and for a better navigation experience.</string>
+	<string>Orniss needs your location to give you accurate price estimates, track your orders and for a better navigation experience.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Nej needs your location to give you accurate price estimates, track your orders and for a better navigation experience.</string>
+	<string>Orniss needs your location to give you accurate price estimates, track your orders and for a better navigation experience.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Nej needs access your gallery in order to change your profile picture.</string>
+	<string>Orniss needs access your gallery in order to change your profile picture.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Nej needs access your gallery in order to change your profile picture.</string>
+	<string>Orniss needs access your gallery in order to change your profile picture.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

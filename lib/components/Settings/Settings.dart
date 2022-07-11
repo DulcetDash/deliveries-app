@@ -9,13 +9,14 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:nej/components/GenericRectButton.dart';
-import 'package:nej/components/Helpers/AppTheme.dart';
-import 'package:nej/components/Helpers/SnackBarMother/SnackBarMother.dart';
-import 'package:nej/components/Providers/HomeProvider.dart';
+import 'package:orniss/components/GenericRectButton.dart';
+import 'package:orniss/components/Helpers/AppTheme.dart';
+import 'package:orniss/components/Helpers/SnackBarMother/SnackBarMother.dart';
+import 'package:orniss/components/Providers/HomeProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart' as share_external;
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
@@ -285,10 +286,26 @@ class _SettingsState extends State<Settings> {
                             height: 30,
                           ),
                           GenericTitle(title: 'Privacy'),
-                          GenericInformationDisplayer_terms_co(
-                              valueText: 'Terms & conditions'),
-                          GenericInformationDisplayer_terms_co(
-                              valueText: 'Privacy statement'),
+                          InkWell(
+                            onTap: () async {
+                              if (!await launch(
+                                  'https://www.nellafrica.com/privacy')) {
+                                throw 'Could not launch the URL';
+                              }
+                            },
+                            child: GenericInformationDisplayer_terms_co(
+                                valueText: 'Terms & conditions'),
+                          ),
+                          InkWell(
+                            onTap: () async {
+                              if (!await launch(
+                                  'https://www.nellafrica.com/privacy')) {
+                                throw 'Could not launch the URL';
+                              }
+                            },
+                            child: GenericInformationDisplayer_terms_co(
+                                valueText: 'Privacy statement'),
+                          ),
                           Divider(
                             height: 30,
                           ),

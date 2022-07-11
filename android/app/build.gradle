@@ -12,10 +12,10 @@ if (flutterRoot == null) {
 }
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
-    flutterVersionCode = '21'
+    flutterVersionCode = '29'
 
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
-    flutterVersionName = '1.4.7'
+    flutterVersionName = '1.4.8'
 
 apply plugin: 'com.android.application'
 apply plugin: 'com.onesignal.androidsdk.onesignal-gradle-plugin'

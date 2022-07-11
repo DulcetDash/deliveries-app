@@ -1,7 +1,7 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
-import 'package:nej/components/Helpers/AppTheme.dart';
+import 'package:orniss/components/Helpers/AppTheme.dart';
 import 'package:provider/src/provider.dart';
 
 class RequestCardHelper {

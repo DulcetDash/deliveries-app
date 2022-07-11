@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:nej/components/GenericRectButton.dart';
-import 'package:nej/components/Helpers/AppTheme.dart';
+import 'package:orniss/components/GenericRectButton.dart';
+import 'package:orniss/components/Helpers/AppTheme.dart';
 import 'package:share_plus/share_plus.dart' as share_external;
 
 class Share extends StatefulWidget {
@@ -42,7 +42,7 @@ class _ShareState extends State<Share> {
                 padding: const EdgeInsets.only(left: 20, right: 20),
                 child: Container(
                     child: Text(
-                  'Share Nej with your friends and family.',
+                  'Share Orniss with your friends and family.',
                   style: TextStyle(fontFamily: 'MoveBold', fontSize: 23),
                 )),
               ),
@@ -64,9 +64,9 @@ class _ShareState extends State<Share> {
                   labelFontFamily: 'MoveBold',
                   isArrowShow: false,
                   actuatorFunctionl: () => share_external.Share.share(
-                      'Hi!, there this awesome app called NEJ available in Namibia that allows you to get reliable rides, do deliveries to anywhere and do shoppings. Try it out and you will be satisfied, download it today at [LINK TO THE SPECIFIC STORE HERE].',
+                      'Hi!, there this awesome app called Orniss available in Namibia that allows you to get reliable rides, do deliveries to anywhere and do shoppings. Try it out and you will be satisfied, download it today at [LINK TO THE SPECIFIC STORE HERE].',
                       subject:
-                          'Download NEJ for free! (Rides, deliveries and shoppings)'))
+                          'Download Orniss for free! (Rides, deliveries and shoppings)'))
             ]),
           ),
         ],

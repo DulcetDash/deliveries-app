@@ -8,8 +8,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart';
-import 'package:nej/components/Helpers/PositionConverter.dart';
-import 'package:nej/components/Providers/HomeProvider.dart';
+import 'package:orniss/components/Helpers/PositionConverter.dart';
+import 'package:orniss/components/Providers/HomeProvider.dart';
 import 'package:provider/provider.dart';
 
 class LocationOpsHandler with ChangeNotifier {

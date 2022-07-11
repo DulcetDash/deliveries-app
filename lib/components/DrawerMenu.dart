@@ -3,8 +3,8 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:nej/components/Helpers/AppTheme.dart';
-import 'package:nej/components/Providers/HomeProvider.dart';
+import 'package:orniss/components/Helpers/AppTheme.dart';
+import 'package:orniss/components/Providers/HomeProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -152,13 +152,13 @@ class _DrawerMenuState extends State<DrawerMenu> {
                         leading: InkWell(
                             onTap: () async {
                               if (!await launch(
-                                  'https://www.somehtingawesomehere.com')) {
+                                  'https://www.nellafrica.com/privacy')) {
                                 throw 'Could not launch the URL';
                               }
                             },
                             child: const Text('Legal',
                                 style: TextStyle(fontSize: 16))),
-                        trailing: const Text('v1.4.7',
+                        trailing: const Text('v1.4.8',
                             style: TextStyle(fontSize: 16, color: Colors.grey)),
                       ),
                     ))),
@@ -204,7 +204,7 @@ class MenuOption extends StatelessWidget {
   }
 }
 
-//Drive for Nej
+//Drive for Orniss
 class DriverForNej extends StatelessWidget {
   const DriverForNej({Key? key}) : super(key: key);
 
@@ -213,7 +213,11 @@ class DriverForNej extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15),
       child: InkWell(
-        onTap: () => print('Drive for Nej'),
+        onTap: () async {
+          if (!await launch('https://www.nellafrica.com/contact')) {
+            throw 'Could not launch the URL';
+          }
+        },
         child: Container(
           height: 50,
           decoration: BoxDecoration(color: AppTheme().getPrimaryColor()),
@@ -230,7 +234,7 @@ class DriverForNej extends StatelessWidget {
                   width: 2,
                 ),
                 Text(
-                  'Drive or deliver with Nej',
+                  'Drive or deliver with Orniss',
                   style: TextStyle(
                       fontSize: 15,
                       color: Colors.white,

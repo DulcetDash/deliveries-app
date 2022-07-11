@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:nej/components/GenericRectButton.dart';
-import 'package:nej/components/Helpers/AppTheme.dart';
-import 'package:nej/components/Providers/HomeProvider.dart';
+import 'package:orniss/components/GenericRectButton.dart';
+import 'package:orniss/components/Helpers/AppTheme.dart';
+import 'package:orniss/components/Providers/HomeProvider.dart';
 import 'package:provider/provider.dart';
 
 class SuccessRequest extends StatelessWidget {

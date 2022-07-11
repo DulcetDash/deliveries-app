@@ -6,12 +6,12 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:http/http.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:nej/components/GenericRectButton.dart';
-import 'package:nej/components/Helpers/AppTheme.dart';
-import 'package:nej/components/Helpers/OTPVerificationInput/OTPVerificationInput.dart';
-import 'package:nej/components/Helpers/PhoneNumberInput/PhoneNumberInputEntry.dart';
-import 'package:nej/components/Helpers/TopLoader.dart';
-import 'package:nej/components/Providers/HomeProvider.dart';
+import 'package:orniss/components/GenericRectButton.dart';
+import 'package:orniss/components/Helpers/AppTheme.dart';
+import 'package:orniss/components/Helpers/OTPVerificationInput/OTPVerificationInput.dart';
+import 'package:orniss/components/Helpers/PhoneNumberInput/PhoneNumberInputEntry.dart';
+import 'package:orniss/components/Helpers/TopLoader.dart';
+import 'package:orniss/components/Providers/HomeProvider.dart';
 import 'package:provider/provider.dart';
 
 class OTPCheckChange extends StatefulWidget {

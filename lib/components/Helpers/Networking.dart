@@ -6,7 +6,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:nej/ThemesAndRoutes/AppRoutes.dart';
+import 'package:orniss/ThemesAndRoutes/AppRoutes.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:collection/collection.dart';
@@ -62,6 +62,9 @@ class GetShoppingData {
     //...
     try {
       Response response = await post(mainUrl, body: bundleData);
+
+      // log(bundleData.toString());
+      // log('${context.read<HomeProvider>().bridge}/getShoppingData');
 
       if (response.statusCode == 200) //Got some results
       {
@@ -127,6 +130,7 @@ class GetShoppingData {
         }
       } else //Has some errors
       {
+        // print(response.body);
         log(response.toString());
         context.read<HomeProvider>().updateRealtimeShoppingData(data: []);
       }

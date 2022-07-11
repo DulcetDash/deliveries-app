@@ -6,11 +6,11 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:http/http.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:nej/components/GenericRectButton.dart';
-import 'package:nej/components/Helpers/AppTheme.dart';
-import 'package:nej/components/Helpers/OTPVerificationInput/OTPVerificationInput.dart';
-import 'package:nej/components/Helpers/PhoneNumberInput/PhoneNumberInputEntry.dart';
-import 'package:nej/components/Providers/HomeProvider.dart';
+import 'package:orniss/components/GenericRectButton.dart';
+import 'package:orniss/components/Helpers/AppTheme.dart';
+import 'package:orniss/components/Helpers/OTPVerificationInput/OTPVerificationInput.dart';
+import 'package:orniss/components/Helpers/PhoneNumberInput/PhoneNumberInputEntry.dart';
+import 'package:orniss/components/Providers/HomeProvider.dart';
 import 'package:provider/provider.dart';
 
 class CreateAccount extends StatefulWidget {
@@ -51,7 +51,7 @@ class _CreateAccountState extends State<CreateAccount> {
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
             child: Text(
-              'With a Nej account you will be able to make seamless rides, deliveries a even shop from various stores from the comfort of your couch.',
+              'With a Orniss account you will be able to make seamless rides, deliveries a even shop from various stores from the comfort of your couch.',
               style: TextStyle(
                   fontSize: 15, color: AppTheme().getGenericDarkGrey()),
             ),

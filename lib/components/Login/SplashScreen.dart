@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:nej/components/Helpers/LocationOpsHandler.dart';
-import 'package:nej/components/Helpers/Networking.dart';
-import 'package:nej/components/Helpers/Watcher.dart';
-import 'package:nej/components/Providers/HomeProvider.dart';
+import 'package:orniss/components/Helpers/LocationOpsHandler.dart';
+import 'package:orniss/components/Helpers/Networking.dart';
+import 'package:orniss/components/Helpers/Watcher.dart';
+import 'package:orniss/components/Providers/HomeProvider.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/src/provider.dart';
 
@@ -148,7 +148,7 @@ class _SplashScreenState extends State<SplashScreen>
                           height: sideLength,
                           decoration: const BoxDecoration(color: Colors.black),
                           child: Image.asset(
-                            'assets/Images/nejb.jpeg',
+                            'assets/Images/nejb.png',
                             fit: BoxFit.contain,
                           )),
                     )

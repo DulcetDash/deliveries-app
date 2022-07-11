@@ -1,7 +1,7 @@
 import 'dart:ui' as ui;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:nej/components/Helpers/MapMarkerFactory/custom_marker.dart';
-import 'package:nej/components/Helpers/MapMarkerFactory/place.dart';
+import 'package:orniss/components/Helpers/MapMarkerFactory/custom_marker.dart';
+import 'package:orniss/components/Helpers/MapMarkerFactory/place.dart';
 
 Future<BitmapDescriptor> placeToMarker(String title, int? duration) async {
   final recoder = ui.PictureRecorder();

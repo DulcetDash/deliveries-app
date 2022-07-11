@@ -1,7 +1,7 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
-import 'package:nej/components/Providers/HomeProvider.dart';
+import 'package:orniss/components/Providers/HomeProvider.dart';
 import 'package:provider/src/provider.dart';
 import 'dart:math' as math;
 import 'countries_codes.dart';

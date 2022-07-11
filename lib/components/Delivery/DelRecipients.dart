@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:nej/components/GenericRectButton.dart';
-import 'package:nej/components/Helpers/AppTheme.dart';
-import 'package:nej/components/Helpers/DataParser.dart';
-import 'package:nej/components/Helpers/PhoneNumberInput/PhoneNumberInputEntry.dart';
-import 'package:nej/components/Helpers/TextEditingControllerWorkaroud.dart';
-import 'package:nej/components/Providers/HomeProvider.dart';
+import 'package:orniss/components/GenericRectButton.dart';
+import 'package:orniss/components/Helpers/AppTheme.dart';
+import 'package:orniss/components/Helpers/DataParser.dart';
+import 'package:orniss/components/Helpers/PhoneNumberInput/PhoneNumberInputEntry.dart';
+import 'package:orniss/components/Helpers/TextEditingControllerWorkaroud.dart';
+import 'package:orniss/components/Providers/HomeProvider.dart';
 import 'package:provider/provider.dart';
 
 class DelRecipients extends StatefulWidget {

@@ -3,13 +3,13 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:nej/ThemesAndRoutes/AppRoutes.dart';
-import 'package:nej/components/DrawerMenu.dart';
-import 'package:nej/components/Helpers/AppTheme.dart';
-import 'package:nej/components/Helpers/LocationOpsHandler.dart';
-import 'package:nej/components/Helpers/Networking.dart';
-import 'package:nej/components/Helpers/Watcher.dart';
-import 'package:nej/components/Providers/HomeProvider.dart';
+import 'package:orniss/ThemesAndRoutes/AppRoutes.dart';
+import 'package:orniss/components/DrawerMenu.dart';
+import 'package:orniss/components/Helpers/AppTheme.dart';
+import 'package:orniss/components/Helpers/LocationOpsHandler.dart';
+import 'package:orniss/components/Helpers/Networking.dart';
+import 'package:orniss/components/Helpers/Watcher.dart';
+import 'package:orniss/components/Providers/HomeProvider.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -97,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   width:
                                       MediaQuery.of(context).size.width * 0.58,
                                   child: Text(
-                                    'Shop anywhere from anywhere with Nej',
+                                    'Shop anywhere from anywhere with Orniss',
                                     style: TextStyle(
                                       height: 1.3,
                                       fontSize: 14.5,

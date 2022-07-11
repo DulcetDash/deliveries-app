@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:nej/ThemesAndRoutes/AppRoutes.dart';
+import 'package:orniss/ThemesAndRoutes/AppRoutes.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'components/Providers/HomeProvider.dart';
 import 'components/Providers/RegistrationProvider.dart';

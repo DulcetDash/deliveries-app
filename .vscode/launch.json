@@ -5,18 +5,18 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "nej",
+      "name": "Orniss",
       "request": "launch",
       "type": "dart"
     },
     {
-      "name": "nej (profile mode)",
+      "name": "Orniss (profile mode)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "profile"
     },
     {
-      "name": "nej (release mode)",
+      "name": "Orniss (release mode)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "release"

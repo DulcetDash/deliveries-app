@@ -5,10 +5,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:nej/components/Helpers/AppTheme.dart';
-import 'package:nej/components/Helpers/Networking.dart';
-import 'package:nej/components/Providers/HomeProvider.dart';
-import 'package:nej/components/Shopping/CartIcon.dart';
+import 'package:orniss/components/Helpers/AppTheme.dart';
+import 'package:orniss/components/Helpers/Networking.dart';
+import 'package:orniss/components/Providers/HomeProvider.dart';
+import 'package:orniss/components/Shopping/CartIcon.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -351,7 +351,9 @@ class _SearchBarState extends State<SearchBar> {
           .toString()
           .toUpperCase(),
       "user_fingerprint":
-          context.read<HomeProvider>().userData['user_identifier'].toString()
+          context.read<HomeProvider>().userData['user_identifier'].toString(),
+      'store_fp':
+          context.read<HomeProvider>().selected_store['store_fp'].toString()
     };
 
     // print(bundleData);
