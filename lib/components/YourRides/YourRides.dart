@@ -59,7 +59,7 @@ class _YourRidesState extends State<YourRides> {
 
       if (response.statusCode == 200) //Got some results
       {
-        log(response.body.toString());
+        // log(response.body.toString());
         List tmpResponse = json.decode(response.body)['response'];
         //? Update
         setState(() {

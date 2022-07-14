@@ -135,7 +135,7 @@ class _PhoneInputState extends State<PhoneInput> {
         Navigator.of(context).pushNamed('/OTPCheck');
       } else //Has some errors
       {
-        log(response.toString());
+        log(response.body.toString());
         showErrorModalError(context: context);
       }
     } catch (e) {

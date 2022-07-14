@@ -25,7 +25,7 @@ class GetShoppingData {
         if (mapEquals({}, state['userData']) ||
             state['userData'] == null) //?No state saved yet
         {
-          log('No state saved found');
+          // log('No state saved found');
           // print('empty_fingerprint');
         } else //Found a saved state
         {
@@ -68,6 +68,7 @@ class GetShoppingData {
 
       if (response.statusCode == 200) //Got some results
       {
+        // print(response.body);
         if (response.body.toString() == 'false' ||
             response.body == false) //no data
         {
@@ -131,7 +132,7 @@ class GetShoppingData {
       } else //Has some errors
       {
         // print(response.body);
-        log(response.toString());
+        print(response.body.toString());
         context.read<HomeProvider>().updateRealtimeShoppingData(data: []);
       }
     } catch (e) {
@@ -158,7 +159,7 @@ class GetUserData {
         if (mapEquals({}, state['userData']) ||
             state['userData'] == null) //?No state saved yet
         {
-          log('No state saved found');
+          // log('No state saved found');
           // print('empty_fingerprint');
         } else //Found a saved state
         {
@@ -229,7 +230,7 @@ class GetRecentlyVisitedStores {
         if (mapEquals({}, state['userData']) ||
             state['userData'] == null) //?No state saved yet
         {
-          log('No state saved found');
+          // log('No state saved found');
           // print('empty_fingerprint');
         } else //Found a saved state
         {
@@ -274,7 +275,7 @@ class GetRecentlyVisitedStores {
         context.read<HomeProvider>().recentlyVisitedStores(data: tmpResponse);
       } else //Has some errors
       {
-        log(response.toString());
+        log(response.body.toString());
       }
     } catch (e) {
       log('8');

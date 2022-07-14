@@ -20,7 +20,7 @@ import 'package:collection/collection.dart';
 class HomeProvider with ChangeNotifier {
   final String bridge =
       'http://Graphhopper-ClusterLB-2102461283.us-east-1.elb.amazonaws.com';
-  // final String bridge = 'http://localhost:9697';
+  // final String bridge = 'http://192.168.178.119:9697';
   // final String bridge = 'https://taxiconnectnanetwork.com:9999';
 
   String selectedService =
@@ -266,7 +266,7 @@ class HomeProvider with ChangeNotifier {
       if (mapEquals({}, state['userData']) ||
           state['userData'] == null) //?No state saved yet
       {
-        log('No state saved found');
+        // log('No state saved found');
         //? Close loader
         isLoadingForDataRestoration = false;
         Navigator.of(context).pushNamed('/Entry');

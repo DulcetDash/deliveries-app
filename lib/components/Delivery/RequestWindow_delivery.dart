@@ -38,7 +38,8 @@ class _RequestWindow_deliveryState extends State<RequestWindow_delivery> {
   Widget build(BuildContext context) {
     if (context.watch<HomeProvider>().requestShoppingData == null ||
         context.watch<HomeProvider>().requestShoppingData.isEmpty) {
-      Navigator.of(context).pushNamed('/home');
+      // Navigator.of(context).pushNamed('/home');
+      SizedBox.shrink();
     }
 
     try {

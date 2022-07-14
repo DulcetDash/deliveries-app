@@ -157,7 +157,7 @@ class LocationOpsHandler with ChangeNotifier {
         if (mapEquals({}, state['userData']) ||
             state['userData'] == null) //?No state saved yet
         {
-          log('No state saved found');
+          // log('No state saved found');
           // print('empty_fingerprint');
         } else //Found a saved state
         {

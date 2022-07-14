@@ -64,7 +64,7 @@ class _HomeState extends State<Home> {
         });
       } else //Has some errors
       {
-        log(response.toString());
+        // log(response.toString());
         Timer(const Duration(milliseconds: 2500), () {
           GetMainStores(context: context);
         });

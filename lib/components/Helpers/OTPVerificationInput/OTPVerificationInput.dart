@@ -66,7 +66,7 @@ class _OTPVerificationInputState extends State<OTPVerificationInput> {
           animationDuration: Duration(milliseconds: 300),
           backgroundColor: Colors.white,
           onCompleted: (v) {
-            print("Completed");
+            // print("Completed");
             checkOTP_actuator();
           },
           onChanged: (value) {
