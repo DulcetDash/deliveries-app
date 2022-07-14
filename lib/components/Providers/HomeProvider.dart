@@ -18,9 +18,8 @@ import 'package:collection/collection.dart';
 // Will hold all the home related globals - only!
 
 class HomeProvider with ChangeNotifier {
-  final String bridge =
-      'http://Graphhopper-ClusterLB-2102461283.us-east-1.elb.amazonaws.com';
-  // final String bridge = 'http://192.168.178.119:9697';
+  // final String bridge = 'http://Graphhopper-ClusterLB-2102461283.us-east-1.elb.amazonaws.com';
+  final String bridge = 'http://192.168.178.119:9697';
   // final String bridge = 'https://taxiconnectnanetwork.com:9999';
 
   String selectedService =
@@ -702,8 +701,10 @@ class HomeProvider with ChangeNotifier {
     } else if (location_type == 'dropoff') {
       //! More passengers going the same way
       if (isGoingTheSameWay! && passengersNumber > 1) {
+        ride_location_dropoff = []; //RESET
+
         for (var i = 0; i < passengersNumber; i++) {
-          ride_location_dropoff[i] = location;
+          ride_location_dropoff.add(location);
         }
         notifyListeners();
       } else //Just 1 passenger
