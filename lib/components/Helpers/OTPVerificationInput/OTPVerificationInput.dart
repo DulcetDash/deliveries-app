@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/current_remaining_time.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
@@ -117,7 +118,7 @@ class _TimerAndErrorNotifiyerState extends State<TimerAndErrorNotifiyer> {
             children: [
               CountdownTimer(
                 endTime: endTime,
-                onEnd: () => print('TIMER DONE'),
+                onEnd: () => {},
                 widgetBuilder:
                     (BuildContext context, CurrentRemainingTime? time) {
                   if (time == null) {
@@ -129,7 +130,7 @@ class _TimerAndErrorNotifiyerState extends State<TimerAndErrorNotifiyer> {
                                 1000 * 60;
                           });
                         },
-                        child: Text('Resend the code',
+                        child: Text('otp_check.resendCode'.tr(),
                             style: TextStyle(
                                 fontSize: 17,
                                 fontFamily: 'MoveTextMedium',
@@ -138,7 +139,9 @@ class _TimerAndErrorNotifiyerState extends State<TimerAndErrorNotifiyer> {
                   // print(time);
                   //...
                   return Text(
-                      'Resend the code in ${time.min == null ? '00' : time.min}:${time.sec! >= 10 ? time.sec : '0${time.sec}'}',
+                      'otp_check.resendCodeIn'.tr(args: [
+                        '${time.min == null ? '00' : time.min}:${time.sec! >= 10 ? time.sec : '0${time.sec}'}'
+                      ]),
                       style: TextStyle(
                         fontSize: 17,
                         fontFamily: 'MoveTextRegular',

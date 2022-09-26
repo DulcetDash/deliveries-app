@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -65,7 +66,7 @@ class _PhoneInputChangeState extends State<PhoneInputChange> {
                     ),
                     Flexible(
                       child: Text(
-                        'By continuing you will receive an SMS for verification. Message and data rates my apply.',
+                        'phone_input.small_note'.tr(),
                         style: TextStyle(
                             fontSize: 14,
                             color: AppTheme().getGenericDarkGrey()),
@@ -86,7 +87,7 @@ class _PhoneInputChangeState extends State<PhoneInputChange> {
                       : AppTheme().getFadedOpacityValue(),
               child: GenericRectButton(
                   horizontalPadding: 20,
-                  label: 'Next',
+                  label: 'generic_text.next'.tr(),
                   labelFontSize: 20,
                   isArrowShow: false,
                   actuatorFunctionl: context
@@ -180,7 +181,7 @@ class _PhoneInputChangeState extends State<PhoneInputChange> {
                     height: 15,
                   ),
                   Text(
-                    'Unable to check your number',
+                    'phone_input.error_checkingNumber'.tr(),
                     style: TextStyle(
                       fontFamily: 'MoveTextMedium',
                       fontSize: 19,
@@ -192,13 +193,13 @@ class _PhoneInputChangeState extends State<PhoneInputChange> {
                   Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Text(
-                      "We were unable to check your mobile number due to an unexpected error, please check your internet connection and try again.",
+                      "phone_input.error_checkingNumberUnexpected".tr(),
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
                   Expanded(child: SizedBox.shrink()),
                   GenericRectButton(
-                    label: 'Try again',
+                    label: 'generic_text.tryAgain'.tr(),
                     labelFontSize: 20,
                     actuatorFunctionl: () {
                       Navigator.of(context).pop();
@@ -238,7 +239,7 @@ class _PhoneInputChangeState extends State<PhoneInputChange> {
                     height: 15,
                   ),
                   Text(
-                    'Phone number taken',
+                    'create_account.phoneNoTaken'.tr(),
                     style: TextStyle(
                       fontFamily: 'MoveTextMedium',
                       fontSize: 19,
@@ -250,13 +251,13 @@ class _PhoneInputChangeState extends State<PhoneInputChange> {
                   Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Text(
-                      "We were unable to create your account because the phone number which which you are trying to proceed is already linked to another account. Please use another phone number and try again.",
+                      "phone_input.unableToChangePhoneTaken".tr(),
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
                   Expanded(child: SizedBox.shrink()),
                   GenericRectButton(
-                    label: 'Try again',
+                    label: 'generic_text.tryAgain'.tr(),
                     labelFontSize: 20,
                     actuatorFunctionl: () {
                       Navigator.of(context).pop();
@@ -290,7 +291,7 @@ class ErrorPhone extends StatelessWidget {
             width: 5,
           ),
           Text(
-            'Invalid phone number',
+            'phone_input.invalid_phone_number'.tr(),
             style: TextStyle(fontSize: 16, color: AppTheme().getErrorColor()),
           )
         ]),
@@ -319,7 +320,7 @@ class Header extends StatelessWidget {
             SizedBox(
               height: 15,
             ),
-            Text('Change your mobile number',
+            Text('phone_input.changePhoneNumberTitle'.tr(),
                 style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 20)),
             Divider(
               height: 30,

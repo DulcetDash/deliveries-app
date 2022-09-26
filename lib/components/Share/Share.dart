@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -42,7 +43,7 @@ class _ShareState extends State<Share> {
                 padding: const EdgeInsets.only(left: 20, right: 20),
                 child: Container(
                     child: Text(
-                  'Share Orniss with your friends and family.',
+                  'share.mainTitle'.tr(),
                   style: TextStyle(fontFamily: 'MoveBold', fontSize: 23),
                 )),
               ),
@@ -53,7 +54,7 @@ class _ShareState extends State<Share> {
                 padding: const EdgeInsets.only(left: 20, right: 20),
                 child: Container(
                   child: Text(
-                    'Share the app to allow others to also be able to enjoy safe rides, perform seamless deliveries and shopping.',
+                    'share.explanation'.tr(),
                     style: TextStyle(fontSize: 17),
                   ),
                 ),
@@ -64,9 +65,8 @@ class _ShareState extends State<Share> {
                   labelFontFamily: 'MoveBold',
                   isArrowShow: false,
                   actuatorFunctionl: () => share_external.Share.share(
-                      'Hi!, there this awesome app called Orniss available in Namibia that allows you to get reliable rides, do deliveries to anywhere and do shoppings. Try it out and you will be satisfied, download it today at [LINK TO THE SPECIFIC STORE HERE].',
-                      subject:
-                          'Download Orniss for free! (Rides, deliveries and shoppings)'))
+                      'share.shareMessage'.tr(),
+                      subject: 'share.shareSubject'.tr()))
             ]),
           ),
         ],
@@ -101,7 +101,7 @@ class Header extends StatelessWidget {
             Expanded(
               child: Container(
                 child: Text(
-                  'Share',
+                  'share.share'.tr(),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontFamily: 'MoveBold',

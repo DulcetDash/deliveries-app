@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -177,7 +178,7 @@ class TextEntryPhoneInput extends StatelessWidget {
                               .watch<HomeProvider>()
                               .enteredPhoneNumber
                               .isEmpty
-                          ? "Phone number"
+                          ? "phone_input.phoneNumber".tr()
                           : context.watch<HomeProvider>().enteredPhoneNumber,
                       labelStyle: TextStyle(fontFamily: 'UberMoveTextMedium'),
                       floatingLabelBehavior: FloatingLabelBehavior.never,

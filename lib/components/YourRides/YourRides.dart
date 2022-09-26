@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -156,7 +157,7 @@ class Header extends StatelessWidget {
             Expanded(
               child: Container(
                 child: Text(
-                  'Your rides',
+                  'yourRides.mainTitle'.tr(),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontFamily: 'MoveBold',
@@ -309,12 +310,12 @@ class RideOrDeliveryDetails extends StatelessWidget {
                           Container(
                             // color: Colors.green,
                             height: 33,
-                            child: const Padding(
+                            child: Padding(
                               padding: EdgeInsets.only(top: 2),
                               child: SizedBox(
                                   width: 45,
                                   child: Text(
-                                    'From',
+                                    'rides.fromLabel'.tr(),
                                     style:
                                         TextStyle(fontFamily: 'MoveTextLight'),
                                   )),
@@ -349,12 +350,12 @@ class RideOrDeliveryDetails extends StatelessWidget {
                         Container(
                           // color: Colors.green,
                           height: 34,
-                          child: const Padding(
+                          child: Padding(
                             padding: EdgeInsets.only(top: 3),
                             child: SizedBox(
                                 width: 45,
                                 child: Text(
-                                  'To',
+                                  'rides.toLabel'.tr(),
                                   style: TextStyle(fontFamily: 'MoveTextLight'),
                                 )),
                           ),
@@ -380,7 +381,10 @@ class RideOrDeliveryDetails extends StatelessWidget {
                                 width: 45,
                               ),
                               Text(
-                                  '+${dropoffs.length - 1} more location${dropoffs.length - 1 > 1 ? 's' : ''}.',
+                                  'delivery.moreLocationsMask'.tr(args: [
+                                    '${dropoffs.length - 1}',
+                                    '${dropoffs.length - 1 > 1 ? 's' : ''}'
+                                  ]),
                                   style: TextStyle(
                                       fontSize: 16,
                                       color: AppTheme().getSecondaryColor())),
@@ -440,7 +444,7 @@ class ShoppingListDetails extends StatelessWidget {
               height: 20,
             ),
             Text(
-              'Former shopping list',
+              'yourRides.formerShoppingList'.tr(),
               style: TextStyle(fontSize: 14, fontFamily: 'MoveTextLight'),
             )
           ],

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:orniss/ThemesAndRoutes/AppRoutes.dart';
@@ -84,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Shop seamlessly',
+                                  'home.bigTitle'.tr(),
                                   style: TextStyle(
                                       fontFamily: 'MoveTextMedium',
                                       fontSize: 27,
@@ -97,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   width:
                                       MediaQuery.of(context).size.width * 0.58,
                                   child: Text(
-                                    'Shop anywhere from anywhere with Orniss',
+                                    'home.subDescription'.tr(),
                                     style: TextStyle(
                                       height: 1.3,
                                       fontSize: 14.5,
@@ -132,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     width: 103,
                                     height: 38,
                                     child: Text(
-                                      'Shop now',
+                                      'shopping.shopNow'.tr(),
                                       style: TextStyle(
                                           fontFamily: 'MoveTextMedium',
                                           color: Colors.white,
@@ -206,7 +207,7 @@ class QuickAccess extends StatelessWidget {
             children: [
               Visibility(
                 visible: recentData.isNotEmpty,
-                child: Text('Go again',
+                child: Text('home.goAgain'.tr(),
                     style: TextStyle(
                         fontFamily: 'MoveTextBold',
                         fontSize: 18,
@@ -280,7 +281,7 @@ class QuickAccess extends StatelessWidget {
                               storeData['fd_name'],
                               style: TextStyle(fontSize: 16),
                             ),
-                            subtitle: Text('You were here.'),
+                            subtitle: Text('home.youWereHere'.tr()),
                             trailing: Icon(
                               Icons.arrow_forward_ios_sharp,
                               size: 15,
@@ -314,7 +315,7 @@ class QuickAccess extends StatelessWidget {
             height: 15,
           ),
           Text(
-            'No recents shopping',
+            'home.noRecentShopping'.tr(),
             style:
                 TextStyle(fontSize: 15, color: AppTheme().getGenericDarkGrey()),
           ),
@@ -337,7 +338,7 @@ class ProductsSelection extends StatelessWidget {
         selections(
             context: context,
             imagePath: 'assets/Images/normalTaxiEconomy.jpeg',
-            title: 'Ride',
+            title: 'home.ride'.tr(),
             actuator: () {
               // print('Ride');
               //!Cleanse
@@ -356,7 +357,7 @@ class ProductsSelection extends StatelessWidget {
         selections(
             context: context,
             imagePath: 'assets/Images/box_delivery.png',
-            title: 'Delivery',
+            title: 'home.delivery'.tr(),
             actuator: () {
               //!Cleanse
               context.read<HomeProvider>().clearEveryRequestsRelatedData();
@@ -374,7 +375,7 @@ class ProductsSelection extends StatelessWidget {
         selections(
             context: context,
             imagePath: 'assets/Images/cart.jpg',
-            title: 'Shopping',
+            title: 'home.shopping'.tr(),
             actuator: () {
               //!Cleanse
               context.read<HomeProvider>().clearEveryRequestsRelatedData();

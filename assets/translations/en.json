@@ -17,13 +17,21 @@
     "bttn_label": "Next",
     "error_checkingNumber": "Unable to check your number",
     "error_checkingNumberUnexpected": "We were unable to check your mobile number due to an unexpected error, please check your internet connection and try again.",
-    "invalid_phone_number": "Invalid phone number"
+    "invalid_phone_number": "Invalid phone number",
+    "unableToChangePhoneTaken": "We were unable to change your phone number because the phone number which which you are trying to proceed is already linked to another account. Please use another phone number and try again.",
+    "changePhoneNumberTitle": "Change your mobile number",
+    "phoneNumber": "Phone number",
+    "countryOrRegion": "Country or region",
+    "selectCountry": "Search your country"
   },
   "otp_check": {
     "unableToSendCode_title": "Unable to send the code",
     "unableToSendCode_msg": "We were unable to send you the 4-digit code due to an unexpected error, please check your internet connection and try again.",
     "wrongCodeEntered": "Wrong code entered",
-    "incorrectCodeEntered": "The code that you have entered is not correct, please double check in your SMS the latest 4-digit code that we've sent."
+    "incorrectCodeEntered": "The code that you have entered is not correct, please double check in your SMS the latest 4-digit code that we've sent.",
+    "enter5DigitCode": "Enter the 5-digit code sent to you",
+    "resendCode": "Resend the code",
+    "resendCondeIn": "Resend the code in {}"
   },
   "create_account": {
     "noAccountNoProbs": "No account? No problems!",
@@ -219,6 +227,77 @@
     "unableToRequestShopping_msg": "We were unable to go forward with this shopping request because it seems like you have an unconfirmed shopping request in progress, please confirm it and try again.",
     "unableToRequestShoppingUnexpected_msg": "We were unable to go forward with your shopping request due to an unexpected error, please try again and if it persists, please contact us through the Support tab."
   },
+  "support": {
+    "mainTitle": "We are available to help you 24/7h",
+    "explanation": "If you have any concerns when it comes to your rides, deliveries or shopping, or for any additional information about Orniss, feel free to call or drop us a Whatsapp message.",
+    "callUs": "Call Us",
+    "callThePolice": "Call the Police"
+  },
+  "yourRides": {
+    "mainTitle": "Your rides",
+    "formerShoppingList": "Former shopping list"
+  },
+  "share": {
+    "mainTitle": "Share Orniss with your friends and family.",
+    "explanation": "Share the app to allow others to also be able to enjoy safe rides, perform seamless deliveries and shopping.",
+    "shareMessage": "Hi!, there this awesome app called Orniss available in your town that allows you to get reliable rides, do deliveries to anywhere and do shoppings. Try it out and you will be satisfied, download it today.",
+    "shareSubject": "Download Orniss for free! (Rides, deliveries and shoppings)",
+    "share": "Share"
+  },
+  "settings": {
+    "unableToChangeProfile": "Unable to change the profile. Try again later.",
+    "successfullyChangedProfile": "Successfully changed the profile.",
+    "restartApp": "Please restart the app.",
+    "personalInformation": "Personal information",
+    "name": "Name",
+    "surname": "Surname",
+    "contact": "Contact",
+    "phone": "Phone",
+    "email": "Email",
+    "privacy": "Privacy",
+    "termsAndConditions": "Terms & conditions",
+    "privacyStatement": "Privacy statement",
+    "logout": "Log out",
+    "settings": "Settings",
+    "unableToChangeData": "Unable to change the {}. Try again later.",
+    "successChangedData": "Successfully changed the {}.",
+    "changeName": "Change your name",
+    "enterName": "Enter your name",
+    "namePrivacyExplanation": "Your name will be viewed by your drivers, shoppers and couriers after you make a request for one of those services.",
+    "changeSurname": "Change your surname",
+    "enterSurname": "Enter your surname",
+    "surnamePrivacyExplanation": "Your surname will not be viewed by your drivers, shoppers and couriers after you make a request for one of those services.",
+    "changeEmail": "Change your email",
+    "enterEmail": "Enter your email",
+    "emailPrivacyExplanation": "Your email will not be viewed by your drivers, shoppers and couriers after you make a request for one of those services."
+  },
+  "drawer": {
+    "searching": "Searching...",
+    "yourRides": "Your rides",
+    "settings": "Settings",
+    "support": "Support",
+    "share": "Share",
+    "legal": "Legal",
+    "driveForOrniss": "Drive or deliver with Orniss"
+  },
+  "home": {
+    "bigTitle": "Shop seamlessly",
+    "subDescription": "Shop anywhere from anywhere with Orniss",
+    "goAgain": "Go again",
+    "youWereHere": "You were here.",
+    "noRecentShopping": "No recents shopping",
+    "ride": "Ride",
+    "delivery": "Delivery",
+    "shopping": "Shopping"
+  },
+  "payments": {
+    "mobileMoney": "Mobile money",
+    "subTitle": "Ewallet, Blue wallet or Easy wallet",
+    "cash": "Cash",
+    "cashOnPickup": "Pay using cash on pickup",
+    "payWithCash": "Pay using cash",
+    "topPickupIt": "+{} to pick it up."
+  },
   "generic_text": {
     "tryAgain": "Try again",
     "next": "Next",
@@ -246,6 +325,19 @@
     "forMoreAssistance_msg": "For more assistance, please call us.",
     "unableToConnectToNet": "Unable to connect to the Internet.",
     "information": "Information",
-    "price": "Price"
+    "price": "Price",
+    "successChanged": "Successfully changed",
+    "phoneNumberChangedTo": "Your phone number has been successfully changed to {}",
+    "at": "at {}"
+  },
+  "utils": {
+    "checked": "Checked",
+    "successRequestTitle": "Successfully requested",
+    "deliverySuccess": "Your delivery request has been successfully made, please click on the button below to track it.",
+    "shoppingSuccess": "Your shopping request has been successfully made, please click on the button below to track it.",
+    "rideSuccess": "Your ride request has been successfully made, please click on the button below to track it.",
+    "trackDelivery": "Track your delivery",
+    "trackShopping": "Track your shopping",
+    "trackRide": "Track your ride"
   }
 }

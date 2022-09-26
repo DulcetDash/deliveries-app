@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -114,7 +115,7 @@ class _OTPCheckChangeState extends State<OTPCheckChange> {
                     height: 15,
                   ),
                   Text(
-                    'Unable to send the code',
+                    'otp_check.unableToSendCode_title'.tr(),
                     style: TextStyle(
                       fontFamily: 'MoveTextMedium',
                       fontSize: 19,
@@ -126,13 +127,13 @@ class _OTPCheckChangeState extends State<OTPCheckChange> {
                   Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Text(
-                      "We were unable to send you the 4-digit code due to an unexpected error, please check your internet connection and try again.",
+                      "otp_check.unableToSendCode_msg".tr(),
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
                   Expanded(child: SizedBox.shrink()),
                   GenericRectButton(
-                    label: 'Try again',
+                    label: 'generic_text.tryAgain'.tr(),
                     labelFontSize: 20,
                     actuatorFunctionl: () {
                       Navigator.of(context).pop();
@@ -221,7 +222,7 @@ class _OTPCheckChangeState extends State<OTPCheckChange> {
                     height: 15,
                   ),
                   Text(
-                    'Wrong code entered',
+                    'otp_check.wrongCodeEntered'.tr(),
                     style: TextStyle(
                       fontFamily: 'MoveTextMedium',
                       fontSize: 19,
@@ -233,13 +234,13 @@ class _OTPCheckChangeState extends State<OTPCheckChange> {
                   Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Text(
-                      "The code that you have entered is not correct, please double check in your SMS the latest 4-digit code that we've sent.",
+                      "otp_check.incorrectCodeEntered".tr(),
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
                   Expanded(child: SizedBox.shrink()),
                   GenericRectButton(
-                    label: 'Try again',
+                    label: 'otp_check.incorrectCodeEntered'.tr(),
                     labelFontSize: 20,
                     actuatorFunctionl: () {
                       Navigator.of(context).pop();
@@ -281,7 +282,7 @@ class _OTPCheckChangeState extends State<OTPCheckChange> {
                     height: 15,
                   ),
                   Text(
-                    'Successfully changed',
+                    'generic_text.successChanged'.tr(),
                     style: TextStyle(
                       fontFamily: 'MoveTextMedium',
                       fontSize: 19,
@@ -293,13 +294,15 @@ class _OTPCheckChangeState extends State<OTPCheckChange> {
                   Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Text(
-                      "Your phone number has been successfully changed to ${context.read<HomeProvider>().selectedCountryCodeData['dial_code']}${context.read<HomeProvider>().enteredPhoneNumber}",
+                      'generic_text.phoneNumberChangedTo'.tr(args: [
+                        "${context.read<HomeProvider>().selectedCountryCodeData['dial_code']}${context.read<HomeProvider>().enteredPhoneNumber}"
+                      ]),
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
                   Expanded(child: SizedBox.shrink()),
                   GenericRectButton(
-                    label: 'Done',
+                    label: 'rides.done'.tr(),
                     labelFontSize: 20,
                     actuatorFunctionl: () {
                       Navigator.of(context).pushNamed('/Settings');
@@ -333,7 +336,7 @@ class ErrorOtp extends StatelessWidget {
             width: 5,
           ),
           Text(
-            'Incorrect code entered.',
+            'otp_check.wrongCodeEntered'.tr(),
             style: TextStyle(fontSize: 16, color: AppTheme().getErrorColor()),
           )
         ]),
@@ -365,14 +368,16 @@ class Header extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Enter the 5-digit code sent to you',
+                Text('otp_check.enter5DigitCode'.tr(),
                     style:
                         TextStyle(fontFamily: 'MoveTextMedium', fontSize: 19)),
                 SizedBox(
                   height: 7,
                 ),
                 Text(
-                    'at ${context.read<HomeProvider>().selectedCountryCodeData['dial_code']}${context.read<HomeProvider>().enteredPhoneNumber}',
+                    'generic_text.at'.tr(args: [
+                      '${context.read<HomeProvider>().selectedCountryCodeData['dial_code']}${context.read<HomeProvider>().enteredPhoneNumber}'
+                    ]),
                     style: TextStyle(
                         fontFamily: 'MoveTextMedium',
                         fontSize: 19,

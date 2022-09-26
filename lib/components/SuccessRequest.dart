@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:orniss/components/GenericRectButton.dart';
 import 'package:orniss/components/Helpers/AppTheme.dart';
@@ -23,7 +24,7 @@ class SuccessRequest extends StatelessWidget {
               height: 15,
             ),
             Text(
-              'Successfully requested',
+              'utils.successRequestTitle'.tr(),
               style: TextStyle(
                 fontFamily: 'MoveTextMedium',
                 fontSize: 19,
@@ -36,20 +37,20 @@ class SuccessRequest extends StatelessWidget {
               padding: const EdgeInsets.only(left: 20, right: 20),
               child: Text(
                 context.read<HomeProvider>().selectedService == 'delivery'
-                    ? "Your delivery request has been successfully made, please click on the button below to track it."
+                    ? 'utils.deliverySuccess'.tr()
                     : context.read<HomeProvider>().selectedService == 'shopping'
-                        ? "Your shopping request has been successfully made, please click on the button below to track it."
-                        : "Your ride request has been successfully made, please click on the button below to track it.",
+                        ? 'utils.shoppingSuccess'.tr()
+                        : 'utils.rideSuccess'.tr(),
                 style: TextStyle(fontSize: 16),
               ),
             ),
             Expanded(child: SizedBox.shrink()),
             GenericRectButton(
               label: context.read<HomeProvider>().selectedService == 'delivery'
-                  ? 'Track your delivery'
+                  ? 'utils.trackDelivery'.tr()
                   : context.read<HomeProvider>().selectedService == 'shopping'
-                      ? 'Track your shopping'
-                      : 'Track your ride',
+                      ? 'utils.trackShopping'.tr()
+                      : 'utils.trackRide'.tr(),
               labelFontSize: 20,
               actuatorFunctionl: () {
                 //! Clear the shopping cart

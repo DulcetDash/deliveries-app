@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -44,7 +45,7 @@ class _SupportState extends State<Support> {
                 padding: const EdgeInsets.only(left: 20, right: 20),
                 child: Container(
                     child: Text(
-                  'We are available to help you 24/7h',
+                  'support.mainTitle'.tr(),
                   style: TextStyle(fontFamily: 'MoveBold', fontSize: 23),
                 )),
               ),
@@ -55,14 +56,14 @@ class _SupportState extends State<Support> {
                 padding: const EdgeInsets.only(left: 20, right: 20),
                 child: Container(
                   child: Text(
-                    'If you have any concerns when it comes to your rides, deliveries or shopping, or for any additional information about Orniss, feel free to call or drop us a Whatsapp message.',
+                    'support.explanation'.tr(),
                     style: TextStyle(fontSize: 17),
                   ),
                 ),
               ),
               Expanded(child: SizedBox.shrink()),
               GenericRectButton(
-                  label: 'Call Us',
+                  label: 'support.callUs'.tr(),
                   labelFontFamily: 'MoveTextBold',
                   isArrowShow: false,
                   verticalPadding: 10,
@@ -72,7 +73,7 @@ class _SupportState extends State<Support> {
                   trailingIcon: Icons.whatsapp,
                   actuatorFunctionl: () => {}),
               GenericRectButton(
-                  label: 'Call the Police',
+                  label: 'support.callThePolice'.tr(),
                   labelFontFamily: 'MoveTextBold',
                   isArrowShow: false,
                   labelFontSize: 20,
@@ -111,7 +112,7 @@ class Header extends StatelessWidget {
             Expanded(
               child: Container(
                 child: Text(
-                  'Support',
+                  'generic_text.support'.tr(),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontFamily: 'MoveBold',

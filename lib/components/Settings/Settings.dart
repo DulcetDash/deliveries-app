@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'dart:ui';
 
 import 'package:badges/badges.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -87,7 +88,7 @@ class _SettingsState extends State<Settings> {
   void dismissModalError({required BuildContext context}) {
     SnackBarMother _snackBarMother = SnackBarMother(
         context: context,
-        snackChild: Text('Unable to change the profile. Try again later.'),
+        snackChild: Text('settings.unableToChangeProfile'.tr()),
         snackPaddingBottom: 0,
         snackBackgroundcolor: AppTheme().getErrorColor());
     _snackBarMother.showSnackBarMotherChild();
@@ -101,7 +102,7 @@ class _SettingsState extends State<Settings> {
   void dismissModalSuccess({required BuildContext context}) {
     SnackBarMother _snackBarMother = SnackBarMother(
         context: context,
-        snackChild: Text('Successfully changed the profile.'),
+        snackChild: Text('settings.successfullyChangedProfile'.tr()),
         snackPaddingBottom: 0,
         snackBackgroundcolor: AppTheme().getSecondaryColor());
     _snackBarMother.showSnackBarMotherChild();
@@ -140,7 +141,7 @@ class _SettingsState extends State<Settings> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: userData['user_identifier'] == null
-          ? Text('Please restart the app.')
+          ? Text('settings.restartApp'.tr())
           : SafeArea(
               bottom: false,
               child: Column(
@@ -220,9 +221,10 @@ class _SettingsState extends State<Settings> {
                           Divider(
                             height: 30,
                           ),
-                          GenericTitle(title: 'Personal information'),
+                          GenericTitle(
+                              title: 'settings.personalInformation'.tr()),
                           GenericInformationDisplayer(
-                            fieldName: 'Name',
+                            fieldName: 'settings.name'.tr(),
                             valueText: userData['name'].toString(),
                             actuator: () => showMaterialModalBottomSheet(
                               backgroundColor: Colors.white,
@@ -237,7 +239,7 @@ class _SettingsState extends State<Settings> {
                             ),
                           ),
                           GenericInformationDisplayer(
-                            fieldName: 'Surname',
+                            fieldName: 'settings.surname'.tr(),
                             valueText: userData['surname'].toString(),
                             actuator: () => showMaterialModalBottomSheet(
                               backgroundColor: Colors.white,
@@ -254,9 +256,9 @@ class _SettingsState extends State<Settings> {
                           Divider(
                             height: 30,
                           ),
-                          GenericTitle(title: 'Contact'),
+                          GenericTitle(title: 'settings.contact'.tr()),
                           GenericInformationDisplayer(
-                              fieldName: 'Phone',
+                              fieldName: 'settings.phone'.tr(),
                               valueText: userData['phone'].toString(),
                               actuator: () {
                                 //! Clear the tmp phone number entered
@@ -268,7 +270,7 @@ class _SettingsState extends State<Settings> {
                                     .pushNamed('/PhoneInputChange');
                               }),
                           GenericInformationDisplayer(
-                            fieldName: 'Email',
+                            fieldName: 'settings.email'.tr(),
                             valueText: userData['email'].toString(),
                             actuator: () => showMaterialModalBottomSheet(
                               backgroundColor: Colors.white,
@@ -285,31 +287,32 @@ class _SettingsState extends State<Settings> {
                           Divider(
                             height: 30,
                           ),
-                          GenericTitle(title: 'Privacy'),
+                          GenericTitle(title: 'settings.privacy'),
                           InkWell(
                             onTap: () async {
                               if (!await launch(
-                                  'https://www.nellafrica.com/privacy')) {
+                                  'https://www.ornisstechnologies.com/privacy')) {
                                 throw 'Could not launch the URL';
                               }
                             },
                             child: GenericInformationDisplayer_terms_co(
-                                valueText: 'Terms & conditions'),
+                                valueText: 'settings.termsAndConditions'.tr()),
                           ),
                           InkWell(
                             onTap: () async {
                               if (!await launch(
-                                  'https://www.nellafrica.com/privacy')) {
+                                  'https://www.ornisstechnologies.com/privacy')) {
                                 throw 'Could not launch the URL';
                               }
                             },
                             child: GenericInformationDisplayer_terms_co(
-                                valueText: 'Privacy statement'),
+                                valueText: 'settings.privacyStatement'.tr()),
                           ),
                           Divider(
                             height: 30,
                           ),
-                          GenericInformationLogOUT(valueText: 'Log out')
+                          GenericInformationLogOUT(
+                              valueText: 'settings.logout'.tr())
                         ]),
                   ),
                 ],
@@ -344,7 +347,7 @@ class Header extends StatelessWidget {
             Expanded(
               child: Container(
                 child: Text(
-                  'Settings',
+                  'settings.settings',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontFamily: 'MoveBold',
@@ -584,7 +587,7 @@ class _LocalModalState extends State<LocalModal> {
     Navigator.of(context).pop();
     SnackBarMother _snackBarMother = SnackBarMother(
         context: context,
-        snackChild: Text('Unable to change the $scenario. Try again later.'),
+        snackChild: Text('settings.unableToChangeData'.tr(args: ['$scenario'])),
         snackPaddingBottom: 0,
         snackBackgroundcolor: AppTheme().getErrorColor());
     _snackBarMother.showSnackBarMotherChild();
@@ -600,7 +603,7 @@ class _LocalModalState extends State<LocalModal> {
     Navigator.of(context).pop();
     SnackBarMother _snackBarMother = SnackBarMother(
         context: context,
-        snackChild: Text('Successfully changed the $scenario.'),
+        snackChild: Text('settings.successChangedData'.tr(args: ['$scenario'])),
         snackPaddingBottom: 0,
         snackBackgroundcolor: AppTheme().getSecondaryColor());
     _snackBarMother.showSnackBarMotherChild();
@@ -644,10 +647,10 @@ class _LocalModalState extends State<LocalModal> {
                       ],
                     ),
                   ),
-                  GenericTitle_modal(title: 'Change your name'),
+                  GenericTitle_modal(title: 'settings.changeName'.tr()),
                   GenericTextField(
                       controller: _editingController,
-                      placeholderText: 'Enter your name'),
+                      placeholderText: 'settings.enterName'.tr()),
                   ListTile(
                     horizontalTitleGap: 0,
                     contentPadding:
@@ -659,7 +662,7 @@ class _LocalModalState extends State<LocalModal> {
                     title: Padding(
                       padding: const EdgeInsets.only(top: 10),
                       child: Text(
-                        'Your name will be viewed by your drivers, shoppers and couriers after you make a request for one of those services.',
+                        'settings.namePrivacyExplanation'.tr(),
                         style: TextStyle(
                             fontSize: 14,
                             color: AppTheme().getGenericDarkGrey()),
@@ -668,7 +671,7 @@ class _LocalModalState extends State<LocalModal> {
                   ),
                   Expanded(child: SizedBox.shrink()),
                   GenericRectButton(
-                      label: isLoading ? 'LOADING' : 'Done',
+                      label: isLoading ? 'LOADING' : 'rides.done'.tr(),
                       labelFontSize: 20,
                       isArrowShow: false,
                       actuatorFunctionl: () {
@@ -703,10 +706,10 @@ class _LocalModalState extends State<LocalModal> {
                       ],
                     ),
                   ),
-                  GenericTitle_modal(title: 'Change your surname'),
+                  GenericTitle_modal(title: 'settings.changeSurname'.tr()),
                   GenericTextField(
                       controller: _editingController,
-                      placeholderText: 'Enter your surname'),
+                      placeholderText: 'settings.enterSurname'.tr()),
                   ListTile(
                     horizontalTitleGap: 0,
                     contentPadding:
@@ -718,7 +721,7 @@ class _LocalModalState extends State<LocalModal> {
                     title: Padding(
                       padding: const EdgeInsets.only(top: 10),
                       child: Text(
-                        'Your surname will not be viewed by your drivers, shoppers and couriers after you make a request for one of those services.',
+                        'settings.surnamePrivacyExplanation'.tr(),
                         style: TextStyle(
                             fontSize: 14,
                             color: AppTheme().getGenericDarkGrey()),
@@ -727,7 +730,7 @@ class _LocalModalState extends State<LocalModal> {
                   ),
                   Expanded(child: SizedBox.shrink()),
                   GenericRectButton(
-                      label: isLoading ? 'LOADING' : 'Done',
+                      label: isLoading ? 'LOADING' : 'rides.done'.tr(),
                       labelFontSize: 20,
                       isArrowShow: false,
                       actuatorFunctionl: () {
@@ -762,10 +765,10 @@ class _LocalModalState extends State<LocalModal> {
                       ],
                     ),
                   ),
-                  GenericTitle_modal(title: 'Change your email'),
+                  GenericTitle_modal(title: 'settings.changeEmail'.tr()),
                   GenericTextField(
                       controller: _editingController,
-                      placeholderText: 'Enter your email'),
+                      placeholderText: 'settings.enterEmail'.tr()),
                   ListTile(
                     horizontalTitleGap: 0,
                     contentPadding:
@@ -777,7 +780,7 @@ class _LocalModalState extends State<LocalModal> {
                     title: Padding(
                       padding: const EdgeInsets.only(top: 10),
                       child: Text(
-                        'Your email will not be viewed by your drivers, shoppers and couriers after you make a request for one of those services.',
+                        'settings.emailPrivacyExplanation'.tr(),
                         style: TextStyle(
                             fontSize: 14,
                             color: AppTheme().getGenericDarkGrey()),
@@ -786,7 +789,7 @@ class _LocalModalState extends State<LocalModal> {
                   ),
                   Expanded(child: SizedBox.shrink()),
                   GenericRectButton(
-                      label: isLoading ? 'LOADING' : 'Done',
+                      label: isLoading ? 'LOADING' : 'rides.done'.tr(),
                       labelFontSize: 20,
                       isArrowShow: false,
                       actuatorFunctionl: () {

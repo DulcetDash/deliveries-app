@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:orniss/components/Providers/HomeProvider.dart';
 import 'package:provider/src/provider.dart';
@@ -40,7 +41,7 @@ class _PhoneNumberInputModalState extends State<PhoneNumberInputModal> {
             child: const Icon(Icons.arrow_back, size: 28)),
         title: Container(
           child: showSearchBar == false
-              ? const Text('Country or region',
+              ? Text('phone_input.countryOrRegion'.tr(),
                   style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 21))
               : TextField(
                   autofocus: true,
@@ -60,8 +61,8 @@ class _PhoneNumberInputModalState extends State<PhoneNumberInputModal> {
                     }
                   }),
                   style: const TextStyle(color: Colors.white, fontSize: 19),
-                  decoration: const InputDecoration(
-                      hintText: 'Search your country',
+                  decoration: InputDecoration(
+                      hintText: 'phone_input.selectCountry'.tr(),
                       hintStyle: TextStyle(color: Colors.grey, fontSize: 19),
                       border: InputBorder.none),
                 ),

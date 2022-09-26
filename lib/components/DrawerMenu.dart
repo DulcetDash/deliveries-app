@@ -3,6 +3,7 @@
 
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:orniss/components/Helpers/AppTheme.dart';
 import 'package:orniss/components/Providers/HomeProvider.dart';
@@ -95,7 +96,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                                 ? context
                                     .watch<HomeProvider>()
                                     .userLocationDetails['city']
-                                : 'Searching...',
+                                : 'drawer.searching'.tr(),
                             style: const TextStyle(
                                 color: Colors.black, fontSize: 15)),
                         trailing: null
@@ -108,25 +109,25 @@ class _DrawerMenuState extends State<DrawerMenu> {
           ),
           DriverForNej(),
           MenuOption(
-            titleOption: 'Your rides',
+            titleOption: 'drawer.yourRides'.tr(),
             showDivider: true,
             actuatorFnc: () =>
                 Navigator.of(context).pushReplacementNamed('/YourRides'),
           ),
           MenuOption(
-            titleOption: 'Settings',
+            titleOption: 'drawer.settings'.tr(),
             showDivider: true,
             actuatorFnc: () =>
                 Navigator.of(context).pushReplacementNamed('/Settings'),
           ),
           MenuOption(
-            titleOption: 'Support',
+            titleOption: 'drawer.support'.tr(),
             showDivider: false,
             actuatorFnc: () =>
                 Navigator.of(context).pushReplacementNamed('/Support'),
           ),
           MenuOption(
-            titleOption: 'Share',
+            titleOption: 'drawer.share'.tr(),
             showDivider: false,
             actuatorFnc: () =>
                 Navigator.of(context).pushReplacementNamed('/Share'),
@@ -153,13 +154,13 @@ class _DrawerMenuState extends State<DrawerMenu> {
                         leading: InkWell(
                             onTap: () async {
                               if (!await launch(
-                                  'https://www.nellafrica.com/privacy')) {
+                                  'https://www.ornisstechnologies.com/privacy')) {
                                 throw 'Could not launch the URL';
                               }
                             },
-                            child: const Text('Legal',
+                            child: Text('drawer.legal'.tr(),
                                 style: TextStyle(fontSize: 16))),
-                        trailing: const Text('v1.5.5',
+                        trailing: const Text('v1.7.5',
                             style: TextStyle(fontSize: 16, color: Colors.grey)),
                       ),
                     ))),
@@ -215,7 +216,7 @@ class DriverForNej extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 15),
       child: InkWell(
         onTap: () async {
-          if (!await launch('https://www.nellafrica.com/contact')) {
+          if (!await launch('https://www.ornisstechnologies.com/contact')) {
             throw 'Could not launch the URL';
           }
         },
@@ -235,7 +236,7 @@ class DriverForNej extends StatelessWidget {
                   width: 2,
                 ),
                 Text(
-                  'Drive or deliver with Orniss',
+                  'drawer.driveForOrniss'.tr(),
                   style: TextStyle(
                       fontSize: 15,
                       color: Colors.white,

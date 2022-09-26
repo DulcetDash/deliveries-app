@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:orniss/components/Helpers/AppTheme.dart';
 import 'package:provider/src/provider.dart';
@@ -203,14 +204,14 @@ class DisplayCarInformation extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 3),
                 child: Row(
-                  children: const [
+                  children: [
                     Icon(Icons.shield,
                         size: 13, color: Color.fromRGBO(9, 134, 74, 1)),
                     SizedBox(
                       width: 3,
                     ),
                     Text(
-                      "Checked",
+                      "utils.checked".tr(),
                       style: TextStyle(color: Color.fromRGBO(9, 134, 74, 1)),
                     ),
                   ],

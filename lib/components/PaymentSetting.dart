@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:orniss/components/GenericRectButton.dart';
 import 'package:orniss/components/Helpers/AppTheme.dart';
@@ -29,8 +30,8 @@ class _PaymentSettingState extends State<PaymentSetting> {
                   child: ListView(
                     children: [
                       MethodChoice(
-                        paymentMethod: 'Mobile money',
-                        subtitle: 'Ewallet, Blue wallet or Easy wallet',
+                        paymentMethod: 'payments.mobileMoney'.tr(),
+                        subtitle: 'payments.subTitle'.tr(),
                         isSelected:
                             context.watch<HomeProvider>().paymentMethod ==
                                 'mobile_money',
@@ -44,15 +45,15 @@ class _PaymentSettingState extends State<PaymentSetting> {
                         height: 50,
                       ),
                       MethodChoice(
-                        paymentMethod: 'Cash',
+                        paymentMethod: 'payments.cash'.tr(),
                         subtitle: context
                                         .read<HomeProvider>()
                                         .selectedService ==
                                     'delivery' ||
                                 context.read<HomeProvider>().selectedService ==
                                     'ride'
-                            ? 'Pay using cash on pickup'
-                            : 'Pay using cash',
+                            ? 'payments.cashOnPickup'.tr()
+                            : 'payments.payWithCash'.tr(),
                         hasPickupFee: true,
                         isSelected:
                             context.watch<HomeProvider>().paymentMethod ==
@@ -68,8 +69,8 @@ class _PaymentSettingState extends State<PaymentSetting> {
             ),
             GenericRectButton(
                 label: context.read<HomeProvider>().selectedService == 'ride'
-                    ? 'Done'
-                    : 'Next',
+                    ? 'rides.done'.tr()
+                    : 'generic_text.next'.tr(),
                 labelFontSize: 22,
                 isArrowShow:
                     context.read<HomeProvider>().selectedService != 'ride',
@@ -157,7 +158,7 @@ class Header extends StatelessWidget {
                       SizedBox(
                         width: 4,
                       ),
-                      Text('Payment',
+                      Text('rides.paymentLabel'.tr(),
                           style: TextStyle(
                               fontFamily: 'MoveTextBold', fontSize: 24))
                     ],
@@ -222,7 +223,7 @@ class MethodChoice extends StatelessWidget {
                       context.read<HomeProvider>().selectedService ==
                           'shopping',
                   child: Text(
-                    '+N\$45 to pick it up.',
+                    'payments.topPickupIt'.tr(args: ["N\$45"]),
                     style: TextStyle(
                         fontFamily: 'MoveTextMedium',
                         color: AppTheme().getPrimaryColor(),

@@ -132,7 +132,7 @@ class GetShoppingData {
       } else //Has some errors
       {
         // print(response.body);
-        print(response.body.toString());
+        // print(response.body.toString());
         context.read<HomeProvider>().updateRealtimeShoppingData(data: []);
       }
     } catch (e) {
