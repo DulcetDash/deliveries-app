@@ -223,7 +223,7 @@ class ErrorPhone extends StatelessWidget {
             width: 5,
           ),
           Text(
-            'Invalid phone number',
+            'phone_input.invalid_phone_number'.tr(),
             style: TextStyle(fontSize: 16, color: AppTheme().getErrorColor()),
           )
         ]),
@@ -252,7 +252,7 @@ class Header extends StatelessWidget {
             SizedBox(
               height: 15,
             ),
-            Text('Enter your mobile number',
+            Text('phone_input.title'.tr(),
                 style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 20)),
             Divider(
               height: 30,

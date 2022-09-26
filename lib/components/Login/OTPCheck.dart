@@ -338,14 +338,16 @@ class Header extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Enter the 5-digit code sent to you',
+                Text('otp_check.enter5DigitCode'.tr(),
                     style:
                         TextStyle(fontFamily: 'MoveTextMedium', fontSize: 19)),
                 SizedBox(
                   height: 7,
                 ),
                 Text(
-                    'at ${context.read<HomeProvider>().selectedCountryCodeData['dial_code']}${context.read<HomeProvider>().enteredPhoneNumber}',
+                    'generic_text.at'.tr(args: [
+                      '${context.read<HomeProvider>().selectedCountryCodeData['dial_code']}${context.read<HomeProvider>().enteredPhoneNumber}'
+                    ]),
                     style: TextStyle(
                         fontFamily: 'MoveTextMedium',
                         fontSize: 19,

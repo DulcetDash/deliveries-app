@@ -2400,7 +2400,7 @@ class _LocalModalState extends State<LocalModal> {
                         ? AppTheme().getFadedOpacityValue()
                         : 1,
                     child: GenericRectButton(
-                        label: 'rides.doNotCancelBttn_label'.tr(),
+                        label: 'generic_text.doNotCancelBttn_label'.tr(),
                         labelFontSize: 20,
                         horizontalPadding: 20,
                         verticalPadding: 0,

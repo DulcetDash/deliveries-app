@@ -223,7 +223,7 @@
     "cancelShoppingConfirmation_msg": "Voulez-vous vraiment annuler votre shopping?",
     "cancelShopping_explanation": "Si vous ne le faites pas, vos articles ne pourront pas être achetés et expédiés.",
     "cancelShoppingBttn_label": "Annuler le shopping",
-    "shopNow": "Acheter maintenant",
+    "shopNow": "Shopping",
     "unableToRequestShopping_msg": "Nous n'avons pas pu poursuivre ce shopping car il semble que vous ayez un shopping non confirmé en cours, veuillez la confirmer et réessayer.",
     "unableToRequestShoppingUnexpected_msg": "Nous n'avons pas pu donner suite à votre shopping en raison d'une erreur inattendue. Veuillez réessayer et si le problème persiste, veuillez nous contacter via l'onglet Support."
   },
@@ -239,7 +239,7 @@
   },
   "share": {
     "mainTitle": "Partagez Orniss avec vos amis et votre famille.",
-    "explanation": "Partagez l'application pour permettre à d'autres personnes de profiter de trajets sûrs, d'effectuer des livraisons et des shoppings en toute transparence.",
+    "explanation": "Partagez l'application pour permettre à d'autres personnes de profiter des booking sûrs, d'effectuer des livraisons et des shoppings en toute transparence.",
     "shareMessage": "Bonjour, il y a une application géniale appelée Orniss disponible dans votre ville qui vous permet d'obtenir des booking fiables, de faire des livraisons partout et de faire des achats. Essayez-la et vous serez satisfait, téléchargez-la aujourd'hui.",
     "shareSubject": "Téléchargez Orniss gratuitement ! (Booking, livraisons et achats)",
     "share": "Partager"
@@ -328,7 +328,7 @@
     "price": "Prix",
     "successChanged": "Modifié avec succès",
     "phoneNumberChangedTo": "Votre numéro de téléphone a été modifié avec succès en {}.",
-    "at": "à {}"
+    "at": "au {}"
   },
   "utils": {
     "checked": "Vérifié",

@@ -66,6 +66,7 @@ class _EntryState extends State<Entry> {
                     padding: const EdgeInsets.symmetric(horizontal: 15),
                     child: Text(
                       'entry.big_title'.tr(),
+                      textAlign: TextAlign.center,
                       style: TextStyle(fontFamily: 'MoveBold', fontSize: 27),
                     ),
                   ),
@@ -99,7 +100,7 @@ class _EntryState extends State<Entry> {
                   ),
                   Expanded(child: SizedBox.shrink()),
                   GenericRectButton(
-                      label: 'Get started',
+                      label: 'entry.btn_label'.tr(),
                       labelFontSize: 19,
                       actuatorFunctionl: () =>
                           Navigator.of(context).pushNamed('/PhoneInput'))
