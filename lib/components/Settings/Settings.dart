@@ -287,7 +287,7 @@ class _SettingsState extends State<Settings> {
                           Divider(
                             height: 30,
                           ),
-                          GenericTitle(title: 'settings.privacy'),
+                          GenericTitle(title: 'settings.privacy'.tr()),
                           InkWell(
                             onTap: () async {
                               if (!await launch(
@@ -347,7 +347,7 @@ class Header extends StatelessWidget {
             Expanded(
               child: Container(
                 child: Text(
-                  'settings.settings',
+                  'settings.settings'.tr(),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontFamily: 'MoveBold',

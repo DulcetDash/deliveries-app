@@ -26,12 +26,12 @@
   },
   "otp_check": {
     "unableToSendCode_title": "Unable to send the code",
-    "unableToSendCode_msg": "We were unable to send you the 4-digit code due to an unexpected error, please check your internet connection and try again.",
+    "unableToSendCode_msg": "We were unable to send you the 5-digit code due to an unexpected error, please check your internet connection and try again.",
     "wrongCodeEntered": "Wrong code entered",
-    "incorrectCodeEntered": "The code that you have entered is not correct, please double check in your SMS the latest 4-digit code that we've sent.",
+    "incorrectCodeEntered": "The code that you have entered is not correct, please double check in your SMS the latest 5-digit code that we've sent.",
     "enter5DigitCode": "Enter the 5-digit code sent to you",
     "resendCode": "Resend the code",
-    "resendCondeIn": "Resend the code in {}"
+    "resendCodeIn": "Resend the code in {}"
   },
   "create_account": {
     "noAccountNoProbs": "No account? No problems!",
@@ -124,10 +124,10 @@
     "orWord": "Or",
     "enterOwnAmountLabel": "Enter your own amount",
     "customAmountLimit_msg": "Your custom fare should be between",
-    "andWord": "and",
+    "andWord": "and ",
     "whatCustomFareQuestion": "What's your custom fare?",
     "enterCustomFare_placeholder": "Enter your fare",
-    "betweenWord": "Between",
+    "betweenWord": "Between ",
     "setNewFareWord": "Set new fare{}",
     "closeWord": "Close",
     "removeCustomFare": "Remove custom fare",
@@ -214,7 +214,7 @@
     "expertShopper": "Expert shopper",
     "unableToRateShopper": "Unable to rate shopper",
     "unableToCancelShopping_msg": "We were unable to cancel your shopping request due to an unexpected error, please try again and if it persists, please contact us through the Support tab.",
-    "sendShoppingMoney_request": "Please end your shopping money to us before we can start with your shopping.",
+    "sendShoppingMoney_request": "Please send your shopping money to us before we can start with your shopping.",
     "shopperPickupCashBefore": "Your shopper will pickup the cash from you before starting your shopping.",
     "askForSecurityPin_msg": "Ask your shopper to provide the security PIN displayed here first before giving any money.",
     "seeWhichItemsAreSold": "You can see which items are shopped.",

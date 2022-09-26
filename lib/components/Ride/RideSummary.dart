@@ -769,13 +769,13 @@ class CarInstance extends StatelessWidget {
                                     color: Colors.black,
                                     fontSize: 15),
                                 children: [
-                                  TextSpan(text: 'rides.betweenWord '.tr()),
+                                  TextSpan(text: 'rides.betweenWord'.tr()),
                                   TextSpan(
                                       text:
                                           'N\$${context.read<HomeProvider>().getCustomFareRange()['min']} ',
                                       style: TextStyle(
                                           fontFamily: 'MoveTextMedium')),
-                                  TextSpan(text: 'rides.andWord '.tr()),
+                                  TextSpan(text: 'rides.andWord'.tr()),
                                   TextSpan(
                                       text:
                                           'N\$${context.read<HomeProvider>().getCustomFareRange()['max']}',
