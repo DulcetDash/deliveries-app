@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
@@ -104,7 +105,7 @@ class GenericTitle extends StatelessWidget {
         padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
         child: Row(
           children: [
-            Text('New Stores',
+            Text('shopping.newStores'.tr(),
                 style: TextStyle(fontFamily: 'MoveTextBold', fontSize: 19)),
           ],
         ),
@@ -243,7 +244,7 @@ class ProductDisplayModel extends StatelessWidget {
           height: 25,
         ),
         Text(
-          'Information',
+          'generic_text.information'.tr(),
           style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 16),
         ),
         SizedBox(
@@ -253,7 +254,7 @@ class ProductDisplayModel extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Price',
+              'generic_text.price'.tr(),
               style: TextStyle(fontSize: 17, color: Colors.grey.shade700),
             ),
             Text(productPrice,
@@ -272,15 +273,15 @@ class ProductDisplayModel extends StatelessWidget {
         GenericRectButton(
             label: context.read<HomeProvider>().isProductInCart(
                     product: context.read<HomeProvider>().selectedProduct)
-                ? 'Item in your cart'
-                : 'Add to cart',
+                ? 'shopping.itemInCart'.tr()
+                : 'shopping.addToCart'.tr(),
             backgroundColor: context.read<HomeProvider>().isProductInCart(
                     product: context.read<HomeProvider>().selectedProduct)
                 ? AppTheme().getPrimaryColor()
                 : Colors.black,
             bottomSubtitleText: context.read<HomeProvider>().isProductInCart(
                     product: context.read<HomeProvider>().selectedProduct)
-                ? 'Click to remove from your cart'
+                ? 'shopping.clickToRemoveFromCart'.tr()
                 : null,
             labelFontSize: 20,
             horizontalPadding: 0,

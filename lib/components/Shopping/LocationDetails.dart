@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:orniss/components/GenericRectButton.dart';
@@ -30,7 +31,7 @@ class _LocationDetailsState extends State<LocationDetails> {
                   child: ListView(
                     children: [
                       LocationChoice(
-                          title: 'Where are you?',
+                          title: 'delivery.whereAreYouTitle'.tr(),
                           subtitle: context
                                           .watch<HomeProvider>()
                                           .manuallySettedCurrentLocation_pickup[
@@ -41,7 +42,7 @@ class _LocationDetailsState extends State<LocationDetails> {
                                       locationData: context
                                           .watch<HomeProvider>()
                                           .manuallySettedCurrentLocation_pickup))
-                              : 'Enter your current address.',
+                              : 'generic_text.enterAddress_label'.tr(),
                           checked: context
                                       .watch<HomeProvider>()
                                       .manuallySettedCurrentLocation_pickup[
@@ -60,7 +61,7 @@ class _LocationDetailsState extends State<LocationDetails> {
                         height: 40,
                       ),
                       LocationChoice(
-                          title: 'Delivery location',
+                          title: 'delivery.deliveryLocation_label'.tr(),
                           subtitle: context
                                           .watch<HomeProvider>()
                                           .manuallySettedCurrentLocation_dropoff[
@@ -71,7 +72,7 @@ class _LocationDetailsState extends State<LocationDetails> {
                                       locationData: context
                                           .watch<HomeProvider>()
                                           .manuallySettedCurrentLocation_dropoff))
-                              : 'Enter the address where you wish your package to be dropped off.',
+                              : 'delivery.whereToDropOff_description'.tr(),
                           checked: context
                                       .watch<HomeProvider>()
                                       .manuallySettedCurrentLocation_dropoff[
@@ -90,9 +91,8 @@ class _LocationDetailsState extends State<LocationDetails> {
                         height: 40,
                       ),
                       LocationChoice(
-                        title: 'Add a note',
-                        subtitle:
-                            'Tell us any specifications you want about your shopping.',
+                        title: 'delivery.addNote'.tr(),
+                        subtitle: 'shopping.shoppingNotePlaceholder'.tr(),
                         actuator: () => showMaterialModalBottomSheet(
                           backgroundColor: Colors.white,
                           bounce: true,
@@ -110,7 +110,7 @@ class _LocationDetailsState extends State<LocationDetails> {
             Opacity(
               opacity: isDataAllowingNex(context: context) ? 1 : 0.3,
               child: GenericRectButton(
-                  label: 'Next',
+                  label: 'generic_text.next'.tr(),
                   labelFontSize: 22,
                   actuatorFunctionl: isDataAllowingNex(context: context)
                       ? () {
@@ -163,7 +163,7 @@ class Header extends StatelessWidget {
                       SizedBox(
                         width: 4,
                       ),
-                      Text('Few more things',
+                      Text('new_account.fewMoteThings'.tr(),
                           style: TextStyle(
                               fontFamily: 'MoveTextBold', fontSize: 24))
                     ],
@@ -349,7 +349,7 @@ class SearchResultsRenderer extends StatelessWidget {
                   color: AppTheme().getPrimaryColor(),
                 ),
                 title: Text(
-                  'My current location',
+                  'generic_text.myCurrentLocation'.tr(),
                   style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 16),
                 ),
                 subtitle: Padding(
@@ -508,7 +508,7 @@ class _HeaderSearchState extends State<HeaderSearch> {
                     ? context.read<HomeProvider>().userLocationDetails['street'].toString().isNotEmpty
                         ? context.read<HomeProvider>().userLocationDetails['street']
                         : context.read<HomeProvider>().userLocationDetails['suburb']
-                    : 'Finding your location');
+                    : 'generic_text.findingYourLocation_label'.tr());
 
     return Container(
       decoration: BoxDecoration(color: Colors.white, boxShadow: [
@@ -549,8 +549,8 @@ class _HeaderSearchState extends State<HeaderSearch> {
                       ),
                       Text(
                           location_type == 'pickup'
-                              ? 'Where are you?'
-                              : 'Delivery location',
+                              ? 'delivery.whereAreYouTitle'.tr()
+                              : 'delivery.deliveryLocation_label'.tr(),
                           style: TextStyle(
                               fontFamily: 'MoveTextBold', fontSize: 20))
                     ],
@@ -601,7 +601,7 @@ class _HeaderSearchState extends State<HeaderSearch> {
                         fillColor: Colors.grey.shade300,
                         floatingLabelStyle:
                             const TextStyle(color: Colors.black),
-                        label: Text('Enter your address'),
+                        label: Text('generic_text.enterAddress_label'.tr()),
                         floatingLabelBehavior: FloatingLabelBehavior.never,
                         enabledBorder: OutlineInputBorder(
                             borderSide:
@@ -666,7 +666,7 @@ class HeaderNote extends StatelessWidget {
                             SizedBox(
                               width: 4,
                             ),
-                            Text('Add a note',
+                            Text('rides.addNote'.tr(),
                                 style: TextStyle(
                                     fontFamily: 'MoveTextBold', fontSize: 20))
                           ],
@@ -676,8 +676,7 @@ class HeaderNote extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 26, top: 10),
-                    child: Text(
-                        'Let us know if you require any specifications about your shopping.',
+                    child: Text('shopping.shoppingRequirements_msg'.tr(),
                         style: TextStyle(
                             fontSize: 16, color: Colors.grey.shade600)),
                   ),
@@ -721,7 +720,7 @@ class HeaderNote extends StatelessWidget {
                         alignment: Alignment.topLeft,
                         child: Padding(
                           padding: const EdgeInsets.only(top: 20),
-                          child: Text("Enter your note here."),
+                          child: Text("generic_text.enterNoteHereLabel".tr()),
                         ),
                       ),
                       floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -738,8 +737,8 @@ class HeaderNote extends StatelessWidget {
           Expanded(child: SizedBox.shrink()),
           GenericRectButton(
             label: context.watch<HomeProvider>().noteTyped.isEmpty
-                ? 'Skip'
-                : 'Done',
+                ? 'rides.skip'.tr()
+                : 'rides.done'.tr(),
             labelFontSize: 20,
             actuatorFunctionl: () {
               Navigator.of(context).pop();

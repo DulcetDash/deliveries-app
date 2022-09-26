@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -123,7 +124,7 @@ class _CatalogueState extends State<Catalogue> {
                                 SizedBox(
                                   height: 20,
                                 ),
-                                Text('Unable to connect to the Internet.',
+                                Text('generic_text.unableToConnectToNet'.tr(),
                                     style: TextStyle(
                                         color: Colors.grey, fontSize: 15))
                               ],
@@ -138,7 +139,8 @@ class _CatalogueState extends State<Catalogue> {
                               child: ListView(
                               padding: EdgeInsets.only(top: 10, bottom: 50),
                               children: [
-                                GenericTitle(title: 'Search results'),
+                                GenericTitle(
+                                    title: 'shopping.searchResults'.tr()),
                                 SizedBox(
                                   height: 15,
                                 ),
@@ -403,8 +405,9 @@ class _SearchBarState extends State<SearchBar> {
               filled: true,
               fillColor: Colors.grey.shade200,
               floatingLabelStyle: const TextStyle(color: Colors.black),
-              label: Text(
-                  'Search in ${context.watch<HomeProvider>().selected_store['name']}'),
+              label: Text('shopping.searchInStore'.tr(args: [
+                '${context.watch<HomeProvider>().selected_store['name']}'
+              ])),
               enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.grey.shade200)),
               focusedBorder: OutlineInputBorder(
@@ -439,7 +442,7 @@ class TimeBar extends StatelessWidget {
           child: Text(
             context.read<HomeProvider>().selected_store['times'] != null
                 ? context.read<HomeProvider>().selected_store['times']['string']
-                : 'Finding closing time',
+                : 'shopping.findingClosingTime'.tr(),
             style: TextStyle(fontFamily: 'MoveTextRegular', fontSize: 16),
           ),
         ),
@@ -529,7 +532,7 @@ class TrioProductShower extends StatelessWidget {
                 },
                 child: Row(
                   children: [
-                    Text('View all',
+                    Text('shopping.viewAll'.tr(),
                         style: TextStyle(
                             fontFamily: 'MoveTextBold',
                             fontSize: 14,

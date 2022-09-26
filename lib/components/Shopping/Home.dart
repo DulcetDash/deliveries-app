@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -121,7 +122,7 @@ class _HomeState extends State<Home> {
                                 SizedBox(
                                   height: 20,
                                 ),
-                                Text('Unable to connect to the Internet.',
+                                Text('generic_text.unableToConnectToNet'.tr(),
                                     style: TextStyle(
                                         color: Colors.grey, fontSize: 15))
                               ],
@@ -137,7 +138,7 @@ class _HomeState extends State<Home> {
                               child: ListView(
                                 padding: EdgeInsets.only(bottom: 55),
                                 children: [
-                                  GenericTitle(title: 'Frequent'),
+                                  GenericTitle(title: 'shopping.frequent'.tr()),
                                   StoresListingMain(),
                                   Visibility(
                                     visible: context
@@ -158,7 +159,7 @@ class _HomeState extends State<Home> {
                                               .length >
                                           4,
                                       child: GenericTitle(
-                                        title: 'New Stores',
+                                        title: 'shopping.newStores'.tr(),
                                       )),
                                   Visibility(
                                       visible: context
@@ -262,7 +263,7 @@ class _HeaderState extends State<Header> {
                 child: Container(
                     alignment: Alignment.center,
                     child: Text(
-                      'Stores',
+                      'shopping.stores'.tr(),
                       style:
                           TextStyle(fontFamily: 'MoveTextBold', fontSize: 18),
                     ))),
@@ -315,7 +316,7 @@ class _SearchBarState extends State<SearchBar> {
               filled: true,
               fillColor: Colors.grey.shade200,
               floatingLabelStyle: const TextStyle(color: Colors.black),
-              label: Text('Search stores'),
+              label: Text('shopping.searchStores'.tr()),
               enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.grey.shade200)),
               focusedBorder: OutlineInputBorder(
@@ -351,7 +352,7 @@ class AddressBar extends StatelessWidget {
         title: Text(
           locationData['suburb'] != null
               ? locationData['suburb'].toString()
-              : 'Finding your location',
+              : 'generic_text.findingYourLocation_label'.tr(),
           style: TextStyle(fontFamily: 'MoveTextMedium'),
         ),
         subtitle: Text(

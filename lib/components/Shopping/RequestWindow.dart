@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:http/http.dart';
@@ -77,7 +78,7 @@ class _RequestWindowState extends State<RequestWindow> {
                       requestData['state_vars']['completedShopping'] == false
                           ? SizedBox.shrink()
                           : GenericRectButton(
-                              label: 'Rate your shopper',
+                              label: 'shopping.rateShopper'.tr(),
                               horizontalPadding: 20,
                               labelFontSize: 25,
                               labelFontFamily: "MoveBold",
@@ -135,7 +136,7 @@ class Header extends StatelessWidget {
             height: 15,
           ),
           Text(
-            'Finding your shopper...',
+            'shopping.findingShopper'.tr(),
             style: TextStyle(fontSize: 18, fontFamily: 'MoveTextBold'),
           )
         ],
@@ -250,20 +251,20 @@ class Header extends StatelessWidget {
     if (requestData['state_vars']['inRouteToPickupCash'] &&
         requestData['state_vars']['didPickupCash'] == false &&
         requestData['payment_method'] == 'cash') {
-      return 'Heading to you...';
+      return 'delivery.headingToYou'.tr();
     } else if (requestData['state_vars']['inRouteToPickupCash'] &&
         requestData['state_vars']['didPickupCash'] == false &&
         requestData['payment_method'] == 'mobile_money') {
-      return 'Waiting for your ewallet...';
+      return 'delivery.waitingForEwallet'.tr();
     } else if (requestData['state_vars']['inRouteToShop'] &&
         requestData['state_vars']['inRouteToDelivery'] == false) {
-      return 'Shopping in progress...';
+      return 'shopping.shoppingInProgress'.tr();
     } else if (requestData['state_vars']['inRouteToDelivery'] &&
         requestData['state_vars']['completedShopping'] == false) {
-      return 'Delivering the packages...';
+      return 'shopping.deliveryInProgress'.tr();
     } else if (requestData['state_vars']['completedShopping']) //Shopping done
     {
-      return 'Done shopping.';
+      return 'shopping.doneShopping'.tr();
     } else {
       return '';
     }
@@ -336,7 +337,7 @@ class ShoppingList extends StatelessWidget {
                   height: 20,
                 ),
                 Text(
-                  'Your shopping list',
+                  'shopping.shoppingListTitle'.tr(),
                   style: TextStyle(fontSize: 15),
                 )
               ],
@@ -418,7 +419,7 @@ class PaymentSection extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    'Payment',
+                    'rides.paymentLabel'.tr(),
                     style: TextStyle(
                         fontFamily: 'MoveTextMedium',
                         fontSize: 17,
@@ -483,16 +484,16 @@ class PaymentSection extends StatelessWidget {
                   requestData['payment_method'] == 'cash'
                       ? Text(
                           requestData['state_vars']['didPickupCash'] == false
-                              ? 'Not yet picked up from you.'
-                              : 'Picked up cash.',
+                              ? 'generic_text.notYetPickedUpFromYou'.tr()
+                              : 'generic_text.pickedUpCash'.tr(),
                           style: TextStyle(
                               fontSize: 16,
                               color: AppTheme().getPrimaryColor()),
                         )
                       : Text(
                           requestData['state_vars']['didPickupCash'] == false
-                              ? 'Press here to see the details.'
-                              : 'You already paid.',
+                              ? 'generic_text.pressHereToSeeDetails'.tr()
+                              : 'generic_text.alreadyPaid'.tr(),
                           style: TextStyle(
                               fontSize: 16,
                               color: AppTheme().getPrimaryColor()),
@@ -538,7 +539,7 @@ class DeliverySection extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Delivery',
+                  'delivery.delivery',
                   style: TextStyle(
                       fontFamily: 'MoveTextMedium',
                       fontSize: 17,
@@ -619,12 +620,12 @@ class DeliverySection extends StatelessWidget {
                                     Container(
                                       // color: Colors.green,
                                       height: 33,
-                                      child: const Padding(
+                                      child: Padding(
                                         padding: EdgeInsets.only(top: 2),
                                         child: SizedBox(
                                             width: 45,
                                             child: Text(
-                                              'From',
+                                              'rides.fromLabel'.tr(),
                                               style: TextStyle(
                                                   fontFamily: 'MoveTextLight'),
                                             )),
@@ -665,12 +666,12 @@ class DeliverySection extends StatelessWidget {
                                   Container(
                                     // color: Colors.green,
                                     height: 34,
-                                    child: const Padding(
+                                    child: Padding(
                                       padding: EdgeInsets.only(top: 3),
                                       child: SizedBox(
                                           width: 45,
                                           child: Text(
-                                            'To',
+                                            'rides.toLabel'.tr(),
                                             style: TextStyle(
                                                 fontFamily: 'MoveTextLight'),
                                           )),
@@ -737,7 +738,7 @@ class CancellationSection extends StatelessWidget {
               const EdgeInsets.only(left: 20, right: 20, top: 30, bottom: 60),
           child: Container(
             child: Text(
-              'Cancel the shopping',
+              'shopping.cancelShoppingTitle'.tr(),
               style: TextStyle(
                   fontFamily: 'MoveTextMedium',
                   fontSize: 17,
@@ -774,11 +775,26 @@ class _LocalModalState extends State<LocalModal> {
   ];
   int rating = 4; //Rating
   List<Map<String, String>> badges = [
-    {'title': 'Excellent service', 'image': 'assets/Images/gold_medal.png'},
-    {'title': 'Very fast', 'image': 'assets/Images/fast.png'},
-    {'title': 'Neat and tidy', 'image': 'assets/Images/cloth.png'},
-    {'title': 'Very polite', 'image': 'assets/Images/polite.png'},
-    {'title': 'Expert shopper', 'image': 'assets/Images/shopping.png'}
+    {
+      'title': 'delivery.excellentRatingLabel'.tr(),
+      'image': 'assets/Images/gold_medal.png'
+    },
+    {
+      'title': 'delivery.veryFastRatingLabel'.tr(),
+      'image': 'assets/Images/fast.png'
+    },
+    {
+      'title': 'delivery.neatAndTidyRatingLabel'.tr(),
+      'image': 'assets/Images/cloth.png'
+    },
+    {
+      'title': 'delivery.veryPoliteRatingLabel'.tr(),
+      'image': 'assets/Images/polite.png'
+    },
+    {
+      'title': 'delivery.expertShopper'.tr(),
+      'image': 'assets/Images/shopping.png'
+    }
   ];
   List<String> selectedBadges = [];
   String note = '';
@@ -866,7 +882,7 @@ class _LocalModalState extends State<LocalModal> {
                       height: 15,
                     ),
                     Text(
-                      'Unable to rate shopper',
+                      'shopping.unableToRateShopper'.tr(),
                       style: TextStyle(
                         fontFamily: 'MoveTextMedium',
                         fontSize: 19,
@@ -878,13 +894,13 @@ class _LocalModalState extends State<LocalModal> {
                     Padding(
                       padding: const EdgeInsets.only(left: 20, right: 20),
                       child: Text(
-                        "We were unable to submit your rating due to an unexpected error, please try again and if it persists, please contact us through the Support tab.",
+                        "rides.unableToSubmitRating_msg".tr(),
                         style: TextStyle(fontSize: 16),
                       ),
                     ),
                     Expanded(child: SizedBox.shrink()),
                     GenericRectButton(
-                      label: 'Try again',
+                      label: 'generic_text.tryAgain'.tr(),
                       labelFontSize: 20,
                       actuatorFunctionl: () {
                         Navigator.of(context).pop();
@@ -983,7 +999,7 @@ class _LocalModalState extends State<LocalModal> {
                     height: 15,
                   ),
                   Text(
-                    'Unable to cancel',
+                    'generic_text.unableToCancel'.tr(),
                     style: TextStyle(
                       fontFamily: 'MoveTextMedium',
                       fontSize: 19,
@@ -995,13 +1011,13 @@ class _LocalModalState extends State<LocalModal> {
                   Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Text(
-                      "We were unable to cancel your shopping request due to an unexpected error, please try again and if it persists, please contact us through the Support tab.",
+                      "shopping.unableToCancelShopping_msg".tr(),
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
                   Expanded(child: SizedBox.shrink()),
                   GenericRectButton(
-                    label: 'Try again',
+                    label: 'generic_text.tryAgain'.tr(),
                     labelFontSize: 20,
                     actuatorFunctionl: () {
                       Navigator.of(context).pop();
@@ -1039,7 +1055,7 @@ class _LocalModalState extends State<LocalModal> {
                       size: AppTheme().getArrowBackSize() - 3,
                     ),
                     Text(
-                      'Payment details',
+                      'delivery.paymentDetails'.tr(),
                       style:
                           TextStyle(fontFamily: 'MoveTextBold', fontSize: 18),
                     ),
@@ -1075,7 +1091,7 @@ class _LocalModalState extends State<LocalModal> {
                 Container(
                   alignment: Alignment.center,
                   child: Text(
-                    'Ewallet',
+                    'generic_text.ewallet'.tr(),
                     style: TextStyle(fontFamily: 'MoveBold', fontSize: 24),
                   ),
                 ),
@@ -1083,7 +1099,7 @@ class _LocalModalState extends State<LocalModal> {
                   padding: const EdgeInsets.only(left: 25, right: 25, top: 15),
                   child: Container(
                     child: Text(
-                      'Please end your shopping money to us before we can start with your shopping.',
+                      'shopping.sendShoppingMoney_request'.tr(),
                       style: TextStyle(
                           fontSize: 16, color: AppTheme().getGenericDarkGrey()),
                     ),
@@ -1100,7 +1116,7 @@ class _LocalModalState extends State<LocalModal> {
                   child: Row(
                     children: [
                       Text(
-                        'Send to',
+                        'generic_text.sendTo'.tr(),
                         style: TextStyle(
                             fontFamily: 'MoveTextMedium',
                             fontSize: 16,
@@ -1141,7 +1157,7 @@ class _LocalModalState extends State<LocalModal> {
                   child: Row(
                     children: [
                       Text(
-                        'Amount',
+                        'generic_text.amount'.tr(),
                         style: TextStyle(
                             fontFamily: 'MoveTextMedium',
                             fontSize: 16,
@@ -1195,7 +1211,8 @@ class _LocalModalState extends State<LocalModal> {
                         title: Padding(
                           padding: const EdgeInsets.only(top: 12),
                           child: Text(
-                              'Please send the full amount before we can proceed.',
+                              'generic_text.sendFullAmountBeforeProceeding'
+                                  .tr(),
                               style: TextStyle(
                                   fontFamily: 'MoveTextRegular',
                                   fontSize: 15,
@@ -1213,7 +1230,7 @@ class _LocalModalState extends State<LocalModal> {
                   child: Row(
                     children: [
                       Text(
-                        'Support',
+                        'generic_text.support'.tr(),
                         style: TextStyle(
                             fontFamily: 'MoveTextMedium',
                             fontSize: 16,
@@ -1233,13 +1250,13 @@ class _LocalModalState extends State<LocalModal> {
                     leading: Icon(Icons.support, color: Colors.black),
                     horizontalTitleGap: 0,
                     title: Text(
-                      'Call us',
+                      'generic_text.callUs'.tr(),
                       style: TextStyle(
                         fontFamily: 'MoveTextMedium',
                         fontSize: 17,
                       ),
                     ),
-                    subtitle: Text('For more assistance, please call us.'),
+                    subtitle: Text('generic_text.forMoreAssistance_msg'.tr()),
                     trailing: Icon(
                       Icons.arrow_forward_ios,
                       size: 15,
@@ -1266,7 +1283,7 @@ class _LocalModalState extends State<LocalModal> {
                       size: AppTheme().getArrowBackSize() - 3,
                     ),
                     Text(
-                      'Payment details',
+                      'delivery.paymentDetails'.tr(),
                       style:
                           TextStyle(fontFamily: 'MoveTextBold', fontSize: 18),
                     ),
@@ -1302,7 +1319,7 @@ class _LocalModalState extends State<LocalModal> {
                 Container(
                   alignment: Alignment.center,
                   child: Text(
-                    'Cash',
+                    'generic_text.cash'.tr(),
                     style: TextStyle(fontFamily: 'MoveBold', fontSize: 24),
                   ),
                 ),
@@ -1310,7 +1327,7 @@ class _LocalModalState extends State<LocalModal> {
                   padding: const EdgeInsets.only(left: 25, right: 25, top: 15),
                   child: Container(
                     child: Text(
-                      'Your shopper will pickup the cash from you before starting your shopping.',
+                      'shopping.shopperPickupCashBefore'.tr(),
                       style: TextStyle(
                           fontSize: 16, color: AppTheme().getGenericDarkGrey()),
                     ),
@@ -1327,7 +1344,7 @@ class _LocalModalState extends State<LocalModal> {
                   child: Row(
                     children: [
                       Text(
-                        'Security PIN',
+                        'generic_text.securityPin'.tr(),
                         style: TextStyle(
                             fontFamily: 'MoveTextMedium',
                             fontSize: 16,
@@ -1381,8 +1398,7 @@ class _LocalModalState extends State<LocalModal> {
                         ),
                         title: Padding(
                           padding: const EdgeInsets.only(top: 12),
-                          child: Text(
-                              'Ask your shopper to provide the security PIN displayed here first before giving any money.',
+                          child: Text('shopping.askForSecurityPin_msg'.tr(),
                               style: TextStyle(
                                   fontFamily: 'MoveTextRegular',
                                   fontSize: 15,
@@ -1400,7 +1416,7 @@ class _LocalModalState extends State<LocalModal> {
                   child: Row(
                     children: [
                       Text(
-                        'Support',
+                        'generic_text.support'.tr(),
                         style: TextStyle(
                             fontFamily: 'MoveTextMedium',
                             fontSize: 16,
@@ -1420,13 +1436,13 @@ class _LocalModalState extends State<LocalModal> {
                     leading: Icon(Icons.support, color: Colors.black),
                     horizontalTitleGap: 0,
                     title: Text(
-                      'Call us',
+                      'generic_text.callUs'.tr(),
                       style: TextStyle(
                         fontFamily: 'MoveTextMedium',
                         fontSize: 17,
                       ),
                     ),
-                    subtitle: Text('For more assistance, please call us.'),
+                    subtitle: Text('generic_text.forMoreAssistance_msg'.tr()),
                     trailing: Icon(
                       Icons.arrow_forward_ios,
                       size: 15,
@@ -1462,7 +1478,7 @@ class _LocalModalState extends State<LocalModal> {
                         Expanded(
                           child: Container(
                             child: Text(
-                              'My shopping list',
+                              'shopping.myShoppingListTitle'.tr(),
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   fontFamily: 'MoveTextBold', fontSize: 18),
@@ -1486,7 +1502,7 @@ class _LocalModalState extends State<LocalModal> {
                 alignment: Alignment.centerLeft,
                 child: Padding(
                   padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Text('You can see which items are shopped.'),
+                  child: Text('shopping.seeWhichItemsAreSold'.tr()),
                 ),
               ),
               Expanded(
@@ -1524,7 +1540,7 @@ class _LocalModalState extends State<LocalModal> {
                       size: AppTheme().getArrowBackSize() - 3,
                     ),
                     Text(
-                      'Rate shopper',
+                      'shopping.rateShopperTitle'.tr(),
                       style:
                           TextStyle(fontFamily: 'MoveTextBold', fontSize: 18),
                     ),
@@ -1631,7 +1647,7 @@ class _LocalModalState extends State<LocalModal> {
                   child: Row(
                     children: [
                       Text(
-                        'Give a badge',
+                        'rides.giveABadgeTitle'.tr(),
                         style: TextStyle(
                             fontFamily: 'MoveTextMedium',
                             fontSize: 16,
@@ -1744,7 +1760,7 @@ class _LocalModalState extends State<LocalModal> {
                   child: Row(
                     children: [
                       Text(
-                        'Note',
+                        'rides.noteTitle'.tr(),
                         style: TextStyle(
                             fontFamily: 'MoveTextMedium',
                             fontSize: 16,
@@ -1782,7 +1798,8 @@ class _LocalModalState extends State<LocalModal> {
                               alignment: Alignment.topLeft,
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 25),
-                                child: Text("Enter your note here."),
+                                child: Text(
+                                    "generic_text.enterNoteHereLabel".tr()),
                               ),
                             ),
                             floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -1803,7 +1820,7 @@ class _LocalModalState extends State<LocalModal> {
                   height: 30,
                 ),
                 GenericRectButton(
-                    label: isLoadingSubmission ? 'LOADING' : 'Done',
+                    label: isLoadingSubmission ? 'LOADING' : 'rides.done'.tr(),
                     labelFontSize: 22,
                     isArrowShow: false,
                     actuatorFunctionl: isLoadingSubmission
@@ -1831,7 +1848,7 @@ class _LocalModalState extends State<LocalModal> {
                 Align(
                   child: Container(
                       // color: Colors.red,
-                      child: Text('Cancel shopping?',
+                      child: Text('shopping.cancelShoppingTitleQuestion'.tr(),
                           style: TextStyle(
                               fontFamily: 'MoveTextBold', fontSize: 20))),
                 ),
@@ -1842,8 +1859,7 @@ class _LocalModalState extends State<LocalModal> {
                   padding:
                       const EdgeInsets.only(left: 20, right: 20, bottom: 10),
                   child: Container(
-                    child: Text(
-                        'Do you really want to cancel your shopping request?',
+                    child: Text('shopping.cancelShoppingConfirmation_msg'.tr(),
                         style: TextStyle(
                           fontSize: 16,
                         )),
@@ -1852,14 +1868,15 @@ class _LocalModalState extends State<LocalModal> {
                 Padding(
                   padding: const EdgeInsets.only(left: 20, right: 20),
                   child: Container(
-                    child: Text(
-                        'By doing so you will not be able to get your items shopped and shipped to you.',
+                    child: Text('shopping.cancelShopping_explanation'.tr(),
                         style: TextStyle(fontSize: 16)),
                   ),
                 ),
                 Expanded(child: SizedBox.shrink()),
                 GenericRectButton(
-                    label: isLoadingSubmission ? 'LOADING' : 'Cancel shopping',
+                    label: isLoadingSubmission
+                        ? 'LOADING'
+                        : 'shopping.cancelShoppingBttn_label'.tr(),
                     labelFontSize: 20,
                     horizontalPadding: 20,
                     verticalPadding: 0,
@@ -1877,7 +1894,7 @@ class _LocalModalState extends State<LocalModal> {
                       ? AppTheme().getFadedOpacityValue()
                       : 1,
                   child: GenericRectButton(
-                      label: 'Don\'t cancel',
+                      label: 'generic_text.doNotCancelBttn_label'.tr(),
                       labelFontSize: 20,
                       horizontalPadding: 20,
                       verticalPadding: 0,
@@ -2002,9 +2019,9 @@ class ProductModel extends StatelessWidget {
     int items = productData['items'];
 
     if (items == 0 || items > 1) {
-      return '$items items';
+      return 'delivery.manyItems'.tr(args: ['$items']);
     } else {
-      return '$items item';
+      return 'delivery.singleItem'.tr(args: ['$items']);
     }
   }
 }

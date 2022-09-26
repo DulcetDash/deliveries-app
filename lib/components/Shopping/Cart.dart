@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:orniss/components/GenericRectButton.dart';
 import 'package:orniss/components/Helpers/AppTheme.dart';
@@ -53,7 +54,7 @@ class _CartState extends State<Cart> {
                                   height: 15,
                                 ),
                                 Text(
-                                  'No items selected for your shopping.',
+                                  'shopping.noItemsForShopping'.tr(),
                                   style: TextStyle(
                                       color: Colors.grey.shade500,
                                       fontSize: 17),
@@ -66,7 +67,7 @@ class _CartState extends State<Cart> {
             Visibility(
               visible: context.watch<HomeProvider>().CART.isNotEmpty,
               child: GenericRectButton(
-                  label: 'Place order',
+                  label: 'shopping.placeOrder'.tr(),
                   labelFontSize: 22,
                   actuatorFunctionl: context
                           .watch<HomeProvider>()
@@ -123,7 +124,7 @@ class Header extends StatelessWidget {
                       SizedBox(
                         width: 4,
                       ),
-                      Text('Cart',
+                      Text('shopping.cart'.tr(),
                           style: TextStyle(
                               fontFamily: 'MoveTextBold', fontSize: 24)),
                       Visibility(
@@ -281,9 +282,9 @@ class ProductModel extends StatelessWidget {
     int items = productData['items'];
 
     if (items == 0 || items > 1) {
-      return '$items items';
+      return 'delivery.manyItems'.tr(args: ['$items']);
     } else {
-      return '$items item';
+      return 'delivery.singleItem'.tr(args: ['$items']);
     }
   }
 }
