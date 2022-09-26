@@ -61,6 +61,7 @@ dependencies:
   onesignal_flutter: ^3.0.0
   firebase_crashlytics: ^2.8.5
   firebase_core: ^1.19.2
+  easy_localization: ^3.0.1
 
 dev_dependencies:
   flutter_test:
@@ -91,6 +92,7 @@ flutter:
     - assets/Images/Shops/
     - assets/Images/Delivery/
     - assets/Sounds/
+    - assets/translations/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

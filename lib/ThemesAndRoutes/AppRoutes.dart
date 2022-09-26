@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:orniss/components/Delivery/RequestWindow_delivery.dart';
 import 'package:orniss/components/Helpers/LocationOpsHandler.dart';
@@ -7,6 +8,7 @@ import 'package:orniss/components/Helpers/Networking.dart';
 import 'package:orniss/components/Helpers/Watcher.dart';
 import 'package:orniss/components/Login/CreateAccount.dart';
 import 'package:orniss/components/Login/Entry.dart';
+import 'package:orniss/components/Login/Language.dart';
 import 'package:orniss/components/Login/NewAccountAddiDetails.dart';
 import 'package:orniss/components/Login/OTPCheck.dart';
 import 'package:orniss/components/Login/PhoneInput.dart';
@@ -56,7 +58,10 @@ class _AppGeneralEntryState extends State<AppGeneralEntry> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
+        // debugShowCheckedModeBanner: false,
+        localizationsDelegates: context.localizationDelegates,
+        supportedLocales: context.supportedLocales,
+        locale: context.locale,
         navigatorKey: NavigationService.navigatorKey,
         theme: AppTheme.appTheme,
         initialRoute: '/',
@@ -68,6 +73,7 @@ class _AppGeneralEntryState extends State<AppGeneralEntry> {
           '/OTPCheck': (context) => const OTPCheck(),
           '/CreateAccount': (context) => const CreateAccount(),
           '/NewAccountDetails': (context) => const NewAccountAddiDetails(),
+          '/Language': (context) => const Language(),
           //Core
           '/home': (context) => const HomeScreen(),
           '/shopping': (context) => const Home(),

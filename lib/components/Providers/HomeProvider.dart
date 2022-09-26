@@ -41,6 +41,9 @@ class HomeProvider with ChangeNotifier {
       false; //If the email entered above is valid or not
   //------
 
+  bool didSelectLanguage =
+      false; //If the user was already prompted to select a language.
+
   Map pushnotif_token = {}; //Notification token
 
   //! Data restoration
@@ -268,7 +271,9 @@ class HomeProvider with ChangeNotifier {
         // log('No state saved found');
         //? Close loader
         isLoadingForDataRestoration = false;
-        Navigator.of(context).pushNamed('/Entry');
+        //! Go to the select language page
+        Navigator.of(context).pushNamed('/Language');
+        // Navigator.of(context).pushNamed('/Entry');
         //?....
         notifyListeners();
       } else //Found a saved state
@@ -287,6 +292,11 @@ class HomeProvider with ChangeNotifier {
         //! Notification token
         pushnotif_token =
             state['pushnotif_token'] != null ? state['pushnotif_token'] : {};
+
+        //! Language selector driver
+        didSelectLanguage = state['didSelectLanguage'] != null
+            ? state['didSelectLanguage']
+            : false;
         //?....
         //Reroute
         if (userData['account_state'] != null) //Has a state
@@ -338,7 +348,8 @@ class HomeProvider with ChangeNotifier {
     return {
       "user_identifier": user_identifier_deduced,
       "userData": userData,
-      "pushnotif_token": pushnotif_token
+      "pushnotif_token": pushnotif_token,
+      "didSelectLanguage": didSelectLanguage
     };
   }
 
