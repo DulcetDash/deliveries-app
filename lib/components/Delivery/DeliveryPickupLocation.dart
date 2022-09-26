@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:orniss/components/GenericRectButton.dart';
@@ -28,7 +29,7 @@ class _DeliveryPickupLocationState extends State<DeliveryPickupLocation> {
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
             child: LocationChoice(
-                title: 'Where are you?',
+                title: 'delivery.whereAreYouTitle'.tr(),
                 subtitle: context
                             .watch<HomeProvider>()
                             .delivery_pickup['street'] !=
@@ -37,7 +38,7 @@ class _DeliveryPickupLocationState extends State<DeliveryPickupLocation> {
                         location: _dataParser.getRealisticPlacesNames(
                             locationData:
                                 context.watch<HomeProvider>().delivery_pickup))
-                    : 'Enter the address where you wish your package to be picked up from.',
+                    : 'delivery.whereAreYou_description'.tr(),
                 checked:
                     context.watch<HomeProvider>().delivery_pickup['street'] !=
                         null,
@@ -56,10 +57,10 @@ class _DeliveryPickupLocationState extends State<DeliveryPickupLocation> {
           ),
           LocationChoice(
             title: context.read<HomeProvider>().noteTyped_delivery.isEmpty
-                ? 'Add a note'
-                : 'Your note',
+                ? 'delivery.addNote'.tr()
+                : 'delivery.yourNote'.tr(),
             subtitle: context.read<HomeProvider>().noteTyped_delivery.isEmpty
-                ? 'Tell us any specifications you want about your delivery.'
+                ? 'delivery.addNoteDescription'.tr()
                 : context.read<HomeProvider>().noteTyped_delivery,
             actuator: () => showMaterialModalBottomSheet(
               backgroundColor: Colors.white,
@@ -84,7 +85,7 @@ class _DeliveryPickupLocationState extends State<DeliveryPickupLocation> {
                 .read<HomeProvider>()
                 .validateDelivery_pickupLocation()['opacity'],
             child: GenericRectButton(
-              label: 'Next',
+              label: 'generic_text.next'.tr(),
               labelFontSize: 20,
               horizontalPadding: 20,
               actuatorFunctionl: context
@@ -124,7 +125,7 @@ class Header extends StatelessWidget {
             SizedBox(
               height: 15,
             ),
-            Text('Pickup location',
+            Text('delivery.pickupLocation_label'.tr(),
                 style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 24)),
             Divider(
               height: 40,
@@ -299,7 +300,7 @@ class _HeaderSearchState extends State<HeaderSearch> {
                     ? context.read<HomeProvider>().userLocationDetails['street'].toString().isNotEmpty
                         ? context.read<HomeProvider>().userLocationDetails['street']
                         : context.read<HomeProvider>().userLocationDetails['suburb']
-                    : 'Finding your location');
+                    : 'generic_text.findingYourLocation_label'.tr());
 
     return Container(
       decoration: BoxDecoration(color: Colors.white, boxShadow: [
@@ -340,8 +341,8 @@ class _HeaderSearchState extends State<HeaderSearch> {
                       ),
                       Text(
                           location_type == 'pickup'
-                              ? 'Where are you?'
-                              : 'Delivery location',
+                              ? 'delivery.whereAreYouTitle'.tr()
+                              : 'delivery.deliveryLocation_label'.tr(),
                           style: TextStyle(
                               fontFamily: 'MoveTextBold', fontSize: 20))
                     ],
@@ -392,7 +393,7 @@ class _HeaderSearchState extends State<HeaderSearch> {
                         fillColor: Colors.grey.shade300,
                         floatingLabelStyle:
                             const TextStyle(color: Colors.black),
-                        label: Text('Enter your address'),
+                        label: Text('generic_text.enterAddress_label'.tr()),
                         floatingLabelBehavior: FloatingLabelBehavior.never,
                         enabledBorder: OutlineInputBorder(
                             borderSide:
@@ -467,7 +468,7 @@ class SearchResultsRenderer extends StatelessWidget {
                   color: AppTheme().getPrimaryColor(),
                 ),
                 title: Text(
-                  'My current location',
+                  'generic_text.myCurrentLocation'.tr(),
                   style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 16),
                 ),
                 subtitle: Padding(
@@ -620,7 +621,7 @@ class HeaderNote extends StatelessWidget {
                             SizedBox(
                               width: 4,
                             ),
-                            Text('Add a note',
+                            Text('delivery.addNote'.tr(),
                                 style: TextStyle(
                                     fontFamily: 'MoveTextBold', fontSize: 20))
                           ],
@@ -630,8 +631,7 @@ class HeaderNote extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 26, top: 10),
-                    child: Text(
-                        'Let us know if you require any specifications about your delivery.',
+                    child: Text('delivery.deliveryNotePlaceholder'.tr(),
                         style: TextStyle(
                             fontSize: 16, color: Colors.grey.shade600)),
                   ),
@@ -675,7 +675,7 @@ class HeaderNote extends StatelessWidget {
                         alignment: Alignment.topLeft,
                         child: Padding(
                           padding: const EdgeInsets.only(top: 20),
-                          child: Text("Enter your note here."),
+                          child: Text("generic_text.enterNoteHereLabel"),
                         ),
                       ),
                       floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -692,8 +692,8 @@ class HeaderNote extends StatelessWidget {
           Expanded(child: SizedBox.shrink()),
           GenericRectButton(
             label: context.watch<HomeProvider>().noteTyped_delivery.isEmpty
-                ? 'Skip'
-                : 'Done',
+                ? 'rides.skip'.tr()
+                : 'rides.done'.tr(),
             labelFontSize: 20,
             actuatorFunctionl: () {
               Navigator.of(context).pop();

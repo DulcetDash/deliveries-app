@@ -32,7 +32,7 @@ class _LanguageState extends State<Language> {
               top: MediaQuery.of(context).size.height * 0.05),
           child: Column(
             children: [
-              Text('Hello!',
+              Text('language.big_greeting'.tr(),
                   style: TextStyle(
                       fontFamily: 'MoveBold',
                       fontSize: 35,
@@ -40,7 +40,8 @@ class _LanguageState extends State<Language> {
               Divider(
                 color: Colors.transparent,
               ),
-              Text('Select your language',
+              Text('language.big_subtitle'.tr(),
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
                       fontFamily: 'MoveBold',
                       fontSize: 30,
@@ -85,12 +86,17 @@ class _LanguageState extends State<Language> {
                       ),
                   itemCount: languages.length),
               Expanded(child: SizedBox.shrink()),
-              GenericRectButton(
-                  horizontalPadding: 0,
-                  label: 'Continue',
-                  labelFontSize: 20,
-                  isArrowShow: false,
-                  actuatorFunctionl: () => print('Next'))
+              Opacity(
+                opacity: selectedLang.isEmpty ? 0.3 : 1,
+                child: GenericRectButton(
+                    horizontalPadding: 0,
+                    label: 'language.continue_bttn_label'.tr(),
+                    labelFontSize: 20,
+                    isArrowShow: false,
+                    actuatorFunctionl: selectedLang.isEmpty
+                        ? () => {}
+                        : () => Navigator.of(context).pushNamed('/Entry')),
+              )
             ],
           ),
         ),

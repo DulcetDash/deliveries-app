@@ -1,1 +1,25 @@
-{}
+{
+  "langue": {
+    "big_greeting": "Salut!",
+    "big_subtitle": "Sélectionnez votre langue",
+    "continue_bttn_label": "Continue"
+  },
+  "entry": {
+    "big_title": "Bougez en toute confiance",
+    "rides": "Rides",
+    "livraisons": "Livraisons",
+    "Achats": "Achats",
+    "btn_label": "Commencer"
+  },
+  "phone_input": {
+    "title": "Entrez votre numéro de téléphone mobile",
+    "small_note": "En continuant, vous recevrez un SMS pour vérification. Des tarifs de messages et de données peuvent s'appliquer.",
+    "bttn_label": "Next",
+    "error_checkingNumber": "Impossible de vérifier votre numéro",
+    "error_checkingNumberUnexpected": "Nous n'avons pas pu vérifier votre numéro de téléphone mobile en raison d'une erreur inattendue, veuillez vérifier votre connexion Internet et réessayer.",
+    "invalid_phone_number": "Numéro de téléphone non valide"
+  },
+  "generic_text": {
+    "tryAgain": "Réessayer"
+  }
+}

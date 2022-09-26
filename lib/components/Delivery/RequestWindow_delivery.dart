@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -64,7 +65,7 @@ class _RequestWindow_deliveryState extends State<RequestWindow_delivery> {
                       requestData['state_vars']['completedDropoff'] == false
                           ? SizedBox.shrink()
                           : GenericRectButton(
-                              label: 'Rate your courier',
+                              label: 'delivery.rateYourCourier'.tr(),
                               horizontalPadding: 20,
                               labelFontSize: 25,
                               labelFontFamily: "MoveBold",
@@ -122,7 +123,7 @@ class Header extends StatelessWidget {
             height: 15,
           ),
           Text(
-            'Finding your courier...',
+            'delivery.findingYourCourier'.tr(),
             style: TextStyle(fontSize: 18, fontFamily: 'MoveTextBold'),
           )
         ],
@@ -237,17 +238,17 @@ class Header extends StatelessWidget {
     if (requestData['state_vars']['inRouteToPickupCash'] &&
         requestData['state_vars']['didPickupCash'] == false &&
         requestData['payment_method'] == 'cash') {
-      return 'Heading to you...';
+      return 'delivery.headingToYou'.tr();
     } else if (requestData['state_vars']['inRouteToPickupCash'] &&
         requestData['state_vars']['didPickupCash'] == false &&
         requestData['payment_method'] == 'mobile_money') {
-      return 'Waiting for your ewallet...';
+      return 'delivery.waitingForEwallet'.tr();
     } else if (requestData['state_vars']['inRouteToDropoff'] &&
         requestData['state_vars']['completedDropoff'] == false) {
-      return 'Delivery in progress...';
+      return 'delivery.deliveryInProgress'.tr();
     } else if (requestData['state_vars']['completedDropoff']) {
       //Shopping done
-      return 'Done shopping.';
+      return 'delivery.doneShopping'.tr();
     } else {
       return '';
     }
@@ -303,7 +304,7 @@ class DeliveryList extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Delivery',
+                      'delivery.delivery'.tr(),
                       style: TextStyle(
                           fontFamily: 'MoveTextMedium',
                           fontSize: 17,
@@ -366,12 +367,12 @@ class DeliveryList extends StatelessWidget {
                                       Container(
                                         // color: Colors.green,
                                         height: 33,
-                                        child: const Padding(
+                                        child: Padding(
                                           padding: EdgeInsets.only(top: 2),
                                           child: SizedBox(
                                               width: 45,
                                               child: Text(
-                                                'From',
+                                                'rides.fromLabel'.tr(),
                                                 style: TextStyle(
                                                     fontFamily:
                                                         'MoveTextLight'),
@@ -415,12 +416,12 @@ class DeliveryList extends StatelessWidget {
                                     Container(
                                       // color: Colors.green,
                                       height: 34,
-                                      child: const Padding(
+                                      child: Padding(
                                         padding: EdgeInsets.only(top: 3),
                                         child: SizedBox(
                                             width: 45,
                                             child: Text(
-                                              'To',
+                                              'rides.toLabel'.tr(),
                                               style: TextStyle(
                                                   fontFamily: 'MoveTextLight'),
                                             )),
@@ -449,7 +450,11 @@ class DeliveryList extends StatelessWidget {
                                             width: 45,
                                           ),
                                           Text(
-                                              '+${dropoffs.length - 1} more location${dropoffs.length - 1 > 1 ? 's' : ''}.',
+                                              'delivery.moreLocationsMask'.tr(
+                                                  args: [
+                                                    '${dropoffs.length - 1}',
+                                                    '${dropoffs.length - 1 > 1 ? 's' : ''}'
+                                                  ]),
                                               style: TextStyle(
                                                   fontSize: 16,
                                                   color: AppTheme()
@@ -470,7 +475,7 @@ class DeliveryList extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('View delivery status',
+                    Text('delivery.viewDeliveryStatus'.tr(),
                         style: TextStyle(
                             fontFamily: 'MoveTextMedium',
                             fontSize: 14,
@@ -513,7 +518,7 @@ class PaymentSection extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    'Payment',
+                    'rides.paymentLabel'.tr(),
                     style: TextStyle(
                         fontFamily: 'MoveTextMedium',
                         fontSize: 17,
@@ -578,16 +583,16 @@ class PaymentSection extends StatelessWidget {
                   requestData['payment_method'] == 'cash'
                       ? Text(
                           requestData['state_vars']['didPickupCash'] == false
-                              ? 'Not yet picked up from you.'
-                              : 'Picked up cash.',
+                              ? 'generic_text.notYetPickedUpFromYou'.tr()
+                              : 'generic_text.pickedUpCash'.tr(),
                           style: TextStyle(
                               fontSize: 16,
                               color: AppTheme().getPrimaryColor()),
                         )
                       : Text(
                           requestData['state_vars']['didPickupCash'] == false
-                              ? 'Press here to see the details.'
-                              : 'You already paid.',
+                              ? 'generic_text.pressHereToSeeDetails'.tr()
+                              : 'generic_text.alreadyPaid'.tr(),
                           style: TextStyle(
                               fontSize: 16,
                               color: AppTheme().getPrimaryColor()),
@@ -633,7 +638,7 @@ class DeliverySection extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Delivery',
+                  'delivery.delivery'.tr(),
                   style: TextStyle(
                       fontFamily: 'MoveTextMedium',
                       fontSize: 17,
@@ -714,12 +719,12 @@ class DeliverySection extends StatelessWidget {
                                     Container(
                                       // color: Colors.green,
                                       height: 33,
-                                      child: const Padding(
+                                      child: Padding(
                                         padding: EdgeInsets.only(top: 2),
                                         child: SizedBox(
                                             width: 45,
                                             child: Text(
-                                              'From',
+                                              'rides.fromLabel'.tr(),
                                               style: TextStyle(
                                                   fontFamily: 'MoveTextLight'),
                                             )),
@@ -760,12 +765,12 @@ class DeliverySection extends StatelessWidget {
                                   Container(
                                     // color: Colors.green,
                                     height: 34,
-                                    child: const Padding(
+                                    child: Padding(
                                       padding: EdgeInsets.only(top: 3),
                                       child: SizedBox(
                                           width: 45,
                                           child: Text(
-                                            'To',
+                                            'toLabel'.tr(),
                                             style: TextStyle(
                                                 fontFamily: 'MoveTextLight'),
                                           )),
@@ -837,7 +842,7 @@ class CancellationSection extends StatelessWidget {
                     left: 20, right: 20, top: 30, bottom: 60),
                 child: Container(
                   child: Text(
-                    'Cancel the delivery',
+                    'delivery.cancelDeliveryLabel'.tr(),
                     style: TextStyle(
                         fontFamily: 'MoveTextMedium',
                         fontSize: 17,
@@ -970,7 +975,7 @@ class _LocalModalState extends State<LocalModal> {
                     height: 15,
                   ),
                   Text(
-                    'Unable to rate driver',
+                    'rides.unableToRateTitle'.tr(),
                     style: TextStyle(
                       fontFamily: 'MoveTextMedium',
                       fontSize: 19,
@@ -982,13 +987,13 @@ class _LocalModalState extends State<LocalModal> {
                   Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Text(
-                      "We were unable to submit your rating due to an unexpected error, please try again and if it persists, please contact us through the Support tab.",
+                      "rides.unableToSubmitRating_msg".tr(),
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
                   Expanded(child: SizedBox.shrink()),
                   GenericRectButton(
-                    label: 'Try again',
+                    label: 'generic_text.tryAgain'.tr(),
                     labelFontSize: 20,
                     actuatorFunctionl: () {
                       Navigator.of(context).pop();
@@ -1086,7 +1091,7 @@ class _LocalModalState extends State<LocalModal> {
                     height: 15,
                   ),
                   Text(
-                    'Unable to cancel',
+                    'generic_text.unableToCancel'.tr(),
                     style: TextStyle(
                       fontFamily: 'MoveTextMedium',
                       fontSize: 19,
@@ -1098,13 +1103,13 @@ class _LocalModalState extends State<LocalModal> {
                   Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Text(
-                      "We were unable to cancel your delivery request due to an unexpected error, please try again and if it persists, please contact us through the Support tab.",
+                      "delivery.unableToCancelDelivery_msg".tr(),
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
                   Expanded(child: SizedBox.shrink()),
                   GenericRectButton(
-                    label: 'Try again',
+                    label: 'generic_text.tryAgain'.tr(),
                     labelFontSize: 20,
                     actuatorFunctionl: () {
                       Navigator.of(context).pop();
@@ -1145,7 +1150,7 @@ class _LocalModalState extends State<LocalModal> {
                         size: AppTheme().getArrowBackSize() - 3,
                       ),
                       Text(
-                        'Payment details',
+                        'delivery.paymentDetails'.tr(),
                         style:
                             TextStyle(fontFamily: 'MoveTextBold', fontSize: 18),
                       ),
@@ -1181,7 +1186,7 @@ class _LocalModalState extends State<LocalModal> {
                   Container(
                     alignment: Alignment.center,
                     child: Text(
-                      'Ewallet',
+                      'generic_text.ewallet'.tr(),
                       style: TextStyle(fontFamily: 'MoveBold', fontSize: 24),
                     ),
                   ),
@@ -1190,7 +1195,7 @@ class _LocalModalState extends State<LocalModal> {
                         const EdgeInsets.only(left: 25, right: 25, top: 15),
                     child: Container(
                       child: Text(
-                        'Please end your shopping money to us before we can start with your shopping.',
+                        'delivery.sendDeliveryMoney_msg'.tr(),
                         style: TextStyle(
                             fontSize: 16,
                             color: AppTheme().getGenericDarkGrey()),
@@ -1208,7 +1213,7 @@ class _LocalModalState extends State<LocalModal> {
                     child: Row(
                       children: [
                         Text(
-                          'Send to',
+                          'generic_text.sendTo'.tr(),
                           style: TextStyle(
                               fontFamily: 'MoveTextMedium',
                               fontSize: 16,
@@ -1250,7 +1255,7 @@ class _LocalModalState extends State<LocalModal> {
                     child: Row(
                       children: [
                         Text(
-                          'Amount',
+                          'generic_text.amount'.tr(),
                           style: TextStyle(
                               fontFamily: 'MoveTextMedium',
                               fontSize: 16,
@@ -1304,7 +1309,8 @@ class _LocalModalState extends State<LocalModal> {
                           title: Padding(
                             padding: const EdgeInsets.only(top: 12),
                             child: Text(
-                                'Please send the full amount before we can proceed.',
+                                'generic_text.sendFullAmountBeforeProceeding'
+                                    .tr(),
                                 style: TextStyle(
                                     fontFamily: 'MoveTextRegular',
                                     fontSize: 15,
@@ -1322,7 +1328,7 @@ class _LocalModalState extends State<LocalModal> {
                     child: Row(
                       children: [
                         Text(
-                          'Support',
+                          'generic_text.support'.tr(),
                           style: TextStyle(
                               fontFamily: 'MoveTextMedium',
                               fontSize: 16,
@@ -1342,7 +1348,7 @@ class _LocalModalState extends State<LocalModal> {
                       leading: Icon(Icons.support, color: Colors.black),
                       horizontalTitleGap: 0,
                       title: Text(
-                        'Call us',
+                        'generic_text.callUs'.tr(),
                         style: TextStyle(
                           fontFamily: 'MoveTextMedium',
                           fontSize: 17,
@@ -1375,7 +1381,7 @@ class _LocalModalState extends State<LocalModal> {
                         size: AppTheme().getArrowBackSize() - 3,
                       ),
                       Text(
-                        'Payment details',
+                        'delivery.paymentDetails'.tr(),
                         style:
                             TextStyle(fontFamily: 'MoveTextBold', fontSize: 18),
                       ),
@@ -1411,7 +1417,7 @@ class _LocalModalState extends State<LocalModal> {
                   Container(
                     alignment: Alignment.center,
                     child: Text(
-                      'Cash',
+                      'generic_text.cash'.tr(),
                       style: TextStyle(fontFamily: 'MoveBold', fontSize: 24),
                     ),
                   ),
@@ -1420,7 +1426,7 @@ class _LocalModalState extends State<LocalModal> {
                         const EdgeInsets.only(left: 25, right: 25, top: 15),
                     child: Container(
                       child: Text(
-                        'Your shopper will pickup the cash from you before starting your shopping.',
+                        'delivery.shopperPickupCash_msg'.tr(),
                         style: TextStyle(
                             fontSize: 16,
                             color: AppTheme().getGenericDarkGrey()),
@@ -1438,7 +1444,7 @@ class _LocalModalState extends State<LocalModal> {
                     child: Row(
                       children: [
                         Text(
-                          'Security PIN',
+                          'generic_text.securityPin'.tr(),
                           style: TextStyle(
                               fontFamily: 'MoveTextMedium',
                               fontSize: 16,
@@ -1492,8 +1498,7 @@ class _LocalModalState extends State<LocalModal> {
                           ),
                           title: Padding(
                             padding: const EdgeInsets.only(top: 12),
-                            child: Text(
-                                'Ask your shopper to provide the security PIN displayed here first before giving any money.',
+                            child: Text('delivery.askForSecurityPin_msg'.tr(),
                                 style: TextStyle(
                                     fontFamily: 'MoveTextRegular',
                                     fontSize: 15,
@@ -1511,7 +1516,7 @@ class _LocalModalState extends State<LocalModal> {
                     child: Row(
                       children: [
                         Text(
-                          'Support',
+                          'generic_text.support'.tr(),
                           style: TextStyle(
                               fontFamily: 'MoveTextMedium',
                               fontSize: 16,
@@ -1531,13 +1536,13 @@ class _LocalModalState extends State<LocalModal> {
                       leading: Icon(Icons.support, color: Colors.black),
                       horizontalTitleGap: 0,
                       title: Text(
-                        'Call us',
+                        'generic_text.callUs'.tr(),
                         style: TextStyle(
                           fontFamily: 'MoveTextMedium',
                           fontSize: 17,
                         ),
                       ),
-                      subtitle: Text('For more assistance, please call us.'),
+                      subtitle: Text('generic_text.forMoreAssistance_msg'.tr()),
                       trailing: Icon(
                         Icons.arrow_forward_ios,
                         size: 15,
@@ -1573,7 +1578,7 @@ class _LocalModalState extends State<LocalModal> {
                           Expanded(
                             child: Container(
                               child: Text(
-                                'Delivery status',
+                                'delivery.delivery_status_msg'.tr(),
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     fontFamily: 'MoveTextBold', fontSize: 18),
@@ -1597,7 +1602,7 @@ class _LocalModalState extends State<LocalModal> {
                   alignment: Alignment.centerLeft,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
-                    child: Text('You can see which packages are delivered.'),
+                    child: Text('delivery.seeDeliveredPackages_msg'.tr()),
                   ),
                 ),
                 Expanded(
@@ -1635,7 +1640,7 @@ class _LocalModalState extends State<LocalModal> {
                         size: AppTheme().getArrowBackSize() - 3,
                       ),
                       Text(
-                        'Rate courier',
+                        'delivery.rateCourrier'.tr(),
                         style:
                             TextStyle(fontFamily: 'MoveTextBold', fontSize: 18),
                       ),
@@ -1742,7 +1747,7 @@ class _LocalModalState extends State<LocalModal> {
                     child: Row(
                       children: [
                         Text(
-                          'Give a badge',
+                          'rides.giveABadgeTitle'.tr(),
                           style: TextStyle(
                               fontFamily: 'MoveTextMedium',
                               fontSize: 16,
@@ -1857,7 +1862,7 @@ class _LocalModalState extends State<LocalModal> {
                     child: Row(
                       children: [
                         Text(
-                          'Note',
+                          'rides.noteTitle'.tr(),
                           style: TextStyle(
                               fontFamily: 'MoveTextMedium',
                               fontSize: 16,
@@ -1895,7 +1900,8 @@ class _LocalModalState extends State<LocalModal> {
                                 alignment: Alignment.topLeft,
                                 child: Padding(
                                   padding: const EdgeInsets.only(top: 25),
-                                  child: Text("Enter your note here."),
+                                  child: Text(
+                                      "generic_text.enterNoteHereLabel".tr()),
                                 ),
                               ),
                               floatingLabelBehavior:
@@ -1917,7 +1923,8 @@ class _LocalModalState extends State<LocalModal> {
                     height: 30,
                   ),
                   GenericRectButton(
-                      label: isLoadingSubmission ? 'LOADING' : 'Done',
+                      label:
+                          isLoadingSubmission ? 'LOADING' : 'rides.done'.tr(),
                       labelFontSize: 22,
                       isArrowShow: false,
                       actuatorFunctionl: isLoadingSubmission
@@ -1945,7 +1952,7 @@ class _LocalModalState extends State<LocalModal> {
                   Align(
                     child: Container(
                         // color: Colors.red,
-                        child: Text('Cancel delivery?',
+                        child: Text('delivery.cancelDeliveryQuestion'.tr(),
                             style: TextStyle(
                                 fontFamily: 'MoveTextBold', fontSize: 20))),
                   ),
@@ -1956,25 +1963,25 @@ class _LocalModalState extends State<LocalModal> {
                     padding:
                         const EdgeInsets.only(left: 20, right: 20, bottom: 10),
                     child: Container(
-                      child: Text(
-                          'Do you really want to cancel your delivery request?',
-                          style: TextStyle(
-                            fontSize: 16,
-                          )),
+                      child:
+                          Text('delivery.cancelDeliveryConfirmation_msg'.tr(),
+                              style: TextStyle(
+                                fontSize: 16,
+                              )),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Container(
-                      child: Text(
-                          'By doing so you will not be able to send your packages to your recipients.',
+                      child: Text('delivery.cancelDeliveryExplanation_msg'.tr(),
                           style: TextStyle(fontSize: 16)),
                     ),
                   ),
                   Expanded(child: SizedBox.shrink()),
                   GenericRectButton(
-                      label:
-                          isLoadingSubmission ? 'LOADING' : 'Cancel delivery',
+                      label: isLoadingSubmission
+                          ? 'LOADING'
+                          : 'delivery.cancelDeliveryBttn_label'.tr(),
                       labelFontSize: 20,
                       horizontalPadding: 20,
                       verticalPadding: 0,
@@ -1992,7 +1999,7 @@ class _LocalModalState extends State<LocalModal> {
                         ? AppTheme().getFadedOpacityValue()
                         : 1,
                     child: GenericRectButton(
-                        label: 'Don\'t cancel',
+                        label: 'generic_text.doNotCancelBttn_label'.tr(),
                         labelFontSize: 20,
                         horizontalPadding: 20,
                         verticalPadding: 0,

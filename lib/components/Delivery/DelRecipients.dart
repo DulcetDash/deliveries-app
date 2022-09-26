@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:orniss/components/GenericRectButton.dart';
@@ -39,7 +40,8 @@ class _DelRecipientsState extends State<DelRecipients> {
                         LocationChoiceRecipientFront(
                             recipient_index: index,
                             title: receipientData['name'].toString().isEmpty
-                                ? 'Recipient ${index + 1}'
+                                ? 'delivery.recipient_msg'
+                                    .tr(args: ['${index + 1}'])
                                 : receipientData['name'].toString(),
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,7 +79,7 @@ class _DelRecipientsState extends State<DelRecipients> {
                                                     index: index,
                                                     nature_data:
                                                         'dropoff_location')[0]))
-                                        : 'Press here to set',
+                                        : 'generic_text.pressHereToSet'.tr(),
                                     style: TextStyle(
                                         fontSize: 16,
                                         color:
@@ -144,9 +146,10 @@ class _DelRecipientsState extends State<DelRecipients> {
                 .read<HomeProvider>()
                 .validateRecipient_data_bulk()['opacity'],
             child: GenericRectButton(
-              label: 'Next',
-              bottomSubtitleText:
-                  'You have ${context.read<HomeProvider>().recipients_infos.length} recipient${context.read<HomeProvider>().recipients_infos.length > 1 || context.read<HomeProvider>().recipients_infos.isEmpty ? 's' : ''}',
+              label: 'generic_text.next'.tr(),
+              bottomSubtitleText: 'delivery.bottomSubtitleText'.tr(args: [
+                '${context.read<HomeProvider>().recipients_infos.length} recipient${context.read<HomeProvider>().recipients_infos.length > 1 || context.read<HomeProvider>().recipients_infos.isEmpty ? 's' : ''}'
+              ]),
               labelFontSize: 20,
               horizontalPadding: 20,
               actuatorFunctionl: context
@@ -195,7 +198,7 @@ class _DelRecipientsState extends State<DelRecipients> {
                     width: 15,
                   ),
                   Text(
-                    'Add a recipient',
+                    'delivery.addRecipientLabel'.tr(),
                     style: TextStyle(
                         fontSize: 17, color: AppTheme().getPrimaryColor()),
                   )
@@ -225,7 +228,7 @@ class Header extends StatelessWidget {
             SizedBox(
               height: 15,
             ),
-            Text('Who are the recipients?',
+            Text('delivery.whoAreRecipients'.tr(),
                 style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 24)),
             Divider(
               height: 40,
@@ -414,7 +417,9 @@ class LocalModal extends StatelessWidget {
                           width: 5,
                         ),
                         Text(
-                          'Recipient ${context.read<HomeProvider>().selectedRecipient_index + 1}',
+                          'delivery.recipient_msg'.tr(args: [
+                            '${context.read<HomeProvider>().selectedRecipient_index + 1}'
+                          ]),
                           style: TextStyle(
                               fontFamily: 'MoveTextBold', fontSize: 19),
                         ),
@@ -451,7 +456,7 @@ class LocalModal extends StatelessWidget {
                           fillColor: Colors.grey.shade300,
                           floatingLabelStyle:
                               const TextStyle(color: Colors.black),
-                          label: Text('Recipient name'),
+                          label: Text('delivery.recipientNameLabel'.tr()),
                           floatingLabelBehavior: FloatingLabelBehavior.never,
                           enabledBorder: OutlineInputBorder(
                               borderSide:
@@ -481,7 +486,7 @@ class LocalModal extends StatelessWidget {
                   //! Location details
                   // Text('Delivery location'),
                   LocationChoice(
-                      title: 'Delivery location',
+                      title: 'delivery.deliveryLocation_label'.tr(),
                       subtitle: context.watch<HomeProvider>().getRecipientDetails_indexBased(index: context.read<HomeProvider>().selectedRecipient_index, nature_data: 'dropoff_location')[0]
                                   ['street'] !=
                               null
@@ -494,7 +499,7 @@ class LocalModal extends StatelessWidget {
                                               .read<HomeProvider>()
                                               .selectedRecipient_index,
                                           nature_data: 'dropoff_location')[0]))
-                          : 'Enter the address where you wish your package to be dropped off.',
+                          : 'delivery.whereToDropOff_description'.tr(),
                       checked: context.watch<HomeProvider>().getRecipientDetails_indexBased(
                               index: context.read<HomeProvider>().selectedRecipient_index,
                               nature_data: 'dropoff_location')[0]['street'] !=
@@ -516,7 +521,7 @@ class LocalModal extends StatelessWidget {
                         .read<HomeProvider>()
                         .validateRecipient_data_isolated()['opacity'],
                     child: GenericRectButton(
-                      label: 'Done',
+                      label: 'rides.done'.tr(),
                       labelFontSize: 20,
                       horizontalPadding: 0,
                       actuatorFunctionl: context
@@ -562,7 +567,7 @@ class ErrorPhone extends StatelessWidget {
             width: 5,
           ),
           Text(
-            'Invalid phone number',
+            'phone_input.invalid_phone_number'.tr(),
             style: TextStyle(fontSize: 16, color: AppTheme().getErrorColor()),
           )
         ]),
@@ -718,8 +723,8 @@ class _HeaderSearchState extends State<HeaderSearch> {
                       ),
                       Text(
                           location_type == 'pickup'
-                              ? 'Where are you?'
-                              : 'Delivery location',
+                              ? 'delivery.whereAreYouTitle'.tr()
+                              : 'delivery.deliveryLocation_label'.tr(),
                           style: TextStyle(
                               fontFamily: 'MoveTextBold', fontSize: 20))
                     ],
@@ -770,7 +775,7 @@ class _HeaderSearchState extends State<HeaderSearch> {
                         fillColor: Colors.grey.shade300,
                         floatingLabelStyle:
                             const TextStyle(color: Colors.black),
-                        label: Text('Enter the address'),
+                        label: Text('generic_text.enterAddress_label'.tr()),
                         floatingLabelBehavior: FloatingLabelBehavior.never,
                         enabledBorder: OutlineInputBorder(
                             borderSide:
@@ -841,7 +846,7 @@ class SearchResultsRenderer extends StatelessWidget {
                   color: AppTheme().getPrimaryColor(),
                 ),
                 title: Text(
-                  'My current location',
+                  'generic_text.myCurrentLocation'.tr(),
                   style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 16),
                 ),
                 subtitle: Padding(

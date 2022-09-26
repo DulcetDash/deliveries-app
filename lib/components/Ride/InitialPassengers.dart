@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:orniss/components/GenericRectButton.dart';
@@ -49,7 +50,7 @@ class _InitialPassengersState extends State<InitialPassengers> {
                   padding: const EdgeInsets.only(left: 20, right: 20, top: 25),
                   child: Container(
                       alignment: Alignment.centerLeft,
-                      child: Text("What's your style?",
+                      child: Text("rides.rideStyle".tr(),
                           style: TextStyle(
                               fontFamily: 'MoveTextMedium', fontSize: 17))),
                 ),
@@ -63,14 +64,12 @@ class _InitialPassengersState extends State<InitialPassengers> {
                   child: LocationChoice(
                     title:
                         context.read<HomeProvider>().noteTyped_delivery.isEmpty
-                            ? 'Add a note'
-                            : 'Your note',
-                    subtitle: context
-                            .read<HomeProvider>()
-                            .noteTyped_delivery
-                            .isEmpty
-                        ? 'Anything you want your driver to do for your ride?'
-                        : context.read<HomeProvider>().noteTyped_delivery,
+                            ? 'rides.addNote'.tr()
+                            : 'rides.yourNote'.tr(),
+                    subtitle:
+                        context.read<HomeProvider>().noteTyped_delivery.isEmpty
+                            ? 'rides.addNotePlaceholder'.tr()
+                            : context.read<HomeProvider>().noteTyped_delivery,
                     actuator: () => showMaterialModalBottomSheet(
                       backgroundColor: Colors.white,
                       bounce: true,
@@ -96,7 +95,7 @@ class _InitialPassengersState extends State<InitialPassengers> {
           Opacity(
             opacity: 1,
             child: GenericRectButton(
-                label: 'Continue',
+                label: 'generic_text.continue'.tr(),
                 labelFontSize: 20,
                 horizontalPadding: 20,
                 actuatorFunctionl: () {
@@ -180,8 +179,8 @@ class RideStyleSelect extends StatelessWidget {
         children: [
           rideSelector(
               context: context,
-              title: 'Private',
-              subtitle: 'Just you',
+              title: 'rides.private'.tr(),
+              subtitle: 'rides.justYou'.tr(),
               imagePath: 'assets/Images/man.png',
               isSelected: context.watch<HomeProvider>().rideStyle == 'private',
               actuator: () => context
@@ -192,8 +191,8 @@ class RideStyleSelect extends StatelessWidget {
           ),
           rideSelector(
               context: context,
-              title: 'Shared',
-              subtitle: 'With others',
+              title: 'rides.shared'.tr(),
+              subtitle: 'rides.withOthers'.tr(),
               imagePath: 'assets/Images/shared.png',
               isSelected: context.watch<HomeProvider>().rideStyle == 'shared',
               actuator: () => context
@@ -291,7 +290,9 @@ class GoingSameDestination extends StatelessWidget {
             contentPadding: EdgeInsets.zero,
             activeColor: AppTheme().getPrimaryColor(),
             title: Text(
-              isChecked ? 'Same destination' : 'Not same destination',
+              isChecked
+                  ? 'rides.sameDestination'.tr()
+                  : 'rides.notSameDestination'.tr(),
               style: TextStyle(
                   fontFamily: 'MoveTextRegular',
                   fontSize: 16,
@@ -334,7 +335,7 @@ class Header extends StatelessWidget {
             SizedBox(
               height: 15,
             ),
-            Text('For how many passengers?',
+            Text('rides.forHowManyPassengers'.tr(),
                 style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 20)),
             Divider(
               height: 30,
@@ -392,7 +393,7 @@ class HeaderNote extends StatelessWidget {
                             SizedBox(
                               width: 4,
                             ),
-                            Text('Add a note',
+                            Text('rides.addNote'.tr(),
                                 style: TextStyle(
                                     fontFamily: 'MoveTextBold', fontSize: 20))
                           ],
@@ -402,8 +403,7 @@ class HeaderNote extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 26, top: 10),
-                    child: Text(
-                        'Let us know if you require any specifications about your ride.',
+                    child: Text('rides.addNOtePlaceholderSpecifications'.tr(),
                         style: TextStyle(
                             fontSize: 16, color: Colors.grey.shade600)),
                   ),
@@ -447,7 +447,7 @@ class HeaderNote extends StatelessWidget {
                         alignment: Alignment.topLeft,
                         child: Padding(
                           padding: const EdgeInsets.only(top: 20),
-                          child: Text("Enter your note here."),
+                          child: Text("rides.enterNoteTitle".tr()),
                         ),
                       ),
                       floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -464,8 +464,8 @@ class HeaderNote extends StatelessWidget {
           Expanded(child: SizedBox.shrink()),
           GenericRectButton(
             label: context.watch<HomeProvider>().noteTyped_delivery.isEmpty
-                ? 'Skip'
-                : 'Done',
+                ? 'rides.skip'.tr()
+                : 'rides.done'.tr(),
             labelFontSize: 20,
             actuatorFunctionl: () {
               Navigator.of(context).pop();
@@ -713,7 +713,7 @@ class _HeaderSearchState extends State<HeaderSearch> {
                         fillColor: Colors.grey.shade300,
                         floatingLabelStyle:
                             const TextStyle(color: Colors.black),
-                        label: Text('Pickup location'),
+                        label: Text('rides.pickupLocation'.tr()),
                         floatingLabelBehavior: FloatingLabelBehavior.never,
                         enabledBorder: OutlineInputBorder(
                             borderSide:
@@ -798,7 +798,8 @@ class _HeaderSearchState extends State<HeaderSearch> {
                   filled: true,
                   fillColor: Colors.grey.shade300,
                   floatingLabelStyle: const TextStyle(color: Colors.black),
-                  label: Text('Passenger ${i + 1} drop off'),
+                  label:
+                      Text('rides.noPassengersString'.tr(args: ['${i + 1}'])),
                   floatingLabelBehavior: FloatingLabelBehavior.never,
                   enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.grey.shade300)),
@@ -871,7 +872,7 @@ class SearchResultsRenderer extends StatelessWidget {
                   color: AppTheme().getPrimaryColor(),
                 ),
                 title: Text(
-                  'My current location',
+                  'rides.myCurrentLocation'.tr(),
                   style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 16),
                 ),
                 subtitle: Padding(
@@ -931,7 +932,7 @@ class SearchResultsRenderer extends StatelessWidget {
                   context.watch<HomeProvider>().pricing_computed.isNotEmpty &&
                       areAllLocationsValid(context: context),
               child: GenericRectButton(
-                  label: 'Next',
+                  label: 'generic_text.next'.tr(),
                   labelFontSize: 20,
                   actuatorFunctionl: areAllLocationsValid(context: context)
                       ? () => Navigator.of(context).pushNamed('/FareDisplay')

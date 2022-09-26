@@ -27,6 +27,7 @@ void main() async {
         path:
             'assets/translations', // <-- change the path of the translation files
         fallbackLocale: Locale('en'),
+        useFallbackTranslations: true,
         saveLocale: true,
         child: const AppGeneralEntry()),
   ));

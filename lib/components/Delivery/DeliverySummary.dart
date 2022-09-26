@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -38,7 +39,7 @@ class _DeliverySummaryState extends State<DeliverySummary> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: LocationChoiceRecipientFront(
                   recipient_index: -1,
-                  title: 'Pickup location',
+                  title: 'generic_text.pickupLocation_label'.tr(),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -52,7 +53,7 @@ class _DeliverySummaryState extends State<DeliverySummary> {
                                       locationData: context
                                           .read<HomeProvider>()
                                           .delivery_pickup))
-                              : 'Press here to set',
+                              : 'generic_text.pressHereToSet'.tr(),
                           style: TextStyle(
                               fontSize: 16, color: Colors.grey.shade500))
                     ],
@@ -83,7 +84,8 @@ class _DeliverySummaryState extends State<DeliverySummary> {
                             return LocationChoiceRecipientFront(
                                 recipient_index: index,
                                 title: receipientData['name'].toString().isEmpty
-                                    ? 'Recipient ${index + 1}'
+                                    ? 'delivery.recipient_msg'
+                                        .tr(args: ['${index + 1}'])
                                     : receipientData['name'].toString(),
                                 subtitle: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,7 +112,9 @@ class _DeliverySummaryState extends State<DeliverySummary> {
                                       ),
                                     ),
                                     Text(
-                                        context.read<HomeProvider>().getRecipientDetails_indexBased(index: index, nature_data: 'dropoff_location')[0]['street'] != null
+                                        context.read<HomeProvider>().getRecipientDetails_indexBased(index: index, nature_data: 'dropoff_location')[0]
+                                                    ['street'] !=
+                                                null
                                             ? _dataParser.getGenericLocationString(
                                                 location: _dataParser.getRealisticPlacesNames(
                                                     locationData: context
@@ -119,13 +123,11 @@ class _DeliverySummaryState extends State<DeliverySummary> {
                                                                 index: index,
                                                                 nature_data: 'dropoff_location')[
                                                         0]))
-                                            : 'Press here to set',
+                                            : 'generic_text.pressHereToSet'
+                                                .tr(),
                                         style: TextStyle(
                                             fontSize: 16,
-                                            color: context
-                                                        .read<HomeProvider>()
-                                                        .validateRecipient_data_isolated(index: index)['opacity'] ==
-                                                    1.0
+                                            color: context.read<HomeProvider>().validateRecipient_data_isolated(index: index)['opacity'] == 1.0
                                                 ? AppTheme().getPrimaryColor()
                                                 : Colors.grey.shade500))
                                   ],
@@ -155,7 +157,7 @@ class _DeliverySummaryState extends State<DeliverySummary> {
                                   height: 15,
                                 ),
                                 Text(
-                                  'No recipients added for your delivery',
+                                  'delivery.noRecipientsAdded'.tr(),
                                   style: TextStyle(
                                       color: Colors.grey.shade500,
                                       fontSize: 17),
@@ -187,7 +189,8 @@ class _DeliverySummaryState extends State<DeliverySummary> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Delivery fee', style: TextStyle(fontSize: 17)),
+                        Text('delivery.deliverFee'.tr(),
+                            style: TextStyle(fontSize: 17)),
                         Text(payment_summary['delivery_fee'],
                             style: TextStyle(
                                 fontSize: 19,
@@ -202,7 +205,8 @@ class _DeliverySummaryState extends State<DeliverySummary> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Handling fee', style: TextStyle(fontSize: 17)),
+                        Text('delivery.handlingFee'.tr(),
+                            style: TextStyle(fontSize: 17)),
                         Text(payment_summary['service_fee'],
                             style: TextStyle(
                                 fontSize: 19,
@@ -218,7 +222,7 @@ class _DeliverySummaryState extends State<DeliverySummary> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Total',
+                        Text('delivery.total'.tr(),
                             style: TextStyle(
                                 fontFamily: 'MoveTextMedium', fontSize: 17)),
                         Text(payment_summary['total'],
@@ -245,7 +249,7 @@ class _DeliverySummaryState extends State<DeliverySummary> {
                           ],
                         )
                       : GenericRectButton(
-                          label: 'Make your delivery',
+                          label: 'delivery.makeYourDelivery'.tr(),
                           labelFontSize: 22,
                           actuatorFunctionl: () {
                             requestForDelivery(context: context);
@@ -441,7 +445,7 @@ class LocalModal extends StatelessWidget {
                     height: 15,
                   ),
                   Text(
-                    'You have a request in progress',
+                    'rides.requestingForRideLoading_msg'.tr(),
                     style: TextStyle(
                       fontFamily: 'MoveTextMedium',
                       fontSize: 19,
@@ -453,13 +457,13 @@ class LocalModal extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Text(
-                      "We were unable to go forward with this delivery request because it seems like you have an unconfirmed delivery request in progress, please confirm it and try again.",
+                      "delivery.haveRequestInPro_msg".tr(),
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
                   Expanded(child: SizedBox.shrink()),
                   GenericRectButton(
-                    label: 'Try again',
+                    label: 'generic_text.tryAgain'.tr(),
                     labelFontSize: 20,
                     actuatorFunctionl: () {
                       Navigator.of(context).pop();
@@ -486,7 +490,7 @@ class LocalModal extends StatelessWidget {
                     height: 15,
                   ),
                   Text(
-                    'Unable to request',
+                    'rides.unableToRequestTitle'.tr(),
                     style: TextStyle(
                       fontFamily: 'MoveTextMedium',
                       fontSize: 19,
@@ -498,13 +502,13 @@ class LocalModal extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Text(
-                      "We were unable to go forward with your delivery request due to an unexpected error, please try again and if it persists, please contact us through the Support tab.",
+                      "delivery.unableToRequest_msg".tr(),
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
                   Expanded(child: SizedBox.shrink()),
                   GenericRectButton(
-                    label: 'Try again',
+                    label: 'generic_text.tryAgain'.tr(),
                     labelFontSize: 20,
                     actuatorFunctionl: () {
                       Navigator.of(context).pop();
@@ -566,7 +570,7 @@ class Header extends StatelessWidget {
                       SizedBox(
                         width: 4,
                       ),
-                      Text('Summary',
+                      Text('rides.summaryRideLabel'.tr(),
                           style: TextStyle(
                               fontFamily: 'MoveTextBold', fontSize: 24)),
                     ],
@@ -675,9 +679,9 @@ class ProductModel extends StatelessWidget {
     int items = productData['items'];
 
     if (items == 0 || items > 1) {
-      return '$items items';
+      return 'delivery.manyItems'.tr(args: ['$items']);
     } else {
-      return '$items item';
+      return 'delivery.singleItem'.tr(args: ['$items']);
     }
   }
 }

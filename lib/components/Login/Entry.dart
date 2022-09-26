@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -61,9 +62,12 @@ class _EntryState extends State<Entry> {
                   SizedBox(
                     height: 50,
                   ),
-                  Text(
-                    'Move Confidently',
-                    style: TextStyle(fontFamily: 'MoveBold', fontSize: 26),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Text(
+                      'entry.big_title'.tr(),
+                      style: TextStyle(fontFamily: 'MoveBold', fontSize: 27),
+                    ),
                   ),
                   SizedBox(
                     height: 15,
@@ -72,7 +76,7 @@ class _EntryState extends State<Entry> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Rides',
+                        'entry.rides'.tr(),
                         style: TextStyle(fontSize: 15),
                       ),
                       SizedBox(
@@ -80,7 +84,7 @@ class _EntryState extends State<Entry> {
                         child: Icon(Icons.circle, size: 5),
                       ),
                       Text(
-                        'Deliveries',
+                        'entry.deliveries'.tr(),
                         style: TextStyle(fontSize: 15),
                       ),
                       SizedBox(
@@ -88,7 +92,7 @@ class _EntryState extends State<Entry> {
                         child: Icon(Icons.circle, size: 5),
                       ),
                       Text(
-                        'Shopping',
+                        'entry.shopping'.tr(),
                         style: TextStyle(fontSize: 15),
                       )
                     ],

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -116,7 +117,7 @@ class _OTPCheckState extends State<OTPCheck> {
                     height: 15,
                   ),
                   Text(
-                    'Unable to send the code',
+                    'otp_check.unableToSendCode_title'.tr(),
                     style: TextStyle(
                       fontFamily: 'MoveTextMedium',
                       fontSize: 19,
@@ -128,13 +129,13 @@ class _OTPCheckState extends State<OTPCheck> {
                   Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Text(
-                      "We were unable to send you the 4-digit code due to an unexpected error, please check your internet connection and try again.",
+                      "otp_check.unableToSendCode_msg".tr(),
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
                   Expanded(child: SizedBox.shrink()),
                   GenericRectButton(
-                    label: 'Try again',
+                    label: 'generic_text.tryAgain'.tr(),
                     labelFontSize: 20,
                     actuatorFunctionl: () {
                       Navigator.of(context).pop();
@@ -253,7 +254,7 @@ class _OTPCheckState extends State<OTPCheck> {
                     height: 15,
                   ),
                   Text(
-                    'Wrong code entered',
+                    'otp_check.wrongCodeEntered',
                     style: TextStyle(
                       fontFamily: 'MoveTextMedium',
                       fontSize: 19,
@@ -265,13 +266,13 @@ class _OTPCheckState extends State<OTPCheck> {
                   Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Text(
-                      "The code that you have entered is not correct, please double check in your SMS the latest 4-digit code that we've sent.",
+                      "otp_check.incorrectCodeEntered",
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
                   Expanded(child: SizedBox.shrink()),
                   GenericRectButton(
-                    label: 'Try again',
+                    label: 'generic_text.tryAgain',
                     labelFontSize: 20,
                     actuatorFunctionl: () {
                       Navigator.of(context).pop();

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -44,14 +45,14 @@ class _CreateAccountState extends State<CreateAccount> {
           Padding(
             padding: const EdgeInsets.only(left: 20, top: 25),
             child: Text(
-              'No account? No problems!',
+              'create_account.noAccountNoProbs'.tr(),
               style: TextStyle(fontFamily: 'MoveBold', fontSize: 25),
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
             child: Text(
-              'With a Orniss account you will be able to make seamless rides, deliveries a even shop from various stores from the comfort of your couch.',
+              'create_account.accountDescription'.tr(),
               style: TextStyle(
                   fontSize: 15, color: AppTheme().getGenericDarkGrey()),
             ),
@@ -67,14 +68,14 @@ class _CreateAccountState extends State<CreateAccount> {
                             fontFamily: 'MoveTextRegular',
                             fontSize: 14),
                         children: [
-                  TextSpan(text: 'By clicking '),
+                  TextSpan(text: 'create_account.byClicking '.tr()),
                   TextSpan(
-                      text: 'Create your account',
+                      text: 'create_account.createAccountTitle'.tr(),
                       style: TextStyle(
                           fontFamily: 'MoveTextBold', color: Colors.black)),
-                  TextSpan(text: ', you automatically accept our '),
+                  TextSpan(text: ', create_account.autoAccept '.tr()),
                   TextSpan(
-                      text: 'terms and conditions.',
+                      text: 'create_account.termsAndConds'.tr(),
                       style: TextStyle(
                           fontFamily: 'MoveTextMedium',
                           color: AppTheme().getPrimaryColor()))
@@ -83,7 +84,7 @@ class _CreateAccountState extends State<CreateAccount> {
           GenericRectButton(
               label: context.watch<HomeProvider>().isLoadingForRequest
                   ? 'LOADING'
-                  : 'Create your account',
+                  : 'create_account.createAccountLabel'.tr(),
               labelFontSize: 22,
               isArrowShow:
                   context.watch<HomeProvider>().isLoadingForRequest == false,
@@ -178,7 +179,7 @@ class _CreateAccountState extends State<CreateAccount> {
                     height: 15,
                   ),
                   Text(
-                    'Unable to create account',
+                    'create_account.unableToCreateAcc'.tr(),
                     style: TextStyle(
                       fontFamily: 'MoveTextMedium',
                       fontSize: 19,
@@ -190,13 +191,13 @@ class _CreateAccountState extends State<CreateAccount> {
                   Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Text(
-                      "We were unable to create your account due to an unexpected error, please check your internet connection and try again.",
+                      "create_account.unableToCreateAccUnexpected".tr(),
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
                   Expanded(child: SizedBox.shrink()),
                   GenericRectButton(
-                    label: 'Try again',
+                    label: 'create_account.generic_text'.tr(),
                     labelFontSize: 20,
                     actuatorFunctionl: () {
                       Navigator.of(context).pop();
@@ -235,7 +236,7 @@ class _CreateAccountState extends State<CreateAccount> {
                     height: 15,
                   ),
                   Text(
-                    'Phone number taken',
+                    'create_account.phoneNoTaken'.tr(),
                     style: TextStyle(
                       fontFamily: 'MoveTextMedium',
                       fontSize: 19,
@@ -247,13 +248,13 @@ class _CreateAccountState extends State<CreateAccount> {
                   Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Text(
-                      "We were unable to create your account because the phone number which which you are trying to proceed is already linked to another account. Please use another phone number and try again.",
+                      "create_account.phoneTakenErrorUnexpected".tr(),
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
                   Expanded(child: SizedBox.shrink()),
                   GenericRectButton(
-                    label: 'Try again',
+                    label: 'create_account.generic_text'.tr(),
                     labelFontSize: 20,
                     actuatorFunctionl: () {
                       Navigator.of(context).pop();
@@ -296,7 +297,7 @@ class Header extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text('Howdy!',
+                  Text('create_account.howdy'.tr(),
                       style: TextStyle(
                           fontFamily: 'MoveTextMedium', fontSize: 20)),
                 ],

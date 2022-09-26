@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
@@ -198,7 +199,7 @@ class SummaryPreview extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
               child: Text(
-                'Summary',
+                'rides.summaryRideLabel'.tr(),
                 style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 18),
               ),
             ),
@@ -222,7 +223,7 @@ class SummaryPreview extends StatelessWidget {
             SafeArea(
               top: false,
               child: GenericRectButton(
-                  label: 'Request for ride',
+                  label: 'rides.requestForRideLabel'.tr(),
                   labelFontSize: 20,
                   actuatorFunctionl: () =>
                       requestForDelivery(context: context)),
@@ -258,7 +259,7 @@ class SummaryPreview extends StatelessWidget {
             Container(
                 height: 200,
                 alignment: Alignment.center,
-                child: Text('Requesting for your ride...',
+                child: Text('rides.requestingForRideLoading_msg'.tr(),
                     style: TextStyle(fontSize: 18)))
           ],
         ),
@@ -384,7 +385,7 @@ class LocalModal extends StatelessWidget {
                     height: 15,
                   ),
                   Text(
-                    'You have a request in progress',
+                    'rides.haveRequestInPro_title'.tr(),
                     style: TextStyle(
                       fontFamily: 'MoveTextMedium',
                       fontSize: 19,
@@ -396,13 +397,13 @@ class LocalModal extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Text(
-                      "We were unable to go forward with this ride request because it seems like you have an unconfirmed ride request in progress, please confirm it and try again.",
+                      "rides.haveRequestInPro_msg".tr(),
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
                   Expanded(child: SizedBox.shrink()),
                   GenericRectButton(
-                    label: 'Try again',
+                    label: 'generic_text.tryAgain'.tr(),
                     labelFontSize: 20,
                     actuatorFunctionl: () {
                       Navigator.of(context).pop();
@@ -429,7 +430,7 @@ class LocalModal extends StatelessWidget {
                     height: 15,
                   ),
                   Text(
-                    'Unable to request',
+                    'rides.unableToRequestTitle'.tr(),
                     style: TextStyle(
                       fontFamily: 'MoveTextMedium',
                       fontSize: 19,
@@ -441,13 +442,13 @@ class LocalModal extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Text(
-                      "We were unable to go forward with your ride request due to an unexpected error, please try again and if it persists, please contact us through the Support tab.",
+                      "rides.unableToRequest_msg".tr(),
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
                   Expanded(child: SizedBox.shrink()),
                   GenericRectButton(
-                    label: 'Try again',
+                    label: 'generic_text.tryAgain'.tr(),
                     labelFontSize: 20,
                     actuatorFunctionl: () {
                       Navigator.of(context).pop();
@@ -627,12 +628,12 @@ class CarInstance extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Or'),
+                  Text('rides.orWord'.tr()),
                   SizedBox(
                     width: 10,
                   ),
                   Text(
-                    'Enter your own amount',
+                    'rides.enterOwnAmountLabel'.tr(),
                     style: TextStyle(
                         fontFamily: 'MoveTextMedium',
                         fontSize: 16,
@@ -664,12 +665,12 @@ class CarInstance extends StatelessWidget {
           text: TextSpan(
               style: TextStyle(fontFamily: 'MoveTextLight'),
               children: [
-                TextSpan(text: 'Your custom fare should be between '),
+                TextSpan(text: 'rides.customAmountLimit_msg '.tr()),
                 TextSpan(
                     text:
                         'N\$${context.read<HomeProvider>().getCustomFareRange()['min']}',
                     style: TextStyle(fontFamily: 'MoveTextMedium')),
-                TextSpan(text: ' and '),
+                TextSpan(text: ' rides.andWord '.tr()),
                 TextSpan(
                     text:
                         'N\$${context.read<HomeProvider>().getCustomFareRange()['max']}',
@@ -700,7 +701,7 @@ class CarInstance extends StatelessWidget {
                         //decoration: BoxDecoration(border: Border.all(width: 1)),
                         child: Padding(
                           padding: const EdgeInsets.only(top: 25),
-                          child: Text("What's your custom fare?",
+                          child: Text("rides.whatCustomFareQuestion".tr(),
                               style: TextStyle(
                                   fontFamily: 'MoveTextMedium', fontSize: 20)),
                         ),
@@ -744,7 +745,8 @@ class CarInstance extends StatelessWidget {
                                 fontFamily: 'MoveTextMedium', fontSize: 22),
                             decoration: InputDecoration(
                                 counterText: '',
-                                labelText: 'Enter your fare',
+                                labelText:
+                                    'rides.enterCustomFare_placeholder'.tr(),
                                 labelStyle:
                                     TextStyle(fontFamily: 'MoveTextRegular'),
                                 prefixText: 'N\$',
@@ -767,13 +769,13 @@ class CarInstance extends StatelessWidget {
                                     color: Colors.black,
                                     fontSize: 15),
                                 children: [
-                                  TextSpan(text: 'Between '),
+                                  TextSpan(text: 'rides.betweenWord '.tr()),
                                   TextSpan(
                                       text:
                                           'N\$${context.read<HomeProvider>().getCustomFareRange()['min']} ',
                                       style: TextStyle(
                                           fontFamily: 'MoveTextMedium')),
-                                  TextSpan(text: 'and '),
+                                  TextSpan(text: 'rides.andWord '.tr()),
                                   TextSpan(
                                       text:
                                           'N\$${context.read<HomeProvider>().getCustomFareRange()['max']}',
@@ -794,16 +796,20 @@ class CarInstance extends StatelessWidget {
                                             .watch<HomeProvider>()
                                             .customFareEntered !=
                                         null
-                                    ? 'Set new fare${context.read<HomeProvider>().customFareEntered != null ? ' to N\$' + context.read<HomeProvider>().customFareEntered!.round().toString() : ''}'
-                                    : 'Close'
-                                : 'Remove custom fare',
+                                    ? 'rides.setNewFareWord'.tr(args: [
+                                        '${context.read<HomeProvider>().customFareEntered != null ? ' to N\$' + context.read<HomeProvider>().customFareEntered!.round().toString() : ''}'
+                                      ])
+                                    : 'rides.closeWord'.tr()
+                                : 'rides.removeCustomFare'.tr(),
                             labelFontSize: 20,
                             bottomSubtitleText: context
                                         .watch<HomeProvider>()
                                         .isCustomFareConsidered ==
                                     false
                                 ? null
-                                : 'Current fare: N\$${context.watch<HomeProvider>().definitiveCustomFare}',
+                                : 'rides.currentFare'.tr(args: [
+                                    '${context.watch<HomeProvider>().definitiveCustomFare}'
+                                  ]),
                             isArrowShow: false,
                             actuatorFunctionl: () {
                               if (context
@@ -863,7 +869,7 @@ class ComputingFaresLoader extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(color: Colors.white),
         width: MediaQuery.of(context).size.width,
-        child: Text('Computing fares'),
+        child: Text('rides.computingFares'.tr()),
       ),
     );
   }

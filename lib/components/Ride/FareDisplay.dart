@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
@@ -356,7 +357,7 @@ class FarePreview extends StatelessWidget {
                   SafeArea(
                     top: false,
                     child: GenericRectButton(
-                        label: 'Confirm',
+                        label: 'rides.confirm'.tr(),
                         labelFontSize: 20,
                         actuatorFunctionl: () =>
                             Navigator.of(context).pushNamed('/RideSummary')),
@@ -387,7 +388,7 @@ class LoadingForFare extends StatelessWidget {
           Container(
               height: 200,
               alignment: Alignment.center,
-              child: Text('Computing your fare...',
+              child: Text('rides.computingFare'.tr(),
                   style: TextStyle(fontSize: 18)))
         ],
       ),
@@ -528,7 +529,7 @@ class ComputingFaresLoader extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(color: Colors.white),
         width: MediaQuery.of(context).size.width,
-        child: Text('Computing fares'),
+        child: Text('rides.computingFares'.tr()),
       ),
     );
   }

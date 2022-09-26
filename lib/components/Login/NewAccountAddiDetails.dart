@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -42,7 +43,7 @@ class _NewAccountAddiDetailsState extends State<NewAccountAddiDetails> {
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Text("Few more things",
+                          Text("new_account.fewMoteThings".tr(),
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   fontFamily: 'MoveBold',
@@ -51,10 +52,10 @@ class _NewAccountAddiDetailsState extends State<NewAccountAddiDetails> {
                           SizedBox(
                             width: 5,
                           ),
-                          Text(
-                            '🇳🇦',
-                            style: TextStyle(fontSize: 27),
-                          )
+                          // Text(
+                          //   '🇳🇦',
+                          //   style: TextStyle(fontSize: 27),
+                          // )
                         ])),
               ),
               SizedBox(
@@ -93,14 +94,14 @@ class InputUserDetails extends StatelessWidget {
                       //   size: 40,
                       // ),
                       focusColor: Colors.amber,
-                      labelText: "What's your name?",
+                      labelText: "new_account.whatIsName".tr(),
                       floatingLabelBehavior: FloatingLabelBehavior.auto)),
             ),
             Visibility(
                 visible: context.watch<HomeProvider>().name.isNotEmpty &&
                     context.watch<HomeProvider>().name.length < 2,
                 child: ErrorValidation(
-                    message: 'Should be at least 2 characters long.')),
+                    message: 'new_account.nameShouldBelong2'.tr())),
             SizedBox(
               height: 18,
             ),
@@ -132,7 +133,7 @@ class InputUserDetails extends StatelessWidget {
                         // ),
                         enabled: false,
                         focusColor: Colors.amber,
-                        helperText: 'Choose your gender',
+                        helperText: 'new_account.chooseGender'.tr(),
                         helperStyle:
                             TextStyle(color: Colors.grey, fontSize: 15),
                         labelText: DataParser()
@@ -161,7 +162,7 @@ class InputUserDetails extends StatelessWidget {
                       //   size: 40,
                       // ),
                       focusColor: Colors.amber,
-                      labelText: 'Email',
+                      labelText: 'new_account.emailLabel'.tr(),
                       floatingLabelBehavior: FloatingLabelBehavior.auto)),
             ),
             Visibility(
@@ -169,7 +170,8 @@ class InputUserDetails extends StatelessWidget {
                     context.watch<HomeProvider>().is_additional_emailValid ==
                             false &&
                         context.watch<HomeProvider>().email.isNotEmpty,
-                child: ErrorValidation(message: 'Invalid email.')),
+                child:
+                    ErrorValidation(message: 'new_account.invalidEmail'.tr())),
             Expanded(
               child: Container(
                 child: SizedBox(
@@ -297,7 +299,7 @@ class InputUserDetails extends StatelessWidget {
                     height: 15,
                   ),
                   Text(
-                    'Unable to update account',
+                    'new_account.unableToUpdateAccount'.tr(),
                     style: TextStyle(
                       fontFamily: 'MoveTextMedium',
                       fontSize: 19,
@@ -309,13 +311,13 @@ class InputUserDetails extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Text(
-                      "We were unable to update your account due to an unexpected error, please check your internet connection and try again.",
+                      "new_account.unableToUpdateUnexpecteredErr".tr(),
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
                   Expanded(child: SizedBox.shrink()),
                   GenericRectButton(
-                    label: 'Try again',
+                    label: 'generic_text.tryAgain',
                     labelFontSize: 20,
                     actuatorFunctionl: () {
                       Navigator.of(context).pop();
@@ -372,26 +374,26 @@ class ModalForGenderSelection extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(top: 20, bottom: 17),
             child: Text(
-              'Choose your gender',
+              'new_account.chooseGender'.tr(),
               style: TextStyle(fontSize: 20, fontFamily: 'MoveTextMedium'),
             ),
           ),
           GenericGenderSelectButtons(
               leadingIcon: Icons.male,
               genderValue: 'male',
-              textValue: 'Male',
+              textValue: 'new_account.male'.tr(),
               backgroundColor: Colors.black,
               textColor: Colors.white),
           GenericGenderSelectButtons(
               leadingIcon: Icons.female,
               genderValue: 'female',
-              textValue: 'Female',
+              textValue: 'new_account.female'.tr(),
               backgroundColor: Colors.black,
               textColor: Colors.white),
           GenericGenderSelectButtons(
               leadingIcon: Icons.privacy_tip,
               genderValue: 'unknwon',
-              textValue: 'Rather not say',
+              textValue: 'new_account.doNotSay'.tr(),
               backgroundColor: Colors.grey.shade300,
               textColor: Colors.black)
         ],

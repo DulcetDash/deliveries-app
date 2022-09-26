@@ -6,6 +6,7 @@ import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -135,14 +136,13 @@ class RenderBottomPreview extends StatelessWidget {
                                 strokeWidth: 3,
                                 color: AppTheme().getPrimaryColor())),
                         title: Text(
-                          'Finding your driver...',
+                          'rides.findingYourDriver'.tr(),
                           style: TextStyle(
                               fontFamily: 'MoveTextBold', fontSize: 19),
                         ),
                         subtitle: Padding(
                           padding: const EdgeInsets.only(top: 5),
-                          child: Text(
-                              'Press here for more details about your trip.'),
+                          child: Text('rides.pressForMoreDetails'.tr()),
                         ),
                         trailing: Icon(
                           Icons.arrow_forward,
@@ -276,7 +276,7 @@ class RenderBottomPreview extends StatelessWidget {
                       child: Row(
                         children: [
                           Text(
-                            'Itinerary',
+                            'rides.itineraryLabel'.tr(),
                             style: TextStyle(
                                 fontFamily: 'MoveTextMedium',
                                 fontSize: 16,
@@ -343,14 +343,14 @@ class RenderBottomPreview extends StatelessWidget {
                                             Container(
                                               // color: Colors.green,
                                               height: 33,
-                                              child: const Padding(
+                                              child: Padding(
                                                 padding:
                                                     EdgeInsets.only(top: 2),
                                                 child: SizedBox(
                                                     width: 45,
                                                     child: Text(
-                                                      'From',
-                                                      style: TextStyle(
+                                                      'rides.fromLabel'.tr(),
+                                                      style: const TextStyle(
                                                           fontFamily:
                                                               'MoveTextLight'),
                                                     )),
@@ -395,13 +395,13 @@ class RenderBottomPreview extends StatelessWidget {
                                           Container(
                                             // color: Colors.green,
                                             height: 34,
-                                            child: const Padding(
+                                            child: Padding(
                                               padding: EdgeInsets.only(top: 3),
                                               child: SizedBox(
                                                   width: 45,
                                                   child: Text(
-                                                    'To',
-                                                    style: TextStyle(
+                                                    'rides.toLabel'.tr(),
+                                                    style: const TextStyle(
                                                         fontFamily:
                                                             'MoveTextLight'),
                                                   )),
@@ -453,7 +453,9 @@ class RenderBottomPreview extends StatelessWidget {
                               width: 5,
                             ),
                             Text(
-                              'About ${requestData['route_details']['eta']}',
+                              'rides.aboutETA'.tr(args: [
+                                '${requestData['route_details']['eta']}'
+                              ]),
                               style: TextStyle(fontSize: 16),
                             )
                           ],
@@ -465,7 +467,7 @@ class RenderBottomPreview extends StatelessWidget {
               ),
               //Button rating
               GenericRectButton(
-                  label: 'Rate your driver',
+                  label: 'rides.rateDriverLabel'.tr(),
                   horizontalPadding: 0,
                   labelFontSize: 25,
                   labelFontFamily: "MoveBold",
@@ -669,7 +671,8 @@ class _MapPreviewState extends State<MapPreview> {
             polylines_snapshot[polylineId] = polyline;
 
             //   //? Create custom markers for origin and destination
-            final originIcon = await placeToMarker('My location', null);
+            final originIcon =
+                await placeToMarker('rides.myLocationMarkerLabel'.tr(), null);
             final destinationIcon = await placeToMarker(
               requestData['step_name'] == 'in_route_to_dropoff'
                   ? requestData['trip_locations']['dropoff'][0]['location_name']
@@ -680,7 +683,7 @@ class _MapPreviewState extends State<MapPreview> {
                       : requestData['trip_locations']['dropoff'][0]
                               ['location_name']
                           .toString()
-                  : 'My driver',
+                  : 'rides.myDriverMarkerLabel'.tr(),
               int.parse(requestData['route_details']['eta']
                       .toString()
                       .split(' ')[0]) *
@@ -876,7 +879,8 @@ class _MapPreviewState extends State<MapPreview> {
         polylines_snapshot[polylineId] = polyline;
 
         //   //? Create custom markers for origin and destination
-        final originIcon = await placeToMarker('My location', null);
+        final originIcon =
+            await placeToMarker('rides.myLocationMarkerLabel'.tr(), null);
         final destinationIcon = await placeToMarker(
           requestData['step_name'] == 'in_route_to_dropoff'
               ? requestData['trip_locations']['dropoff'][0]['location_name']
@@ -886,7 +890,7 @@ class _MapPreviewState extends State<MapPreview> {
                   ? '${requestData['trip_locations']['dropoff'][0]['location_name'].toString().substring(0, 15)}...'
                   : requestData['trip_locations']['dropoff'][0]['location_name']
                       .toString()
-              : 'My driver',
+              : 'rides.myDriverMarkerLabel'.tr(),
           int.parse(requestData['route_details']['eta']
                   .toString()
                   .split(' ')[0]) *
@@ -1010,7 +1014,8 @@ class _MapPreviewState extends State<MapPreview> {
 
         const originId = MarkerId('origin');
 
-        final originIcon = await placeToMarker('My pickup', 1000000);
+        final originIcon =
+            await placeToMarker('rides.myPickupMarkerLabel'.tr(), 1000000);
 
         final originMarker = Marker(
           markerId: originId,
@@ -1175,11 +1180,26 @@ class _LocalModalState extends State<LocalModal> {
   ];
   int rating = 4; //Rating
   List<Map<String, String>> badges = [
-    {'title': 'Excellent service', 'image': 'assets/Images/gold_medal.png'},
-    {'title': 'Neat and tidy', 'image': 'assets/Images/cloth.png'},
-    {'title': 'Great conversation', 'image': 'assets/Images/conversation.png'},
-    {'title': 'Great beats', 'image': 'assets/Images/musical_notes.png'},
-    {'title': 'Expert navigator', 'image': 'assets/Images/placeholder.png'}
+    {
+      'title': 'rides.excellentRatingLabel'.tr(),
+      'image': 'assets/Images/gold_medal.png'
+    },
+    {
+      'title': 'rides.neatTidyRatingLabel'.tr(),
+      'image': 'assets/Images/cloth.png'
+    },
+    {
+      'title': 'rides.greatConversationRatingLabel'.tr(),
+      'image': 'assets/Images/conversation.png'
+    },
+    {
+      'title': 'rides.greatBeatsRatingLabel'.tr(),
+      'image': 'assets/Images/musical_notes.png'
+    },
+    {
+      'title': 'rides.expertNavigator'.tr(),
+      'image': 'assets/Images/placeholder.png'
+    }
   ];
   List<String> selectedBadges = [];
   String note = '';
@@ -1266,7 +1286,7 @@ class _LocalModalState extends State<LocalModal> {
                     height: 15,
                   ),
                   Text(
-                    'Unable to rate driver',
+                    'rides.unableToRateTitle'.tr(),
                     style: TextStyle(
                       fontFamily: 'MoveTextMedium',
                       fontSize: 19,
@@ -1278,13 +1298,13 @@ class _LocalModalState extends State<LocalModal> {
                   Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Text(
-                      "We were unable to submit your rating due to an unexpected error, please try again and if it persists, please contact us through the Support tab.",
+                      "rides.unableToSubmitRating_msg".tr(),
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
                   Expanded(child: SizedBox.shrink()),
                   GenericRectButton(
-                    label: 'Try again',
+                    label: 'generic_text.tryAgain'.tr(),
                     labelFontSize: 20,
                     actuatorFunctionl: () {
                       Navigator.of(context).pop();
@@ -1382,7 +1402,7 @@ class _LocalModalState extends State<LocalModal> {
                     height: 15,
                   ),
                   Text(
-                    'Unable to cancel',
+                    'generic_text.unableToCancel'.tr(),
                     style: TextStyle(
                       fontFamily: 'MoveTextMedium',
                       fontSize: 19,
@@ -1394,13 +1414,13 @@ class _LocalModalState extends State<LocalModal> {
                   Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Text(
-                      "We were unable to cancel your ride request due to an unexpected error, please try again and if it persists, please contact us through the Support tab.",
+                      "rides.unableToCancelRide_msg".tr(),
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
                   Expanded(child: SizedBox.shrink()),
                   GenericRectButton(
-                    label: 'Try again',
+                    label: 'generic_text.tryAgain'.tr(),
                     labelFontSize: 20,
                     actuatorFunctionl: () {
                       Navigator.of(context).pop();
@@ -1447,7 +1467,7 @@ class _LocalModalState extends State<LocalModal> {
                             size: AppTheme().getArrowBackSize() - 3,
                           ),
                           Text(
-                            'Trip details',
+                            'rides.tripDetails'.tr(),
                             style: TextStyle(
                                 fontFamily: 'MoveTextBold', fontSize: 18),
                           ),
@@ -1582,7 +1602,7 @@ class _LocalModalState extends State<LocalModal> {
                                 child: Row(
                                   children: [
                                     Text(
-                                      'Vehicle',
+                                      'rides.vehicleLabel'.tr(),
                                       style: TextStyle(
                                           fontFamily: 'MoveTextMedium',
                                           fontSize: 16,
@@ -1615,7 +1635,7 @@ class _LocalModalState extends State<LocalModal> {
                           child: Row(
                             children: [
                               Text(
-                                'Itinerary',
+                                'rides.itineraryLabel'.tr(),
                                 style: TextStyle(
                                     fontFamily: 'MoveTextMedium',
                                     fontSize: 16,
@@ -1682,13 +1702,14 @@ class _LocalModalState extends State<LocalModal> {
                                                 Container(
                                                   // color: Colors.green,
                                                   height: 33,
-                                                  child: const Padding(
+                                                  child: Padding(
                                                     padding:
                                                         EdgeInsets.only(top: 2),
                                                     child: SizedBox(
                                                         width: 45,
                                                         child: Text(
-                                                          'From',
+                                                          'rides.fromLabel'
+                                                              .tr(),
                                                           style: TextStyle(
                                                               fontFamily:
                                                                   'MoveTextLight'),
@@ -1735,13 +1756,13 @@ class _LocalModalState extends State<LocalModal> {
                                               Container(
                                                 // color: Colors.green,
                                                 height: 34,
-                                                child: const Padding(
+                                                child: Padding(
                                                   padding:
                                                       EdgeInsets.only(top: 3),
                                                   child: SizedBox(
                                                       width: 45,
                                                       child: Text(
-                                                        'To',
+                                                        'rides.toLabel'.tr(),
                                                         style: TextStyle(
                                                             fontFamily:
                                                                 'MoveTextLight'),
@@ -1794,7 +1815,9 @@ class _LocalModalState extends State<LocalModal> {
                                   width: 5,
                                 ),
                                 Text(
-                                  'About ${requestData['route_details'] != null ? requestData['route_details']['eta'] : '~'}',
+                                  'rides.aboutETA'.tr(args: [
+                                    '${requestData['route_details'] != null ? requestData['route_details']['eta'] : '~'}'
+                                  ]),
                                   style: TextStyle(fontSize: 16),
                                 )
                               ],
@@ -1862,7 +1885,7 @@ class _LocalModalState extends State<LocalModal> {
                           child: Row(
                             children: [
                               Text(
-                                'Payment',
+                                'rides.paymentLabel'.tr(),
                                 style: TextStyle(
                                     fontFamily: 'MoveTextMedium',
                                     fontSize: 16,
@@ -1935,7 +1958,7 @@ class _LocalModalState extends State<LocalModal> {
                           child: Row(
                             children: [
                               Text(
-                                'Safety',
+                                'rides.SafetyLabel'.tr(),
                                 style: TextStyle(
                                     fontFamily: 'MoveTextMedium',
                                     fontSize: 16,
@@ -1950,14 +1973,13 @@ class _LocalModalState extends State<LocalModal> {
                               color: AppTheme().getErrorColor()),
                           horizontalTitleGap: 0,
                           title: Text(
-                            'Call the Police',
+                            'rides.callPoliceLabel'.tr(),
                             style: TextStyle(
                               fontFamily: 'MoveTextMedium',
                               fontSize: 17,
                             ),
                           ),
-                          subtitle:
-                              Text('Reach the local authorities quickly.'),
+                          subtitle: Text('rides.callPoliceSubtitle'.tr()),
                           trailing: Icon(
                             Icons.arrow_forward_ios,
                             size: 15,
@@ -1988,7 +2010,7 @@ class _LocalModalState extends State<LocalModal> {
                             ),
                             contentPadding: EdgeInsets.only(left: 20),
                             title: Text(
-                              'Cancel your ride',
+                              'rides.cancelRideLabel'.tr(),
                               style: TextStyle(
                                   fontFamily: 'MoveTextMedium',
                                   fontSize: 17,
@@ -2021,7 +2043,7 @@ class _LocalModalState extends State<LocalModal> {
                         size: AppTheme().getArrowBackSize() - 3,
                       ),
                       Text(
-                        'Rate driver',
+                        'rides.rateDriverTitle'.tr(),
                         style:
                             TextStyle(fontFamily: 'MoveTextBold', fontSize: 18),
                       ),
@@ -2128,7 +2150,7 @@ class _LocalModalState extends State<LocalModal> {
                     child: Row(
                       children: [
                         Text(
-                          'Give a badge',
+                          'rides.giveABadgeTitle'.tr(),
                           style: TextStyle(
                               fontFamily: 'MoveTextMedium',
                               fontSize: 16,
@@ -2243,7 +2265,7 @@ class _LocalModalState extends State<LocalModal> {
                     child: Row(
                       children: [
                         Text(
-                          'Note',
+                          'rides.noteTitle'.tr(),
                           style: TextStyle(
                               fontFamily: 'MoveTextMedium',
                               fontSize: 16,
@@ -2281,7 +2303,7 @@ class _LocalModalState extends State<LocalModal> {
                                 alignment: Alignment.topLeft,
                                 child: Padding(
                                   padding: const EdgeInsets.only(top: 25),
-                                  child: Text("Enter your note here."),
+                                  child: Text('rides.enterNoteTitle'.tr()),
                                 ),
                               ),
                               floatingLabelBehavior:
@@ -2303,7 +2325,8 @@ class _LocalModalState extends State<LocalModal> {
                     height: 30,
                   ),
                   GenericRectButton(
-                      label: isLoadingSubmission ? 'LOADING' : 'Done',
+                      label:
+                          isLoadingSubmission ? 'LOADING' : 'rides.done'.tr(),
                       labelFontSize: 22,
                       isArrowShow: false,
                       actuatorFunctionl: isLoadingSubmission
@@ -2331,7 +2354,7 @@ class _LocalModalState extends State<LocalModal> {
                   Align(
                     child: Container(
                         // color: Colors.red,
-                        child: Text('Cancel ride?',
+                        child: Text('rides.cancelRideTitle'.tr(),
                             style: TextStyle(
                                 fontFamily: 'MoveTextBold', fontSize: 20))),
                   ),
@@ -2342,8 +2365,7 @@ class _LocalModalState extends State<LocalModal> {
                     padding:
                         const EdgeInsets.only(left: 20, right: 20, bottom: 10),
                     child: Container(
-                      child: Text(
-                          'Do you really want to cancel your ride request?',
+                      child: Text('rides.cancelRideConfirmQuestion'.tr(),
                           style: TextStyle(
                             fontSize: 16,
                           )),
@@ -2352,14 +2374,15 @@ class _LocalModalState extends State<LocalModal> {
                   Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Container(
-                      child: Text(
-                          'By doing so you will not be able to get a driver to move you to your destination.',
+                      child: Text('rides.cancelRideDescription_msg'.tr(),
                           style: TextStyle(fontSize: 16)),
                     ),
                   ),
                   Expanded(child: SizedBox.shrink()),
                   GenericRectButton(
-                      label: isLoadingSubmission ? 'LOADING' : 'Cancel ride',
+                      label: isLoadingSubmission
+                          ? 'LOADING'
+                          : 'rides.cancelRideBttn_label'.tr(),
                       labelFontSize: 20,
                       horizontalPadding: 20,
                       verticalPadding: 0,
@@ -2377,7 +2400,7 @@ class _LocalModalState extends State<LocalModal> {
                         ? AppTheme().getFadedOpacityValue()
                         : 1,
                     child: GenericRectButton(
-                        label: 'Don\'t cancel',
+                        label: 'rides.doNotCancelBttn_label'.tr(),
                         labelFontSize: 20,
                         horizontalPadding: 20,
                         verticalPadding: 0,
