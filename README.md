@@ -1,4 +1,4 @@
-# dulcetdash
+# DulcetDash
 
 A new Flutter project.
 
