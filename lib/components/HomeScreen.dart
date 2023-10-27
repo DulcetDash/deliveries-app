@@ -85,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'home.bigTitle'.tr(),
+                                  'Shop seamlessly',
                                   style: TextStyle(
                                       fontFamily: 'MoveTextMedium',
                                       fontSize: 27,
@@ -96,12 +96,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                                 SizedBox(
                                   width:
-                                      MediaQuery.of(context).size.width * 0.58,
+                                      MediaQuery.of(context).size.width * 0.68,
                                   child: Text(
                                     'home.subDescription'.tr(),
                                     style: TextStyle(
                                       height: 1.3,
-                                      fontSize: 14.5,
+                                      fontSize: 16,
                                       color: Colors.white,
                                     ),
                                   ),
@@ -130,14 +130,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                         color: Colors.black,
                                         borderRadius:
                                             BorderRadius.circular(1000)),
-                                    width: 103,
-                                    height: 38,
+                                    width: 133,
+                                    height: 40,
                                     child: Text(
-                                      'shopping.shopNow'.tr(),
+                                      'Shop now',
                                       style: TextStyle(
-                                          fontFamily: 'MoveTextMedium',
+                                          fontFamily: 'MoveTextBold',
                                           color: Colors.white,
-                                          fontSize: 15),
+                                          fontSize: 18),
                                     ),
                                   ),
                                 )
@@ -334,26 +334,7 @@ class ProductsSelection extends StatelessWidget {
     return Container(
       width: MediaQuery.of(context).size.width * 0.90,
       alignment: Alignment.center,
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        selections(
-            context: context,
-            imagePath: 'assets/Images/normalTaxiEconomy.jpeg',
-            title: 'home.ride'.tr(),
-            actuator: () {
-              // print('Ride');
-              //!Cleanse
-              context.read<HomeProvider>().clearEveryRequestsRelatedData();
-              //...
-              context
-                  .read<HomeProvider>()
-                  .updateLoadingRequestStatus(status: false);
-              //! Update the selected service
-              context
-                  .read<HomeProvider>()
-                  .updateSelectedService(service: 'ride');
-              //...
-              Navigator.of(context).pushNamed('/PassengersInput');
-            }),
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
         selections(
             context: context,
             imagePath: 'assets/Images/box_delivery.png',
@@ -375,7 +356,7 @@ class ProductsSelection extends StatelessWidget {
         selections(
             context: context,
             imagePath: 'assets/Images/cart.jpg',
-            title: 'home.shopping'.tr(),
+            title: 'Groceries',
             actuator: () {
               //!Cleanse
               context.read<HomeProvider>().clearEveryRequestsRelatedData();
@@ -419,7 +400,7 @@ class ProductsSelection extends StatelessWidget {
             ),
             Text(
               title,
-              style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 16),
+              style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 17),
             )
           ],
         ),

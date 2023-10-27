@@ -31,7 +31,10 @@ class _DrawerMenuState extends State<DrawerMenu> {
             height: 150,
             alignment: Alignment.centerLeft,
             child: DrawerHeader(
-                padding: const EdgeInsets.only(left: 0, top: 30),
+                padding: const EdgeInsets.only(
+                  left: 0,
+                  top: 30,
+                ),
                 margin: EdgeInsets.zero,
                 decoration: const BoxDecoration(color: Colors.white),
                 child: SafeArea(
@@ -64,21 +67,21 @@ class _DrawerMenuState extends State<DrawerMenu> {
                                 height: 70,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(1000)),
-                                // child: Image.network(
-                                //   userData['profile_picture'],
-                                //   fit: BoxFit.cover,
-                                //   width: 70.0,
-                                //   height: 70.0,
-                                //   errorBuilder: (context, error, stackTrace) {
-                                //     return const CircleAvatar(
-                                //       radius: 25,
-                                //       backgroundColor: Colors.white,
-                                //       backgroundImage: AssetImage(
-                                //         'assets/Images/user.png',
-                                //       ),
-                                //     );
-                                //   },
-                                // ),
+                                child: Image.network(
+                                  userData['profile_picture'],
+                                  fit: BoxFit.cover,
+                                  width: 70.0,
+                                  height: 70.0,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return const CircleAvatar(
+                                      radius: 25,
+                                      backgroundColor: Colors.white,
+                                      backgroundImage: AssetImage(
+                                        'assets/Images/user.png',
+                                      ),
+                                    );
+                                  },
+                                ),
                               )),
                         ),
                         title: Text(
@@ -107,7 +110,10 @@ class _DrawerMenuState extends State<DrawerMenu> {
                         // ),
                         ))),
           ),
-          DriverForNej(),
+          // DriverForNej(),
+          const SizedBox(
+            height: 50,
+          ),
           MenuOption(
             titleOption: 'drawer.yourRides'.tr(),
             showDivider: true,
@@ -213,7 +219,7 @@ class DriverForNej extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 15),
+      padding: const EdgeInsets.only(bottom: 15, top: 25),
       child: InkWell(
         onTap: () async {
           if (!await launch('https://www.ornisstechnologies.com/contact')) {
@@ -236,7 +242,7 @@ class DriverForNej extends StatelessWidget {
                   width: 2,
                 ),
                 Text(
-                  'drawer.driveForOrniss'.tr(),
+                  'Become a shopper',
                   style: TextStyle(
                       fontSize: 15,
                       color: Colors.white,
