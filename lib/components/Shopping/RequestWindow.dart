@@ -541,7 +541,7 @@ class DeliverySection extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'delivery.delivery',
+                  'Delivery',
                   style: TextStyle(
                       fontFamily: 'MoveTextMedium',
                       fontSize: 17,

@@ -380,7 +380,9 @@ class _StoresListingMainState extends State<StoresListingMain> {
   @override
   Widget build(BuildContext context) {
     List<dynamic> newStoresList =
-        context.watch<HomeProvider>().mainStores.sublist(0, 4);
+        context.watch<HomeProvider>().mainStores.length > 4
+            ? context.watch<HomeProvider>().mainStores.sublist(0, 4)
+            : context.watch<HomeProvider>().mainStores;
 
     return Container(
       child: GridView.count(

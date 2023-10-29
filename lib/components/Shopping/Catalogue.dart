@@ -51,9 +51,7 @@ class _CatalogueState extends State<Catalogue> {
 
       if (response.statusCode == 200) //Got some results
       {
-        // log(response.body.toString());
         Map tmpResponse = json.decode(response.body);
-        // log(tmpResponse['response']['WOMEN'].toString());
         //? Update
         context
             .read<HomeProvider>()
@@ -64,14 +62,14 @@ class _CatalogueState extends State<Catalogue> {
       } else //Has some errors
       {
         log(response.toString());
-        Timer(const Duration(milliseconds: 500), () {
+        Timer(const Duration(milliseconds: 1500), () {
           GetCatalogueL1(context: context);
         });
       }
     } catch (e) {
-      log('8');
+      log('8 - GetCatalogueL1');
       log(e.toString());
-      Timer(const Duration(milliseconds: 500), () {
+      Timer(const Duration(milliseconds: 1500), () {
         GetCatalogueL1(context: context);
       });
     }
@@ -85,17 +83,17 @@ class _CatalogueState extends State<Catalogue> {
         child: Container(
           child: Column(
             children: [
-              Header(),
-              Divider(
+              const Header(),
+              const Divider(
                 thickness: 1,
                 height: 35,
               ),
-              SearchBar(),
-              Divider(
+              const SearchBar(),
+              const Divider(
                 color: Colors.white,
                 height: 5,
               ),
-              TimeBar(),
+              const TimeBar(),
               isLoading
                   ? Padding(
                       padding: EdgeInsets.only(
@@ -116,16 +114,16 @@ class _CatalogueState extends State<Catalogue> {
                                 top: MediaQuery.of(context).size.height * 0.1),
                             child: Column(
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.wifi_off,
                                   size: 40,
                                   color: Colors.grey,
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 20,
                                 ),
                                 Text('generic_text.unableToConnectToNet'.tr(),
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         color: Colors.grey, fontSize: 15))
                               ],
                             ),
@@ -137,17 +135,18 @@ class _CatalogueState extends State<Catalogue> {
                               .isNotEmpty
                           ? Expanded(
                               child: ListView(
-                              padding: EdgeInsets.only(top: 10, bottom: 50),
+                              padding:
+                                  const EdgeInsets.only(top: 10, bottom: 50),
                               children: [
                                 GenericTitle(
                                     title: 'shopping.searchResults'.tr()),
-                                SizedBox(
+                                const SizedBox(
                                   height: 15,
                                 ),
                                 searchedCatalogue(context: context),
                               ],
                             ))
-                          : ShowCaseMainCat()
+                          : const ShowCaseMainCat()
             ],
           ),
         ),
