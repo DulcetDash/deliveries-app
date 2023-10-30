@@ -136,7 +136,7 @@ class GetShoppingData {
         context.read<HomeProvider>().updateRealtimeShoppingData(data: []);
       }
     } catch (e) {
-      log('8');
+      log('8 - getShoppingData');
       log(e.toString());
       context.read<HomeProvider>().updateRealtimeShoppingData(data: []);
     }
@@ -199,16 +199,15 @@ class GetUserData {
 
       if (response.statusCode == 200) //Got some results
       {
-        // log(response.body.toString());
         Map<String, dynamic> tmpResponse =
-            json.decode(response.body)[0]['response'];
+            json.decode(response.body)['response'];
         context.read<HomeProvider>().updateUserDataErrorless(data: tmpResponse);
       } else //Has some errors
       {
         log(response.toString());
       }
     } catch (e) {
-      log('8');
+      log('8 - getGenericUserData');
       log(e.toString());
     }
   }
@@ -265,21 +264,21 @@ class GetRecentlyVisitedStores {
     Uri mainUrl = Uri.parse(Uri.encodeFull(
         '${context.read<HomeProvider>().bridge}/getRecentlyVisitedShops'));
 
-    // try {
-    //   Response response = await post(mainUrl, body: bundleData);
+    try {
+      Response response = await post(mainUrl, body: bundleData);
 
-    //   if (response.statusCode == 200) //Got some results
-    //   {
-    //     // log(response.body.toString());
-    //     List tmpResponse = json.decode(response.body)['response'];
-    //     context.read<HomeProvider>().recentlyVisitedStores(data: tmpResponse);
-    //   } else //Has some errors
-    //   {
-    //     log(response.body.toString());
-    //   }
-    // } catch (e) {
-    //   log('8');
-    //   log(e.toString());
-    // }
+      if (response.statusCode == 200) //Got some results
+      {
+        // log(response.body.toString());
+        List tmpResponse = json.decode(response.body)['response'];
+        context.read<HomeProvider>().recentlyVisitedStores(data: tmpResponse);
+      } else //Has some errors
+      {
+        log(response.body.toString());
+      }
+    } catch (e) {
+      log('8 - getRecentlyVisitedShops');
+      log(e.toString());
+    }
   }
 }

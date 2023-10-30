@@ -158,7 +158,6 @@ class LocationOpsHandler with ChangeNotifier {
             state['userData'] == null) //?No state saved yet
         {
           // log('No state saved found');
-          // print('empty_fingerprint');
         } else //Found a saved state
         {
           //! user_identifier
@@ -205,9 +204,6 @@ class LocationOpsHandler with ChangeNotifier {
           context.read<HomeProvider>().updateUsersCurrentLocation(
               newCurrentLocation: json.decode(response.body));
         }
-      } else //Some error
-      {
-        print(response.statusCode);
       }
     } catch (e) {
       log('7');
@@ -222,7 +218,6 @@ class LocationOpsHandler with ChangeNotifier {
     //a. Check the permissions
     Future healthCheck = healthCheckServiceAndPermission();
     healthCheck.then((status) {
-      // print(context.read<HomeProvider>().locationServicesStatus.toString());
       //? Update the state if necessary
       context
           .read<HomeProvider>()

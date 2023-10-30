@@ -315,7 +315,7 @@ class QuickAccess extends StatelessWidget {
             height: 15,
           ),
           Text(
-            'home.noRecentShopping'.tr(),
+            'No recent shopping',
             style:
                 TextStyle(fontSize: 15, color: AppTheme().getGenericDarkGrey()),
           ),

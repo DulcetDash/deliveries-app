@@ -752,8 +752,6 @@ class _HeaderSearchState extends State<HeaderSearch> {
                       context
                           .read<HomeProvider>()
                           .updateTypedSeachQueries(data: value);
-
-                      // print(value);
                     },
                     style: TextStyle(
                         fontFamily: 'MoveTextRegular',

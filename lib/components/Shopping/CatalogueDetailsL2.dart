@@ -43,8 +43,6 @@ class _CatalogueDetailsL2State extends State<CatalogueDetailsL2> {
     Map<String, String> bundleData =
         context.read<HomeProvider>().selectedDataL2ToShow;
 
-    print(bundleData);
-
     try {
       http.Response response = await http.post(mainUrl, body: bundleData);
 

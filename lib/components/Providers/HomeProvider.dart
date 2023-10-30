@@ -1345,7 +1345,6 @@ class HomeProvider with ChangeNotifier {
 
   //!60. Update the general user indetifier
   void updateGeneral_userIdenfier({required String data}) {
-    print(data);
     user_identifier = data;
     notifyListeners();
   }

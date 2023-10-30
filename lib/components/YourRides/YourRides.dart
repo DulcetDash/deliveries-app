@@ -60,7 +60,6 @@ class _YourRidesState extends State<YourRides> {
 
       if (response.statusCode == 200) //Got some results
       {
-        // log(response.body.toString());
         List tmpResponse = json.decode(response.body)['response'];
         //? Update
         setState(() {
@@ -69,7 +68,6 @@ class _YourRidesState extends State<YourRides> {
         });
       } else //Has some errors
       {
-        log(response.toString());
         Timer(const Duration(milliseconds: 1000), () {
           GetListRequests(context: context);
         });
@@ -157,7 +155,7 @@ class Header extends StatelessWidget {
             Expanded(
               child: Container(
                 child: Text(
-                  'yourRides.mainTitle'.tr(),
+                  'Your requests',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontFamily: 'MoveBold',
@@ -200,18 +198,34 @@ class RequestModel extends StatelessWidget {
                 children: [
                   Text(
                     _dataParser.ucFirst(requestData['request_type'].toString()),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
                   Text(
-                    '${_dataParser.getReadableDate(dateString: requestData['date_requested'])}',
+                    _dataParser.getReadableDate(
+                        dateString: requestData['createdAt']),
                     style: TextStyle(
                         fontSize: 13, color: AppTheme().getGenericDarkGrey()),
-                  )
+                  ),
+                  const Expanded(child: Text('')),
+                  requestData['cancelled']
+                      ? Container(
+                          decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(100)),
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 5),
+                            child: Text(
+                              'Cancelled',
+                              style:
+                                  TextStyle(fontSize: 15, color: Colors.white),
+                            ),
+                          ))
+                      : const Text('')
                 ],
               ),
               SizedBox(
