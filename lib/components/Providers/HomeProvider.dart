@@ -272,8 +272,8 @@ class HomeProvider with ChangeNotifier {
         //? Close loader
         isLoadingForDataRestoration = false;
         //! Go to the select language page
-        Navigator.of(context).pushNamed('/Language');
-        // Navigator.of(context).pushNamed('/Entry');
+        // Navigator.of(context).pushNamed('/Language');
+        Navigator.of(context).pushNamed('/Entry');
         //?....
         notifyListeners();
       } else //Found a saved state

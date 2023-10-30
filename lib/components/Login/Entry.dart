@@ -1,3 +1,4 @@
+import 'package:dulcetdash/components/Helpers/AppTheme.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -33,70 +34,85 @@ class _EntryState extends State<Entry> {
               width: MediaQuery.of(context).size.width,
               color: Colors.white,
               child: SafeArea(
+                  top: false,
                   child: Column(
-                children: [
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Align(
-                    alignment: Alignment.center,
-                    child: SizedBox(
-                      width: 225,
-                      height: 115,
-                      child: Image.asset(
-                        'assets/Images/logo.png',
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ),
-                  //Theme image
-                  Container(
-                    color: Colors.white,
-                    height: MediaQuery.of(context).size.height * 0.30,
-                    width: MediaQuery.of(context).size.width,
-                    child: Image.asset(
-                      'assets/Images/cityscape.png',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 50,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: Text(
-                      'Shop Confidently',
-                      style: TextStyle(fontFamily: 'MoveBold', fontSize: 27),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        'entry.deliveries'.tr(),
-                        style: const TextStyle(fontSize: 18),
+                      //Theme image
+                      Container(
+                        color: Colors.white,
+                        height: MediaQuery.of(context).size.height * 0.47,
+                        width: MediaQuery.of(context).size.width,
+                        child: Image.asset(
+                          'assets/Images/ddentry.jpg',
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 50,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: Text(
+                          'Any Shop to your Doorstep',
+                          style:
+                              TextStyle(fontFamily: 'MoveBold', fontSize: 27),
+                        ),
                       ),
                       const SizedBox(
-                        width: 15,
-                        child: Icon(Icons.circle, size: 5),
+                        height: 15,
                       ),
-                      const Text(
-                        'Groceries',
-                        style: TextStyle(fontSize: 18),
-                      )
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'entry.deliveries'.tr(),
+                            style: const TextStyle(fontSize: 20),
+                          ),
+                          const SizedBox(
+                            width: 15,
+                            child: Icon(Icons.circle, size: 5),
+                          ),
+                          const Text(
+                            'Groceries',
+                            style: TextStyle(fontSize: 20),
+                          )
+                        ],
+                      ),
+                      const Expanded(child: SizedBox.shrink()),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15, right: 15),
+                        child: Container(
+                            child: RichText(
+                                text: TextSpan(
+                                    style: TextStyle(
+                                        color: AppTheme().getGenericDarkGrey(),
+                                        fontFamily: 'MoveTextRegular',
+                                        fontSize: 14),
+                                    children: [
+                              TextSpan(
+                                  text:
+                                      'By tapping Get started you agree to DulcetDash\'s '),
+                              TextSpan(
+                                  text: 'Terms & Conditions',
+                                  style: TextStyle(
+                                      fontFamily: 'MoveTextMedium',
+                                      color: AppTheme().getPrimaryColor())),
+                              TextSpan(text: ' and '),
+                              TextSpan(
+                                  text: 'Privacy Policy',
+                                  style: TextStyle(
+                                      fontFamily: 'MoveTextMedium',
+                                      color: AppTheme().getPrimaryColor()))
+                            ]))),
+                      ),
+                      GenericRectButton(
+                          label: 'Get started',
+                          labelFontFamily: 'MoveTextBold',
+                          labelFontSize: 19,
+                          actuatorFunctionl: () =>
+                              Navigator.of(context).pushNamed('/PhoneInput'))
                     ],
-                  ),
-                  const Expanded(child: SizedBox.shrink()),
-                  GenericRectButton(
-                      label: 'Get started',
-                      labelFontSize: 19,
-                      actuatorFunctionl: () =>
-                          Navigator.of(context).pushNamed('/PhoneInput'))
-                ],
-              ))),
+                  ))),
         ),
       ),
     );

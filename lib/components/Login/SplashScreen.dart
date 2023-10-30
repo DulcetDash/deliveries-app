@@ -18,7 +18,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  final double sideLength = 150; //The side of the squre for the logo
+  final double sideLength = 190; //The side of the squre for the logo
   double superSideLength =
       100; //The side of the container above the logo for the scale out
 
@@ -44,6 +44,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
+
     //! core
     //Start with the timers
     //Location operation handlers
@@ -82,12 +83,16 @@ class _SplashScreenState extends State<SplashScreen>
       });
     });
 
-    //Debug start
-    Future.delayed(Duration(seconds: 1), () {
-      _controller.forward().whenComplete(() {
-        //Restore the home flow
-        //Restore the registration flow
-        context.read<HomeProvider>().restoreStateData(context: context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      precacheImage(AssetImage('assets/Images/ddentry.jpg'), context).then((_) {
+        Future.delayed(Duration(seconds: 1), () {
+          _controller.forward().whenComplete(() {
+            context.read<HomeProvider>().restoreStateData(context: context);
+          });
+        });
+      }).catchError((error) {
+        // Handle or log error
+        print("Error preloading image: $error");
       });
     });
   }
