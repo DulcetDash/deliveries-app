@@ -20,7 +20,7 @@ import 'package:collection/collection.dart';
 class HomeProvider with ChangeNotifier {
   // final String bridge = 'http://Graphhopper-ClusterLB-2102461283.us-east-1.elb.amazonaws.com';
   final String bridge = 'http://192.168.8.100:9697';
-  // final String bridge = 'https://app.ornisstechnologies.com';
+  // final String bridge = 'https://app.dulcetdash.com';
 
   String selectedService =
       'ride'; //! The selected service that the user selected: ride, delivery and shopping - default: ''

@@ -57,32 +57,12 @@ class _DrawerMenuState extends State<DrawerMenu> {
                             ],
                           ),
                           child: CircleAvatar(
-                              radius: 35,
+                              radius: 40,
                               backgroundColor: Colors.black,
                               backgroundImage: NetworkImage(
                                 userData['profile_picture'],
                               ),
-                              child: Container(
-                                width: 70,
-                                height: 70,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(1000)),
-                                child: Image.network(
-                                  userData['profile_picture'],
-                                  fit: BoxFit.cover,
-                                  width: 70.0,
-                                  height: 70.0,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return const CircleAvatar(
-                                      radius: 25,
-                                      backgroundColor: Colors.white,
-                                      backgroundImage: AssetImage(
-                                        'assets/Images/user.png',
-                                      ),
-                                    );
-                                  },
-                                ),
-                              )),
+                              child: null),
                         ),
                         title: Text(
                           userData['name'],
@@ -158,8 +138,8 @@ class _DrawerMenuState extends State<DrawerMenu> {
                       child: ListTile(
                         leading: InkWell(
                             onTap: () async {
-                              if (!await launch(
-                                  'https://www.ornisstechnologies.com/privacy')) {
+                              if (!await launchUrl(Uri.parse(
+                                  'https://dulcetdash.com/privacy'))) {
                                 throw 'Could not launch the URL';
                               }
                             },

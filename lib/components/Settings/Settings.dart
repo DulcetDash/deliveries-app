@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'dart:ui';
 
 import 'package:badges/badges.dart' as badges;
+import 'package:dulcetdash/components/Helpers/Networking.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -292,25 +293,25 @@ class _SettingsState extends State<Settings> {
                           GenericTitle(title: 'settings.privacy'.tr()),
                           InkWell(
                             onTap: () async {
-                              if (!await launch(
-                                  'https://www.ornisstechnologies.com/privacy')) {
+                              if (!await launchUrl(Uri.parse(
+                                  'https://dulcetdash.com/privacy'))) {
                                 throw 'Could not launch the URL';
                               }
                             },
-                            child: GenericInformationDisplayer_terms_co(
-                                valueText: 'settings.termsAndConditions'.tr()),
+                            child: const GenericInformationDisplayer_terms_co(
+                                valueText: 'Terms & conditions'),
                           ),
                           InkWell(
                             onTap: () async {
-                              if (!await launch(
-                                  'https://www.ornisstechnologies.com/privacy')) {
+                              if (!await launchUrl(Uri.parse(
+                                  'https://dulcetdash.com/privacy'))) {
                                 throw 'Could not launch the URL';
                               }
                             },
-                            child: GenericInformationDisplayer_terms_co(
-                                valueText: 'settings.privacyStatement'.tr()),
+                            child: const GenericInformationDisplayer_terms_co(
+                                valueText: 'Privacy statement'),
                           ),
-                          Divider(
+                          const Divider(
                             height: 30,
                           ),
                           GenericInformationLogOUT(
@@ -569,13 +570,11 @@ class _LocalModalState extends State<LocalModal> {
       if (response.statusCode == 200) //Got some results
       {
         dismissModalSuccess(context: context);
-        log(response.body.toString());
         // List tmpResponse = json.decode(response.body);
         //? Update
       } else //Has some errors
       {
         dismissModalError(context: context);
-        log(response.toString());
       }
     } catch (e) {
       log('8');
