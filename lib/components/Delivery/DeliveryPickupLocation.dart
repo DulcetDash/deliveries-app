@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -271,6 +274,24 @@ class _HeaderSearchState extends State<HeaderSearch> {
     WidgetsBinding.instance.addPostFrameCallback((_) {});
   }
 
+  Timer? _debounce;
+
+  _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) {
+      _debounce?.cancel();
+    }
+
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      context.read<HomeProvider>().updateTypedSeachQueries(data: query);
+    });
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     _editingController.value = TextEditingValue(
@@ -367,11 +388,7 @@ class _HeaderSearchState extends State<HeaderSearch> {
                       _editingController.selection = TextSelection.fromPosition(
                           TextPosition(offset: _editingController.text.length));
                       //! Update the change for the typed
-                      context
-                          .read<HomeProvider>()
-                          .updateTypedSeachQueries(data: value);
-
-                      // print(value);
+                      _onSearchChanged(value);
                     },
                     style: TextStyle(
                         fontFamily: 'MoveTextRegular',

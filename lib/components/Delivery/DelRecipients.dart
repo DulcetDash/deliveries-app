@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -644,6 +647,23 @@ class _HeaderSearchState extends State<HeaderSearch> {
 
   TextEditingController _editingController = TextEditingController();
   DataParser _dataParser = DataParser();
+  Timer? _debounce;
+
+  _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) {
+      _debounce?.cancel();
+    }
+
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      //! Place the cursor at the end
+      // _editingController.text = value;
+      // _editingController.selection = TextSelection.fromPosition(
+      //     TextPosition(offset: _editingController.text.length));
+      //! Update the change for the typed
+      log('Debounced query');
+      context.read<HomeProvider>().updateTypedSeachQueries(data: query);
+    });
+  }
 
   @override
   void initState() {
@@ -651,6 +671,12 @@ class _HeaderSearchState extends State<HeaderSearch> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {});
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
   }
 
   @override
@@ -743,16 +769,7 @@ class _HeaderSearchState extends State<HeaderSearch> {
                 child: TextField(
                     // controller: _editingController,
                     autocorrect: false,
-                    onChanged: (value) {
-                      //! Place the cursor at the end
-                      // _editingController.text = value;
-                      // _editingController.selection = TextSelection.fromPosition(
-                      //     TextPosition(offset: _editingController.text.length));
-                      //! Update the change for the typed
-                      context
-                          .read<HomeProvider>()
-                          .updateTypedSeachQueries(data: value);
-                    },
+                    onChanged: _onSearchChanged,
                     style: TextStyle(
                         fontFamily: 'MoveTextRegular',
                         fontSize: 18,
