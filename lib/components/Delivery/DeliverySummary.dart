@@ -303,6 +303,7 @@ class _DeliverySummaryState extends State<DeliverySummary> {
         {
           //? Go to the successful request page
           // Navigator.of(context).pushNamed('/successfulRequest');
+          return;
         } else //Some weird error
         {
           showErrorModal(context: context, scenario: 'internet_error');
