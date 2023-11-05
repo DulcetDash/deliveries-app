@@ -834,7 +834,7 @@ class _LocalModalState extends State<LocalModal> {
 
       if (response.statusCode == 200) //Got some results
       {
-        Map<String, dynamic> tmpResponse = json.decode(response.body)[0];
+        Map<String, dynamic> tmpResponse = json.decode(response.body);
         //? Update
         if (tmpResponse['response'] == 'success') {
           Timer(Duration(seconds: 2), () {

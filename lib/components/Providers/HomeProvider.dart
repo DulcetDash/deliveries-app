@@ -19,8 +19,8 @@ import 'package:collection/collection.dart';
 
 class HomeProvider with ChangeNotifier {
   // final String bridge = 'https://api.dulcetdash.com';
-  final String bridge = 'http://192.168.8.100:9697';
-  // final String bridge = 'https://app.dulcetdash.com';
+  // final String bridge = 'http://192.168.8.100:9697';
+  final String bridge = 'https://api.dulcetdash.com';
 
   String selectedService =
       'ride'; //! The selected service that the user selected: ride, delivery and shopping - default: ''

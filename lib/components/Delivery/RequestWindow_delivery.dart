@@ -248,7 +248,7 @@ class Header extends StatelessWidget {
       return 'delivery.deliveryInProgress'.tr();
     } else if (requestData['state_vars']['completedDropoff']) {
       //Shopping done
-      return 'delivery.doneShopping'.tr();
+      return 'Delivery completed.';
     } else {
       return '';
     }
@@ -923,7 +923,7 @@ class _LocalModalState extends State<LocalModal> {
 
       if (response.statusCode == 200) //Got some results
       {
-        Map<String, dynamic> tmpResponse = json.decode(response.body)[0];
+        Map<String, dynamic> tmpResponse = json.decode(response.body);
         //? Update
         if (tmpResponse['response'] == 'success') {
           Timer(Duration(seconds: 2), () {
@@ -1423,7 +1423,7 @@ class _LocalModalState extends State<LocalModal> {
                         const EdgeInsets.only(left: 25, right: 25, top: 15),
                     child: Container(
                       child: Text(
-                        'delivery.shopperPickupCash_msg'.tr(),
+                        'Your courier will pickup the cash from you before starting with your delivery.',
                         style: TextStyle(
                             fontSize: 16,
                             color: AppTheme().getGenericDarkGrey()),
@@ -1495,7 +1495,8 @@ class _LocalModalState extends State<LocalModal> {
                           ),
                           title: Padding(
                             padding: const EdgeInsets.only(top: 12),
-                            child: Text('delivery.askForSecurityPin_msg'.tr(),
+                            child: Text(
+                                'Ask your courier to provide the security PIN displayed here first before giving any money.',
                                 style: TextStyle(
                                     fontFamily: 'MoveTextRegular',
                                     fontSize: 15,
