@@ -535,7 +535,7 @@ class PaymentSection extends StatelessWidget {
                 ],
               ),
               Text(
-                '${requestData['totals_request']['total']}',
+                'N\$${requestData['totals_request']['total']}',
                 style: TextStyle(
                     fontFamily: 'MoveTextBold',
                     fontSize: 19,
@@ -549,7 +549,7 @@ class PaymentSection extends StatelessWidget {
               enableDrag: false,
               expand: true,
               bounce: true,
-              duration: Duration(milliseconds: 250),
+              duration: const Duration(milliseconds: 250),
               context: context,
               builder: (context) => LocalModal(
                 scenario: requestData['payment_method'] == 'cash'
@@ -557,10 +557,10 @@ class PaymentSection extends StatelessWidget {
                     : 'payment_details_ewallet',
               ),
             ),
-            contentPadding: EdgeInsets.only(top: 15),
+            contentPadding: const EdgeInsets.only(top: 15),
             horizontalTitleGap: -15,
-            leading: Padding(
-              padding: const EdgeInsets.only(top: 1),
+            leading: const Padding(
+              padding: EdgeInsets.only(top: 1),
               child: Icon(
                 Icons.circle,
                 size: 10,
@@ -573,7 +573,7 @@ class PaymentSection extends StatelessWidget {
                   .getCleanPaymentMethod_nameAndImage(
                       payment: requestData['payment_method'])['name']
                   .toString(),
-              style: TextStyle(fontFamily: 'MoveBold', fontSize: 19),
+              style: const TextStyle(fontFamily: 'MoveBold', fontSize: 19),
             ),
             subtitle: Padding(
               padding: const EdgeInsets.only(top: 5),
@@ -1280,12 +1280,12 @@ class _LocalModalState extends State<LocalModal> {
                             ),
                           ),
                           title: Text(
-                              requestData['totals_request']['total'].toString(),
-                              style: TextStyle(
+                              'N\$ ${requestData['totals_request']['total'].toString()}',
+                              style: const TextStyle(
                                   fontFamily: 'MoveTextBold', fontSize: 20)),
                         ),
                       )),
-                  Divider(
+                  const Divider(
                     height: 15,
                     color: Colors.white,
                   ),
@@ -1314,7 +1314,7 @@ class _LocalModalState extends State<LocalModal> {
                           ),
                         ),
                       )),
-                  Divider(
+                  const Divider(
                     height: 30,
                   ),
                   //?Support
@@ -1333,25 +1333,26 @@ class _LocalModalState extends State<LocalModal> {
                       ],
                     ),
                   ),
-                  Divider(
+                  const Divider(
                     height: 5,
                     color: Colors.white,
                   ),
                   Padding(
-                    padding: EdgeInsets.only(left: 25, right: 25),
+                    padding: const EdgeInsets.only(left: 25, right: 25),
                     child: ListTile(
                       contentPadding: EdgeInsets.zero,
-                      leading: Icon(Icons.support, color: Colors.black),
+                      leading: const Icon(Icons.support, color: Colors.black),
                       horizontalTitleGap: 0,
                       title: Text(
                         'generic_text.callUs'.tr(),
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontFamily: 'MoveTextMedium',
                           fontSize: 17,
                         ),
                       ),
-                      subtitle: Text('For more assistance, please call us.'),
-                      trailing: Icon(
+                      subtitle:
+                          const Text('For more assistance, please call us.'),
+                      trailing: const Icon(
                         Icons.arrow_forward_ios,
                         size: 15,
                       ),
@@ -2073,7 +2074,7 @@ class LocationPackageModel extends StatelessWidget {
             )
           ],
         ),
-        trailing: packageData['isDroped'] != null
+        trailing: packageData['isCompleted'] != null
             ? Icon(
                 Icons.check_circle,
                 size: 30,

@@ -469,15 +469,16 @@ class ShoppingListDetails extends StatelessWidget {
   Widget getThumbnailItem(
       {required BuildContext context, required Map<String, dynamic> itemData}) {
     return badges.Badge(
-      badgeContent: itemData['isShoped'] != null
+      badgeContent: itemData['isCompleted'] != null
           ? Icon(
               Icons.check,
               size: 10,
-              color: itemData['isShoped'] != null ? Colors.white : Colors.black,
+              color:
+                  itemData['isCompleted'] != null ? Colors.white : Colors.black,
             )
           : Icon(Icons.timelapse_sharp, size: 10),
       badgeStyle: badges.BadgeStyle(
-        badgeColor: itemData['isShoped'] != null
+        badgeColor: itemData['isCompleted'] != null
             ? AppTheme().getSecondaryColor()
             : AppTheme().getGenericGrey(),
       ),

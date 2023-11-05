@@ -257,11 +257,11 @@ class Header extends StatelessWidget {
         requestData['payment_method'] == 'mobile_money') {
       return 'delivery.waitingForEwallet'.tr();
     } else if (requestData['state_vars']['inRouteToShop'] &&
-        requestData['state_vars']['inRouteToDelivery'] == false) {
+        requestData['state_vars']['inRouteToDropoff'] == false) {
       return 'shopping.shoppingInProgress'.tr();
-    } else if (requestData['state_vars']['inRouteToDelivery'] &&
+    } else if (requestData['state_vars']['inRouteToDropoff'] &&
         requestData['state_vars']['completedShopping'] == false) {
-      return 'shopping.deliveryInProgress'.tr();
+      return 'Delivery in progress...';
     } else if (requestData['state_vars']['completedShopping']) //Shopping done
     {
       return 'shopping.doneShopping'.tr();
@@ -356,15 +356,16 @@ class ShoppingList extends StatelessWidget {
   Widget getThumbnailItem(
       {required BuildContext context, required Map<String, dynamic> itemData}) {
     return badges.Badge(
-      badgeContent: itemData['isShoped'] != null
+      badgeContent: itemData['isCompleted'] != null
           ? Icon(
               Icons.check,
               size: 15,
-              color: itemData['isShoped'] != null ? Colors.white : Colors.black,
+              color:
+                  itemData['isCompleted'] != null ? Colors.white : Colors.black,
             )
           : Icon(Icons.timelapse_sharp, size: 15),
       badgeStyle: badges.BadgeStyle(
-        badgeColor: itemData['isShoped'] != null
+        badgeColor: itemData['isCompleted'] != null
             ? AppTheme().getSecondaryColor()
             : AppTheme().getGenericGrey(),
       ),
@@ -438,7 +439,7 @@ class PaymentSection extends StatelessWidget {
                 ],
               ),
               Text(
-                '${requestData['totals_request']['total']}',
+                'N\$${requestData['totals_request']['total']}',
                 style: TextStyle(
                     fontFamily: 'MoveTextBold',
                     fontSize: 19,
@@ -1188,12 +1189,12 @@ class _LocalModalState extends State<LocalModal> {
                           ),
                         ),
                         title: Text(
-                            requestData['totals_request']['total'].toString(),
-                            style: TextStyle(
+                            'N\$ ${requestData['totals_request']['total'].toString()}',
+                            style: const TextStyle(
                                 fontFamily: 'MoveTextBold', fontSize: 20)),
                       ),
                     )),
-                Divider(
+                const Divider(
                   height: 15,
                   color: Colors.white,
                 ),
@@ -1943,17 +1944,17 @@ class ProductModel extends StatelessWidget {
                 style: TextStyle(fontSize: 17),
               )),
           badges.Badge(
-            badgeContent: productData['isShoped'] != null
+            badgeContent: productData['isCompleted'] != null
                 ? Icon(
                     Icons.check,
                     size: 15,
-                    color: productData['isShoped'] != null
+                    color: productData['isCompleted'] != null
                         ? Colors.white
                         : Colors.black,
                   )
                 : Icon(Icons.timelapse_sharp, size: 15),
             badgeStyle: badges.BadgeStyle(
-              badgeColor: productData['isShoped'] != null
+              badgeColor: productData['isCompleted'] != null
                   ? AppTheme().getSecondaryColor()
                   : AppTheme().getGenericGrey(),
             ),
