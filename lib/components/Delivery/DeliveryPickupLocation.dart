@@ -692,7 +692,7 @@ class HeaderNote extends StatelessWidget {
                         alignment: Alignment.topLeft,
                         child: Padding(
                           padding: const EdgeInsets.only(top: 20),
-                          child: Text("generic_text.enterNoteHereLabel"),
+                          child: Text("Enter your note here."),
                         ),
                       ),
                       floatingLabelBehavior: FloatingLabelBehavior.never,

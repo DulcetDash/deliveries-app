@@ -1801,8 +1801,7 @@ class _LocalModalState extends State<LocalModal> {
                               alignment: Alignment.topLeft,
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 25),
-                                child: Text(
-                                    "generic_text.enterNoteHereLabel".tr()),
+                                child: Text("Enter your note here."),
                               ),
                             ),
                             floatingLabelBehavior: FloatingLabelBehavior.never,

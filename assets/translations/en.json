@@ -229,12 +229,12 @@
   },
   "support": {
     "mainTitle": "We are available to help you 24/7h",
-    "explanation": "If you have any concerns when it comes to your rides, deliveries or shopping, or for any additional information about DulcetDash, feel free to call or drop us a Whatsapp message.",
+    "explanation": "If you have any concerns when it comes to your requests, deliveries or shopping, or for any additional information about DulcetDash, feel free to call or drop us a Whatsapp message.",
     "callUs": "Call Us",
     "callThePolice": "Call the Police"
   },
   "yourRides": {
-    "mainTitle": "Your rides",
+    "mainTitle": "Your requests",
     "formerShoppingList": "Former shopping list"
   },
   "share": {
@@ -273,7 +273,7 @@
   },
   "drawer": {
     "searching": "Searching...",
-    "yourRides": "Your rides",
+    "yourRides": "Your requests",
     "settings": "Settings",
     "support": "Support",
     "share": "Share",

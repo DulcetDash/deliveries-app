@@ -29,6 +29,8 @@ void main() async {
         fallbackLocale: Locale('en'),
         useFallbackTranslations: true,
         saveLocale: true,
-        child: const AppGeneralEntry()),
+        child: GestureDetector(
+            onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+            child: const AppGeneralEntry())),
   ));
 }
