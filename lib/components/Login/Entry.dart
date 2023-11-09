@@ -40,22 +40,22 @@ class _EntryState extends State<Entry> {
                       //Theme image
                       Container(
                         color: Colors.white,
-                        height: MediaQuery.of(context).size.height * 0.47,
+                        height: MediaQuery.of(context).size.height * 0.45,
                         width: MediaQuery.of(context).size.width,
                         child: Image.asset(
                           'assets/Images/ddentry.jpg',
                           fit: BoxFit.fill,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 50,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 15),
                         child: Text(
-                          'Any Shop to your Doorstep',
+                          'Shop Easy, Delivered Fast.',
                           style:
-                              TextStyle(fontFamily: 'MoveBold', fontSize: 27),
+                              TextStyle(fontFamily: 'MoveBold', fontSize: 28),
                         ),
                       ),
                       const SizedBox(
@@ -66,7 +66,7 @@ class _EntryState extends State<Entry> {
                         children: [
                           Text(
                             'entry.deliveries'.tr(),
-                            style: const TextStyle(fontSize: 20),
+                            style: const TextStyle(fontSize: 19),
                           ),
                           const SizedBox(
                             width: 15,
@@ -74,37 +74,37 @@ class _EntryState extends State<Entry> {
                           ),
                           const Text(
                             'Groceries',
-                            style: TextStyle(fontSize: 20),
+                            style: TextStyle(fontSize: 19),
                           )
                         ],
                       ),
                       const Expanded(child: SizedBox.shrink()),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 15, right: 15),
-                        child: Container(
-                            child: RichText(
-                                text: TextSpan(
-                                    style: TextStyle(
-                                        color: AppTheme().getGenericDarkGrey(),
-                                        fontFamily: 'MoveTextRegular',
-                                        fontSize: 14),
-                                    children: [
-                              TextSpan(
-                                  text:
-                                      'By tapping Get started you agree to DulcetDash\'s '),
-                              TextSpan(
-                                  text: 'Terms & Conditions',
-                                  style: TextStyle(
-                                      fontFamily: 'MoveTextMedium',
-                                      color: AppTheme().getPrimaryColor())),
-                              TextSpan(text: ' and '),
-                              TextSpan(
-                                  text: 'Privacy Policy',
-                                  style: TextStyle(
-                                      fontFamily: 'MoveTextMedium',
-                                      color: AppTheme().getPrimaryColor()))
-                            ]))),
-                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.only(left: 15, right: 15),
+                      //   child: Container(
+                      //       child: RichText(
+                      //           text: TextSpan(
+                      //               style: TextStyle(
+                      //                   color: AppTheme().getGenericDarkGrey(),
+                      //                   fontFamily: 'MoveTextRegular',
+                      //                   fontSize: 14),
+                      //               children: [
+                      //         TextSpan(
+                      //             text:
+                      //                 'By tapping Get started you agree to DulcetDash\'s '),
+                      //         TextSpan(
+                      //             text: 'Terms & Conditions',
+                      //             style: TextStyle(
+                      //                 fontFamily: 'MoveTextMedium',
+                      //                 color: AppTheme().getPrimaryColor())),
+                      //         TextSpan(text: ' and '),
+                      //         TextSpan(
+                      //             text: 'Privacy Policy',
+                      //             style: TextStyle(
+                      //                 fontFamily: 'MoveTextMedium',
+                      //                 color: AppTheme().getPrimaryColor()))
+                      //       ]))),
+                      // ),
                       GenericRectButton(
                           label: 'Get started',
                           labelFontFamily: 'MoveTextBold',
