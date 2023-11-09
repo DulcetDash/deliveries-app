@@ -73,12 +73,6 @@ class _SupportState extends State<Support> {
                   activateTrailing: false,
                   backgroundColor: AppTheme().getPrimaryColor(),
                   trailingIcon: Icons.phone,
-                  actuatorFunctionl: () => {}),
-              GenericRectButton(
-                  label: 'support.callThePolice'.tr(),
-                  labelFontFamily: 'MoveTextBold',
-                  isArrowShow: false,
-                  labelFontSize: 20,
                   actuatorFunctionl: () async {
                     final link = WhatsAppUnilink(
                       phoneNumber: '+264856997167',
@@ -86,7 +80,13 @@ class _SupportState extends State<Support> {
                     );
 
                     await launchUrl(link.asUri());
-                  })
+                  }),
+              GenericRectButton(
+                  label: 'support.callThePolice'.tr(),
+                  labelFontFamily: 'MoveTextBold',
+                  isArrowShow: false,
+                  labelFontSize: 20,
+                  actuatorFunctionl: () async {})
             ]),
           ),
         ],

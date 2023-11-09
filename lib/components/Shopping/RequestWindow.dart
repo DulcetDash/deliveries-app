@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'package:badges/badges.dart' as badges;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:dulcetdash/components/Helpers/DataParser.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -231,10 +232,13 @@ class Header extends StatelessWidget {
                   ),
                 ],
               ),
-              Icon(
-                Icons.phone,
-                size: 35,
-                color: AppTheme().getSecondaryColor(),
+              InkWell(
+                onTap: () => PhoneNumberCaller.callNumber(phoneNumber: '+264'),
+                child: Icon(
+                  Icons.phone,
+                  size: 35,
+                  color: AppTheme().getSecondaryColor(),
+                ),
               )
             ],
           ),

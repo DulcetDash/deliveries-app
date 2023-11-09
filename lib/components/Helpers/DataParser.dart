@@ -1,3 +1,5 @@
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+
 class DataParser {
   //Get the realistic names for the location name, suburb and street name
   Map<String, String> getRealisticPlacesNames({required Map locationData}) {
@@ -102,5 +104,11 @@ class DataParser {
     return RegExp(
             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
         .hasMatch(email);
+  }
+}
+
+class PhoneNumberCaller {
+  static void callNumber({required String phoneNumber}) async {
+    await FlutterPhoneDirectCaller.callNumber(phoneNumber);
   }
 }
