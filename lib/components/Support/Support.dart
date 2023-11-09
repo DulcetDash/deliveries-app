@@ -5,6 +5,8 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:dulcetdash/components/GenericRectButton.dart';
 import 'package:dulcetdash/components/Helpers/AppTheme.dart';
 import 'package:share_plus/share_plus.dart' as share_external;
+import 'package:url_launcher/url_launcher.dart';
+import 'package:whatsapp_unilink/whatsapp_unilink.dart';
 
 class Support extends StatefulWidget {
   const Support({Key? key}) : super(key: key);
@@ -63,12 +65,12 @@ class _SupportState extends State<Support> {
               ),
               Expanded(child: SizedBox.shrink()),
               GenericRectButton(
-                  label: 'support.callUs'.tr(),
+                  label: 'Text us on WhatsApp',
                   labelFontFamily: 'MoveTextBold',
                   isArrowShow: false,
                   verticalPadding: 10,
                   labelFontSize: 20,
-                  activateTrailing: true,
+                  activateTrailing: false,
                   backgroundColor: AppTheme().getPrimaryColor(),
                   trailingIcon: Icons.phone,
                   actuatorFunctionl: () => {}),
@@ -77,7 +79,14 @@ class _SupportState extends State<Support> {
                   labelFontFamily: 'MoveTextBold',
                   isArrowShow: false,
                   labelFontSize: 20,
-                  actuatorFunctionl: () => {})
+                  actuatorFunctionl: () async {
+                    final link = WhatsAppUnilink(
+                      phoneNumber: '+264856997167',
+                      text: "Hi DulcetDash, I need help!",
+                    );
+
+                    await launchUrl(link.asUri());
+                  })
             ]),
           ),
         ],

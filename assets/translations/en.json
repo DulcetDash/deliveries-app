@@ -228,8 +228,8 @@
     "unableToRequestShoppingUnexpected_msg": "We were unable to go forward with your shopping request due to an unexpected error, please try again and if it persists, please contact us through the Support tab."
   },
   "support": {
-    "mainTitle": "We are available to help you 24/7h",
-    "explanation": "If you have any concerns when it comes to your requests, deliveries or shopping, or for any additional information about DulcetDash, feel free to call or drop us a Whatsapp message.",
+    "mainTitle": "We are available to help you 24/7",
+    "explanation": "If you have any concerns regarding your deliveries or shopping, or if you need any additional information about DulcetDash, please feel free to send us a WhatsApp message.",
     "callUs": "Call Us",
     "callThePolice": "Call the Police"
   },
