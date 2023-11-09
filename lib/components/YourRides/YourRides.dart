@@ -225,7 +225,20 @@ class RequestModel extends StatelessWidget {
                                   TextStyle(fontSize: 15, color: Colors.white),
                             ),
                           ))
-                      : const Text('')
+                      : requestData['completed']
+                          ? Container(
+                              decoration: BoxDecoration(
+                                  color: AppTheme().getPrimaryColor(),
+                                  borderRadius: BorderRadius.circular(100)),
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                child: Text(
+                                  'Completed',
+                                  style: TextStyle(
+                                      fontSize: 15, color: Colors.white),
+                                ),
+                              ))
+                          : const Text('')
                 ],
               ),
               SizedBox(
