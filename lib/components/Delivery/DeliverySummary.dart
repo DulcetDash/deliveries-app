@@ -191,29 +191,29 @@ class _DeliverySummaryState extends State<DeliverySummary> {
                       children: [
                         Text('delivery.deliverFee'.tr(),
                             style: TextStyle(fontSize: 17)),
-                        Text(payment_summary['delivery_fee'],
+                        Text('N\$${payment_summary['delivery_fee']}',
                             style: TextStyle(
-                                fontSize: 19,
+                                fontSize: 21,
                                 color: AppTheme().getPrimaryColor())),
                       ],
                     ),
                   ),
                   //SERVICE FEE
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 20, right: 20, bottom: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('delivery.handlingFee'.tr(),
-                            style: TextStyle(fontSize: 17)),
-                        Text(payment_summary['service_fee'],
-                            style: TextStyle(
-                                fontSize: 19,
-                                color: AppTheme().getPrimaryColor())),
-                      ],
-                    ),
-                  ),
+                  // Padding(
+                  //   padding:
+                  //       const EdgeInsets.only(left: 20, right: 20, bottom: 5),
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //     children: [
+                  //       Text('delivery.handlingFee'.tr(),
+                  //           style: TextStyle(fontSize: 17)),
+                  //       Text(payment_summary['service_fee'],
+                  //           style: TextStyle(
+                  //               fontSize: 19,
+                  //               color: AppTheme().getPrimaryColor())),
+                  //     ],
+                  //   ),
+                  // ),
                   Divider(),
                   //TOTAL
                   Padding(
@@ -225,10 +225,10 @@ class _DeliverySummaryState extends State<DeliverySummary> {
                         Text('delivery.total'.tr(),
                             style: TextStyle(
                                 fontFamily: 'MoveTextMedium', fontSize: 17)),
-                        Text(payment_summary['total'],
+                        Text('N\$${payment_summary['total']}',
                             style: TextStyle(
-                                fontFamily: 'MoveTextMedium',
-                                fontSize: 21,
+                                fontFamily: 'MoveTextBold',
+                                fontSize: 22,
                                 color: AppTheme().getPrimaryColor())),
                       ],
                     ),

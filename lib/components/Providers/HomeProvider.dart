@@ -848,10 +848,10 @@ class HomeProvider with ChangeNotifier {
 
   //! 20. GET TOTALS - DELIVERY
   Map<String, String> getTotals_delivery() {
-    double unitPrice_delivery = 45;
+    double unitPrice_delivery = 50;
 
     double delivery_fee = unitPrice_delivery * recipients_infos.length;
-    double service_fee = 5.0;
+    double service_fee = 0;
     //...
     double total = (delivery_fee + service_fee).ceilToDouble();
 
