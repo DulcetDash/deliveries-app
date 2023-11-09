@@ -59,6 +59,8 @@ class _RequestWindowState extends State<RequestWindow> {
               ['shopping_list'] ==
           null) return SizedBox.shrink();
 
+      print(requestData['state_vars']);
+
       return context.watch<HomeProvider>().requestShoppingData == null ||
               context.watch<HomeProvider>().requestShoppingData[0]
                       ['shopping_list'] ==
@@ -75,7 +77,7 @@ class _RequestWindowState extends State<RequestWindow> {
                       PaymentSection(),
                       DeliverySection(),
                       CancellationSection(),
-                      requestData['state_vars']['completedShopping'] == false
+                      requestData['state_vars']['completedDropoff'] == false
                           ? SizedBox.shrink()
                           : GenericRectButton(
                               label: 'shopping.rateShopper'.tr(),
@@ -260,9 +262,9 @@ class Header extends StatelessWidget {
         requestData['state_vars']['inRouteToDropoff'] == false) {
       return 'shopping.shoppingInProgress'.tr();
     } else if (requestData['state_vars']['inRouteToDropoff'] &&
-        requestData['state_vars']['completedShopping'] == false) {
+        requestData['state_vars']['completedDropoff'] == false) {
       return 'Delivery in progress...';
-    } else if (requestData['state_vars']['completedShopping']) //Shopping done
+    } else if (requestData['state_vars']['completedDropoff']) //Shopping done
     {
       return 'shopping.doneShopping'.tr();
     } else {
