@@ -226,8 +226,8 @@ class ProductDisplayModel extends StatelessWidget {
                 ),
               ),
               errorWidget: (context, url, error) => const Icon(
-                Icons.error,
-                size: 30,
+                Icons.photo,
+                size: 45,
                 color: Colors.grey,
               ),
             ),
@@ -257,7 +257,7 @@ class ProductDisplayModel extends StatelessWidget {
               'generic_text.price'.tr(),
               style: TextStyle(fontSize: 17, color: Colors.grey.shade700),
             ),
-            Text(productPrice,
+            Text('N\$$productPrice',
                 style: TextStyle(
                     fontFamily: 'MoveTextMedium',
                     fontSize: 21,
@@ -457,13 +457,13 @@ class _ProductNumberIncrementorState extends State<ProductNumberIncrementor> {
               currentPrice.replaceAll('N\$', '').trim().replaceAll(',', '')) /
           100;
       //...
-      return 'N\$${(number * multiplier).toStringAsFixed(2)}';
+      return (number * multiplier).toStringAsFixed(2);
     } else {
       //Get the number
       double number = double.parse(
           currentPrice.replaceAll('N\$', '').trim().replaceAll(',', ''));
       //...
-      return 'N\$${(number * multiplier).toStringAsFixed(2)}';
+      return (number * multiplier).toStringAsFixed(2);
     }
   }
 }

@@ -15,7 +15,10 @@ class CartIcon extends StatelessWidget {
       },
       child: Container(
           child: context.watch<HomeProvider>().CART.isEmpty
-              ? Icon(Icons.shopping_cart)
+              ? Icon(
+                  Icons.shopping_cart,
+                  size: 30,
+                )
               : badges.Badge(
                   badgeContent: context.watch<HomeProvider>().CART.isEmpty
                       ? null
@@ -25,7 +28,10 @@ class CartIcon extends StatelessWidget {
                   badgeStyle: badges.BadgeStyle(
                     badgeColor: AppTheme().getPrimaryColor(),
                   ),
-                  child: Icon(Icons.shopping_cart),
+                  child: Icon(
+                    Icons.shopping_cart,
+                    size: 30,
+                  ),
                 )),
     );
   }

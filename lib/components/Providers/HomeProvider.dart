@@ -18,7 +18,7 @@ import 'package:collection/collection.dart';
 // Will hold all the home related globals - only!
 
 class HomeProvider with ChangeNotifier {
-  final String bridge = 'http://192.168.1.157:9697';
+  final String bridge = 'http://192.168.8.100:9697';
   // final String bridge = 'https://api.dulcetdash.com';
 
   String selectedService =
@@ -507,7 +507,7 @@ class HomeProvider with ChangeNotifier {
       total += tmpPrice;
     });
 
-    return 'N\$${total.ceil().toStringAsFixed(2)}';
+    return total.ceil().toStringAsFixed(2);
   }
 
   //Pricing toolbox
@@ -521,13 +521,13 @@ class HomeProvider with ChangeNotifier {
               currentPrice.replaceAll('N\$', '').trim().replaceAll(',', '')) /
           100;
       //...
-      return 'N\$${(number * multiplier).toStringAsFixed(2)}';
+      return (number * multiplier).toStringAsFixed(2);
     } else {
       //Get the number
       double number = double.parse(
           currentPrice.replaceAll('N\$', '').trim().replaceAll(',', ''));
       //...
-      return 'N\$${(number * multiplier).toStringAsFixed(2)}';
+      return (number * multiplier).toStringAsFixed(2);
     }
   }
 
@@ -839,10 +839,10 @@ class HomeProvider with ChangeNotifier {
     double total = (cart + service_fee + cash_pickup_fee).ceilToDouble();
 
     return {
-      'cart': 'N\$${cart.toStringAsFixed(2)}',
-      'service_fee': 'N\$${service_fee.toStringAsFixed(2)}',
-      'cash_pickup_fee': 'N\$${cash_pickup_fee.toStringAsFixed(2)}',
-      'total': 'N\$${total.toStringAsFixed(2)}',
+      'cart': cart.toStringAsFixed(2),
+      'service_fee': service_fee.toStringAsFixed(2),
+      'cash_pickup_fee': cash_pickup_fee.toStringAsFixed(2),
+      'total': total.toStringAsFixed(2),
     };
   }
 
@@ -856,9 +856,9 @@ class HomeProvider with ChangeNotifier {
     double total = (delivery_fee + service_fee).ceilToDouble();
 
     return {
-      'delivery_fee': 'N\$${delivery_fee.toStringAsFixed(2)}',
-      'service_fee': 'N\$${service_fee.toStringAsFixed(2)}',
-      'total': 'N\$${total.toStringAsFixed(2)}',
+      'delivery_fee': delivery_fee.toStringAsFixed(2),
+      'service_fee': service_fee.toStringAsFixed(2),
+      'total': total.toStringAsFixed(2),
     };
   }
 

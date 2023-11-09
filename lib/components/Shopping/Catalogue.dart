@@ -55,7 +55,7 @@ class _CatalogueState extends State<Catalogue> {
         //? Update
         context
             .read<HomeProvider>()
-            .updateCatalogueLevel1_structured(data: tmpResponse['response']);
+            .updateCatalogueLevel2_structured(data: tmpResponse['response']);
         setState(() {
           isLoading = false;
         });
@@ -106,7 +106,7 @@ class _CatalogueState extends State<Catalogue> {
                       ))
                   : context
                           .watch<HomeProvider>()
-                          .catalogueData_level1_structured
+                          .catalogueData_level2_structured
                           .isEmpty
                       ? Container(
                           child: Padding(
@@ -385,6 +385,8 @@ class _SearchBarState extends State<SearchBar> {
         }));
   }
 
+  final TextEditingController _controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -392,6 +394,7 @@ class _SearchBarState extends State<SearchBar> {
       child: Container(
         height: 45,
         child: TextField(
+          controller: _controller,
           style: TextStyle(fontSize: 18),
           onChanged: _onChangeHandler,
           maxLength: 150,
@@ -400,6 +403,19 @@ class _SearchBarState extends State<SearchBar> {
               contentPadding: EdgeInsets.only(bottom: 5),
               prefixIcon: Icon(Icons.search, color: Colors.black),
               prefixIconColor: Colors.black,
+              suffixIcon: _controller.text.isEmpty
+                  ? Container(width: 0)
+                  : IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        setState(() {
+                          _controller.clear();
+                          context
+                              .read<HomeProvider>()
+                              .updateShopsKeyItemsSearch(value: '');
+                        });
+                      },
+                    ),
               floatingLabelBehavior: FloatingLabelBehavior.never,
               filled: true,
               fillColor: Colors.grey.shade200,
@@ -416,6 +432,41 @@ class _SearchBarState extends State<SearchBar> {
               border: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.grey.shade200),
                   borderRadius: BorderRadius.circular(1))),
+        ),
+      ),
+    );
+  }
+}
+
+//Trio product shower
+class ProductShower extends StatelessWidget {
+  final Map productData;
+  final double index;
+  const ProductShower({Key? key, required this.productData, this.index = 0})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Flexible(
+        child: Row(
+          children: [
+            ProductDisplayModel(
+                productImage:
+                    productData['pictures'][0].runtimeType.toString() ==
+                            'List<dynamic>'
+                        ? productData['pictures'][0][0]
+                        : productData['pictures'][0],
+                productName: productData['name'],
+                productPrice: productData['price'],
+                productData: productData),
+            Visibility(
+              visible: index < 2,
+              child: SizedBox(
+                width: 20,
+              ),
+            )
+          ],
         ),
       ),
     );
@@ -461,39 +512,106 @@ class ShowCaseMainCat extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List dataProducts = getSegmentedListPer3(context: context);
+
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
         child: ListView.separated(
             shrinkWrap: true,
             physics: ClampingScrollPhysics(),
+            // scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
-              List tmpProductData =
-                  context.read<HomeProvider>().catalogueData_level1_structured[
-                      context
-                          .read<HomeProvider>()
-                          .catalogueData_level1_structured
-                          .keys
-                          .toList()[index]
-                          .toString()];
-
+              List<Widget> tmpProductData = dataProducts[index];
               //...
-              return TrioProductShower(
-                productData: tmpProductData,
-              );
+              return Row(children: tmpProductData);
             },
             separatorBuilder: (context, index) => const Divider(
                   height: 65,
                   thickness: 1,
                 ),
-            itemCount: context
-                .watch<HomeProvider>()
-                .catalogueData_level1_structured
-                .length),
+            itemCount: dataProducts.length),
       ),
     );
   }
+
+  //? Return segmented list
+  List getSegmentedListPer3({required BuildContext context}) {
+    //? Draw an index map for all the elements
+    int totalSize =
+        context.read<HomeProvider>().catalogueData_level2_structured.length;
+
+    List products =
+        context.read<HomeProvider>().catalogueData_level2_structured;
+
+    var chunks = [];
+    int chunkSize = 3;
+    for (var i = 0; i < products.length; i += chunkSize) {
+      chunks.add(products.sublist(i,
+          i + chunkSize > products.length ? products.length : i + chunkSize));
+    }
+
+    //! Create the global widget array
+    List mainListWidgets = [];
+
+    for (var i = 0; i < chunks.length; i++) {
+      List<Widget> rowItems = [];
+      for (var j = 0; j < chunks[i].length; j++) {
+        Map tmpProductData = chunks[i][j];
+        //...
+        rowItems.add(ProductShower(
+          productData: tmpProductData,
+          index: j.toDouble(),
+        ));
+      }
+      //? Save
+      mainListWidgets.add(rowItems);
+    }
+
+    //DONE
+    return mainListWidgets;
+  }
 }
+
+//Showcase main categories products
+// class ShowCaseMainCat extends StatelessWidget {
+//   const ShowCaseMainCat({Key? key}) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Expanded(
+//       child: Padding(
+//         padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
+//         child: ListView.separated(
+//             shrinkWrap: true,
+//             physics: ClampingScrollPhysics(),
+//             itemBuilder: (context, index) {
+//               List tmpProductData =
+//                   context.read<HomeProvider>().catalogueData_level1_structured[
+//                       context
+//                           .read<HomeProvider>()
+//                           .catalogueData_level1_structured
+//                           .keys
+//                           .toList()[index]
+//                           .toString()];
+
+//               //...
+//               return TrioProductShower(
+//                 productData: tmpProductData,
+//               );
+//             },
+//             separatorBuilder: (context, index) => const Divider(
+//                   height: 65,
+//                   thickness: 1,
+//                 ),
+//             itemCount: context
+//                 .watch<HomeProvider>()
+//                 .catalogueData_level1_structured
+//                 .length),
+//       ),
+//     );
+//   }
+// }
 
 //Trio product shower
 class TrioProductShower extends StatelessWidget {
@@ -664,8 +782,8 @@ class ProductDisplayModel extends StatelessWidget {
                     ),
                   ),
                   errorWidget: (context, url, error) => const Icon(
-                    Icons.error,
-                    size: 30,
+                    Icons.photo,
+                    size: 60,
                     color: Colors.grey,
                   ),
                 ),
@@ -677,7 +795,7 @@ class ProductDisplayModel extends StatelessWidget {
             SizedBox(
               height: 5,
             ),
-            Text(productPrice,
+            Text("N\$$productPrice",
                 style: TextStyle(fontSize: 16, color: Colors.grey.shade700))
           ]),
         ),
