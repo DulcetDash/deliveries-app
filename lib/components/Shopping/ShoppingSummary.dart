@@ -97,10 +97,12 @@ class _ShoppingSummaryState extends State<ShoppingSummary> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('shopping.yourCart'.tr(),
-                            style: TextStyle(fontSize: 17)),
-                        Text(payment_summary['cart'],
                             style: TextStyle(
-                                fontSize: 19,
+                              fontSize: 17,
+                            )),
+                        Text('N\$${payment_summary['cart']}',
+                            style: TextStyle(
+                                fontSize: 21,
                                 color: AppTheme().getPrimaryColor())),
                       ],
                     ),
@@ -112,34 +114,33 @@ class _ShoppingSummaryState extends State<ShoppingSummary> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('shopping.serviceFee'.tr(),
-                            style: TextStyle(fontSize: 17)),
-                        Text(payment_summary['service_fee'],
+                        Text('Delivery fee', style: TextStyle(fontSize: 17)),
+                        Text('N\$${payment_summary['service_fee']}',
                             style: TextStyle(
-                                fontSize: 19,
+                                fontSize: 21,
                                 color: AppTheme().getPrimaryColor())),
                       ],
                     ),
                   ),
                   //CASH PICKUP FEE?
-                  Visibility(
-                    visible:
-                        context.watch<HomeProvider>().paymentMethod == 'cash',
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 20, right: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('shopping.cashPickupFee'.tr(),
-                              style: TextStyle(fontSize: 17)),
-                          Text(payment_summary['cash_pickup_fee'],
-                              style: TextStyle(
-                                  fontSize: 19,
-                                  color: AppTheme().getPrimaryColor())),
-                        ],
-                      ),
-                    ),
-                  ),
+                  // Visibility(
+                  //   visible:
+                  //       context.watch<HomeProvider>().paymentMethod == 'cash',
+                  //   child: Padding(
+                  //     padding: const EdgeInsets.only(left: 20, right: 20),
+                  //     child: Row(
+                  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //       children: [
+                  //         Text('shopping.cashPickupFee'.tr(),
+                  //             style: TextStyle(fontSize: 17)),
+                  //         Text(payment_summary['cash_pickup_fee'],
+                  //             style: TextStyle(
+                  //                 fontSize: 19,
+                  //                 color: AppTheme().getPrimaryColor())),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                   Divider(),
                   //TOTAL
                   Padding(
@@ -151,10 +152,10 @@ class _ShoppingSummaryState extends State<ShoppingSummary> {
                         Text('delivery.total'.tr(),
                             style: TextStyle(
                                 fontFamily: 'MoveTextMedium', fontSize: 17)),
-                        Text(payment_summary['total'],
+                        Text('N\$${payment_summary['total']}',
                             style: TextStyle(
-                                fontFamily: 'MoveTextMedium',
-                                fontSize: 21,
+                                fontFamily: 'MoveTextBold',
+                                fontSize: 22,
                                 color: AppTheme().getPrimaryColor())),
                       ],
                     ),
@@ -487,8 +488,8 @@ class ProductModel extends StatelessWidget {
                 ),
               ),
               errorWidget: (context, url, error) => const Icon(
-                Icons.error,
-                size: 30,
+                Icons.photo,
+                size: 35,
                 color: Colors.grey,
               ),
             )),
@@ -511,7 +512,7 @@ class ProductModel extends StatelessWidget {
                 height: 10,
               ),
               Text(
-                '${productData['price']} • ${getItemsNumber()}',
+                'N\$${productData['price']} • ${getItemsNumber()}',
                 style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
               )
             ],

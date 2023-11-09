@@ -504,31 +504,32 @@ class _HeaderSearchState extends State<HeaderSearch> {
     _editingController.value = TextEditingValue(
         text: context.read<HomeProvider>().typedSearchLocation.isNotEmpty
             ? context.read<HomeProvider>().typedSearchLocation
-            : context.read<HomeProvider>().getManualLocationSetted(
-                        location_type: location_type)['street'] !=
-                    null
-                ? _dataParser
-                        .getRealisticPlacesNames(
-                            locationData: context
-                                .read<HomeProvider>()
-                                .getManualLocationSetted(
-                                    location_type:
-                                        location_type))['location_name']!
-                        .isNotEmpty
-                    ? _dataParser.getRealisticPlacesNames(
-                        locationData: context
-                            .read<HomeProvider>()
-                            .getManualLocationSetted(
-                                location_type: location_type))['location_name']
-                    : _dataParser.getRealisticPlacesNames(
-                        locationData: context
-                            .read<HomeProvider>()
-                            .getManualLocationSetted(location_type: location_type))['suburb']
-                : context.read<HomeProvider>().userLocationDetails['street'] != null
-                    ? context.read<HomeProvider>().userLocationDetails['street'].toString().isNotEmpty
-                        ? context.read<HomeProvider>().userLocationDetails['street']
-                        : context.read<HomeProvider>().userLocationDetails['suburb']
-                    : 'generic_text.findingYourLocation_label'.tr());
+            : '');
+    // context.read<HomeProvider>().getManualLocationSetted(
+    //             location_type: location_type)['street'] !=
+    //         null
+    //     ? _dataParser
+    //             .getRealisticPlacesNames(
+    //                 locationData: context
+    //                     .read<HomeProvider>()
+    //                     .getManualLocationSetted(
+    //                         location_type:
+    //                             location_type))['location_name']!
+    //             .isNotEmpty
+    //         ? _dataParser.getRealisticPlacesNames(
+    //             locationData: context
+    //                 .read<HomeProvider>()
+    //                 .getManualLocationSetted(
+    //                     location_type: location_type))['location_name']
+    //         : _dataParser.getRealisticPlacesNames(
+    //             locationData: context
+    //                 .read<HomeProvider>()
+    //                 .getManualLocationSetted(location_type: location_type))['suburb']
+    //     : context.read<HomeProvider>().userLocationDetails['street'] != null
+    //         ? context.read<HomeProvider>().userLocationDetails['street'].toString().isNotEmpty
+    //             ? context.read<HomeProvider>().userLocationDetails['street']
+    //             : context.read<HomeProvider>().userLocationDetails['suburb']
+    //         : 'generic_text.findingYourLocation_label'.tr());
 
     return Container(
       decoration: BoxDecoration(color: Colors.white, boxShadow: [

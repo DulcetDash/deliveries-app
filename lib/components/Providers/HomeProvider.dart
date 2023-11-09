@@ -833,8 +833,8 @@ class HomeProvider with ChangeNotifier {
   //! 20. GET TOTALS - SHOPPING
   Map<String, String> getTotals() {
     double cart = double.parse(getCartTotal().replaceAll('N\$', ''));
-    double service_fee = 90.0;
-    double cash_pickup_fee = paymentMethod == 'cash' ? 45.0 : 0;
+    double service_fee = 50.0;
+    double cash_pickup_fee = paymentMethod == 'cash' ? 0 : 0;
     //...
     double total = (cart + service_fee + cash_pickup_fee).ceilToDouble();
 

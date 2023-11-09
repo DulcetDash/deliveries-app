@@ -143,7 +143,7 @@ class Header extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  context.watch<HomeProvider>().getCartTotal(),
+                  'N\$${context.watch<HomeProvider>().getCartTotal()}',
                   style: TextStyle(
                       fontFamily: 'MoveTextMedium',
                       fontSize: 20,
@@ -225,8 +225,8 @@ class ProductModel extends StatelessWidget {
                   ),
                 ),
                 errorWidget: (context, url, error) => const Icon(
-                  Icons.error,
-                  size: 30,
+                  Icons.photo,
+                  size: 35,
                   color: Colors.grey,
                 ),
               )),
@@ -249,7 +249,7 @@ class ProductModel extends StatelessWidget {
                   height: 10,
                 ),
                 Text(
-                  '${productData['price']} • ${getItemsNumber()}',
+                  'N\$${productData['price']} • ${getItemsNumber()}',
                   style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
                 )
               ],

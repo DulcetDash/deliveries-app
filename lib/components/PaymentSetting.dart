@@ -223,7 +223,7 @@ class MethodChoice extends StatelessWidget {
                       context.read<HomeProvider>().selectedService ==
                           'shopping',
                   child: Text(
-                    'payments.topPickupIt'.tr(args: ["N\$45"]),
+                    'payments.topPickupIt'.tr(args: ["N\$0"]),
                     style: TextStyle(
                         fontFamily: 'MoveTextMedium',
                         color: AppTheme().getPrimaryColor(),
