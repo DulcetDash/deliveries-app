@@ -43,20 +43,20 @@ class _CreateAccountState extends State<CreateAccount> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 20, top: 25),
+            padding: const EdgeInsets.only(left: 20, right: 60, top: 25),
             child: Text(
-              'create_account.noAccountNoProbs'.tr(),
-              style: TextStyle(fontFamily: 'MoveBold', fontSize: 25),
+              'Seamless deliveries and couch-shopping at your fingertips.',
+              style: TextStyle(fontFamily: 'MoveBold', fontSize: 26),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
-            child: Text(
-              'create_account.accountDescription'.tr(),
-              style: TextStyle(
-                  fontSize: 15, color: AppTheme().getGenericDarkGrey()),
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+          //   child: Text(
+          //     'create_account.accountDescription'.tr(),
+          //     style: TextStyle(
+          //         fontSize: 15, color: AppTheme().getGenericDarkGrey()),
+          //   ),
+          // ),
           Expanded(child: SizedBox.shrink()),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 20),
@@ -66,16 +66,17 @@ class _CreateAccountState extends State<CreateAccount> {
                         style: TextStyle(
                             color: AppTheme().getGenericDarkGrey(),
                             fontFamily: 'MoveTextRegular',
-                            fontSize: 14),
+                            fontSize: 14,
+                            height: 1.5),
                         children: [
-                  TextSpan(text: 'create_account.byClicking '.tr()),
+                  TextSpan(text: 'By tapping'),
                   TextSpan(
-                      text: 'create_account.createAccountTitle'.tr(),
+                      text: ' Create your account',
                       style: TextStyle(
                           fontFamily: 'MoveTextBold', color: Colors.black)),
-                  TextSpan(text: ', create_account.autoAccept '.tr()),
+                  TextSpan(text: ', you agree to DulcetDash\'s '),
                   TextSpan(
-                      text: 'create_account.termsAndConds'.tr(),
+                      text: 'Terms & Conditions',
                       style: TextStyle(
                           fontFamily: 'MoveTextMedium',
                           color: AppTheme().getPrimaryColor()))
@@ -84,7 +85,7 @@ class _CreateAccountState extends State<CreateAccount> {
           GenericRectButton(
               label: context.watch<HomeProvider>().isLoadingForRequest
                   ? 'LOADING'
-                  : 'create_account.createAccountLabel'.tr(),
+                  : 'Create your account',
               labelFontSize: 22,
               isArrowShow:
                   context.watch<HomeProvider>().isLoadingForRequest == false,
@@ -297,7 +298,7 @@ class Header extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text('create_account.howdy'.tr(),
+                  Text('Welcome to DulcetDash!',
                       style: TextStyle(
                           fontFamily: 'MoveTextMedium', fontSize: 20)),
                 ],
