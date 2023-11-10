@@ -257,7 +257,7 @@ class _OTPCheckState extends State<OTPCheck> {
                     height: 15,
                   ),
                   Text(
-                    'otp_check.wrongCodeEntered',
+                    'otp_check.wrongCodeEntered'.tr(),
                     style: TextStyle(
                       fontFamily: 'MoveTextMedium',
                       fontSize: 19,
@@ -269,13 +269,13 @@ class _OTPCheckState extends State<OTPCheck> {
                   Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Text(
-                      "otp_check.incorrectCodeEntered",
+                      "otp_check.incorrectCodeEntered".tr(),
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
                   Expanded(child: SizedBox.shrink()),
                   GenericRectButton(
-                    label: 'generic_text.tryAgain',
+                    label: 'generic_text.tryAgain'.tr(),
                     labelFontSize: 20,
                     actuatorFunctionl: () {
                       Navigator.of(context).pop();

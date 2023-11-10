@@ -133,19 +133,41 @@ class _CatalogueState extends State<Catalogue> {
                               .watch<HomeProvider>()
                               .shops_search_item_key
                               .isNotEmpty
-                          ? Expanded(
-                              child: ListView(
-                              padding:
-                                  const EdgeInsets.only(top: 10, bottom: 50),
-                              children: [
-                                GenericTitle(
-                                    title: 'shopping.searchResults'.tr()),
-                                const SizedBox(
-                                  height: 15,
-                                ),
-                                searchedCatalogue(context: context),
-                              ],
-                            ))
+                          ? context
+                                  .watch<HomeProvider>()
+                                  .shops_items_searched
+                                  .isEmpty
+                              ? const Column(
+                                  children: [
+                                    Divider(
+                                      height: 60,
+                                    ),
+                                    Icon(Icons.info_outlined,
+                                        color: Colors.grey, size: 30),
+                                    Divider(
+                                      height: 15,
+                                      color: Colors.white,
+                                    ),
+                                    Text(
+                                      'No products found for that search',
+                                      style: TextStyle(
+                                          fontSize: 17, color: Colors.grey),
+                                    ),
+                                  ],
+                                )
+                              : Expanded(
+                                  child: ListView(
+                                  padding: const EdgeInsets.only(
+                                      top: 10, bottom: 50),
+                                  children: [
+                                    GenericTitle(
+                                        title: 'shopping.searchResults'.tr()),
+                                    const SizedBox(
+                                      height: 15,
+                                    ),
+                                    searchedCatalogue(context: context),
+                                  ],
+                                ))
                           : const ShowCaseMainCat()
             ],
           ),
@@ -888,7 +910,7 @@ class ProductDisplayModel_search extends StatelessWidget {
             SizedBox(
               height: 5,
             ),
-            Text(productPrice,
+            Text('N\$$productPrice',
                 style: TextStyle(fontSize: 16, color: Colors.grey.shade700))
           ]),
         ),
