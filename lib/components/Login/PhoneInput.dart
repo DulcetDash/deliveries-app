@@ -225,7 +225,7 @@ class ErrorPhone extends StatelessWidget {
             width: 5,
           ),
           Text(
-            'Invalid phone number yeso',
+            'Invalid phone number',
             style: TextStyle(fontSize: 16, color: AppTheme().getErrorColor()),
           )
         ]),
