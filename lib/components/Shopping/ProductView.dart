@@ -407,7 +407,7 @@ class _ProductNumberIncrementorState extends State<ProductNumberIncrementor> {
               //? STOP AT 100
               if (context.read<HomeProvider>().selectedProduct['items'] ==
                       null ||
-                  context.read<HomeProvider>().selectedProduct['items'] < 100) {
+                  context.read<HomeProvider>().selectedProduct['items'] < 15) {
                 Map<String, dynamic> productModel =
                     context.read<HomeProvider>().selectedProduct;
                 productModel['items'] = productModel['items'] != null
