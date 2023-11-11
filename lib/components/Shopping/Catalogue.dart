@@ -360,10 +360,6 @@ class _SearchBarState extends State<SearchBar> {
 
       if (response.statusCode == 200) //Got some results
       {
-        context
-            .read<HomeProvider>()
-            .updateLoaderStatusItems_shop(status: false);
-
         List<dynamic> tmpResponse = json.decode(response.body)['response'];
         //? Update
         if (tmpResponse.isNotEmpty) //Found some products
@@ -371,9 +367,15 @@ class _SearchBarState extends State<SearchBar> {
           context
               .read<HomeProvider>()
               .updateItemsSearchResults(value: tmpResponse);
+          context
+              .read<HomeProvider>()
+              .updateLoaderStatusItems_shop(status: false);
         } else //No items
         {
           context.read<HomeProvider>().updateItemsSearchResults(value: []);
+          context
+              .read<HomeProvider>()
+              .updateLoaderStatusItems_shop(status: false);
         }
       } else //Has some errors
       {
@@ -386,7 +388,7 @@ class _SearchBarState extends State<SearchBar> {
       }
     } catch (e) {
       // print('8');
-      // print(e.toString());
+      log(e.toString());
       // showErrorModal(context: context);
       context.read<HomeProvider>().updateItemsSearchResults(value: []);
       context.read<HomeProvider>().updateLoaderStatusItems_shop(status: false);
