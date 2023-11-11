@@ -1954,7 +1954,7 @@ class ProductModel extends StatelessWidget {
               width: 30,
               child: Text(
                 indexProduct.toString(),
-                style: TextStyle(fontSize: 17),
+                style: const TextStyle(fontSize: 17),
               )),
           badges.Badge(
             badgeContent: productData['isCompleted'] != null
@@ -1965,14 +1965,13 @@ class ProductModel extends StatelessWidget {
                         ? Colors.white
                         : Colors.black,
                   )
-                : Icon(Icons.timelapse_sharp, size: 15),
+                : const Icon(Icons.timelapse_sharp, size: 15),
             badgeStyle: badges.BadgeStyle(
               badgeColor: productData['isCompleted'] != null
                   ? AppTheme().getSecondaryColor()
                   : AppTheme().getGenericGrey(),
             ),
             child: Container(
-                // color: Colors.red,
                 width: 70,
                 height: 60,
                 child: CachedNetworkImage(
@@ -2002,7 +2001,7 @@ class ProductModel extends StatelessWidget {
                   ),
                 )),
           ),
-          SizedBox(
+          const SizedBox(
             width: 30,
           ),
           Container(
@@ -2017,16 +2016,24 @@ class ProductModel extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontSize: 14, fontFamily: 'MoveTextMedium'),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Text(
-                  '${productData['price']} • ${getItemsNumber()}',
+                  'N\$${productData['price']} • ${getItemsNumber()}',
                   style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
-                )
+                ),
+                const Divider(
+                  height: 5,
+                  color: Colors.white,
+                ),
+                Text(
+                    DataParser().capitalizeWords(
+                        productData['meta']['store'].toString()),
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 16))
               ],
             ),
-          ),
+          )
         ]),
       ),
     );
