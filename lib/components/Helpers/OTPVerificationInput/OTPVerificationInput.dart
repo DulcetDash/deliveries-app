@@ -41,6 +41,7 @@ class _OTPVerificationInputState extends State<OTPVerificationInput> {
         child: PinCodeTextField(
           controller: context.watch<HomeProvider>().otpFieldController,
           enablePinAutofill: true,
+          keyboardType: TextInputType.number,
           showCursor: false,
           autoFocus: true,
           autovalidateMode: AutovalidateMode.disabled,

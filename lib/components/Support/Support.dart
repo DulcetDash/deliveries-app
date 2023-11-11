@@ -1,3 +1,4 @@
+import 'package:dulcetdash/components/Helpers/DataParser.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -86,7 +87,8 @@ class _SupportState extends State<Support> {
                   labelFontFamily: 'MoveTextBold',
                   isArrowShow: false,
                   labelFontSize: 20,
-                  actuatorFunctionl: () async {})
+                  actuatorFunctionl: () =>
+                      PhoneNumberCaller.callNumber(phoneNumber: '10111'))
             ]),
           ),
         ],
