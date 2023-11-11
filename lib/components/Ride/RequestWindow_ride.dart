@@ -6,6 +6,7 @@ import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:dulcetdash/components/Helpers/SuperHttp.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -1232,7 +1233,8 @@ class _LocalModalState extends State<LocalModal> {
     // print(bundleData);
 
     try {
-      http.Response response = await http.post(mainUrl, body: bundleData);
+      SuperHttp superHttp = SuperHttp();
+      var response = await superHttp.post(mainUrl, body: bundleData);
 
       if (response.statusCode == 200) //Got some results
       {
@@ -1340,7 +1342,8 @@ class _LocalModalState extends State<LocalModal> {
     };
 
     try {
-      Response response = await post(mainUrl, body: bundleData);
+      SuperHttp superHttp = SuperHttp();
+      var response = await superHttp.post(mainUrl, body: bundleData);
 
       if (response.statusCode == 200) //Got some results
       {

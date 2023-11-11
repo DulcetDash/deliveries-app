@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dulcetdash/components/Helpers/SuperHttp.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
@@ -52,7 +53,8 @@ class _HomeState extends State<Home> {
     };
 
     try {
-      http.Response response = await http.post(mainUrl, body: bundleData);
+      SuperHttp superHttp = SuperHttp();
+      var response = await superHttp.post(mainUrl, body: bundleData);
 
       if (response.statusCode == 200) //Got some results
       {

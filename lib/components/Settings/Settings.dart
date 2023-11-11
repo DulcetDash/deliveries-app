@@ -5,6 +5,7 @@ import 'dart:ui';
 
 import 'package:badges/badges.dart' as badges;
 import 'package:dulcetdash/components/Helpers/Networking.dart';
+import 'package:dulcetdash/components/Helpers/SuperHttp.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -60,11 +61,11 @@ class _SettingsState extends State<Settings> {
     };
 
     try {
-      http.Response response = await http.post(mainUrl, body: bundleData);
+      SuperHttp superHttp = SuperHttp();
+      var response = await superHttp.post(mainUrl, body: bundleData);
 
       if (response.statusCode == 200) //Got some results
       {
-        log(response.body.toString());
         String tmpResponse = json.decode(response.body)['response'];
 
         if (tmpResponse == 'success') {
@@ -565,7 +566,8 @@ class _LocalModalState extends State<LocalModal> {
     };
 
     try {
-      http.Response response = await http.post(mainUrl, body: bundleData);
+      SuperHttp superHttp = SuperHttp();
+      var response = await superHttp.post(mainUrl, body: bundleData);
 
       if (response.statusCode == 200) //Got some results
       {

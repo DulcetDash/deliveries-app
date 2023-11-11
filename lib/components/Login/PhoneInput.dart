@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:dulcetdash/components/Helpers/SuperHttp.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -120,16 +121,14 @@ class _PhoneInputState extends State<PhoneInput> {
           '${context.read<HomeProvider>().selectedCountryCodeData['dial_code']}${context.read<HomeProvider>().enteredPhoneNumber}'
     };
 
-    log('HERE');
-
     // print(bundleData);
     try {
-      Response response = await post(mainUrl, body: bundleData);
+      SuperHttp superHttp = SuperHttp();
+      var response = await superHttp.post(mainUrl, body: bundleData);
 
       if (response.statusCode == 200) //Got some results
       {
         context.read<HomeProvider>().updateLoadingRequestStatus(status: false);
-        log(response.body.toString());
         Map<String, dynamic> responseInfo = json.decode(response.body);
 
         //Update the login phase 1 check data

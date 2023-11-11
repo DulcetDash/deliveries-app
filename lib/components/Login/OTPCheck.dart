@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:dulcetdash/components/Helpers/SuperHttp.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -70,7 +71,8 @@ class _OTPCheckState extends State<OTPCheck> {
 
     // print(bundleData);
     try {
-      Response response = await post(mainUrl, body: bundleData);
+      SuperHttp superHttp = SuperHttp();
+      var response = await superHttp.post(mainUrl, body: bundleData);
 
       if (response.statusCode == 200) //Got some results
       {
@@ -178,7 +180,8 @@ class _OTPCheckState extends State<OTPCheck> {
 
     // print(bundleData);
     try {
-      Response response = await post(mainUrl, body: bundleData);
+      SuperHttp superHttp = SuperHttp();
+      var response = await superHttp.post(mainUrl, body: bundleData);
 
       if (response.statusCode == 200) //Got some results
       {

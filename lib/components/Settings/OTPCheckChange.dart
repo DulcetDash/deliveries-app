@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:dulcetdash/components/Helpers/SuperHttp.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -70,14 +71,13 @@ class _OTPCheckChangeState extends State<OTPCheckChange> {
           context.read<HomeProvider>().userData['user_identifier']
     };
 
-    // print(bundleData);
     try {
-      Response response = await post(mainUrl, body: bundleData);
+      SuperHttp superHttp = SuperHttp();
+      var response = await superHttp.post(mainUrl, body: bundleData);
 
       if (response.statusCode == 200) //Got some results
       {
         context.read<HomeProvider>().updateLoadingRequestStatus(status: false);
-        log(response.body.toString());
       } else //Has some errors
       {
         log(response.toString());
@@ -168,7 +168,8 @@ class _OTPCheckChangeState extends State<OTPCheckChange> {
 
     // print(bundleData);
     try {
-      Response response = await post(mainUrl, body: bundleData);
+      SuperHttp superHttp = SuperHttp();
+      var response = await superHttp.post(mainUrl, body: bundleData);
 
       if (response.statusCode == 200) //Got some results
       {

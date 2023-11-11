@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:dulcetdash/components/Helpers/SuperHttp.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -61,7 +62,8 @@ class GetShoppingData {
         '${context.read<HomeProvider>().bridge}/getShoppingData'));
     //...
     try {
-      Response response = await post(mainUrl, body: bundleData);
+      SuperHttp superHttp = SuperHttp();
+      var response = await superHttp.post(mainUrl, body: bundleData);
 
       // log(bundleData.toString());
       // log('${context.read<HomeProvider>().bridge}/getShoppingData');
@@ -195,7 +197,8 @@ class GetUserData {
         '${context.read<HomeProvider>().bridge}/getGenericUserData'));
 
     try {
-      Response response = await post(mainUrl, body: bundleData);
+      SuperHttp superHttp = SuperHttp();
+      var response = await superHttp.post(mainUrl, body: bundleData);
 
       if (response.statusCode == 200) //Got some results
       {
@@ -265,7 +268,8 @@ class GetRecentlyVisitedStores {
         '${context.read<HomeProvider>().bridge}/getRecentlyVisitedShops'));
 
     try {
-      Response response = await post(mainUrl, body: bundleData);
+      SuperHttp superHttp = SuperHttp();
+      var response = await superHttp.post(mainUrl, body: bundleData);
 
       if (response.statusCode == 200) //Got some results
       {

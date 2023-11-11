@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:dulcetdash/components/Helpers/SuperHttp.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart';
 import 'package:flutter/foundation.dart';
@@ -18,8 +19,8 @@ import 'package:collection/collection.dart';
 // Will hold all the home related globals - only!
 
 class HomeProvider with ChangeNotifier {
-  // final String bridge = 'http://192.168.8.100:9697';
-  final String bridge = 'https://api.dulcetdash.com';
+  final String bridge = 'http://192.168.8.100:9697';
+  // final String bridge = 'https://api.dulcetdash.com';
 
   String selectedService =
       'ride'; //! The selected service that the user selected: ride, delivery and shopping - default: ''
@@ -574,7 +575,8 @@ class HomeProvider with ChangeNotifier {
       };
 
       try {
-        Response response = await post(mainUrl, body: bundleData);
+        SuperHttp superHttp = SuperHttp();
+        var response = await superHttp.post(mainUrl, body: bundleData);
 
         if (response.statusCode == 200) //Got some results
         {
@@ -1367,10 +1369,9 @@ class HomeProvider with ChangeNotifier {
       'user_identifier': user_identifier
     };
 
-    log(bundleData.toString());
-
     try {
-      Response response = await post(mainUrl, body: bundleData);
+      SuperHttp superHttp = SuperHttp();
+      var response = await superHttp.post(mainUrl, body: bundleData);
 
       if (response.statusCode == 200) //Got some results
       {
@@ -1394,10 +1395,9 @@ class HomeProvider with ChangeNotifier {
       'user_identifier': user_identifier
     };
 
-    // print(bundleData);
-
     try {
-      Response response = await post(mainUrl, body: bundleData);
+      SuperHttp superHttp = SuperHttp();
+      var response = await superHttp.post(mainUrl, body: bundleData);
 
       if (response.statusCode == 200) //Got some results
       {

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "659785961534",
+    "project_id": "dulcetdash-403312",
+    "storage_bucket": "dulcetdash-403312.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:659785961534:android:88068d9c074d0b2013c16f",
+        "android_client_info": {
+          "package_name": "com.users.dulcetdash"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8qWib_6PyDhYIHtM9wINVfJZG2kt2hAo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

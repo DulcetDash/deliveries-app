@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:dulcetdash/components/Helpers/SuperHttp.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -195,8 +196,9 @@ class LocationOpsHandler with ChangeNotifier {
     String urlString =
         '${context.read<HomeProvider>().bridge}/geocode_this_point';
     try {
-      Response response =
-          await post(Uri.parse(Uri.encodeFull(urlString)), body: bundleData);
+      SuperHttp superHttp = SuperHttp();
+      var response = await superHttp.post(Uri.parse(Uri.encodeFull(urlString)),
+          body: bundleData);
 
       if (response.statusCode == 200 &&
           json.decode(response.body).runtimeType != bool) {

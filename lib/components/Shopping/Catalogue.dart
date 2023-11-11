@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dulcetdash/components/Helpers/SuperHttp.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
@@ -47,7 +48,8 @@ class _CatalogueState extends State<Catalogue> {
     };
 
     try {
-      http.Response response = await http.post(mainUrl, body: bundleData);
+      SuperHttp superHttp = SuperHttp();
+      var response = await superHttp.post(mainUrl, body: bundleData);
 
       if (response.statusCode == 200) //Got some results
       {
@@ -353,14 +355,15 @@ class _SearchBarState extends State<SearchBar> {
     // print(bundleData);
 
     try {
-      http.Response response = await http.post(mainUrl, body: bundleData);
+      SuperHttp superHttp = SuperHttp();
+      var response = await superHttp.post(mainUrl, body: bundleData);
 
       if (response.statusCode == 200) //Got some results
       {
         context
             .read<HomeProvider>()
             .updateLoaderStatusItems_shop(status: false);
-        // log(response.body.toString());
+
         List<dynamic> tmpResponse = json.decode(response.body)['response'];
         //? Update
         if (tmpResponse.isNotEmpty) //Found some products

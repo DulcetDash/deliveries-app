@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dulcetdash/components/Helpers/SuperHttp.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
@@ -44,11 +45,11 @@ class _CatalogueDetailsL2State extends State<CatalogueDetailsL2> {
         context.read<HomeProvider>().selectedDataL2ToShow;
 
     try {
-      http.Response response = await http.post(mainUrl, body: bundleData);
+      SuperHttp superHttp = SuperHttp();
+      var response = await superHttp.post(mainUrl, body: bundleData);
 
       if (response.statusCode == 200) //Got some results
       {
-        // log(response.body.toString());
         Map tmpResponse = json.decode(response.body);
         // log(tmpResponse['response']['WOMEN'].toString());
         //? Update
@@ -361,7 +362,8 @@ class _SearchBarState extends State<SearchBar> {
     // print(bundleData);
 
     try {
-      http.Response response = await http.post(mainUrl, body: bundleData);
+      SuperHttp superHttp = SuperHttp();
+      var response = await superHttp.post(mainUrl, body: bundleData);
 
       if (response.statusCode == 200) //Got some results
       {
