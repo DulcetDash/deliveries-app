@@ -632,14 +632,6 @@ class _LocalModalState extends State<LocalModal> {
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading == false) {
-      _editingController.value = TextEditingValue(
-          text:
-              valueField); //Update the text editing value to the current value of the field that we wish to be able to update.
-      _editingController.selection = TextSelection.fromPosition(
-          TextPosition(offset: _editingController.text.length));
-    }
-
     switch (scenario) {
       case 'name':
         return SafeArea(
