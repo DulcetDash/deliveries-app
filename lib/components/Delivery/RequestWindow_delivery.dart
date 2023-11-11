@@ -167,7 +167,7 @@ class Header extends StatelessWidget {
                         ),
                         errorWidget: (context, url, error) => const Icon(
                           Icons.error,
-                          size: 30,
+                          size: 35,
                           color: Colors.grey,
                         ),
                       ),
@@ -217,10 +217,14 @@ class Header extends StatelessWidget {
                   ),
                 ],
               ),
-              Icon(
-                Icons.phone,
-                size: 35,
-                color: AppTheme().getSecondaryColor(),
+              InkWell(
+                onTap: () => PhoneNumberCaller.callNumber(
+                    phoneNumber: requestData['driver_details']['phone']),
+                child: Icon(
+                  Icons.phone,
+                  size: 35,
+                  color: AppTheme().getSecondaryColor(),
+                ),
               )
             ],
           ),
