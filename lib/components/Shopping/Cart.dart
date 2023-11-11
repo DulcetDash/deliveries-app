@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dulcetdash/components/Helpers/DataParser.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:dulcetdash/components/GenericRectButton.dart';
@@ -251,7 +252,15 @@ class ProductModel extends StatelessWidget {
                 Text(
                   'N\$${productData['price']} • ${getItemsNumber()}',
                   style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
-                )
+                ),
+                const Divider(
+                  height: 5,
+                  color: Colors.white,
+                ),
+                Text(
+                    DataParser().capitalizeWords(
+                        productData['meta']['store'].toString()),
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 16))
               ],
             ),
           ),

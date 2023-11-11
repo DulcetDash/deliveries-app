@@ -57,58 +57,63 @@ class AppGeneralEntry extends StatefulWidget {
 class _AppGeneralEntryState extends State<AppGeneralEntry> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        // debugShowCheckedModeBanner: false,
-        localizationsDelegates: context.localizationDelegates,
-        supportedLocales: context.supportedLocales,
-        locale: context.locale,
-        navigatorKey: NavigationService.navigatorKey,
-        theme: AppTheme.appTheme,
-        initialRoute: '/',
-        routes: {
-          '/': (context) => const SplashScreen(),
-          //Login
-          '/Entry': (context) => const Entry(),
-          '/PhoneInput': (context) => const PhoneInput(),
-          '/OTPCheck': (context) => const OTPCheck(),
-          '/CreateAccount': (context) => const CreateAccount(),
-          '/NewAccountDetails': (context) => const NewAccountAddiDetails(),
-          '/Language': (context) => const Language(),
-          //Core
-          '/home': (context) => const HomeScreen(),
-          '/shopping': (context) => const Home(),
-          '/catalogue': (context) => const Catalogue(),
-          '/catalogue_details_l2': (context) => const CatalogueDetailsL2(),
-          '/product_view': (context) => const ProductView(),
-          '/cart': (context) => const Cart(),
-          '/paymentSetting': (context) =>
-              const PaymentSetting(), //? SHARED PAGE
-          '/locationDetails': (context) => const LocationDetails(),
-          '/ShoppingSummary': (context) => const ShoppingSummary(),
-          '/successfulRequest': (context) => const SuccessRequest(),
-          '/requestWindow': (context) => const RequestWindow(),
-          //Delivery
-          '/delivery_recipients': (context) => const DelRecipients(),
-          '/delivery_pickupLocation': (context) =>
-              const DeliveryPickupLocation(),
-          '/DeliverySummary': (context) => const DeliverySummary(),
-          '/RequestWindow_delivery': (context) =>
-              const RequestWindow_delivery(),
-          //Ride
-          '/PassengersInput': (context) => const InitialPassengers(),
-          '/FareDisplay': (context) => const FareDisplay(),
-          '/RideSummary': (context) => const RideSummary(),
-          '/RequestWindow_ride': (context) => const RequestWindow_ride(),
-          //Share
-          '/Share': (context) => const Share(),
-          //Support
-          '/Support': (context) => const Support(),
-          //YourRides
-          '/YourRides': (context) => const YourRides(),
-          //Settings
-          '/Settings': (context) => const Settings(),
-          '/PhoneInputChange': (context) => const PhoneInputChange(),
-          '/OTPCheckChange': (context) => const OTPCheckChange()
-        });
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: MaterialApp(
+          // debugShowCheckedModeBanner: false,
+          localizationsDelegates: context.localizationDelegates,
+          supportedLocales: context.supportedLocales,
+          locale: context.locale,
+          navigatorKey: NavigationService.navigatorKey,
+          theme: AppTheme.appTheme,
+          initialRoute: '/',
+          routes: {
+            '/': (context) => const SplashScreen(),
+            //Login
+            '/Entry': (context) => const Entry(),
+            '/PhoneInput': (context) => const PhoneInput(),
+            '/OTPCheck': (context) => const OTPCheck(),
+            '/CreateAccount': (context) => const CreateAccount(),
+            '/NewAccountDetails': (context) => const NewAccountAddiDetails(),
+            '/Language': (context) => const Language(),
+            //Core
+            '/home': (context) => const HomeScreen(),
+            '/shopping': (context) => const Home(),
+            '/catalogue': (context) => const Catalogue(),
+            '/catalogue_details_l2': (context) => const CatalogueDetailsL2(),
+            '/product_view': (context) => const ProductView(),
+            '/cart': (context) => const Cart(),
+            '/paymentSetting': (context) =>
+                const PaymentSetting(), //? SHARED PAGE
+            '/locationDetails': (context) => const LocationDetails(),
+            '/ShoppingSummary': (context) => const ShoppingSummary(),
+            '/successfulRequest': (context) => const SuccessRequest(),
+            '/requestWindow': (context) => const RequestWindow(),
+            //Delivery
+            '/delivery_recipients': (context) => const DelRecipients(),
+            '/delivery_pickupLocation': (context) =>
+                const DeliveryPickupLocation(),
+            '/DeliverySummary': (context) => const DeliverySummary(),
+            '/RequestWindow_delivery': (context) =>
+                const RequestWindow_delivery(),
+            //Ride
+            '/PassengersInput': (context) => const InitialPassengers(),
+            '/FareDisplay': (context) => const FareDisplay(),
+            '/RideSummary': (context) => const RideSummary(),
+            '/RequestWindow_ride': (context) => const RequestWindow_ride(),
+            //Share
+            '/Share': (context) => const Share(),
+            //Support
+            '/Support': (context) => const Support(),
+            //YourRides
+            '/YourRides': (context) => const YourRides(),
+            //Settings
+            '/Settings': (context) => const Settings(),
+            '/PhoneInputChange': (context) => const PhoneInputChange(),
+            '/OTPCheckChange': (context) => const OTPCheckChange()
+          }),
+    );
   }
 }

@@ -144,7 +144,8 @@ class Header extends StatelessWidget {
         child: Row(
           children: [
             InkWell(
-              onTap: () => Navigator.of(context).pushNamed('/home'),
+              // onTap: () => Navigator.of(context).pushNamed('/home'),
+              onTap: () => Navigator.of(context).popAndPushNamed('/home'),
               child: Container(
                 alignment: Alignment.centerLeft,
                 width: 100,

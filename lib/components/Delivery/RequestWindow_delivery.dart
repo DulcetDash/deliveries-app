@@ -1347,7 +1347,7 @@ class _LocalModalState extends State<LocalModal> {
                     padding: const EdgeInsets.only(left: 25, right: 25),
                     child: ListTile(
                       onTap: () => PhoneNumberCaller.callNumber(
-                          phoneNumber: '+264856997167'),
+                          phoneNumber: '+264857642043'),
                       contentPadding: EdgeInsets.zero,
                       leading: const Icon(Icons.support, color: Colors.black),
                       horizontalTitleGap: 0,
@@ -1539,7 +1539,7 @@ class _LocalModalState extends State<LocalModal> {
                     padding: EdgeInsets.only(left: 25, right: 25),
                     child: ListTile(
                       onTap: () => PhoneNumberCaller.callNumber(
-                          phoneNumber: '+264856997167'),
+                          phoneNumber: '+264857642043'),
                       contentPadding: EdgeInsets.zero,
                       leading: Icon(Icons.support, color: Colors.black),
                       horizontalTitleGap: 0,

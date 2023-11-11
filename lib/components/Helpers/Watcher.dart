@@ -5,7 +5,9 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:dulcetdash/components/Providers/HomeProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Watcher with ChangeNotifier {
   // Duration? timerInterval = const Duration(seconds: 2);
@@ -20,6 +22,12 @@ class Watcher with ChangeNotifier {
     //Start the timer
     mainLoop = Timer.periodic(timerInterval!, (Timer t) {
       for (int i = 0; i < actuatorFunctions.length; i++) {
+        if (context.read<HomeProvider>().user_identifier ==
+            'empty_fingerprint') {
+          log('No valid fingerprint detected! - skipping timers');
+          continue;
+        }
+
         //? Structure
         // {name:'data fetcher name', actuator: Specific class instance child}
         //Call the tmp function

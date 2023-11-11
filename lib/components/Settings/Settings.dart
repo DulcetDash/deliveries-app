@@ -70,6 +70,7 @@ class _SettingsState extends State<Settings> {
 
         if (tmpResponse == 'success') {
           dismissModalSuccess(context: context);
+          GetUserData().exec(context: context);
         } else //Some error
         {
           dismissModalError(context: context);
@@ -239,6 +240,7 @@ class _SettingsState extends State<Settings> {
                               builder: (context) => LocalModal(
                                 scenario: 'name',
                                 valueField: userData['name'].toString(),
+                                parentContext: context,
                               ),
                             ),
                           ),
@@ -254,6 +256,7 @@ class _SettingsState extends State<Settings> {
                               builder: (context) => LocalModal(
                                 scenario: 'surname',
                                 valueField: userData['surname'].toString(),
+                                parentContext: context,
                               ),
                             ),
                           ),
@@ -285,6 +288,7 @@ class _SettingsState extends State<Settings> {
                               builder: (context) => LocalModal(
                                 scenario: 'email',
                                 valueField: userData['email'].toString(),
+                                parentContext: context,
                               ),
                             ),
                           ),
@@ -338,7 +342,8 @@ class Header extends StatelessWidget {
         child: Row(
           children: [
             InkWell(
-              onTap: () => Navigator.of(context).pushNamed('/home'),
+              // onTap: () => Navigator.of(context).pushNamed('/home'),
+              onTap: () => Navigator.of(context).popAndPushNamed('/home'),
               child: Container(
                 alignment: Alignment.centerLeft,
                 width: 100,
@@ -527,21 +532,30 @@ class GenericTitle_modal extends StatelessWidget {
 class LocalModal extends StatefulWidget {
   final String scenario;
   final String valueField;
+  final parentContext;
 
-  const LocalModal({Key? key, required this.scenario, required this.valueField})
+  const LocalModal(
+      {Key? key,
+      required this.scenario,
+      required this.valueField,
+      required this.parentContext})
       : super(key: key);
 
   @override
-  State<LocalModal> createState() =>
-      _LocalModalState(scenario: scenario, valueField: valueField);
+  State<LocalModal> createState() => _LocalModalState(
+      scenario: scenario, valueField: valueField, parentContext: parentContext);
 }
 
 class _LocalModalState extends State<LocalModal> {
   final String scenario;
   final String valueField;
+  final parentContext;
 
   _LocalModalState(
-      {Key? key, required this.scenario, required this.valueField});
+      {Key? key,
+      required this.scenario,
+      required this.valueField,
+      required this.parentContext});
 
   TextEditingController _editingController = TextEditingController();
   bool isLoading = false; //If a process is loading or not
@@ -572,7 +586,7 @@ class _LocalModalState extends State<LocalModal> {
       if (response.statusCode == 200) //Got some results
       {
         dismissModalSuccess(context: context);
-        // List tmpResponse = json.decode(response.body);
+        GetUserData().exec(context: parentContext);
         //? Update
       } else //Has some errors
       {
@@ -618,11 +632,13 @@ class _LocalModalState extends State<LocalModal> {
 
   @override
   Widget build(BuildContext context) {
-    _editingController.value = TextEditingValue(
-        text:
-            valueField); //Update the text editing value to the current value of the field that we wish to be able to update.
-    _editingController.selection = TextSelection.fromPosition(
-        TextPosition(offset: _editingController.text.length));
+    if (isLoading == false) {
+      _editingController.value = TextEditingValue(
+          text:
+              valueField); //Update the text editing value to the current value of the field that we wish to be able to update.
+      _editingController.selection = TextSelection.fromPosition(
+          TextPosition(offset: _editingController.text.length));
+    }
 
     switch (scenario) {
       case 'name':
