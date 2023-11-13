@@ -5,6 +5,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:dulcetdash/components/Helpers/SecureStorageService.dart';
 import 'package:dulcetdash/components/Providers/HomeProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -20,8 +21,16 @@ class Watcher with ChangeNotifier {
       Duration? timerInterval = const Duration(seconds: 10),
       required BuildContext context}) {
     //Start the timer
-    mainLoop = Timer.periodic(timerInterval!, (Timer t) {
+    mainLoop = Timer.periodic(timerInterval!, (Timer t) async {
       for (int i = 0; i < actuatorFunctions.length; i++) {
+        String? permaToken =
+            await SecureStorageService().getValue('permaToken');
+
+        if (permaToken == null) {
+          log('No valid context detected! - skipping timer');
+          continue;
+        }
+
         if (context.read<HomeProvider>().user_identifier ==
             'empty_fingerprint') {
           log('No valid fingerprint detected! - skipping timers');
