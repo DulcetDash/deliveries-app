@@ -88,18 +88,7 @@ class GetShoppingData {
         } else //? Found some data
         {
           List responseData = json.decode(response.body);
-          // context
-          //     .read<HomeProvider>()
-          //     .updateRealtimeShoppingData(data: responseData);
 
-          //? MOVE TO THE REQUEST WINDOW
-          // if (context.read<HomeProvider>().isThereARequestLockedIn['locked'] ==
-          //         false &&
-          //     context
-          //             .read<HomeProvider>()
-          //             .isThereARequestLockedIn['makeException'] ==
-          //         false) //!Auto redirect to the request windhoek
-          // {
           if (DeepCollectionEquality().equals(
                       responseData[0],
                       context
@@ -207,7 +196,12 @@ class GetUserData {
         context.read<HomeProvider>().updateUserDataErrorless(data: tmpResponse);
       } else //Has some errors
       {
-        log(response.toString());
+        var decodedError = json.decode(response.body);
+        if (decodedError['error'] == 'ipm') {
+          context.read<HomeProvider>().clearEverything();
+          //..
+          Navigator.of(context).pushNamed('/Entry');
+        }
       }
     } catch (e) {
       log('8 - getGenericUserData');
