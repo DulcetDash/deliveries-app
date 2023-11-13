@@ -1,4 +1,4 @@
-package com.example.dulcetdash
+package com.users.dulcetdash
 
 import io.flutter.embedding.android.FlutterActivity
 

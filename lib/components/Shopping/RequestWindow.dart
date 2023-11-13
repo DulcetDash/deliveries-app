@@ -61,26 +61,25 @@ class _RequestWindowState extends State<RequestWindow> {
               ['shopping_list'] ==
           null) return SizedBox.shrink();
 
-      print(requestData['state_vars']);
-
       return context.watch<HomeProvider>().requestShoppingData == null ||
               context.watch<HomeProvider>().requestShoppingData[0]
                       ['shopping_list'] ==
                   null
-          ? SizedBox.shrink()
+          ? const SizedBox.shrink()
           : context.watch<HomeProvider>().requestShoppingData.length == 0
-              ? SizedBox.shrink()
+              ? const SizedBox.shrink()
               : Scaffold(
+                  resizeToAvoidBottomInset: true,
                   body: SafeArea(
                       child: ListView(
                     children: [
-                      Header(),
-                      ShoppingList(),
-                      PaymentSection(),
+                      const Header(),
+                      const ShoppingList(),
+                      const PaymentSection(),
                       DeliverySection(),
-                      CancellationSection(),
+                      const CancellationSection(),
                       requestData['state_vars']['completedDropoff'] == false
-                          ? SizedBox.shrink()
+                          ? const SizedBox.shrink()
                           : GenericRectButton(
                               label: 'shopping.rateShopper'.tr(),
                               horizontalPadding: 20,
@@ -93,9 +92,9 @@ class _RequestWindowState extends State<RequestWindow> {
                                     enableDrag: false,
                                     expand: true,
                                     bounce: true,
-                                    duration: Duration(milliseconds: 250),
+                                    duration: const Duration(milliseconds: 250),
                                     context: context,
-                                    builder: (context) => LocalModal(
+                                    builder: (context) => const LocalModal(
                                       scenario: 'rating',
                                     ),
                                   ))
@@ -303,9 +302,6 @@ class ShoppingList extends StatelessWidget {
       child: Container(
           decoration: BoxDecoration(
             color: Colors.grey.shade100.withOpacity(1),
-            // border: Border(
-            //     top: BorderSide(width: 0.5, color: Colors.grey),
-            //     bottom: BorderSide(width: 0.5, color: Colors.grey))
           ),
           height: 145,
           child: Padding(
@@ -325,13 +321,15 @@ class ShoppingList extends StatelessWidget {
                             itemBuilder: (context, index) => getThumbnailItem(
                                 context: context,
                                 itemData: requestData['shopping_list'][index]),
-                            separatorBuilder: (context, index) => SizedBox(
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(
                                   width: 15,
                                 ),
-                            itemCount: requestData['shopping_list'].length),
+                            itemCount:
+                                requestData['shopping_list']?.length ?? 0),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 20,
                     ),
                     Icon(
@@ -341,12 +339,12 @@ class ShoppingList extends StatelessWidget {
                     )
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Text(
                   'shopping.shoppingListTitle'.tr(),
-                  style: TextStyle(fontSize: 15),
+                  style: const TextStyle(fontSize: 15),
                 )
               ],
             ),
@@ -364,18 +362,9 @@ class ShoppingList extends StatelessWidget {
   Widget getThumbnailItem(
       {required BuildContext context, required Map<String, dynamic> itemData}) {
     return badges.Badge(
-      badgeContent: itemData['isCompleted'] != null
-          ? Icon(
-              Icons.check,
-              size: 15,
-              color:
-                  itemData['isCompleted'] != null ? Colors.white : Colors.black,
-            )
-          : Icon(Icons.timelapse_sharp, size: 15),
+      badgeContent: getProductCompletionStatus(itemData)['icon'],
       badgeStyle: badges.BadgeStyle(
-        badgeColor: itemData['isCompleted'] != null
-            ? AppTheme().getSecondaryColor()
-            : AppTheme().getGenericGrey(),
+        badgeColor: getProductCompletionStatus(itemData)['badgeColor'],
       ),
       child: Container(
           height: 50,
@@ -401,12 +390,36 @@ class ShoppingList extends StatelessWidget {
               ),
             ),
             errorWidget: (context, url, error) => const Icon(
-              Icons.error,
-              size: 30,
+              Icons.photo,
+              size: 35,
               color: Colors.grey,
             ),
           )),
     );
+  }
+
+  Map getProductCompletionStatus(itemData) {
+    bool isCompleted = itemData['isCompleted'] ?? false;
+    bool isNotFound = itemData['isNotFound'] ?? false;
+
+    if (isNotFound) {
+      return {
+        'icon': const Icon(Icons.question_mark_rounded,
+            size: 15, color: Colors.black),
+        'badgeColor': Colors.yellow,
+      };
+    } else if (isCompleted) {
+      return {
+        'icon': const Icon(Icons.check, size: 15, color: Colors.white),
+        'badgeColor': AppTheme().getPrimaryColor(),
+      };
+    } else {
+      return {
+        'icon':
+            const Icon(Icons.timelapse_sharp, size: 15, color: Colors.black),
+        'badgeColor': AppTheme().getGenericGrey(),
+      };
+    }
   }
 }
 
@@ -461,7 +474,7 @@ class PaymentSection extends StatelessWidget {
               enableDrag: false,
               expand: true,
               bounce: true,
-              duration: Duration(milliseconds: 250),
+              duration: const Duration(milliseconds: 250),
               context: context,
               builder: (context) => LocalModal(
                 scenario: requestData['payment_method'] == 'cash'
@@ -469,10 +482,10 @@ class PaymentSection extends StatelessWidget {
                     : 'payment_details_ewallet',
               ),
             ),
-            contentPadding: EdgeInsets.only(top: 15),
+            contentPadding: const EdgeInsets.only(top: 15),
             horizontalTitleGap: -15,
-            leading: Padding(
-              padding: const EdgeInsets.only(top: 1),
+            leading: const Padding(
+              padding: EdgeInsets.only(top: 1),
               child: Icon(
                 Icons.circle,
                 size: 10,
@@ -485,7 +498,7 @@ class PaymentSection extends StatelessWidget {
                   .getCleanPaymentMethod_nameAndImage(
                       payment: requestData['payment_method'])['name']
                   .toString(),
-              style: TextStyle(fontFamily: 'MoveBold', fontSize: 19),
+              style: const TextStyle(fontFamily: 'MoveBold', fontSize: 19),
             ),
             subtitle: Padding(
               padding: const EdgeInsets.only(top: 5),
@@ -509,7 +522,7 @@ class PaymentSection extends StatelessWidget {
                               fontSize: 16,
                               color: AppTheme().getPrimaryColor()),
                         ),
-                  Icon(
+                  const Icon(
                     Icons.arrow_forward_ios,
                     size: 15,
                     color: Colors.black,
@@ -1532,323 +1545,329 @@ class _LocalModalState extends State<LocalModal> {
                         productData: requestData['shopping_list'][index],
                       );
                     },
-                    separatorBuilder: (context, index) => Divider(
+                    separatorBuilder: (context, index) => const Divider(
                           height: 50,
                         ),
-                    itemCount: requestData['shopping_list'].length),
+                    itemCount: requestData['shopping_list']?.length ?? 0),
               ))
             ],
           ),
         ));
       case 'rating':
-        return SafeArea(
-            child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
-              child: InkWell(
-                onTap: isLoadingSubmission
-                    ? () {}
-                    : () => Navigator.of(context).pop(),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.arrow_back,
-                      size: AppTheme().getArrowBackSize() - 3,
-                    ),
-                    Text(
-                      'shopping.rateShopperTitle'.tr(),
-                      style:
-                          TextStyle(fontFamily: 'MoveTextBold', fontSize: 18),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Divider(
-              height: 20,
-              thickness: 1,
-            ),
-            Expanded(
-                child: ListView(
-              padding: EdgeInsets.only(top: 15),
-              children: [
-                Align(
-                    alignment: Alignment.center,
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10000),
-                        child: CachedNetworkImage(
-                          fit: BoxFit.cover,
-                          width: 80,
-                          height: 80,
-                          imageUrl:
-                              // 'https://picsum.photos/200/300',
-                              requestData['driver_details']['picture'],
-                          progressIndicatorBuilder:
-                              (context, url, downloadProgress) => Container(
-                            width: 60,
-                            height: 20.0,
-                            child: Shimmer.fromColors(
-                              baseColor: Colors.grey.shade300,
-                              highlightColor: Colors.grey.shade100,
-                              child: Container(
-                                width: 20.0,
-                                height: 20.0,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                          errorWidget: (context, url, error) => const Icon(
-                            Icons.error,
-                            size: 30,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ),
-                    )),
-                SizedBox(
-                  height: 15,
-                ),
-                Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      requestData['driver_details']['name'],
-                      style: TextStyle(fontFamily: 'MoveBold', fontSize: 22),
-                    )),
-                SizedBox(
-                  height: 35,
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  child: RatingBar.builder(
-                    initialRating: 4,
-                    minRating: 1,
-                    direction: Axis.horizontal,
-                    allowHalfRating: false,
-                    itemCount: 5,
-                    itemSize: 42,
-                    itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                    itemBuilder: (context, _) => Icon(
-                      Icons.star,
-                      color: AppTheme().getGoldColor(),
-                    ),
-                    onRatingUpdate: isLoadingSubmission
-                        ? (v) {}
-                        : (val) {
-                            setState(() {
-                              rating = int.parse(val.toStringAsFixed(0));
-                              // print(rating);
-                            });
-                          },
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      ratingStrings[rating - 1],
-                      style: TextStyle(
-                          fontFamily: 'MoveTextRegular', fontSize: 17),
-                    )),
-                Divider(
-                  height: 50,
-                ),
-                //?BADGES
-                Padding(
-                  padding:
-                      const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+        return Container(
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: SafeArea(
+              child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+                child: InkWell(
+                  onTap: isLoadingSubmission
+                      ? () {}
+                      : () => Navigator.of(context).pop(),
                   child: Row(
                     children: [
+                      Icon(
+                        Icons.arrow_back,
+                        size: AppTheme().getArrowBackSize() - 3,
+                      ),
                       Text(
-                        'rides.giveABadgeTitle'.tr(),
-                        style: TextStyle(
-                            fontFamily: 'MoveTextMedium',
-                            fontSize: 16,
-                            color: Colors.grey.shade600),
+                        'shopping.rateShopperTitle'.tr(),
+                        style: const TextStyle(
+                            fontFamily: 'MoveTextBold', fontSize: 18),
                       ),
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, top: 20),
-                  child: Container(
-                    height: 130,
-                    // color: Colors.red,
-                    child: ListView.separated(
-                        padding: EdgeInsets.only(right: 30),
-                        shrinkWrap: false,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) => InkWell(
-                              onTap: isLoadingSubmission
-                                  ? () {}
-                                  : () {
-                                      setState(() {
-                                        if (selectedBadges.contains(
-                                            badges[index]['title']
-                                                .toString())) //!Remove
-                                        {
-                                          selectedBadges.removeAt(selectedBadges
-                                              .indexOf(badges[index]['title']
-                                                  .toString()));
-                                        } else //!Add
-                                        {
-                                          selectedBadges.add(badges[index]
-                                                  ['title']
-                                              .toString());
-                                        }
-                                      });
-                                    },
-                              child: Opacity(
-                                opacity: selectedBadges.contains(
-                                        badges[index]['title'].toString())
-                                    ? 1
-                                    : AppTheme().getFadedOpacityValue() + 0.1,
+              ),
+              const Divider(
+                height: 20,
+                thickness: 1,
+              ),
+              Expanded(
+                  child: ListView(
+                padding: const EdgeInsets.only(top: 15),
+                children: [
+                  Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10000),
+                          child: CachedNetworkImage(
+                            fit: BoxFit.cover,
+                            width: 80,
+                            height: 80,
+                            imageUrl: requestData['driver_details']['picture'],
+                            progressIndicatorBuilder:
+                                (context, url, downloadProgress) => Container(
+                              width: 60,
+                              height: 20.0,
+                              child: Shimmer.fromColors(
+                                baseColor: Colors.grey.shade300,
+                                highlightColor: Colors.grey.shade100,
                                 child: Container(
-                                  // color: Colors.amber,
-                                  width: 95,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(1000),
-                                        child: Container(
-                                          decoration: BoxDecoration(
+                                  width: 20.0,
+                                  height: 20.0,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            errorWidget: (context, url, error) => const Icon(
+                              Icons.photo,
+                              size: 35,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                      )),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        requestData['driver_details']['name'],
+                        style: const TextStyle(
+                            fontFamily: 'MoveBold', fontSize: 22),
+                      )),
+                  const SizedBox(
+                    height: 35,
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    child: RatingBar.builder(
+                      initialRating: 4,
+                      minRating: 1,
+                      direction: Axis.horizontal,
+                      allowHalfRating: false,
+                      itemCount: 5,
+                      itemSize: 42,
+                      itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      itemBuilder: (context, _) => Icon(
+                        Icons.star,
+                        color: AppTheme().getGoldColor(),
+                      ),
+                      onRatingUpdate: isLoadingSubmission
+                          ? (v) {}
+                          : (val) {
+                              setState(() {
+                                rating = int.parse(val.toStringAsFixed(0));
+                              });
+                            },
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        ratingStrings[rating - 1],
+                        style: const TextStyle(
+                            fontFamily: 'MoveTextRegular', fontSize: 17),
+                      )),
+                  const Divider(
+                    height: 50,
+                  ),
+                  //?BADGES
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                    child: Row(
+                      children: [
+                        Text(
+                          'rides.giveABadgeTitle'.tr(),
+                          style: TextStyle(
+                              fontFamily: 'MoveTextMedium',
+                              fontSize: 16,
+                              color: Colors.grey.shade600),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, top: 20),
+                    child: Container(
+                      height: 130,
+                      // color: Colors.red,
+                      child: ListView.separated(
+                          padding: const EdgeInsets.only(right: 30),
+                          shrinkWrap: false,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) => InkWell(
+                                onTap: isLoadingSubmission
+                                    ? () {}
+                                    : () {
+                                        setState(() {
+                                          if (selectedBadges.contains(
+                                              badges[index]['title']
+                                                  .toString())) //!Remove
+                                          {
+                                            selectedBadges.removeAt(
+                                                selectedBadges.indexOf(
+                                                    badges[index]['title']
+                                                        .toString()));
+                                          } else //!Add
+                                          {
+                                            selectedBadges.add(badges[index]
+                                                    ['title']
+                                                .toString());
+                                          }
+                                        });
+                                      },
+                                child: Opacity(
+                                  opacity: selectedBadges.contains(
+                                          badges[index]['title'].toString())
+                                      ? 1
+                                      : AppTheme().getFadedOpacityValue() + 0.1,
+                                  child: Container(
+                                    // color: Colors.amber,
+                                    width: 95,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(1000),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(1000),
+                                                color: Colors.white,
+                                                border: Border.all(
+                                                    width: 2,
+                                                    color: Colors.grey
+                                                        .withOpacity(AppTheme()
+                                                            .getFadedOpacityValue()))),
+                                            height: 65,
+                                            width: 65,
+                                            child: ClipRRect(
                                               borderRadius:
                                                   BorderRadius.circular(1000),
-                                              color: Colors.white,
-                                              border: Border.all(
-                                                  width: 2,
-                                                  color: Colors.grey
-                                                      .withOpacity(AppTheme()
-                                                          .getFadedOpacityValue()))),
-                                          height: 65,
-                                          width: 65,
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(1000),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Image.asset(
-                                                badges[index]['image']
-                                                    .toString(),
-                                                fit: BoxFit.contain,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Image.asset(
+                                                  badges[index]['image']
+                                                      .toString(),
+                                                  fit: BoxFit.contain,
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Text(
-                                        badges[index]['title'].toString(),
-                                        textAlign: TextAlign.center,
-                                        maxLines: 3,
-                                        style: TextStyle(
-                                            fontFamily: 'MoveTextMedium',
-                                            fontSize: 15),
-                                      )
-                                    ],
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                          badges[index]['title'].toString(),
+                                          textAlign: TextAlign.center,
+                                          maxLines: 3,
+                                          style: TextStyle(
+                                              fontFamily: 'MoveTextMedium',
+                                              fontSize: 15),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                        separatorBuilder: (context, index) => SizedBox(
-                              width: 20,
-                            ),
-                        itemCount: badges.length),
-                  ),
-                ),
-                //Note
-                Divider(
-                  height: 30,
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.only(left: 20, right: 20, bottom: 10),
-                  child: Row(
-                    children: [
-                      Text(
-                        'rides.noteTitle'.tr(),
-                        style: TextStyle(
-                            fontFamily: 'MoveTextMedium',
-                            fontSize: 16,
-                            color: Colors.grey.shade600),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20, top: 5),
-                  child: SizedBox(
-                    height: 100,
-                    child: TextField(
-                        autocorrect: false,
-                        onChanged: (value) {
-                          //! Update the change for the typed
-                          setState(() {
-                            note = value;
-                          });
-                        },
-                        maxLength: 500,
-                        style: TextStyle(
-                            fontFamily: 'MoveTextRegular',
-                            fontSize: 18,
-                            color: Colors.black),
-                        maxLines: 45,
-                        decoration: InputDecoration(
-                            contentPadding:
-                                EdgeInsets.only(top: 25, left: 10, right: 10),
-                            filled: true,
-                            fillColor: Colors.grey.shade200,
-                            floatingLabelStyle:
-                                const TextStyle(color: Colors.black),
-                            label: Align(
-                              alignment: Alignment.topLeft,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 25),
-                                child: Text("Enter your note here."),
+                          separatorBuilder: (context, index) => SizedBox(
+                                width: 20,
                               ),
-                            ),
-                            floatingLabelBehavior: FloatingLabelBehavior.never,
-                            enabledBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade200)),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade200),
-                                borderRadius: BorderRadius.circular(1)),
-                            border: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade200),
-                                borderRadius: BorderRadius.circular(1)))),
+                          itemCount: badges.length),
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                GenericRectButton(
-                    label: isLoadingSubmission ? 'LOADING' : 'rides.done'.tr(),
-                    labelFontSize: 22,
-                    isArrowShow: false,
-                    actuatorFunctionl: isLoadingSubmission
-                        ? () {}
-                        : () => SubmitUserRating(context: context)),
-                SizedBox(
-                  height: 30,
-                )
-              ],
-            ))
-          ],
-        ));
+                  //Note
+                  Divider(
+                    height: 30,
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                    child: Row(
+                      children: [
+                        Text(
+                          'rides.noteTitle'.tr(),
+                          style: TextStyle(
+                              fontFamily: 'MoveTextMedium',
+                              fontSize: 16,
+                              color: Colors.grey.shade600),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20, top: 5),
+                    child: SizedBox(
+                      height: 100,
+                      child: TextField(
+                          autocorrect: false,
+                          onChanged: (value) {
+                            //! Update the change for the typed
+                            setState(() {
+                              note = value;
+                            });
+                          },
+                          maxLength: 500,
+                          style: TextStyle(
+                              fontFamily: 'MoveTextRegular',
+                              fontSize: 18,
+                              color: Colors.black),
+                          maxLines: 45,
+                          decoration: InputDecoration(
+                              contentPadding:
+                                  EdgeInsets.only(top: 25, left: 10, right: 10),
+                              filled: true,
+                              fillColor: Colors.grey.shade200,
+                              floatingLabelStyle:
+                                  const TextStyle(color: Colors.black),
+                              label: Align(
+                                alignment: Alignment.topLeft,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 25),
+                                  child: Text("Enter your note here."),
+                                ),
+                              ),
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.never,
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade200)),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade200),
+                                  borderRadius: BorderRadius.circular(1)),
+                              border: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade200),
+                                  borderRadius: BorderRadius.circular(1)))),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  GenericRectButton(
+                      label:
+                          isLoadingSubmission ? 'LOADING' : 'rides.done'.tr(),
+                      labelFontSize: 22,
+                      isArrowShow: false,
+                      actuatorFunctionl: isLoadingSubmission
+                          ? () {}
+                          : () => SubmitUserRating(context: context)),
+                  SizedBox(
+                    height: 30,
+                  )
+                ],
+              ))
+            ],
+          )),
+        );
 
       case 'cancel_request':
         return SafeArea(
@@ -1957,19 +1976,9 @@ class ProductModel extends StatelessWidget {
                 style: const TextStyle(fontSize: 17),
               )),
           badges.Badge(
-            badgeContent: productData['isCompleted'] != null
-                ? Icon(
-                    Icons.check,
-                    size: 15,
-                    color: productData['isCompleted'] != null
-                        ? Colors.white
-                        : Colors.black,
-                  )
-                : const Icon(Icons.timelapse_sharp, size: 15),
+            badgeContent: getProductCompletionStatus()['icon'],
             badgeStyle: badges.BadgeStyle(
-              badgeColor: productData['isCompleted'] != null
-                  ? AppTheme().getSecondaryColor()
-                  : AppTheme().getGenericGrey(),
+              badgeColor: getProductCompletionStatus()['badgeColor'],
             ),
             child: Container(
                 width: 70,
@@ -2014,7 +2023,8 @@ class ProductModel extends StatelessWidget {
                   productData['name'],
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 14, fontFamily: 'MoveTextMedium'),
+                  style: const TextStyle(
+                      fontSize: 14, fontFamily: 'MoveTextMedium'),
                 ),
                 const SizedBox(
                   height: 10,
@@ -2027,16 +2037,51 @@ class ProductModel extends StatelessWidget {
                   height: 5,
                   color: Colors.white,
                 ),
-                Text(
-                    DataParser().capitalizeWords(
-                        productData['meta']['store'].toString()),
-                    style: TextStyle(color: Colors.grey.shade600, fontSize: 16))
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                        DataParser().capitalizeWords(
+                            productData['meta']['store'].toString()),
+                        style: TextStyle(
+                            color: Colors.grey.shade600, fontSize: 16)),
+                    getProductCompletionStatus()['text']
+                  ],
+                )
               ],
             ),
           )
         ]),
       ),
     );
+  }
+
+  Map getProductCompletionStatus() {
+    bool isCompleted = productData['isCompleted'] ?? false;
+    bool isNotFound = productData['isNotFound'] ?? false;
+
+    if (isNotFound) {
+      return {
+        'icon': const Icon(Icons.question_mark_rounded,
+            size: 15, color: Colors.black),
+        'badgeColor': Colors.yellow,
+        'text': Text(' • Item not found',
+            style: TextStyle(color: Colors.yellow.shade900, fontSize: 14))
+      };
+    } else if (isCompleted) {
+      return {
+        'icon': const Icon(Icons.check, size: 15, color: Colors.white),
+        'badgeColor': AppTheme().getPrimaryColor(),
+        'text': const SizedBox.shrink()
+      };
+    } else {
+      return {
+        'icon':
+            const Icon(Icons.timelapse_sharp, size: 15, color: Colors.black),
+        'badgeColor': AppTheme().getGenericGrey(),
+        'text': const SizedBox.shrink()
+      };
+    }
   }
 
   //Get the number of items

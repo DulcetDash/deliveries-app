@@ -57,6 +57,8 @@ class AppGeneralEntry extends StatefulWidget {
 class _AppGeneralEntryState extends State<AppGeneralEntry> {
   @override
   Widget build(BuildContext context) {
+    MediaQuery.of(context).viewInsets.bottom;
+
     return WillPopScope(
       onWillPop: () async {
         return false;
