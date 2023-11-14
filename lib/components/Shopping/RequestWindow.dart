@@ -255,6 +255,14 @@ class Header extends StatelessWidget {
     Map<String, dynamic> requestData =
         context.watch<HomeProvider>().requestShoppingData[0];
 
+    bool isShopping = requestData['shopping_list']?.isNotEmpty;
+    bool isTripListCompleted = requestData['shopping_list']?.isNotEmpty
+        ? context.read<HomeProvider>().isTheShoppingListCompleted(
+            packagesList: requestData['shopping_list'])
+        : context.read<HomeProvider>().isTheDeliveryListCompleted(
+            packagesList: context.read<HomeProvider>().requestShoppingData[0]
+                ['trip_locations']['delivery']);
+
     if (requestData['state_vars']['inRouteToPickupCash'] &&
         requestData['state_vars']['didPickupCash'] == false &&
         requestData['payment_method'] == 'cash') {
@@ -266,9 +274,12 @@ class Header extends StatelessWidget {
     } else if (requestData['state_vars']['inRouteToShop'] &&
         requestData['state_vars']['inRouteToDropoff'] == false) {
       return 'shopping.shoppingInProgress'.tr();
-    } else if (requestData['state_vars']['inRouteToDropoff'] &&
-        requestData['state_vars']['completedDropoff'] == false) {
+    } else if (isTripListCompleted) {
       return 'Delivery in progress...';
+    } else if (!isTripListCompleted) {
+      return isShopping
+          ? 'shopping.shoppingInProgress'.tr()
+          : 'Delivery in progress...';
     } else if (requestData['state_vars']['completedDropoff']) //Shopping done
     {
       return 'shopping.doneShopping'.tr();

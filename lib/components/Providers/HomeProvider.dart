@@ -19,7 +19,7 @@ import 'package:collection/collection.dart';
 // Will hold all the home related globals - only!
 
 class HomeProvider with ChangeNotifier {
-  // final String bridge = 'http://172.20.10.2:9697';
+  // final String bridge = 'http://192.168.8.100:9697';
   final String bridge = 'https://api.dulcetdash.com';
 
   String selectedService =
@@ -1410,5 +1410,30 @@ class HomeProvider with ChangeNotifier {
       log('8');
       log(e.toString());
     }
+  }
+
+  //?37. Check if the driver has completed the delivery list - delivery
+  bool isTheDeliveryListCompleted({required List packagesList}) {
+    List newList = List.from(packagesList);
+    newList.removeWhere((element) => element['isCompleted'] != null);
+
+    return newList.isEmpty;
+  }
+
+  //?38. Check if the driver has completed the delivery list - shopping
+  bool isTheShoppingListCompleted({required List packagesList}) {
+    List newList = List.from(packagesList);
+    newList.removeWhere((element) =>
+        element['isCompleted'] != null || element['isNotFound'] != null);
+
+    return newList.isEmpty;
+  }
+
+  //Check if the shopping list contains some items that are not found
+  bool isTheShoppingListContainsItemsNotFound({required List packagesList}) {
+    List newList = List.from(packagesList);
+    newList.removeWhere((element) => element['isNotFound'] != true);
+
+    return newList.isNotEmpty;
   }
 }

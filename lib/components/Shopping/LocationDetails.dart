@@ -94,7 +94,10 @@ class _LocationDetailsState extends State<LocationDetails> {
                       ),
                       LocationChoice(
                         title: 'delivery.addNote'.tr(),
-                        subtitle: 'shopping.shoppingNotePlaceholder'.tr(),
+                        subtitle:
+                            context.read<HomeProvider>().noteTyped.isNotEmpty
+                                ? context.read<HomeProvider>().noteTyped
+                                : 'shopping.shoppingNotePlaceholder'.tr(),
                         actuator: () => showMaterialModalBottomSheet(
                           backgroundColor: Colors.white,
                           bounce: true,
