@@ -55,6 +55,7 @@ class _RequestWindow_deliveryState extends State<RequestWindow_delivery> {
           : context.watch<HomeProvider>().requestShoppingData.isEmpty
               ? SizedBox.shrink()
               : Scaffold(
+                  resizeToAvoidBottomInset: true,
                   body: SafeArea(
                       child: ListView(
                     children: [
@@ -1616,13 +1617,14 @@ class _LocalModalState extends State<LocalModal> {
                 Expanded(
                     child: Container(
                   child: ListView.separated(
-                      padding: EdgeInsets.only(left: 20, right: 20, top: 35),
+                      padding:
+                          const EdgeInsets.only(left: 20, right: 20, top: 35),
                       itemBuilder: (context, index) {
                         return LocationPackageModel(
                             packageData: requestData['trip_locations']
                                 ['dropoff'][index]);
                       },
-                      separatorBuilder: (context, index) => Divider(
+                      separatorBuilder: (context, index) => const Divider(
                             height: 50,
                           ),
                       itemCount:
@@ -1632,317 +1634,325 @@ class _LocalModalState extends State<LocalModal> {
             ),
           ));
         case 'rating':
-          return SafeArea(
-              child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
-                child: InkWell(
-                  onTap: isLoadingSubmission
-                      ? () {}
-                      : () => Navigator.of(context).pop(),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.arrow_back,
-                        size: AppTheme().getArrowBackSize() - 3,
-                      ),
-                      Text(
-                        'delivery.rateCourrier'.tr(),
-                        style:
-                            TextStyle(fontFamily: 'MoveTextBold', fontSize: 18),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Divider(
-                height: 20,
-                thickness: 1,
-              ),
-              Expanded(
-                  child: ListView(
-                padding: EdgeInsets.only(top: 15),
-                children: [
-                  Align(
-                      alignment: Alignment.center,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10000),
-                          child: CachedNetworkImage(
-                            fit: BoxFit.cover,
-                            width: 80,
-                            height: 80,
-                            imageUrl:
-                                // 'https://picsum.photos/200/300',
-                                requestData['driver_details']['picture'],
-                            progressIndicatorBuilder:
-                                (context, url, downloadProgress) => Container(
-                              width: 60,
-                              height: 20.0,
-                              child: Shimmer.fromColors(
-                                baseColor: Colors.grey.shade300,
-                                highlightColor: Colors.grey.shade100,
-                                child: Container(
-                                  width: 20.0,
-                                  height: 20.0,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                            errorWidget: (context, url, error) => const Icon(
-                              Icons.error,
-                              size: 30,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ),
-                      )),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Container(
-                      alignment: Alignment.center,
-                      child: Text(
-                        requestData['driver_details']['name'],
-                        style: TextStyle(fontFamily: 'MoveBold', fontSize: 22),
-                      )),
-                  SizedBox(
-                    height: 35,
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    child: RatingBar.builder(
-                      initialRating: 4,
-                      minRating: 1,
-                      direction: Axis.horizontal,
-                      allowHalfRating: false,
-                      itemCount: 5,
-                      itemSize: 42,
-                      itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                      itemBuilder: (context, _) => Icon(
-                        Icons.star,
-                        color: AppTheme().getGoldColor(),
-                      ),
-                      onRatingUpdate: isLoadingSubmission
-                          ? (v) {}
-                          : (val) {
-                              setState(() {
-                                rating = int.parse(val.toStringAsFixed(0));
-                              });
-                            },
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Container(
-                      alignment: Alignment.center,
-                      child: Text(
-                        ratingStrings[rating - 1],
-                        style: TextStyle(
-                            fontFamily: 'MoveTextRegular', fontSize: 17),
-                      )),
-                  Divider(
-                    height: 50,
-                  ),
-                  //?BADGES
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+          return Container(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: SafeArea(
+                child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+                  child: InkWell(
+                    onTap: isLoadingSubmission
+                        ? () {}
+                        : () => Navigator.of(context).pop(),
                     child: Row(
                       children: [
+                        Icon(
+                          Icons.arrow_back,
+                          size: AppTheme().getArrowBackSize() - 3,
+                        ),
                         Text(
-                          'rides.giveABadgeTitle'.tr(),
+                          'delivery.rateCourrier'.tr(),
                           style: TextStyle(
-                              fontFamily: 'MoveTextMedium',
-                              fontSize: 16,
-                              color: Colors.grey.shade600),
+                              fontFamily: 'MoveTextBold', fontSize: 18),
                         ),
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20, top: 20),
-                    child: Container(
-                      height: 130,
-                      // color: Colors.red,
-                      child: ListView.separated(
-                          padding: EdgeInsets.only(right: 30),
-                          shrinkWrap: false,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) => InkWell(
-                                onTap: isLoadingSubmission
-                                    ? () {}
-                                    : () {
-                                        setState(() {
-                                          if (selectedBadges.contains(
-                                              badges[index]['title']
-                                                  .toString())) //!Remove
-                                          {
-                                            selectedBadges.removeAt(
-                                                selectedBadges.indexOf(
-                                                    badges[index]['title']
-                                                        .toString()));
-                                          } else //!Add
-                                          {
-                                            selectedBadges.add(badges[index]
-                                                    ['title']
-                                                .toString());
-                                          }
-                                        });
-                                      },
-                                child: Opacity(
-                                  opacity: selectedBadges.contains(
-                                          badges[index]['title'].toString())
-                                      ? 1
-                                      : AppTheme().getFadedOpacityValue() + 0.1,
+                ),
+                Divider(
+                  height: 20,
+                  thickness: 1,
+                ),
+                Expanded(
+                    child: ListView(
+                  padding: EdgeInsets.only(top: 15),
+                  children: [
+                    Align(
+                        alignment: Alignment.center,
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10000),
+                            child: CachedNetworkImage(
+                              fit: BoxFit.cover,
+                              width: 80,
+                              height: 80,
+                              imageUrl:
+                                  // 'https://picsum.photos/200/300',
+                                  requestData['driver_details']['picture'],
+                              progressIndicatorBuilder:
+                                  (context, url, downloadProgress) => Container(
+                                width: 60,
+                                height: 20.0,
+                                child: Shimmer.fromColors(
+                                  baseColor: Colors.grey.shade300,
+                                  highlightColor: Colors.grey.shade100,
                                   child: Container(
-                                    // color: Colors.amber,
-                                    width: 95,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(1000),
-                                          child: Container(
-                                            decoration: BoxDecoration(
+                                    width: 20.0,
+                                    height: 20.0,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              errorWidget: (context, url, error) => const Icon(
+                                Icons.error,
+                                size: 30,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                        )),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Container(
+                        alignment: Alignment.center,
+                        child: Text(
+                          requestData['driver_details']['name'],
+                          style:
+                              TextStyle(fontFamily: 'MoveBold', fontSize: 22),
+                        )),
+                    SizedBox(
+                      height: 35,
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      child: RatingBar.builder(
+                        initialRating: 4,
+                        minRating: 1,
+                        direction: Axis.horizontal,
+                        allowHalfRating: false,
+                        itemCount: 5,
+                        itemSize: 42,
+                        itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                        itemBuilder: (context, _) => Icon(
+                          Icons.star,
+                          color: AppTheme().getGoldColor(),
+                        ),
+                        onRatingUpdate: isLoadingSubmission
+                            ? (v) {}
+                            : (val) {
+                                setState(() {
+                                  rating = int.parse(val.toStringAsFixed(0));
+                                });
+                              },
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                        alignment: Alignment.center,
+                        child: Text(
+                          ratingStrings[rating - 1],
+                          style: TextStyle(
+                              fontFamily: 'MoveTextRegular', fontSize: 17),
+                        )),
+                    Divider(
+                      height: 50,
+                    ),
+                    //?BADGES
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 20, right: 20, bottom: 10),
+                      child: Row(
+                        children: [
+                          Text(
+                            'rides.giveABadgeTitle'.tr(),
+                            style: TextStyle(
+                                fontFamily: 'MoveTextMedium',
+                                fontSize: 16,
+                                color: Colors.grey.shade600),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20, top: 20),
+                      child: Container(
+                        height: 130,
+                        // color: Colors.red,
+                        child: ListView.separated(
+                            padding: EdgeInsets.only(right: 30),
+                            shrinkWrap: false,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) => InkWell(
+                                  onTap: isLoadingSubmission
+                                      ? () {}
+                                      : () {
+                                          setState(() {
+                                            if (selectedBadges.contains(
+                                                badges[index]['title']
+                                                    .toString())) //!Remove
+                                            {
+                                              selectedBadges.removeAt(
+                                                  selectedBadges.indexOf(
+                                                      badges[index]['title']
+                                                          .toString()));
+                                            } else //!Add
+                                            {
+                                              selectedBadges.add(badges[index]
+                                                      ['title']
+                                                  .toString());
+                                            }
+                                          });
+                                        },
+                                  child: Opacity(
+                                    opacity: selectedBadges.contains(
+                                            badges[index]['title'].toString())
+                                        ? 1
+                                        : AppTheme().getFadedOpacityValue() +
+                                            0.1,
+                                    child: Container(
+                                      // color: Colors.amber,
+                                      width: 95,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(1000),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          1000),
+                                                  color: Colors.white,
+                                                  border: Border.all(
+                                                      width: 2,
+                                                      color: Colors.grey
+                                                          .withOpacity(AppTheme()
+                                                              .getFadedOpacityValue()))),
+                                              height: 65,
+                                              width: 65,
+                                              child: ClipRRect(
                                                 borderRadius:
                                                     BorderRadius.circular(1000),
-                                                color: Colors.white,
-                                                border: Border.all(
-                                                    width: 2,
-                                                    color: Colors.grey
-                                                        .withOpacity(AppTheme()
-                                                            .getFadedOpacityValue()))),
-                                            height: 65,
-                                            width: 65,
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(1000),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Image.asset(
-                                                  badges[index]['image']
-                                                      .toString(),
-                                                  fit: BoxFit.contain,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Image.asset(
+                                                    badges[index]['image']
+                                                        .toString(),
+                                                    fit: BoxFit.contain,
+                                                  ),
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        Text(
-                                          badges[index]['title'].toString(),
-                                          textAlign: TextAlign.center,
-                                          maxLines: 3,
-                                          style: TextStyle(
-                                              fontFamily: 'MoveTextMedium',
-                                              fontSize: 15),
-                                        )
-                                      ],
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Text(
+                                            badges[index]['title'].toString(),
+                                            textAlign: TextAlign.center,
+                                            maxLines: 3,
+                                            style: TextStyle(
+                                                fontFamily: 'MoveTextMedium',
+                                                fontSize: 15),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                          separatorBuilder: (context, index) => SizedBox(
-                                width: 20,
-                              ),
-                          itemCount: badges.length),
-                    ),
-                  ),
-                  //Note
-                  Divider(
-                    height: 30,
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 20, right: 20, bottom: 10),
-                    child: Row(
-                      children: [
-                        Text(
-                          'rides.noteTitle'.tr(),
-                          style: TextStyle(
-                              fontFamily: 'MoveTextMedium',
-                              fontSize: 16,
-                              color: Colors.grey.shade600),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20, top: 5),
-                    child: SizedBox(
-                      height: 100,
-                      child: TextField(
-                          autocorrect: false,
-                          onChanged: (value) {
-                            //! Update the change for the typed
-                            setState(() {
-                              note = value;
-                            });
-                          },
-                          maxLength: 500,
-                          style: TextStyle(
-                              fontFamily: 'MoveTextRegular',
-                              fontSize: 18,
-                              color: Colors.black),
-                          maxLines: 45,
-                          decoration: InputDecoration(
-                              contentPadding:
-                                  EdgeInsets.only(top: 25, left: 10, right: 10),
-                              filled: true,
-                              fillColor: Colors.grey.shade200,
-                              floatingLabelStyle:
-                                  const TextStyle(color: Colors.black),
-                              label: Align(
-                                alignment: Alignment.topLeft,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 25),
-                                  child: Text("Enter your note here."),
+                            separatorBuilder: (context, index) => SizedBox(
+                                  width: 20,
                                 ),
-                              ),
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.never,
-                              enabledBorder: OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.grey.shade200)),
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.grey.shade200),
-                                  borderRadius: BorderRadius.circular(1)),
-                              border: OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.grey.shade200),
-                                  borderRadius: BorderRadius.circular(1)))),
+                            itemCount: badges.length),
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  GenericRectButton(
-                      label:
-                          isLoadingSubmission ? 'LOADING' : 'rides.done'.tr(),
-                      labelFontSize: 22,
-                      isArrowShow: false,
-                      actuatorFunctionl: isLoadingSubmission
-                          ? () {}
-                          : () => SubmitUserRating(context: context)),
-                  SizedBox(
-                    height: 30,
-                  )
-                ],
-              ))
-            ],
-          ));
+                    //Note
+                    Divider(
+                      height: 30,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 20, right: 20, bottom: 10),
+                      child: Row(
+                        children: [
+                          Text(
+                            'rides.noteTitle'.tr(),
+                            style: TextStyle(
+                                fontFamily: 'MoveTextMedium',
+                                fontSize: 16,
+                                color: Colors.grey.shade600),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(left: 20, right: 20, top: 5),
+                      child: SizedBox(
+                        height: 100,
+                        child: TextField(
+                            autocorrect: false,
+                            onChanged: (value) {
+                              //! Update the change for the typed
+                              setState(() {
+                                note = value;
+                              });
+                            },
+                            maxLength: 500,
+                            style: TextStyle(
+                                fontFamily: 'MoveTextRegular',
+                                fontSize: 18,
+                                color: Colors.black),
+                            maxLines: 45,
+                            decoration: InputDecoration(
+                                contentPadding: EdgeInsets.only(
+                                    top: 25, left: 10, right: 10),
+                                filled: true,
+                                fillColor: Colors.grey.shade200,
+                                floatingLabelStyle:
+                                    const TextStyle(color: Colors.black),
+                                label: Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 25),
+                                    child: Text("Enter your note here."),
+                                  ),
+                                ),
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.never,
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Colors.grey.shade200)),
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.grey.shade200),
+                                    borderRadius: BorderRadius.circular(1)),
+                                border: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.grey.shade200),
+                                    borderRadius: BorderRadius.circular(1)))),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    GenericRectButton(
+                        label:
+                            isLoadingSubmission ? 'LOADING' : 'rides.done'.tr(),
+                        labelFontSize: 22,
+                        isArrowShow: false,
+                        actuatorFunctionl: isLoadingSubmission
+                            ? () {}
+                            : () => SubmitUserRating(context: context)),
+                    SizedBox(
+                      height: 30,
+                    )
+                  ],
+                ))
+              ],
+            )),
+          );
 
         case 'cancel_request':
           return SafeArea(
