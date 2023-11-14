@@ -21,110 +21,115 @@ class _LocationDetailsState extends State<LocationDetails> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Colors.white,
-        body: SafeArea(
-            child: Column(
-          children: [
-            Header(),
-            Expanded(
-              child: Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: ListView(
-                    children: [
-                      LocationChoice(
-                          title: 'delivery.whereAreYouTitle'.tr(),
-                          subtitle: context
-                                          .watch<HomeProvider>()
-                                          .manuallySettedCurrentLocation_pickup[
-                                      'street'] !=
-                                  null
-                              ? _dataParser.getGenericLocationString(
-                                  location: _dataParser.getRealisticPlacesNames(
-                                      locationData: context
-                                          .watch<HomeProvider>()
-                                          .manuallySettedCurrentLocation_pickup))
-                              : 'generic_text.enterAddress_label'.tr(),
-                          checked: context
-                                      .watch<HomeProvider>()
-                                      .manuallySettedCurrentLocation_pickup[
-                                  'street'] !=
-                              null,
-                          actuator: () => showMaterialModalBottomSheet(
-                                backgroundColor: Colors.white,
-                                bounce: true,
-                                duration: Duration(milliseconds: 250),
-                                context: context,
-                                builder: (context) => LocalModal(
-                                  scenario: 'pickup',
-                                ),
-                              )),
-                      Divider(
-                        height: 40,
-                      ),
-                      LocationChoice(
-                          title: 'delivery.deliveryLocation_label'.tr(),
-                          subtitle: context
-                                          .watch<HomeProvider>()
-                                          .manuallySettedCurrentLocation_dropoff[
-                                      'street'] !=
-                                  null
-                              ? _dataParser.getGenericLocationString(
-                                  location: _dataParser.getRealisticPlacesNames(
-                                      locationData: context
-                                          .watch<HomeProvider>()
-                                          .manuallySettedCurrentLocation_dropoff))
-                              : 'delivery.whereToDropOff_description'.tr(),
-                          checked: context
-                                      .watch<HomeProvider>()
-                                      .manuallySettedCurrentLocation_dropoff[
-                                  'street'] !=
-                              null,
-                          actuator: () => showMaterialModalBottomSheet(
-                                backgroundColor: Colors.white,
-                                bounce: true,
-                                duration: Duration(milliseconds: 250),
-                                context: context,
-                                builder: (context) => LocalModal(
-                                  scenario: 'dropoff',
-                                ),
-                              )),
-                      Divider(
-                        height: 40,
-                      ),
-                      LocationChoice(
-                        title: 'delivery.addNote'.tr(),
-                        subtitle:
-                            context.read<HomeProvider>().noteTyped.isNotEmpty
-                                ? context.read<HomeProvider>().noteTyped
-                                : 'shopping.shoppingNotePlaceholder'.tr(),
-                        actuator: () => showMaterialModalBottomSheet(
-                          backgroundColor: Colors.white,
-                          bounce: true,
-                          duration: Duration(milliseconds: 250),
-                          context: context,
-                          builder: (context) => LocalModal(
-                            scenario: 'note',
-                          ),
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false);
+      },
+      child: Scaffold(
+          backgroundColor: Colors.white,
+          body: SafeArea(
+              child: Column(
+            children: [
+              Header(),
+              Expanded(
+                child: Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: ListView(
+                      children: [
+                        LocationChoice(
+                            title: 'delivery.whereAreYouTitle'.tr(),
+                            subtitle: context
+                                            .watch<HomeProvider>()
+                                            .manuallySettedCurrentLocation_pickup[
+                                        'street'] !=
+                                    null
+                                ? _dataParser.getGenericLocationString(
+                                    location: _dataParser.getRealisticPlacesNames(
+                                        locationData: context
+                                            .watch<HomeProvider>()
+                                            .manuallySettedCurrentLocation_pickup))
+                                : 'generic_text.enterAddress_label'.tr(),
+                            checked: context
+                                        .watch<HomeProvider>()
+                                        .manuallySettedCurrentLocation_pickup[
+                                    'street'] !=
+                                null,
+                            actuator: () => showMaterialModalBottomSheet(
+                                  backgroundColor: Colors.white,
+                                  bounce: true,
+                                  duration: Duration(milliseconds: 250),
+                                  context: context,
+                                  builder: (context) => LocalModal(
+                                    scenario: 'pickup',
+                                  ),
+                                )),
+                        Divider(
+                          height: 40,
                         ),
-                        tracked: false,
-                      ),
-                    ],
-                  )),
-            ),
-            Opacity(
-              opacity: isDataAllowingNex(context: context) ? 1 : 0.3,
-              child: GenericRectButton(
-                  label: 'generic_text.next'.tr(),
-                  labelFontSize: 22,
-                  actuatorFunctionl: isDataAllowingNex(context: context)
-                      ? () {
-                          Navigator.of(context).pushNamed('/ShoppingSummary');
-                        }
-                      : () {}),
-            )
-          ],
-        )));
+                        LocationChoice(
+                            title: 'delivery.deliveryLocation_label'.tr(),
+                            subtitle: context
+                                            .watch<HomeProvider>()
+                                            .manuallySettedCurrentLocation_dropoff[
+                                        'street'] !=
+                                    null
+                                ? _dataParser.getGenericLocationString(
+                                    location: _dataParser.getRealisticPlacesNames(
+                                        locationData: context
+                                            .watch<HomeProvider>()
+                                            .manuallySettedCurrentLocation_dropoff))
+                                : 'delivery.whereToDropOff_description'.tr(),
+                            checked: context
+                                        .watch<HomeProvider>()
+                                        .manuallySettedCurrentLocation_dropoff[
+                                    'street'] !=
+                                null,
+                            actuator: () => showMaterialModalBottomSheet(
+                                  backgroundColor: Colors.white,
+                                  bounce: true,
+                                  duration: Duration(milliseconds: 250),
+                                  context: context,
+                                  builder: (context) => LocalModal(
+                                    scenario: 'dropoff',
+                                  ),
+                                )),
+                        Divider(
+                          height: 40,
+                        ),
+                        LocationChoice(
+                          title: 'delivery.addNote'.tr(),
+                          subtitle:
+                              context.read<HomeProvider>().noteTyped.isNotEmpty
+                                  ? context.read<HomeProvider>().noteTyped
+                                  : 'shopping.shoppingNotePlaceholder'.tr(),
+                          actuator: () => showMaterialModalBottomSheet(
+                            backgroundColor: Colors.white,
+                            bounce: true,
+                            duration: Duration(milliseconds: 250),
+                            context: context,
+                            builder: (context) => LocalModal(
+                              scenario: 'note',
+                            ),
+                          ),
+                          tracked: false,
+                        ),
+                      ],
+                    )),
+              ),
+              Opacity(
+                opacity: isDataAllowingNex(context: context) ? 1 : 0.3,
+                child: GenericRectButton(
+                    label: 'generic_text.next'.tr(),
+                    labelFontSize: 22,
+                    actuatorFunctionl: isDataAllowingNex(context: context)
+                        ? () {
+                            Navigator.of(context).pushNamed('/ShoppingSummary');
+                          }
+                        : () {}),
+              )
+            ],
+          ))),
+    );
   }
 
   //? Is data allowing next

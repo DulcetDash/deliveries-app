@@ -54,38 +54,43 @@ class _RequestWindow_deliveryState extends State<RequestWindow_delivery> {
           ? SizedBox.shrink()
           : context.watch<HomeProvider>().requestShoppingData.isEmpty
               ? SizedBox.shrink()
-              : Scaffold(
-                  resizeToAvoidBottomInset: true,
-                  body: SafeArea(
-                      child: ListView(
-                    children: [
-                      Header(),
-                      DeliveryList(),
-                      PaymentSection(),
-                      // DeliverySection(),
-                      CancellationSection(),
-                      requestData['state_vars']['completedDropoff'] == false
-                          ? SizedBox.shrink()
-                          : GenericRectButton(
-                              label: 'delivery.rateYourCourier'.tr(),
-                              horizontalPadding: 20,
-                              labelFontSize: 25,
-                              labelFontFamily: "MoveBold",
-                              backgroundColor: AppTheme().getSecondaryColor(),
-                              actuatorFunctionl: () =>
-                                  showMaterialModalBottomSheet(
-                                    backgroundColor: Colors.white,
-                                    enableDrag: false,
-                                    expand: true,
-                                    bounce: true,
-                                    duration: Duration(milliseconds: 250),
-                                    context: context,
-                                    builder: (context) => LocalModal(
-                                      scenario: 'rating',
-                                    ),
-                                  ))
-                    ],
-                  )),
+              : WillPopScope(
+                  onWillPop: () async {
+                    return Future.value(false);
+                  },
+                  child: Scaffold(
+                    resizeToAvoidBottomInset: true,
+                    body: SafeArea(
+                        child: ListView(
+                      children: [
+                        Header(),
+                        DeliveryList(),
+                        PaymentSection(),
+                        // DeliverySection(),
+                        CancellationSection(),
+                        requestData['state_vars']['completedDropoff'] == false
+                            ? SizedBox.shrink()
+                            : GenericRectButton(
+                                label: 'delivery.rateYourCourier'.tr(),
+                                horizontalPadding: 20,
+                                labelFontSize: 25,
+                                labelFontFamily: "MoveBold",
+                                backgroundColor: AppTheme().getSecondaryColor(),
+                                actuatorFunctionl: () =>
+                                    showMaterialModalBottomSheet(
+                                      backgroundColor: Colors.white,
+                                      enableDrag: false,
+                                      expand: true,
+                                      bounce: true,
+                                      duration: Duration(milliseconds: 250),
+                                      context: context,
+                                      builder: (context) => LocalModal(
+                                        scenario: 'rating',
+                                      ),
+                                    ))
+                      ],
+                    )),
+                  ),
                 );
     } on Exception catch (e) {
       // TODO

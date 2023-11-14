@@ -68,38 +68,44 @@ class _RequestWindowState extends State<RequestWindow> {
           ? const SizedBox.shrink()
           : context.watch<HomeProvider>().requestShoppingData.length == 0
               ? const SizedBox.shrink()
-              : Scaffold(
-                  resizeToAvoidBottomInset: true,
-                  body: SafeArea(
-                      child: ListView(
-                    children: [
-                      const Header(),
-                      const ShoppingList(),
-                      const PaymentSection(),
-                      DeliverySection(),
-                      const CancellationSection(),
-                      requestData['state_vars']['completedDropoff'] == false
-                          ? const SizedBox.shrink()
-                          : GenericRectButton(
-                              label: 'shopping.rateShopper'.tr(),
-                              horizontalPadding: 20,
-                              labelFontSize: 25,
-                              labelFontFamily: "MoveBold",
-                              backgroundColor: AppTheme().getSecondaryColor(),
-                              actuatorFunctionl: () =>
-                                  showMaterialModalBottomSheet(
-                                    backgroundColor: Colors.white,
-                                    enableDrag: false,
-                                    expand: true,
-                                    bounce: true,
-                                    duration: const Duration(milliseconds: 250),
-                                    context: context,
-                                    builder: (context) => const LocalModal(
-                                      scenario: 'rating',
-                                    ),
-                                  ))
-                    ],
-                  )),
+              : WillPopScope(
+                  onWillPop: () async {
+                    return Future.value(false);
+                  },
+                  child: Scaffold(
+                    resizeToAvoidBottomInset: true,
+                    body: SafeArea(
+                        child: ListView(
+                      children: [
+                        const Header(),
+                        const ShoppingList(),
+                        const PaymentSection(),
+                        DeliverySection(),
+                        const CancellationSection(),
+                        requestData['state_vars']['completedDropoff'] == false
+                            ? const SizedBox.shrink()
+                            : GenericRectButton(
+                                label: 'shopping.rateShopper'.tr(),
+                                horizontalPadding: 20,
+                                labelFontSize: 25,
+                                labelFontFamily: "MoveBold",
+                                backgroundColor: AppTheme().getSecondaryColor(),
+                                actuatorFunctionl: () =>
+                                    showMaterialModalBottomSheet(
+                                      backgroundColor: Colors.white,
+                                      enableDrag: false,
+                                      expand: true,
+                                      bounce: true,
+                                      duration:
+                                          const Duration(milliseconds: 250),
+                                      context: context,
+                                      builder: (context) => const LocalModal(
+                                        scenario: 'rating',
+                                      ),
+                                    ))
+                      ],
+                    )),
+                  ),
                 );
     } on Exception catch (e) {
       // TODO

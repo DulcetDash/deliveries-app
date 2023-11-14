@@ -24,151 +24,158 @@ class _DelRecipientsState extends State<DelRecipients> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-          child: Column(
-        children: [
-          Header(),
-          Expanded(
-            child: ListView.separated(
-                itemBuilder: (context, index) {
-                  Map<String, dynamic> receipientData =
-                      context.watch<HomeProvider>().recipients_infos[index];
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false);
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+            child: Column(
+          children: [
+            Header(),
+            Expanded(
+              child: ListView.separated(
+                  itemBuilder: (context, index) {
+                    Map<String, dynamic> receipientData =
+                        context.watch<HomeProvider>().recipients_infos[index];
 
-                  return Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20),
-                    child: Column(
-                      children: [
-                        LocationChoiceRecipientFront(
-                            recipient_index: index,
-                            title: receipientData['name'].toString().isEmpty
-                                ? 'delivery.recipient_msg'
-                                    .tr(args: ['${index + 1}'])
-                                : receipientData['name'].toString(),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Visibility(
-                                  visible: receipientData['phone']
-                                      .toString()
-                                      .isNotEmpty,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 5, bottom: 10),
-                                    child: Row(
-                                      children: [
-                                        Icon(Icons.phone, size: 15),
-                                        SizedBox(width: 5),
-                                        Text(receipientData['phone'].toString(),
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                color: Colors.black))
-                                      ],
+                    return Padding(
+                      padding: const EdgeInsets.only(left: 20, right: 20),
+                      child: Column(
+                        children: [
+                          LocationChoiceRecipientFront(
+                              recipient_index: index,
+                              title: receipientData['name'].toString().isEmpty
+                                  ? 'delivery.recipient_msg'
+                                      .tr(args: ['${index + 1}'])
+                                  : receipientData['name'].toString(),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Visibility(
+                                    visible: receipientData['phone']
+                                        .toString()
+                                        .isNotEmpty,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 5, bottom: 10),
+                                      child: Row(
+                                        children: [
+                                          Icon(Icons.phone, size: 15),
+                                          SizedBox(width: 5),
+                                          Text(
+                                              receipientData['phone']
+                                                  .toString(),
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.black))
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Text(
-                                    context
-                                                    .watch<HomeProvider>()
-                                                    .getRecipientDetails_indexBased(
-                                                        index: index,
-                                                        nature_data: 'dropoff_location')[0]
-                                                ['street'] !=
-                                            null
-                                        ? _dataParser.getGenericLocationString(
-                                            location: _dataParser.getRealisticPlacesNames(
-                                                locationData: context.watch<HomeProvider>().getRecipientDetails_indexBased(
-                                                    index: index,
-                                                    nature_data:
-                                                        'dropoff_location')[0]))
-                                        : 'generic_text.pressHereToSet'.tr(),
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        color:
-                                            context.read<HomeProvider>().validateRecipient_data_isolated(index: index)['opacity'] == 1.0
-                                                ? AppTheme().getPrimaryColor()
-                                                : Colors.grey.shade500))
-                              ],
-                            ),
-                            checked: context
-                                        .watch<HomeProvider>()
-                                        .getRecipientDetails_indexBased(
-                                            index: index,
-                                            nature_data: 'dropoff_location')[0]
-                                    ['street'] !=
-                                null,
-                            actuator: () {
-                              //! Update the index of the recipient when selected
-                              context
-                                  .read<HomeProvider>()
-                                  .updateSelected_recipient_index(index: index);
-                              //!...
-                              return showMaterialModalBottomSheet(
-                                backgroundColor: Colors.white,
-                                bounce: true,
-                                duration: Duration(milliseconds: 250),
-                                context: context,
-                                builder: (context) => LocalModal(
-                                  scenario: 'setRecipient',
-                                ),
-                              ).whenComplete(() {
-                                //! Clean the search data
+                                  Text(
+                                      context.watch<HomeProvider>().getRecipientDetails_indexBased(index: index, nature_data: 'dropoff_location')[0]['street'] != null
+                                          ? _dataParser.getGenericLocationString(
+                                              location: _dataParser.getRealisticPlacesNames(
+                                                  locationData: context
+                                                          .watch<HomeProvider>()
+                                                          .getRecipientDetails_indexBased(
+                                                              index: index,
+                                                              nature_data: 'dropoff_location')[
+                                                      0]))
+                                          : 'generic_text.pressHereToSet'.tr(),
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color: context
+                                                      .read<HomeProvider>()
+                                                      .validateRecipient_data_isolated(index: index)['opacity'] ==
+                                                  1.0
+                                              ? AppTheme().getPrimaryColor()
+                                              : Colors.grey.shade500))
+                                ],
+                              ),
+                              checked: context
+                                          .watch<HomeProvider>()
+                                          .getRecipientDetails_indexBased(
+                                              index: index,
+                                              nature_data:
+                                                  'dropoff_location')[0]
+                                      ['street'] !=
+                                  null,
+                              actuator: () {
+                                //! Update the index of the recipient when selected
                                 context
                                     .read<HomeProvider>()
-                                    .updateRealtimeLocationSuggestions(
-                                        data: []);
-                                context
-                                    .read<HomeProvider>()
-                                    .updateTypedSeachQueries(data: '');
-                                //! Update the phone number and clear it
-                                context
-                                    .read<HomeProvider>()
-                                    .updateSelectedRecipient_phone();
-                                //! Clear the entered phone number
-                                context
-                                    .read<HomeProvider>()
-                                    .clearEnteredPhone_number();
-                              });
-                            }),
-                        //Add more?
-                        addNewRecipient(context: context, index: index)
-                      ],
-                    ),
-                  );
-                },
-                separatorBuilder: (context, index) => Divider(
-                      height: 25,
-                    ),
-                itemCount:
-                    context.watch<HomeProvider>().recipients_infos.length),
-          ),
-          //? Done button
-          Opacity(
-            opacity: context
-                .read<HomeProvider>()
-                .validateRecipient_data_bulk()['opacity'],
-            child: GenericRectButton(
-              label: 'generic_text.next'.tr(),
-              bottomSubtitleText: 'delivery.bottomSubtitleText'.tr(args: [
-                '${context.read<HomeProvider>().recipients_infos.length} recipient${context.read<HomeProvider>().recipients_infos.length > 1 || context.read<HomeProvider>().recipients_infos.isEmpty ? 's' : ''}'
-              ]),
-              labelFontSize: 20,
-              horizontalPadding: 20,
-              actuatorFunctionl: context
-                          .read<HomeProvider>()
-                          .validateRecipient_data_bulk()['actuator'] ==
-                      'back'
-                  ? () {
-                      //? Successfully validated
-                      Navigator.of(context)
-                          .pushNamed('/delivery_pickupLocation');
-                    }
-                  : () {},
+                                    .updateSelected_recipient_index(
+                                        index: index);
+                                //!...
+                                return showMaterialModalBottomSheet(
+                                  backgroundColor: Colors.white,
+                                  bounce: true,
+                                  duration: Duration(milliseconds: 250),
+                                  context: context,
+                                  builder: (context) => LocalModal(
+                                    scenario: 'setRecipient',
+                                  ),
+                                ).whenComplete(() {
+                                  //! Clean the search data
+                                  context
+                                      .read<HomeProvider>()
+                                      .updateRealtimeLocationSuggestions(
+                                          data: []);
+                                  context
+                                      .read<HomeProvider>()
+                                      .updateTypedSeachQueries(data: '');
+                                  //! Update the phone number and clear it
+                                  context
+                                      .read<HomeProvider>()
+                                      .updateSelectedRecipient_phone();
+                                  //! Clear the entered phone number
+                                  context
+                                      .read<HomeProvider>()
+                                      .clearEnteredPhone_number();
+                                });
+                              }),
+                          //Add more?
+                          addNewRecipient(context: context, index: index)
+                        ],
+                      ),
+                    );
+                  },
+                  separatorBuilder: (context, index) => Divider(
+                        height: 25,
+                      ),
+                  itemCount:
+                      context.watch<HomeProvider>().recipients_infos.length),
             ),
-          )
-        ],
-      )),
+            //? Done button
+            Opacity(
+              opacity: context
+                  .read<HomeProvider>()
+                  .validateRecipient_data_bulk()['opacity'],
+              child: GenericRectButton(
+                label: 'generic_text.next'.tr(),
+                bottomSubtitleText: 'delivery.bottomSubtitleText'.tr(args: [
+                  '${context.read<HomeProvider>().recipients_infos.length} recipient${context.read<HomeProvider>().recipients_infos.length > 1 || context.read<HomeProvider>().recipients_infos.isEmpty ? 's' : ''}'
+                ]),
+                labelFontSize: 20,
+                horizontalPadding: 20,
+                actuatorFunctionl: context
+                            .read<HomeProvider>()
+                            .validateRecipient_data_bulk()['actuator'] ==
+                        'back'
+                    ? () {
+                        //? Successfully validated
+                        Navigator.of(context)
+                            .pushNamed('/delivery_pickupLocation');
+                      }
+                    : () {},
+              ),
+            )
+          ],
+        )),
+      ),
     );
   }
 

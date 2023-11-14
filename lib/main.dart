@@ -42,8 +42,11 @@ void main() async {
         fallbackLocale: Locale('en'),
         useFallbackTranslations: true,
         saveLocale: true,
-        child: GestureDetector(
-            onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-            child: const AppGeneralEntry())),
+        child: WillPopScope(
+          onWillPop: () async => Future.value(false),
+          child: GestureDetector(
+              onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+              child: const AppGeneralEntry()),
+        )),
   ));
 }

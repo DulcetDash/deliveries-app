@@ -25,79 +25,84 @@ class CreateAccount extends StatefulWidget {
 class _CreateAccountState extends State<CreateAccount> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-          child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Header(),
-          Container(
-            color: Colors.white,
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height * 0.35,
-            child: Image.asset(
-              "assets/Images/newaccount.gif",
-              height: 125.0,
-              width: 125.0,
-              fit: BoxFit.cover,
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false);
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+            child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Header(),
+            Container(
+              color: Colors.white,
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * 0.35,
+              child: Image.asset(
+                "assets/Images/newaccount.gif",
+                height: 125.0,
+                width: 125.0,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 60, top: 25),
-            child: Text(
-              'Seamless deliveries and couch-shopping at your fingertips.',
-              style: TextStyle(fontFamily: 'MoveBold', fontSize: 26),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 60, top: 25),
+              child: Text(
+                'Seamless deliveries and couch-shopping at your fingertips.',
+                style: TextStyle(fontFamily: 'MoveBold', fontSize: 26),
+              ),
             ),
-          ),
-          // Padding(
-          //   padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
-          //   child: Text(
-          //     'create_account.accountDescription'.tr(),
-          //     style: TextStyle(
-          //         fontSize: 15, color: AppTheme().getGenericDarkGrey()),
-          //   ),
-          // ),
-          Expanded(child: SizedBox.shrink()),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Container(
-                child: RichText(
-                    text: TextSpan(
+            // Padding(
+            //   padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+            //   child: Text(
+            //     'create_account.accountDescription'.tr(),
+            //     style: TextStyle(
+            //         fontSize: 15, color: AppTheme().getGenericDarkGrey()),
+            //   ),
+            // ),
+            Expanded(child: SizedBox.shrink()),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Container(
+                  child: RichText(
+                      text: TextSpan(
+                          style: TextStyle(
+                              color: AppTheme().getGenericDarkGrey(),
+                              fontFamily: 'MoveTextRegular',
+                              fontSize: 14,
+                              height: 1.5),
+                          children: [
+                    TextSpan(text: 'By tapping'),
+                    TextSpan(
+                        text: ' Create your account',
                         style: TextStyle(
-                            color: AppTheme().getGenericDarkGrey(),
-                            fontFamily: 'MoveTextRegular',
-                            fontSize: 14,
-                            height: 1.5),
-                        children: [
-                  TextSpan(text: 'By tapping'),
-                  TextSpan(
-                      text: ' Create your account',
-                      style: TextStyle(
-                          fontFamily: 'MoveTextBold', color: Colors.black)),
-                  TextSpan(text: ', you agree to DulcetDash\'s '),
-                  TextSpan(
-                      text: 'Terms & Conditions',
-                      style: TextStyle(
-                          fontFamily: 'MoveTextMedium',
-                          color: AppTheme().getPrimaryColor()))
-                ]))),
-          ),
-          GenericRectButton(
-              label: context.watch<HomeProvider>().isLoadingForRequest
-                  ? 'LOADING'
-                  : 'Create your account',
-              labelFontSize: 22,
-              isArrowShow:
-                  context.watch<HomeProvider>().isLoadingForRequest == false,
-              actuatorFunctionl:
-                  context.watch<HomeProvider>().isLoadingForRequest
-                      ? () {}
-                      : () {
-                          createBasicAccount(context: context);
-                        })
-        ],
-      )),
+                            fontFamily: 'MoveTextBold', color: Colors.black)),
+                    TextSpan(text: ', you agree to DulcetDash\'s '),
+                    TextSpan(
+                        text: 'Terms & Conditions',
+                        style: TextStyle(
+                            fontFamily: 'MoveTextMedium',
+                            color: AppTheme().getPrimaryColor()))
+                  ]))),
+            ),
+            GenericRectButton(
+                label: context.watch<HomeProvider>().isLoadingForRequest
+                    ? 'LOADING'
+                    : 'Create your account',
+                labelFontSize: 22,
+                isArrowShow:
+                    context.watch<HomeProvider>().isLoadingForRequest == false,
+                actuatorFunctionl:
+                    context.watch<HomeProvider>().isLoadingForRequest
+                        ? () {}
+                        : () {
+                            createBasicAccount(context: context);
+                          })
+          ],
+        )),
+      ),
     );
   }
 

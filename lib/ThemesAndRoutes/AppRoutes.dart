@@ -61,7 +61,7 @@ class _AppGeneralEntryState extends State<AppGeneralEntry> {
 
     return WillPopScope(
       onWillPop: () async {
-        return false;
+        return Future.value(false);
       },
       child: MaterialApp(
           // debugShowCheckedModeBanner: false,

@@ -25,85 +25,94 @@ class PhoneInput extends StatefulWidget {
 class _PhoneInputState extends State<PhoneInput> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-          child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Visibility(
-              visible: context.watch<HomeProvider>().isLoadingForRequest,
-              child: TopLoader()),
-          Header(),
-          //! Phone number input
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: PhoneNumberInputEntry(),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: Visibility(
-                visible:
-                    context.watch<HomeProvider>().isPhoneEnteredValid == false,
-                child: ErrorPhone()),
-          ),
-          Expanded(child: SizedBox.shrink()),
-          Visibility(
-            visible: context.watch<HomeProvider>().isLoadingForRequest == false,
-            child: Padding(
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false);
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+            child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Visibility(
+                visible: context.watch<HomeProvider>().isLoadingForRequest,
+                child: TopLoader()),
+            Header(),
+            //! Phone number input
+            Padding(
               padding: const EdgeInsets.only(left: 20, right: 20),
-              child: Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Icon(
-                      Icons.error,
-                      size: 17,
-                      color: AppTheme().getGenericDarkGrey(),
-                    ),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    Flexible(
-                      child: Text(
-                        'phone_input.small_note'.tr(),
-                        style: TextStyle(
-                            fontSize: 14,
-                            color: AppTheme().getGenericDarkGrey()),
+              child: PhoneNumberInputEntry(),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: Visibility(
+                  visible: context.watch<HomeProvider>().isPhoneEnteredValid ==
+                      false,
+                  child: ErrorPhone()),
+            ),
+            Expanded(child: SizedBox.shrink()),
+            Visibility(
+              visible:
+                  context.watch<HomeProvider>().isLoadingForRequest == false,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(
+                        Icons.error,
+                        size: 17,
+                        color: AppTheme().getGenericDarkGrey(),
                       ),
-                    )
-                  ],
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Flexible(
+                        child: Text(
+                          'phone_input.small_note'.tr(),
+                          style: TextStyle(
+                              fontSize: 14,
+                              color: AppTheme().getGenericDarkGrey()),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          Visibility(
-            visible: context.watch<HomeProvider>().isLoadingForRequest == false,
-            child: Opacity(
-              opacity:
-                  context.watch<HomeProvider>().enteredPhoneNumber.isNotEmpty &&
-                          context.watch<HomeProvider>().isPhoneEnteredValid
-                      ? 1
-                      : AppTheme().getFadedOpacityValue(),
-              child: GenericRectButton(
-                  horizontalPadding: 20,
-                  label: 'generic_text.next'.tr(),
-                  labelFontSize: 20,
-                  isArrowShow: false,
-                  actuatorFunctionl: context
-                              .watch<HomeProvider>()
-                              .enteredPhoneNumber
-                              .isNotEmpty &&
-                          context.watch<HomeProvider>().isPhoneEnteredValid
-                      ? () {
-                          checkAndOTPRequest(context: context);
-                        }
-                      : () {}),
-            ),
-          )
-        ],
-      )),
+            Visibility(
+              visible:
+                  context.watch<HomeProvider>().isLoadingForRequest == false,
+              child: Opacity(
+                opacity: context
+                            .watch<HomeProvider>()
+                            .enteredPhoneNumber
+                            .isNotEmpty &&
+                        context.watch<HomeProvider>().isPhoneEnteredValid
+                    ? 1
+                    : AppTheme().getFadedOpacityValue(),
+                child: GenericRectButton(
+                    horizontalPadding: 20,
+                    label: 'generic_text.next'.tr(),
+                    labelFontSize: 20,
+                    isArrowShow: false,
+                    actuatorFunctionl: context
+                                .watch<HomeProvider>()
+                                .enteredPhoneNumber
+                                .isNotEmpty &&
+                            context.watch<HomeProvider>().isPhoneEnteredValid
+                        ? () {
+                            checkAndOTPRequest(context: context);
+                          }
+                        : () {}),
+              ),
+            )
+          ],
+        )),
+      ),
     );
   }
 

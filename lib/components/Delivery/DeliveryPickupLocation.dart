@@ -23,87 +23,92 @@ class _DeliveryPickupLocationState extends State<DeliveryPickupLocation> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-          child: Column(
-        children: [
-          Header(),
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: LocationChoice(
-                title: 'delivery.whereAreYouTitle'.tr(),
-                subtitle: context
-                            .watch<HomeProvider>()
-                            .delivery_pickup['street'] !=
-                        null
-                    ? _dataParser.getGenericLocationString(
-                        location: _dataParser.getRealisticPlacesNames(
-                            locationData:
-                                context.watch<HomeProvider>().delivery_pickup))
-                    : 'delivery.whereAreYou_description'.tr(),
-                checked:
-                    context.watch<HomeProvider>().delivery_pickup['street'] !=
-                        null,
-                actuator: () => showMaterialModalBottomSheet(
-                      backgroundColor: Colors.white,
-                      bounce: true,
-                      duration: Duration(milliseconds: 250),
-                      context: context,
-                      builder: (context) => LocalModal_locations(
-                        scenario: 'pickup',
-                      ),
-                    )),
-          ),
-          Divider(
-            height: 40,
-          ),
-          LocationChoice(
-            title: context.read<HomeProvider>().noteTyped_delivery.isEmpty
-                ? 'delivery.addNote'.tr()
-                : 'delivery.yourNote'.tr(),
-            subtitle: context.read<HomeProvider>().noteTyped_delivery.isEmpty
-                ? 'delivery.addNoteDescription'.tr()
-                : context.read<HomeProvider>().noteTyped_delivery,
-            actuator: () => showMaterialModalBottomSheet(
-              backgroundColor: Colors.white,
-              bounce: true,
-              duration: Duration(milliseconds: 250),
-              context: context,
-              builder: (context) => SafeArea(
-                child: Container(
-                    color: Colors.white,
-                    height: MediaQuery.of(context).size.height,
-                    child: Column(
-                      children: [HeaderNote()],
-                    )),
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false);
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+            child: Column(
+          children: [
+            Header(),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: LocationChoice(
+                  title: 'delivery.whereAreYouTitle'.tr(),
+                  subtitle:
+                      context.watch<HomeProvider>().delivery_pickup['street'] !=
+                              null
+                          ? _dataParser.getGenericLocationString(
+                              location: _dataParser.getRealisticPlacesNames(
+                                  locationData: context
+                                      .watch<HomeProvider>()
+                                      .delivery_pickup))
+                          : 'delivery.whereAreYou_description'.tr(),
+                  checked:
+                      context.watch<HomeProvider>().delivery_pickup['street'] !=
+                          null,
+                  actuator: () => showMaterialModalBottomSheet(
+                        backgroundColor: Colors.white,
+                        bounce: true,
+                        duration: Duration(milliseconds: 250),
+                        context: context,
+                        builder: (context) => LocalModal_locations(
+                          scenario: 'pickup',
+                        ),
+                      )),
+            ),
+            Divider(
+              height: 40,
+            ),
+            LocationChoice(
+              title: context.read<HomeProvider>().noteTyped_delivery.isEmpty
+                  ? 'delivery.addNote'.tr()
+                  : 'delivery.yourNote'.tr(),
+              subtitle: context.read<HomeProvider>().noteTyped_delivery.isEmpty
+                  ? 'delivery.addNoteDescription'.tr()
+                  : context.read<HomeProvider>().noteTyped_delivery,
+              actuator: () => showMaterialModalBottomSheet(
+                backgroundColor: Colors.white,
+                bounce: true,
+                duration: Duration(milliseconds: 250),
+                context: context,
+                builder: (context) => SafeArea(
+                  child: Container(
+                      color: Colors.white,
+                      height: MediaQuery.of(context).size.height,
+                      child: Column(
+                        children: [HeaderNote()],
+                      )),
+                ),
               ),
+              tracked: false,
             ),
-            tracked: false,
-          ),
-          Expanded(child: SizedBox.shrink()),
-          //? Done button
-          Opacity(
-            opacity: context
-                .read<HomeProvider>()
-                .validateDelivery_pickupLocation()['opacity'],
-            child: GenericRectButton(
-              label: 'generic_text.next'.tr(),
-              labelFontSize: 20,
-              horizontalPadding: 20,
-              actuatorFunctionl: context
-                          .read<HomeProvider>()
-                          .validateRecipient_data_bulk()['actuator'] ==
-                      'back'
-                  ? () {
-                      //? Successfully validated
-                      Navigator.of(context).pushNamed('/paymentSetting');
-                    }
-                  : () => {},
-            ),
-          )
-        ],
-      )),
+            Expanded(child: SizedBox.shrink()),
+            //? Done button
+            Opacity(
+              opacity: context
+                  .read<HomeProvider>()
+                  .validateDelivery_pickupLocation()['opacity'],
+              child: GenericRectButton(
+                label: 'generic_text.next'.tr(),
+                labelFontSize: 20,
+                horizontalPadding: 20,
+                actuatorFunctionl: context
+                            .read<HomeProvider>()
+                            .validateRecipient_data_bulk()['actuator'] ==
+                        'back'
+                    ? () {
+                        //? Successfully validated
+                        Navigator.of(context).pushNamed('/paymentSetting');
+                      }
+                    : () => {},
+              ),
+            )
+          ],
+        )),
+      ),
     );
   }
 }

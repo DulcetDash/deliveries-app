@@ -26,32 +26,38 @@ class OTPCheckChange extends StatefulWidget {
 class _OTPCheckChangeState extends State<OTPCheckChange> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-          child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Visibility(
-              visible: context.watch<HomeProvider>().isLoadingForRequest,
-              child: TopLoader()),
-          Header(),
-          //! Phone number input
-          Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: OTPVerificationInput(
-                sendAgain_actuator: () => checkAndOTPRequest(context: context),
-                checkOTP_actuator: () => validateOTPCode(context: context),
-              )),
-          // Padding(
-          //   padding: const EdgeInsets.only(left: 20, right: 20),
-          //   child: Visibility(
-          //       visible:
-          //           context.watch<HomeProvider>().isPhoneEnteredValid == false,
-          //       child: ErrorOtp()),
-          // )
-        ],
-      )),
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false);
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+            child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Visibility(
+                visible: context.watch<HomeProvider>().isLoadingForRequest,
+                child: TopLoader()),
+            Header(),
+            //! Phone number input
+            Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: OTPVerificationInput(
+                  sendAgain_actuator: () =>
+                      checkAndOTPRequest(context: context),
+                  checkOTP_actuator: () => validateOTPCode(context: context),
+                )),
+            // Padding(
+            //   padding: const EdgeInsets.only(left: 20, right: 20),
+            //   child: Visibility(
+            //       visible:
+            //           context.watch<HomeProvider>().isPhoneEnteredValid == false,
+            //       child: ErrorOtp()),
+            // )
+          ],
+        )),
+      ),
     );
   }
 

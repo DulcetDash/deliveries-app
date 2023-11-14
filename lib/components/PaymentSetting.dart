@@ -18,115 +18,124 @@ class PaymentSetting extends StatefulWidget {
 class _PaymentSettingState extends State<PaymentSetting> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Colors.white,
-        body: SafeArea(
-            child: Column(
-          children: [
-            Header(),
-            Expanded(
-              child: Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: ListView(
-                    children: [
-                      MethodChoice(
-                        paymentMethod: 'payments.mobileMoney'.tr(),
-                        subtitle: 'payments.subTitle'.tr(),
-                        isSelected:
-                            context.watch<HomeProvider>().paymentMethod ==
-                                'mobile_money',
-                        actuator: (newValue) {
-                          context
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false);
+      },
+      child: Scaffold(
+          backgroundColor: Colors.white,
+          body: SafeArea(
+              child: Column(
+            children: [
+              Header(),
+              Expanded(
+                child: Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: ListView(
+                      children: [
+                        MethodChoice(
+                          paymentMethod: 'payments.mobileMoney'.tr(),
+                          subtitle: 'payments.subTitle'.tr(),
+                          isSelected:
+                              context.watch<HomeProvider>().paymentMethod ==
+                                  'mobile_money',
+                          actuator: (newValue) {
+                            context
+                                .read<HomeProvider>()
+                                .updatePaymentMethod(data: 'mobile_money');
+                          },
+                        ),
+                        Divider(
+                          height: 50,
+                        ),
+                        MethodChoice(
+                          paymentMethod: 'payments.cash'.tr(),
+                          subtitle:
+                              context.read<HomeProvider>().selectedService ==
+                                          'delivery' ||
+                                      context
+                                              .read<HomeProvider>()
+                                              .selectedService ==
+                                          'ride'
+                                  ? 'payments.cashOnPickup'.tr()
+                                  : 'payments.payWithCash'.tr(),
+                          hasPickupFee: true,
+                          isSelected:
+                              context.watch<HomeProvider>().paymentMethod ==
+                                  'cash',
+                          actuator: (newValue) {
+                            context
+                                .read<HomeProvider>()
+                                .updatePaymentMethod(data: 'cash');
+                          },
+                        )
+                      ],
+                    )),
+              ),
+              GenericRectButton(
+                  label: context.read<HomeProvider>().selectedService == 'ride'
+                      ? 'rides.done'.tr()
+                      : 'generic_text.next'.tr(),
+                  labelFontSize: 22,
+                  isArrowShow:
+                      context.read<HomeProvider>().selectedService != 'ride',
+                  actuatorFunctionl: () {
+                    //?1. SHOPPING
+                    if (context.read<HomeProvider>().selectedService ==
+                        'shopping') {
+                      //! Update the pickup location to THIS if not specified yet
+                      if (context
                               .read<HomeProvider>()
-                              .updatePaymentMethod(data: 'mobile_money');
-                        },
-                      ),
-                      Divider(
-                        height: 50,
-                      ),
-                      MethodChoice(
-                        paymentMethod: 'payments.cash'.tr(),
-                        subtitle: context
-                                        .read<HomeProvider>()
-                                        .selectedService ==
-                                    'delivery' ||
-                                context.read<HomeProvider>().selectedService ==
-                                    'ride'
-                            ? 'payments.cashOnPickup'.tr()
-                            : 'payments.payWithCash'.tr(),
-                        hasPickupFee: true,
-                        isSelected:
-                            context.watch<HomeProvider>().paymentMethod ==
-                                'cash',
-                        actuator: (newValue) {
-                          context
+                              .manuallySettedCurrentLocation_pickup['street'] ==
+                          null) //No pickup location already set
+                      {
+                        //Preset to the automatically computed by default
+                        context
+                            .read<HomeProvider>()
+                            .updateManualPickupOrDropoff(
+                                location_type: 'pickup',
+                                location: context
+                                    .read<HomeProvider>()
+                                    .userLocationDetails);
+                        //...
+                        Navigator.of(context).pushNamed('/locationDetails');
+                      } else //Next
+                      {
+                        Navigator.of(context).pushNamed('/locationDetails');
+                      }
+                    }
+                    //?2. DELIVERY
+                    else if (context.read<HomeProvider>().selectedService ==
+                        'delivery') {
+                      if (context
                               .read<HomeProvider>()
-                              .updatePaymentMethod(data: 'cash');
-                        },
-                      )
-                    ],
-                  )),
-            ),
-            GenericRectButton(
-                label: context.read<HomeProvider>().selectedService == 'ride'
-                    ? 'rides.done'.tr()
-                    : 'generic_text.next'.tr(),
-                labelFontSize: 22,
-                isArrowShow:
-                    context.read<HomeProvider>().selectedService != 'ride',
-                actuatorFunctionl: () {
-                  //?1. SHOPPING
-                  if (context.read<HomeProvider>().selectedService ==
-                      'shopping') {
-                    //! Update the pickup location to THIS if not specified yet
-                    if (context
+                              .delivery_pickup['street'] ==
+                          null) //No pickup location already set
+                      {
+                        //Preset to the automatically computed by default
+                        context
                             .read<HomeProvider>()
-                            .manuallySettedCurrentLocation_pickup['street'] ==
-                        null) //No pickup location already set
-                    {
-                      //Preset to the automatically computed by default
-                      context.read<HomeProvider>().updateManualPickupOrDropoff(
-                          location_type: 'pickup',
-                          location:
-                              context.read<HomeProvider>().userLocationDetails);
-                      //...
-                      Navigator.of(context).pushNamed('/locationDetails');
-                    } else //Next
-                    {
-                      Navigator.of(context).pushNamed('/locationDetails');
+                            .updateManualPickupOrDropoff_delivery(
+                                location_type: 'pickup',
+                                location: context
+                                    .read<HomeProvider>()
+                                    .userLocationDetails);
+                        //...
+                        Navigator.of(context).pushNamed('/DeliverySummary');
+                      } else //Next
+                      {
+                        Navigator.of(context).pushNamed('/DeliverySummary');
+                      }
                     }
-                  }
-                  //?2. DELIVERY
-                  else if (context.read<HomeProvider>().selectedService ==
-                      'delivery') {
-                    if (context
-                            .read<HomeProvider>()
-                            .delivery_pickup['street'] ==
-                        null) //No pickup location already set
-                    {
-                      //Preset to the automatically computed by default
-                      context
-                          .read<HomeProvider>()
-                          .updateManualPickupOrDropoff_delivery(
-                              location_type: 'pickup',
-                              location: context
-                                  .read<HomeProvider>()
-                                  .userLocationDetails);
-                      //...
-                      Navigator.of(context).pushNamed('/DeliverySummary');
-                    } else //Next
-                    {
-                      Navigator.of(context).pushNamed('/DeliverySummary');
+                    //?3. RIDE
+                    else if (context.read<HomeProvider>().selectedService ==
+                        'ride') {
+                      Navigator.of(context).pop();
                     }
-                  }
-                  //?3. RIDE
-                  else if (context.read<HomeProvider>().selectedService ==
-                      'ride') {
-                    Navigator.of(context).pop();
-                  }
-                })
-          ],
-        )));
+                  })
+            ],
+          ))),
+    );
   }
 }
 

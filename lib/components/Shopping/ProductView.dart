@@ -81,12 +81,17 @@ class _ProductViewState extends State<ProductView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Container(
-          child: Column(
-            children: [Header(), ShowProductMain()],
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false);
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: Container(
+            child: Column(
+              children: [Header(), ShowProductMain()],
+            ),
           ),
         ),
       ),

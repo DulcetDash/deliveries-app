@@ -83,97 +83,104 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Container(
-          child: Column(
-            children: [
-              Header(),
-              Divider(
-                thickness: 1,
-                height: 35,
-              ),
-              SearchBar(),
-              Divider(
-                color: Colors.white,
-                height: 35,
-              ),
-              isLoading
-                  ? Padding(
-                      padding: EdgeInsets.only(
-                          top: MediaQuery.of(context).size.height * 0.1),
-                      child: Container(
-                        child: CircularProgressIndicator(
-                          strokeWidth: 3,
-                          color: AppTheme().getPrimaryColor(),
-                        ),
-                      ))
-                  : context.watch<HomeProvider>().mainStores.isEmpty
-                      ? Container(
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                                top: MediaQuery.of(context).size.height * 0.1),
-                            child: Column(
-                              children: [
-                                Icon(
-                                  Icons.wifi_off,
-                                  size: 40,
-                                  color: Colors.grey,
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                Text('generic_text.unableToConnectToNet'.tr(),
-                                    style: TextStyle(
-                                        color: Colors.grey, fontSize: 15))
-                              ],
-                            ),
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false);
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: Container(
+            child: Column(
+              children: [
+                Header(),
+                Divider(
+                  thickness: 1,
+                  height: 35,
+                ),
+                SearchBar(),
+                Divider(
+                  color: Colors.white,
+                  height: 35,
+                ),
+                isLoading
+                    ? Padding(
+                        padding: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.1),
+                        child: Container(
+                          child: CircularProgressIndicator(
+                            strokeWidth: 3,
+                            color: AppTheme().getPrimaryColor(),
                           ),
-                        )
-                      : context
-                              .watch<HomeProvider>()
-                              .stores_search_key
-                              .isNotEmpty
-                          ? searchedStores(context: context)
-                          : Expanded(
-                              child: ListView(
-                                padding: EdgeInsets.only(bottom: 55),
+                        ))
+                    : context.watch<HomeProvider>().mainStores.isEmpty
+                        ? Container(
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  top:
+                                      MediaQuery.of(context).size.height * 0.1),
+                              child: Column(
                                 children: [
-                                  GenericTitle(title: 'shopping.frequent'.tr()),
-                                  StoresListingMain(),
-                                  Visibility(
-                                    visible: context
-                                            .watch<HomeProvider>()
-                                            .mainStores
-                                            .length >
-                                        4,
-                                    child: Divider(
-                                      height: 60,
-                                      thickness: 1,
-                                      color: Colors.white,
-                                    ),
+                                  Icon(
+                                    Icons.wifi_off,
+                                    size: 40,
+                                    color: Colors.grey,
                                   ),
-                                  Visibility(
-                                      visible: context
-                                              .watch<HomeProvider>()
-                                              .mainStores
-                                              .length >
-                                          4,
-                                      child: GenericTitle(
-                                        title: 'shopping.newStores'.tr(),
-                                      )),
-                                  Visibility(
-                                      visible: context
-                                              .watch<HomeProvider>()
-                                              .mainStores
-                                              .length >
-                                          4,
-                                      child: NewStores())
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Text('generic_text.unableToConnectToNet'.tr(),
+                                      style: TextStyle(
+                                          color: Colors.grey, fontSize: 15))
                                 ],
                               ),
-                            )
-            ],
+                            ),
+                          )
+                        : context
+                                .watch<HomeProvider>()
+                                .stores_search_key
+                                .isNotEmpty
+                            ? searchedStores(context: context)
+                            : Expanded(
+                                child: ListView(
+                                  padding: EdgeInsets.only(bottom: 55),
+                                  children: [
+                                    GenericTitle(
+                                        title: 'shopping.frequent'.tr()),
+                                    StoresListingMain(),
+                                    Visibility(
+                                      visible: context
+                                              .watch<HomeProvider>()
+                                              .mainStores
+                                              .length >
+                                          4,
+                                      child: Divider(
+                                        height: 60,
+                                        thickness: 1,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    Visibility(
+                                        visible: context
+                                                .watch<HomeProvider>()
+                                                .mainStores
+                                                .length >
+                                            4,
+                                        child: GenericTitle(
+                                          title: 'shopping.newStores'.tr(),
+                                        )),
+                                    Visibility(
+                                        visible: context
+                                                .watch<HomeProvider>()
+                                                .mainStores
+                                                .length >
+                                            4,
+                                        child: NewStores())
+                                  ],
+                                ),
+                              )
+              ],
+            ),
           ),
         ),
       ),

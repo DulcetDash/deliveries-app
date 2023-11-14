@@ -19,80 +19,85 @@ class Support extends StatefulWidget {
 class _SupportState extends State<Support> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-          child: Column(
-        children: [
-          Header(),
-          Expanded(
-            child: Column(children: [
-              Divider(
-                color: Colors.white,
-                height: 25,
-              ),
-              Container(
-                color: Colors.white,
-                width: MediaQuery.of(context).size.width,
-                height: 80,
-                child: Image.asset(
-                  'assets/Images/24h.png',
-                  fit: BoxFit.contain,
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false);
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+            child: Column(
+          children: [
+            Header(),
+            Expanded(
+              child: Column(children: [
+                Divider(
+                  color: Colors.white,
+                  height: 25,
                 ),
-              ),
-              Divider(
-                color: Colors.white,
-                height: 30,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: Container(
-                    child: Text(
-                  'support.mainTitle'.tr(),
-                  style: TextStyle(fontFamily: 'MoveBold', fontSize: 23),
-                )),
-              ),
-              Divider(
-                color: Colors.white,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: Container(
-                  child: Text(
-                    'support.explanation'.tr(),
-                    style: TextStyle(fontSize: 17),
+                Container(
+                  color: Colors.white,
+                  width: MediaQuery.of(context).size.width,
+                  height: 80,
+                  child: Image.asset(
+                    'assets/Images/24h.png',
+                    fit: BoxFit.contain,
                   ),
                 ),
-              ),
-              Expanded(child: SizedBox.shrink()),
-              GenericRectButton(
-                  label: 'Text us on WhatsApp',
-                  labelFontFamily: 'MoveTextBold',
-                  isArrowShow: false,
-                  verticalPadding: 10,
-                  labelFontSize: 20,
-                  activateTrailing: false,
-                  backgroundColor: AppTheme().getPrimaryColor(),
-                  trailingIcon: Icons.phone,
-                  actuatorFunctionl: () async {
-                    final link = WhatsAppUnilink(
-                      phoneNumber: '+264857642043',
-                      text: "Hi DulcetDash, I need help!",
-                    );
+                Divider(
+                  color: Colors.white,
+                  height: 30,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Container(
+                      child: Text(
+                    'support.mainTitle'.tr(),
+                    style: TextStyle(fontFamily: 'MoveBold', fontSize: 23),
+                  )),
+                ),
+                Divider(
+                  color: Colors.white,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Container(
+                    child: Text(
+                      'support.explanation'.tr(),
+                      style: TextStyle(fontSize: 17),
+                    ),
+                  ),
+                ),
+                Expanded(child: SizedBox.shrink()),
+                GenericRectButton(
+                    label: 'Text us on WhatsApp',
+                    labelFontFamily: 'MoveTextBold',
+                    isArrowShow: false,
+                    verticalPadding: 10,
+                    labelFontSize: 20,
+                    activateTrailing: false,
+                    backgroundColor: AppTheme().getPrimaryColor(),
+                    trailingIcon: Icons.phone,
+                    actuatorFunctionl: () async {
+                      final link = WhatsAppUnilink(
+                        phoneNumber: '+264857642043',
+                        text: "Hi DulcetDash, I need help!",
+                      );
 
-                    await launchUrl(link.asUri());
-                  }),
-              GenericRectButton(
-                  label: 'support.callThePolice'.tr(),
-                  labelFontFamily: 'MoveTextBold',
-                  isArrowShow: false,
-                  labelFontSize: 20,
-                  actuatorFunctionl: () =>
-                      PhoneNumberCaller.callNumber(phoneNumber: '10111'))
-            ]),
-          ),
-        ],
-      )),
+                      await launchUrl(link.asUri());
+                    }),
+                GenericRectButton(
+                    label: 'support.callThePolice'.tr(),
+                    labelFontFamily: 'MoveTextBold',
+                    isArrowShow: false,
+                    labelFontSize: 20,
+                    actuatorFunctionl: () =>
+                        PhoneNumberCaller.callNumber(phoneNumber: '10111'))
+              ]),
+            ),
+          ],
+        )),
+      ),
     );
   }
 }

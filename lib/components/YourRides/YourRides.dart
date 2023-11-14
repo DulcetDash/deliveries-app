@@ -99,33 +99,38 @@ class _YourRidesState extends State<YourRides> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SmartRefresher(
-        controller: _refreshController,
-        onRefresh: _onRefresh,
-        onLoading: _onLoading,
-        child: SafeArea(
-            child: Column(
-          children: [
-            Header(),
-            Expanded(
-              child: Column(children: [
-                Divider(
-                  color: Colors.white,
-                ),
-                Expanded(
-                  child: ListView.separated(
-                      padding: EdgeInsets.only(bottom: 50),
-                      itemBuilder: (context, index) =>
-                          RequestModel(requestData: requestsMade[index]),
-                      separatorBuilder: (context, index) => Divider(),
-                      itemCount: requestsMade.length),
-                )
-              ]),
-            ),
-          ],
-        )),
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false);
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SmartRefresher(
+          controller: _refreshController,
+          onRefresh: _onRefresh,
+          onLoading: _onLoading,
+          child: SafeArea(
+              child: Column(
+            children: [
+              Header(),
+              Expanded(
+                child: Column(children: [
+                  Divider(
+                    color: Colors.white,
+                  ),
+                  Expanded(
+                    child: ListView.separated(
+                        padding: EdgeInsets.only(bottom: 50),
+                        itemBuilder: (context, index) =>
+                            RequestModel(requestData: requestsMade[index]),
+                        separatorBuilder: (context, index) => Divider(),
+                        itemCount: requestsMade.length),
+                  )
+                ]),
+              ),
+            ],
+          )),
+        ),
       ),
     );
   }

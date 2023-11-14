@@ -79,99 +79,105 @@ class _CatalogueState extends State<Catalogue> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Container(
-          child: Column(
-            children: [
-              const Header(),
-              const Divider(
-                thickness: 1,
-                height: 35,
-              ),
-              const SearchBar(),
-              const Divider(
-                color: Colors.white,
-                height: 5,
-              ),
-              const TimeBar(),
-              isLoading
-                  ? Padding(
-                      padding: EdgeInsets.only(
-                          top: MediaQuery.of(context).size.height * 0.1),
-                      child: Container(
-                        child: CircularProgressIndicator(
-                          strokeWidth: 3,
-                          color: AppTheme().getPrimaryColor(),
-                        ),
-                      ))
-                  : context
-                          .watch<HomeProvider>()
-                          .catalogueData_level2_structured
-                          .isEmpty
-                      ? Container(
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                                top: MediaQuery.of(context).size.height * 0.1),
-                            child: Column(
-                              children: [
-                                const Icon(
-                                  Icons.wifi_off,
-                                  size: 40,
-                                  color: Colors.grey,
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                Text('generic_text.unableToConnectToNet'.tr(),
-                                    style: const TextStyle(
-                                        color: Colors.grey, fontSize: 15))
-                              ],
-                            ),
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false);
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: Container(
+            child: Column(
+              children: [
+                const Header(),
+                const Divider(
+                  thickness: 1,
+                  height: 35,
+                ),
+                const SearchBar(),
+                const Divider(
+                  color: Colors.white,
+                  height: 5,
+                ),
+                const TimeBar(),
+                isLoading
+                    ? Padding(
+                        padding: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.1),
+                        child: Container(
+                          child: CircularProgressIndicator(
+                            strokeWidth: 3,
+                            color: AppTheme().getPrimaryColor(),
                           ),
-                        )
-                      : context
-                              .watch<HomeProvider>()
-                              .shops_search_item_key
-                              .isNotEmpty
-                          ? context
-                                  .watch<HomeProvider>()
-                                  .shops_items_searched
-                                  .isEmpty
-                              ? const Column(
-                                  children: [
-                                    Divider(
-                                      height: 60,
-                                    ),
-                                    Icon(Icons.info_outlined,
-                                        color: Colors.grey, size: 30),
-                                    Divider(
-                                      height: 15,
-                                      color: Colors.white,
-                                    ),
-                                    Text(
-                                      'No products found for that search',
-                                      style: TextStyle(
-                                          fontSize: 17, color: Colors.grey),
-                                    ),
-                                  ],
-                                )
-                              : Expanded(
-                                  child: ListView(
-                                  padding: const EdgeInsets.only(
-                                      top: 10, bottom: 50),
-                                  children: [
-                                    GenericTitle(
-                                        title: 'shopping.searchResults'.tr()),
-                                    const SizedBox(
-                                      height: 15,
-                                    ),
-                                    searchedCatalogue(context: context),
-                                  ],
-                                ))
-                          : const ShowCaseMainCat()
-            ],
+                        ))
+                    : context
+                            .watch<HomeProvider>()
+                            .catalogueData_level2_structured
+                            .isEmpty
+                        ? Container(
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  top:
+                                      MediaQuery.of(context).size.height * 0.1),
+                              child: Column(
+                                children: [
+                                  const Icon(
+                                    Icons.wifi_off,
+                                    size: 40,
+                                    color: Colors.grey,
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  Text('generic_text.unableToConnectToNet'.tr(),
+                                      style: const TextStyle(
+                                          color: Colors.grey, fontSize: 15))
+                                ],
+                              ),
+                            ),
+                          )
+                        : context
+                                .watch<HomeProvider>()
+                                .shops_search_item_key
+                                .isNotEmpty
+                            ? context
+                                    .watch<HomeProvider>()
+                                    .shops_items_searched
+                                    .isEmpty
+                                ? const Column(
+                                    children: [
+                                      Divider(
+                                        height: 60,
+                                      ),
+                                      Icon(Icons.info_outlined,
+                                          color: Colors.grey, size: 30),
+                                      Divider(
+                                        height: 15,
+                                        color: Colors.white,
+                                      ),
+                                      Text(
+                                        'No products found for that search',
+                                        style: TextStyle(
+                                            fontSize: 17, color: Colors.grey),
+                                      ),
+                                    ],
+                                  )
+                                : Expanded(
+                                    child: ListView(
+                                    padding: const EdgeInsets.only(
+                                        top: 10, bottom: 50),
+                                    children: [
+                                      GenericTitle(
+                                          title: 'shopping.searchResults'.tr()),
+                                      const SizedBox(
+                                        height: 15,
+                                      ),
+                                      searchedCatalogue(context: context),
+                                    ],
+                                  ))
+                            : const ShowCaseMainCat()
+              ],
+            ),
           ),
         ),
       ),

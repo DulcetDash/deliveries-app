@@ -141,190 +141,195 @@ class _SettingsState extends State<Settings> {
   Widget build(BuildContext context) {
     Map<String, dynamic> userData = context.watch<HomeProvider>().userData;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: userData['user_identifier'] == null
-          ? Text('settings.restartApp'.tr())
-          : SafeArea(
-              bottom: false,
-              child: Column(
-                children: [
-                  Header(),
-                  Expanded(
-                    child: ListView(
-                        padding: EdgeInsets.only(bottom: 50),
-                        children: [
-                          Divider(
-                            color: Colors.white,
-                            height: 25,
-                          ),
-                          ListTile(
-                            horizontalTitleGap: 20,
-                            leading: InkWell(
-                              onTap: () => openCameraHandler(
-                                  context: context, shouldOpenCam: false),
-                              child: badges.Badge(
-                                badgeContent: Icon(
-                                  Icons.edit,
-                                  size: 15,
-                                  color: Colors.white,
-                                ),
-                                badgeStyle: badges.BadgeStyle(
-                                  badgeColor: Colors.black,
-                                ),
-                                position: badges.BadgePosition.bottomEnd(),
-                                child: Container(
-                                  width: 70,
-                                  height: 70,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.grey.withOpacity(0.4),
-                                          blurRadius: 7,
-                                          spreadRadius: 0)
-                                    ],
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false);
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: userData['user_identifier'] == null
+            ? Text('settings.restartApp'.tr())
+            : SafeArea(
+                bottom: false,
+                child: Column(
+                  children: [
+                    Header(),
+                    Expanded(
+                      child: ListView(
+                          padding: EdgeInsets.only(bottom: 50),
+                          children: [
+                            Divider(
+                              color: Colors.white,
+                              height: 25,
+                            ),
+                            ListTile(
+                              horizontalTitleGap: 20,
+                              leading: InkWell(
+                                onTap: () => openCameraHandler(
+                                    context: context, shouldOpenCam: false),
+                                child: badges.Badge(
+                                  badgeContent: Icon(
+                                    Icons.edit,
+                                    size: 15,
+                                    color: Colors.white,
                                   ),
-                                  child: CircleAvatar(
-                                      radius: 35,
-                                      backgroundColor: Colors.black,
-                                      backgroundImage: NetworkImage(
-                                        userData['profile_picture'],
-                                      ),
-                                      child: Container(
-                                        width: 70,
-                                        height: 70,
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(1000)),
-                                      )),
+                                  badgeStyle: badges.BadgeStyle(
+                                    badgeColor: Colors.black,
+                                  ),
+                                  position: badges.BadgePosition.bottomEnd(),
+                                  child: Container(
+                                    width: 70,
+                                    height: 70,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.grey.withOpacity(0.4),
+                                            blurRadius: 7,
+                                            spreadRadius: 0)
+                                      ],
+                                    ),
+                                    child: CircleAvatar(
+                                        radius: 35,
+                                        backgroundColor: Colors.black,
+                                        backgroundImage: NetworkImage(
+                                          userData['profile_picture'],
+                                        ),
+                                        child: Container(
+                                          width: 70,
+                                          height: 70,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(1000)),
+                                        )),
+                                  ),
+                                ),
+                              ),
+                              title: Text(
+                                userData['name'].toString(),
+                                style: TextStyle(
+                                    fontFamily: 'MoveTextMedium', fontSize: 19),
+                              ),
+                              subtitle: Padding(
+                                padding: const EdgeInsets.only(top: 5),
+                                child: Text(
+                                  userData['phone'].toString(),
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ),
+                              trailing: isLoading
+                                  ? SizedBox(
+                                      width: 15,
+                                      height: 15,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 1,
+                                        color: AppTheme().getSecondaryColor(),
+                                      ))
+                                  : null,
+                            ),
+                            Divider(
+                              height: 30,
+                            ),
+                            GenericTitle(
+                                title: 'settings.personalInformation'.tr()),
+                            GenericInformationDisplayer(
+                              fieldName: 'settings.name'.tr(),
+                              valueText: userData['name'].toString(),
+                              actuator: () => showMaterialModalBottomSheet(
+                                backgroundColor: Colors.white,
+                                expand: false,
+                                bounce: true,
+                                duration: Duration(milliseconds: 250),
+                                context: context,
+                                builder: (context) => LocalModal(
+                                  scenario: 'name',
+                                  valueField: userData['name'].toString(),
+                                  parentContext: context,
                                 ),
                               ),
                             ),
-                            title: Text(
-                              userData['name'].toString(),
-                              style: TextStyle(
-                                  fontFamily: 'MoveTextMedium', fontSize: 19),
-                            ),
-                            subtitle: Padding(
-                              padding: const EdgeInsets.only(top: 5),
-                              child: Text(
-                                userData['phone'].toString(),
-                                style: TextStyle(fontSize: 16),
+                            GenericInformationDisplayer(
+                              fieldName: 'settings.surname'.tr(),
+                              valueText: userData['surname'].toString(),
+                              actuator: () => showMaterialModalBottomSheet(
+                                backgroundColor: Colors.white,
+                                expand: false,
+                                bounce: true,
+                                duration: Duration(milliseconds: 250),
+                                context: context,
+                                builder: (context) => LocalModal(
+                                  scenario: 'surname',
+                                  valueField: userData['surname'].toString(),
+                                  parentContext: context,
+                                ),
                               ),
                             ),
-                            trailing: isLoading
-                                ? SizedBox(
-                                    width: 15,
-                                    height: 15,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 1,
-                                      color: AppTheme().getSecondaryColor(),
-                                    ))
-                                : null,
-                          ),
-                          Divider(
-                            height: 30,
-                          ),
-                          GenericTitle(
-                              title: 'settings.personalInformation'.tr()),
-                          GenericInformationDisplayer(
-                            fieldName: 'settings.name'.tr(),
-                            valueText: userData['name'].toString(),
-                            actuator: () => showMaterialModalBottomSheet(
-                              backgroundColor: Colors.white,
-                              expand: false,
-                              bounce: true,
-                              duration: Duration(milliseconds: 250),
-                              context: context,
-                              builder: (context) => LocalModal(
-                                scenario: 'name',
-                                valueField: userData['name'].toString(),
-                                parentContext: context,
+                            Divider(
+                              height: 30,
+                            ),
+                            GenericTitle(title: 'settings.contact'.tr()),
+                            GenericInformationDisplayer(
+                                fieldName: 'settings.phone'.tr(),
+                                valueText: userData['phone'].toString(),
+                                actuator: () {
+                                  //! Clear the tmp phone number entered
+                                  context
+                                      .read<HomeProvider>()
+                                      .updateEnteredPhoneNumber(phone: '');
+                                  //...
+                                  Navigator.of(context)
+                                      .pushNamed('/PhoneInputChange');
+                                }),
+                            GenericInformationDisplayer(
+                              fieldName: 'settings.email'.tr(),
+                              valueText: userData['email'].toString(),
+                              actuator: () => showMaterialModalBottomSheet(
+                                backgroundColor: Colors.white,
+                                expand: false,
+                                bounce: true,
+                                duration: Duration(milliseconds: 250),
+                                context: context,
+                                builder: (context) => LocalModal(
+                                  scenario: 'email',
+                                  valueField: userData['email'].toString(),
+                                  parentContext: context,
+                                ),
                               ),
                             ),
-                          ),
-                          GenericInformationDisplayer(
-                            fieldName: 'settings.surname'.tr(),
-                            valueText: userData['surname'].toString(),
-                            actuator: () => showMaterialModalBottomSheet(
-                              backgroundColor: Colors.white,
-                              expand: false,
-                              bounce: true,
-                              duration: Duration(milliseconds: 250),
-                              context: context,
-                              builder: (context) => LocalModal(
-                                scenario: 'surname',
-                                valueField: userData['surname'].toString(),
-                                parentContext: context,
-                              ),
+                            Divider(
+                              height: 30,
                             ),
-                          ),
-                          Divider(
-                            height: 30,
-                          ),
-                          GenericTitle(title: 'settings.contact'.tr()),
-                          GenericInformationDisplayer(
-                              fieldName: 'settings.phone'.tr(),
-                              valueText: userData['phone'].toString(),
-                              actuator: () {
-                                //! Clear the tmp phone number entered
-                                context
-                                    .read<HomeProvider>()
-                                    .updateEnteredPhoneNumber(phone: '');
-                                //...
-                                Navigator.of(context)
-                                    .pushNamed('/PhoneInputChange');
-                              }),
-                          GenericInformationDisplayer(
-                            fieldName: 'settings.email'.tr(),
-                            valueText: userData['email'].toString(),
-                            actuator: () => showMaterialModalBottomSheet(
-                              backgroundColor: Colors.white,
-                              expand: false,
-                              bounce: true,
-                              duration: Duration(milliseconds: 250),
-                              context: context,
-                              builder: (context) => LocalModal(
-                                scenario: 'email',
-                                valueField: userData['email'].toString(),
-                                parentContext: context,
-                              ),
+                            GenericTitle(title: 'settings.privacy'.tr()),
+                            InkWell(
+                              onTap: () async {
+                                if (!await launchUrl(Uri.parse(
+                                    'https://dulcetdash.com/privacy'))) {
+                                  throw 'Could not launch the URL';
+                                }
+                              },
+                              child: const GenericInformationDisplayer_terms_co(
+                                  valueText: 'Terms & conditions'),
                             ),
-                          ),
-                          Divider(
-                            height: 30,
-                          ),
-                          GenericTitle(title: 'settings.privacy'.tr()),
-                          InkWell(
-                            onTap: () async {
-                              if (!await launchUrl(Uri.parse(
-                                  'https://dulcetdash.com/privacy'))) {
-                                throw 'Could not launch the URL';
-                              }
-                            },
-                            child: const GenericInformationDisplayer_terms_co(
-                                valueText: 'Terms & conditions'),
-                          ),
-                          InkWell(
-                            onTap: () async {
-                              if (!await launchUrl(Uri.parse(
-                                  'https://dulcetdash.com/privacy'))) {
-                                throw 'Could not launch the URL';
-                              }
-                            },
-                            child: const GenericInformationDisplayer_terms_co(
-                                valueText: 'Privacy statement'),
-                          ),
-                          const Divider(
-                            height: 30,
-                          ),
-                          GenericInformationLogOUT(
-                              valueText: 'settings.logout'.tr())
-                        ]),
-                  ),
-                ],
-              )),
+                            InkWell(
+                              onTap: () async {
+                                if (!await launchUrl(Uri.parse(
+                                    'https://dulcetdash.com/privacy'))) {
+                                  throw 'Could not launch the URL';
+                                }
+                              },
+                              child: const GenericInformationDisplayer_terms_co(
+                                  valueText: 'Privacy statement'),
+                            ),
+                            const Divider(
+                              height: 30,
+                            ),
+                            GenericInformationLogOUT(
+                                valueText: 'settings.logout'.tr())
+                          ]),
+                    ),
+                  ],
+                )),
+      ),
     );
   }
 }

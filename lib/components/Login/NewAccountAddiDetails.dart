@@ -22,48 +22,53 @@ class NewAccountAddiDetails extends StatefulWidget {
 class _NewAccountAddiDetailsState extends State<NewAccountAddiDetails> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Container(
-          child: Column(
-            children: [
-              ListTile(
-                leading: InkWell(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: Icon(Icons.arrow_back,
-                        size: AppTheme().getArrowBackSize(),
-                        color: Colors.black)),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text("new_account.fewMoteThings".tr(),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontFamily: 'MoveBold',
-                                  fontSize: 24,
-                                  color: Colors.black)),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          // Text(
-                          //   '🇳🇦',
-                          //   style: TextStyle(fontSize: 27),
-                          // )
-                        ])),
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              InputUserDetails()
-            ],
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false);
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: Container(
+            child: Column(
+              children: [
+                ListTile(
+                  leading: InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Icon(Icons.arrow_back,
+                          size: AppTheme().getArrowBackSize(),
+                          color: Colors.black)),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text("new_account.fewMoteThings".tr(),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontFamily: 'MoveBold',
+                                    fontSize: 24,
+                                    color: Colors.black)),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            // Text(
+                            //   '🇳🇦',
+                            //   style: TextStyle(fontSize: 27),
+                            // )
+                          ])),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                InputUserDetails()
+              ],
+            ),
           ),
         ),
       ),

@@ -77,100 +77,106 @@ class _CatalogueDetailsL2State extends State<CatalogueDetailsL2> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Container(
-          child: Column(
-            children: [
-              Header(),
-              Divider(
-                thickness: 1,
-                height: 35,
-              ),
-              SearchBar(),
-              Divider(
-                color: Colors.white,
-                height: 5,
-              ),
-              TimeBar(),
-              context
-                              .watch<HomeProvider>()
-                              .catalogueData_level2_structured
-                              .isEmpty ==
-                          false &&
-                      isLoading == false
-                  ? Padding(
-                      padding: const EdgeInsets.only(
-                          left: 20, right: 20, top: 20, bottom: 0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                              ucFirst(context
-                                      .read<HomeProvider>()
-                                      .catalogueData_level2_structured[0]
-                                  ['meta']['category']),
-                              style: TextStyle(
-                                  fontFamily: 'MoveTextBold', fontSize: 18)),
-                        ],
-                      ),
-                    )
-                  : SizedBox.shrink(),
-              isLoading
-                  ? Padding(
-                      padding: EdgeInsets.only(
-                          top: MediaQuery.of(context).size.height * 0.1),
-                      child: Container(
-                        child: CircularProgressIndicator(
-                          strokeWidth: 3,
-                          color: AppTheme().getPrimaryColor(),
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false);
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: Container(
+            child: Column(
+              children: [
+                Header(),
+                Divider(
+                  thickness: 1,
+                  height: 35,
+                ),
+                SearchBar(),
+                Divider(
+                  color: Colors.white,
+                  height: 5,
+                ),
+                TimeBar(),
+                context
+                                .watch<HomeProvider>()
+                                .catalogueData_level2_structured
+                                .isEmpty ==
+                            false &&
+                        isLoading == false
+                    ? Padding(
+                        padding: const EdgeInsets.only(
+                            left: 20, right: 20, top: 20, bottom: 0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                                ucFirst(context
+                                        .read<HomeProvider>()
+                                        .catalogueData_level2_structured[0]
+                                    ['meta']['category']),
+                                style: TextStyle(
+                                    fontFamily: 'MoveTextBold', fontSize: 18)),
+                          ],
                         ),
-                      ))
-                  : context
-                          .watch<HomeProvider>()
-                          .catalogueData_level2_structured
-                          .isEmpty
-                      ? Container(
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                                top: MediaQuery.of(context).size.height * 0.1),
-                            child: Column(
-                              children: [
-                                Icon(
-                                  Icons.wifi_off,
-                                  size: 40,
-                                  color: Colors.grey,
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                Text('generic_text.unableToConnectToNet'.tr(),
-                                    style: TextStyle(
-                                        color: Colors.grey, fontSize: 15))
-                              ],
-                            ),
+                      )
+                    : SizedBox.shrink(),
+                isLoading
+                    ? Padding(
+                        padding: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.1),
+                        child: Container(
+                          child: CircularProgressIndicator(
+                            strokeWidth: 3,
+                            color: AppTheme().getPrimaryColor(),
                           ),
-                        )
-                      : context
-                              .watch<HomeProvider>()
-                              .shops_search_item_key
-                              .isNotEmpty
-                          ? Expanded(
-                              child: ListView(
-                              padding: EdgeInsets.only(top: 10, bottom: 50),
-                              children: [
-                                GenericTitle(
-                                    title: 'shopping.searchResults'.tr()),
-                                SizedBox(
-                                  height: 15,
-                                ),
-                                searchedCatalogue(context: context),
-                              ],
-                            ))
-                          : ShowCaseMainCat(),
-            ],
+                        ))
+                    : context
+                            .watch<HomeProvider>()
+                            .catalogueData_level2_structured
+                            .isEmpty
+                        ? Container(
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  top:
+                                      MediaQuery.of(context).size.height * 0.1),
+                              child: Column(
+                                children: [
+                                  Icon(
+                                    Icons.wifi_off,
+                                    size: 40,
+                                    color: Colors.grey,
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Text('generic_text.unableToConnectToNet'.tr(),
+                                      style: TextStyle(
+                                          color: Colors.grey, fontSize: 15))
+                                ],
+                              ),
+                            ),
+                          )
+                        : context
+                                .watch<HomeProvider>()
+                                .shops_search_item_key
+                                .isNotEmpty
+                            ? Expanded(
+                                child: ListView(
+                                padding: EdgeInsets.only(top: 10, bottom: 50),
+                                children: [
+                                  GenericTitle(
+                                      title: 'shopping.searchResults'.tr()),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  searchedCatalogue(context: context),
+                                ],
+                              ))
+                            : ShowCaseMainCat(),
+              ],
+            ),
           ),
         ),
       ),

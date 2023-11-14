@@ -16,61 +16,66 @@ class Share extends StatefulWidget {
 class _ShareState extends State<Share> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-          child: Column(
-        children: [
-          Header(),
-          Expanded(
-            child: Column(children: [
-              Divider(
-                color: Colors.white,
-              ),
-              Container(
-                color: Colors.white,
-                width: MediaQuery.of(context).size.width,
-                height: 300,
-                child: Image.asset(
-                  'assets/Images/share.jpg',
-                  fit: BoxFit.cover,
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false);
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+            child: Column(
+          children: [
+            Header(),
+            Expanded(
+              child: Column(children: [
+                Divider(
+                  color: Colors.white,
                 ),
-              ),
-              Divider(
-                color: Colors.white,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: Container(
-                    child: Text(
-                  'share.mainTitle'.tr(),
-                  style: TextStyle(fontFamily: 'MoveBold', fontSize: 23),
-                )),
-              ),
-              Divider(
-                color: Colors.white,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: Container(
-                  child: Text(
-                    'share.explanation'.tr(),
-                    style: TextStyle(fontSize: 17),
+                Container(
+                  color: Colors.white,
+                  width: MediaQuery.of(context).size.width,
+                  height: 300,
+                  child: Image.asset(
+                    'assets/Images/share.jpg',
+                    fit: BoxFit.cover,
                   ),
                 ),
-              ),
-              Expanded(child: SizedBox.shrink()),
-              GenericRectButton(
-                  label: 'Share',
-                  labelFontFamily: 'MoveBold',
-                  isArrowShow: false,
-                  actuatorFunctionl: () => share_external.Share.share(
-                      'share.shareMessage'.tr(),
-                      subject: 'share.shareSubject'.tr()))
-            ]),
-          ),
-        ],
-      )),
+                Divider(
+                  color: Colors.white,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Container(
+                      child: Text(
+                    'share.mainTitle'.tr(),
+                    style: TextStyle(fontFamily: 'MoveBold', fontSize: 23),
+                  )),
+                ),
+                Divider(
+                  color: Colors.white,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Container(
+                    child: Text(
+                      'share.explanation'.tr(),
+                      style: TextStyle(fontSize: 17),
+                    ),
+                  ),
+                ),
+                Expanded(child: SizedBox.shrink()),
+                GenericRectButton(
+                    label: 'Share',
+                    labelFontFamily: 'MoveBold',
+                    isArrowShow: false,
+                    actuatorFunctionl: () => share_external.Share.share(
+                        'share.shareMessage'.tr(),
+                        subject: 'share.shareSubject'.tr()))
+              ]),
+            ),
+          ],
+        )),
+      ),
     );
   }
 }

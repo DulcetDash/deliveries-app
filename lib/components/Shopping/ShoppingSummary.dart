@@ -28,166 +28,174 @@ class _ShoppingSummaryState extends State<ShoppingSummary> {
   Widget build(BuildContext context) {
     Map payment_summary = context.read<HomeProvider>().getTotals();
 
-    return Scaffold(
-        backgroundColor: Colors.white,
-        body: SafeArea(
-            child: Column(
-          children: [
-            Header(),
-            Expanded(
-              child: Padding(
-                  padding:
-                      const EdgeInsets.only(left: 20, right: 20, bottom: 5),
-                  child: context.watch<HomeProvider>().CART.isNotEmpty
-                      ? ListView.separated(
-                          itemBuilder: (context, index) {
-                            return ProductModel(
-                              indexProduct: index + 1,
-                              productData:
-                                  context.watch<HomeProvider>().CART[index],
-                            );
-                          },
-                          separatorBuilder: (context, index) => Divider(
-                                height: 50,
-                              ),
-                          itemCount: context.watch<HomeProvider>().CART.length)
-                      : Padding(
-                          padding: EdgeInsets.only(
-                              top: MediaQuery.of(context).size.height * 0.15),
-                          child: Container(
-                            child: Column(
-                              children: [
-                                Icon(
-                                  Icons.shopping_cart,
-                                  size: 45,
-                                  color: Colors.grey,
-                                ),
-                                SizedBox(
-                                  height: 15,
-                                ),
-                                Text(
-                                  'shopping.noItemsForShopping'.tr(),
-                                  style: TextStyle(
-                                      color: Colors.grey.shade500,
-                                      fontSize: 17),
-                                )
-                              ],
-                            ),
-                          ),
-                        )),
-            ),
-            Container(
-              // color: Colors.red,
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false);
+      },
+      child: Scaffold(
+          backgroundColor: Colors.white,
+          body: SafeArea(
               child: Column(
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 2,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          colors: [AppTheme().getPrimaryColor(), Colors.black]),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  //CART FEE
-                  Padding(
+            children: [
+              Header(),
+              Expanded(
+                child: Padding(
                     padding:
                         const EdgeInsets.only(left: 20, right: 20, bottom: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('shopping.yourCart'.tr(),
-                            style: TextStyle(
-                              fontSize: 17,
-                            )),
-                        Text('N\$${payment_summary['cart']}',
-                            style: TextStyle(
-                                fontSize: 21,
-                                color: AppTheme().getPrimaryColor())),
-                      ],
-                    ),
-                  ),
-                  //SERVICE FEE
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 20, right: 20, bottom: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Delivery fee', style: TextStyle(fontSize: 17)),
-                        Text('N\$${payment_summary['service_fee']}',
-                            style: TextStyle(
-                                fontSize: 21,
-                                color: AppTheme().getPrimaryColor())),
-                      ],
-                    ),
-                  ),
-                  //CASH PICKUP FEE?
-                  // Visibility(
-                  //   visible:
-                  //       context.watch<HomeProvider>().paymentMethod == 'cash',
-                  //   child: Padding(
-                  //     padding: const EdgeInsets.only(left: 20, right: 20),
-                  //     child: Row(
-                  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //       children: [
-                  //         Text('shopping.cashPickupFee'.tr(),
-                  //             style: TextStyle(fontSize: 17)),
-                  //         Text(payment_summary['cash_pickup_fee'],
-                  //             style: TextStyle(
-                  //                 fontSize: 19,
-                  //                 color: AppTheme().getPrimaryColor())),
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
-                  Divider(),
-                  //TOTAL
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 20, right: 20, bottom: 15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('delivery.total'.tr(),
-                            style: TextStyle(
-                                fontFamily: 'MoveTextMedium', fontSize: 17)),
-                        Text('N\$${payment_summary['total']}',
-                            style: TextStyle(
-                                fontFamily: 'MoveTextBold',
-                                fontSize: 22,
-                                color: AppTheme().getPrimaryColor())),
-                      ],
-                    ),
-                  ),
-                  context.watch<HomeProvider>().isLoadingForRequest
-                      ? Column(
-                          children: [
-                            SizedBox(
-                              height: 25,
+                    child: context.watch<HomeProvider>().CART.isNotEmpty
+                        ? ListView.separated(
+                            itemBuilder: (context, index) {
+                              return ProductModel(
+                                indexProduct: index + 1,
+                                productData:
+                                    context.watch<HomeProvider>().CART[index],
+                              );
+                            },
+                            separatorBuilder: (context, index) => Divider(
+                                  height: 50,
+                                ),
+                            itemCount:
+                                context.watch<HomeProvider>().CART.length)
+                        : Padding(
+                            padding: EdgeInsets.only(
+                                top: MediaQuery.of(context).size.height * 0.15),
+                            child: Container(
+                              child: Column(
+                                children: [
+                                  Icon(
+                                    Icons.shopping_cart,
+                                    size: 45,
+                                    color: Colors.grey,
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  Text(
+                                    'shopping.noItemsForShopping'.tr(),
+                                    style: TextStyle(
+                                        color: Colors.grey.shade500,
+                                        fontSize: 17),
+                                  )
+                                ],
+                              ),
                             ),
-                            CircularProgressIndicator(
-                              strokeWidth: 3,
-                              color: Colors.black,
-                            ),
-                            SizedBox(
-                              height: 20,
-                            )
-                          ],
-                        )
-                      : GenericRectButton(
-                          label: 'shopping.shopNow'.tr(),
-                          labelFontSize: 22,
-                          actuatorFunctionl: () {
-                            requestForShopping(context: context);
-                          }),
-                ],
+                          )),
               ),
-            )
-          ],
-        )));
+              Container(
+                // color: Colors.red,
+                child: Column(
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 2,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(colors: [
+                          AppTheme().getPrimaryColor(),
+                          Colors.black
+                        ]),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    //CART FEE
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(left: 20, right: 20, bottom: 5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('shopping.yourCart'.tr(),
+                              style: TextStyle(
+                                fontSize: 17,
+                              )),
+                          Text('N\$${payment_summary['cart']}',
+                              style: TextStyle(
+                                  fontSize: 21,
+                                  color: AppTheme().getPrimaryColor())),
+                        ],
+                      ),
+                    ),
+                    //SERVICE FEE
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(left: 20, right: 20, bottom: 5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Delivery fee', style: TextStyle(fontSize: 17)),
+                          Text('N\$${payment_summary['service_fee']}',
+                              style: TextStyle(
+                                  fontSize: 21,
+                                  color: AppTheme().getPrimaryColor())),
+                        ],
+                      ),
+                    ),
+                    //CASH PICKUP FEE?
+                    // Visibility(
+                    //   visible:
+                    //       context.watch<HomeProvider>().paymentMethod == 'cash',
+                    //   child: Padding(
+                    //     padding: const EdgeInsets.only(left: 20, right: 20),
+                    //     child: Row(
+                    //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //       children: [
+                    //         Text('shopping.cashPickupFee'.tr(),
+                    //             style: TextStyle(fontSize: 17)),
+                    //         Text(payment_summary['cash_pickup_fee'],
+                    //             style: TextStyle(
+                    //                 fontSize: 19,
+                    //                 color: AppTheme().getPrimaryColor())),
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
+                    Divider(),
+                    //TOTAL
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 20, right: 20, bottom: 15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('delivery.total'.tr(),
+                              style: TextStyle(
+                                  fontFamily: 'MoveTextMedium', fontSize: 17)),
+                          Text('N\$${payment_summary['total']}',
+                              style: TextStyle(
+                                  fontFamily: 'MoveTextBold',
+                                  fontSize: 22,
+                                  color: AppTheme().getPrimaryColor())),
+                        ],
+                      ),
+                    ),
+                    context.watch<HomeProvider>().isLoadingForRequest
+                        ? Column(
+                            children: [
+                              SizedBox(
+                                height: 25,
+                              ),
+                              CircularProgressIndicator(
+                                strokeWidth: 3,
+                                color: Colors.black,
+                              ),
+                              SizedBox(
+                                height: 20,
+                              )
+                            ],
+                          )
+                        : GenericRectButton(
+                            label: 'shopping.shopNow'.tr(),
+                            labelFontSize: 22,
+                            actuatorFunctionl: () {
+                              requestForShopping(context: context);
+                            }),
+                  ],
+                ),
+              )
+            ],
+          ))),
+    );
   }
 
   //Request for shipping

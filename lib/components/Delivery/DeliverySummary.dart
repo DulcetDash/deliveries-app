@@ -29,237 +29,247 @@ class _DeliverySummaryState extends State<DeliverySummary> {
     Map payment_summary = context.read<HomeProvider>().getTotals_delivery();
     DataParser _dataParser = DataParser();
 
-    return Scaffold(
-        backgroundColor: Colors.white,
-        body: SafeArea(
-            child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Header(),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: LocationChoiceRecipientFront(
-                  recipient_index: -1,
-                  title: 'generic_text.pickupLocation_label'.tr(),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                          context
-                                      .read<HomeProvider>()
-                                      .delivery_pickup['street'] !=
-                                  null
-                              ? _dataParser.getGenericLocationString(
-                                  location: _dataParser.getRealisticPlacesNames(
-                                      locationData: context
-                                          .read<HomeProvider>()
-                                          .delivery_pickup))
-                              : 'generic_text.pressHereToSet'.tr(),
-                          style: TextStyle(
-                              fontSize: 16, color: Colors.grey.shade500))
-                    ],
-                  ),
-                  checked: true,
-                  actuator: () => Navigator.of(context)
-                      .pushNamed('/delivery_pickupLocation'),
-                  shape: 'circle'),
-            ),
-            Divider(
-              height: 40,
-              color: Colors.white,
-            ),
-            Expanded(
-              child: Padding(
-                  padding:
-                      const EdgeInsets.only(left: 20, right: 20, bottom: 5),
-                  child: context
-                          .watch<HomeProvider>()
-                          .recipients_infos
-                          .isNotEmpty
-                      ? ListView.separated(
-                          itemBuilder: (context, index) {
-                            Map<String, dynamic> receipientData = context
-                                .read<HomeProvider>()
-                                .recipients_infos[index];
-
-                            return LocationChoiceRecipientFront(
-                                recipient_index: index,
-                                title: receipientData['name'].toString().isEmpty
-                                    ? 'delivery.recipient_msg'
-                                        .tr(args: ['${index + 1}'])
-                                    : receipientData['name'].toString(),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Visibility(
-                                      visible: receipientData['phone']
-                                          .toString()
-                                          .isNotEmpty,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 5, bottom: 10),
-                                        child: Row(
-                                          children: [
-                                            Icon(Icons.phone, size: 15),
-                                            SizedBox(width: 5),
-                                            Text(
-                                                receipientData['phone']
-                                                    .toString(),
-                                                style: TextStyle(
-                                                    fontSize: 16,
-                                                    color: Colors.black))
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    Text(
-                                        context.read<HomeProvider>().getRecipientDetails_indexBased(index: index, nature_data: 'dropoff_location')[0]
-                                                    ['street'] !=
-                                                null
-                                            ? _dataParser.getGenericLocationString(
-                                                location: _dataParser.getRealisticPlacesNames(
-                                                    locationData: context
-                                                            .read<HomeProvider>()
-                                                            .getRecipientDetails_indexBased(
-                                                                index: index,
-                                                                nature_data: 'dropoff_location')[
-                                                        0]))
-                                            : 'generic_text.pressHereToSet'
-                                                .tr(),
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            color: context.read<HomeProvider>().validateRecipient_data_isolated(index: index)['opacity'] == 1.0
-                                                ? AppTheme().getPrimaryColor()
-                                                : Colors.grey.shade500))
-                                  ],
-                                ),
-                                checked: true,
-                                actuator: () {});
-                          },
-                          separatorBuilder: (context, index) => Divider(
-                                height: 30,
-                              ),
-                          itemCount: context
-                              .watch<HomeProvider>()
-                              .recipients_infos
-                              .length)
-                      : Padding(
-                          padding: EdgeInsets.only(
-                              top: MediaQuery.of(context).size.height * 0.15),
-                          child: Container(
-                            child: Column(
-                              children: [
-                                Icon(
-                                  Icons.person,
-                                  size: 45,
-                                  color: Colors.grey,
-                                ),
-                                SizedBox(
-                                  height: 15,
-                                ),
-                                Text(
-                                  'delivery.noRecipientsAdded'.tr(),
-                                  style: TextStyle(
-                                      color: Colors.grey.shade500,
-                                      fontSize: 17),
-                                )
-                              ],
-                            ),
-                          ),
-                        )),
-            ),
-            Container(
-              // color: Colors.red,
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false);
+      },
+      child: Scaffold(
+          backgroundColor: Colors.white,
+          body: SafeArea(
               child: Column(
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 2,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          colors: [AppTheme().getPrimaryColor(), Colors.black]),
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Header(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: LocationChoiceRecipientFront(
+                    recipient_index: -1,
+                    title: 'generic_text.pickupLocation_label'.tr(),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                            context
+                                        .read<HomeProvider>()
+                                        .delivery_pickup['street'] !=
+                                    null
+                                ? _dataParser.getGenericLocationString(
+                                    location:
+                                        _dataParser.getRealisticPlacesNames(
+                                            locationData: context
+                                                .read<HomeProvider>()
+                                                .delivery_pickup))
+                                : 'generic_text.pressHereToSet'.tr(),
+                            style: TextStyle(
+                                fontSize: 16, color: Colors.grey.shade500))
+                      ],
                     ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  //CART FEE
-                  Padding(
+                    checked: true,
+                    actuator: () => Navigator.of(context)
+                        .pushNamed('/delivery_pickupLocation'),
+                    shape: 'circle'),
+              ),
+              Divider(
+                height: 40,
+                color: Colors.white,
+              ),
+              Expanded(
+                child: Padding(
                     padding:
                         const EdgeInsets.only(left: 20, right: 20, bottom: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('delivery.deliverFee'.tr(),
-                            style: TextStyle(fontSize: 17)),
-                        Text('N\$${payment_summary['delivery_fee']}',
-                            style: TextStyle(
-                                fontSize: 21,
-                                color: AppTheme().getPrimaryColor())),
-                      ],
-                    ),
-                  ),
-                  //SERVICE FEE
-                  // Padding(
-                  //   padding:
-                  //       const EdgeInsets.only(left: 20, right: 20, bottom: 5),
-                  //   child: Row(
-                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //     children: [
-                  //       Text('delivery.handlingFee'.tr(),
-                  //           style: TextStyle(fontSize: 17)),
-                  //       Text(payment_summary['service_fee'],
-                  //           style: TextStyle(
-                  //               fontSize: 19,
-                  //               color: AppTheme().getPrimaryColor())),
-                  //     ],
-                  //   ),
-                  // ),
-                  Divider(),
-                  //TOTAL
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 20, right: 20, bottom: 15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('delivery.total'.tr(),
-                            style: TextStyle(
-                                fontFamily: 'MoveTextMedium', fontSize: 17)),
-                        Text('N\$${payment_summary['total']}',
-                            style: TextStyle(
-                                fontFamily: 'MoveTextBold',
-                                fontSize: 22,
-                                color: AppTheme().getPrimaryColor())),
-                      ],
-                    ),
-                  ),
-                  context.watch<HomeProvider>().isLoadingForRequest
-                      ? const Column(
-                          children: [
-                            SizedBox(
-                              height: 25,
+                    child: context
+                            .watch<HomeProvider>()
+                            .recipients_infos
+                            .isNotEmpty
+                        ? ListView.separated(
+                            itemBuilder: (context, index) {
+                              Map<String, dynamic> receipientData = context
+                                  .read<HomeProvider>()
+                                  .recipients_infos[index];
+
+                              return LocationChoiceRecipientFront(
+                                  recipient_index: index,
+                                  title:
+                                      receipientData['name'].toString().isEmpty
+                                          ? 'delivery.recipient_msg'
+                                              .tr(args: ['${index + 1}'])
+                                          : receipientData['name'].toString(),
+                                  subtitle: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Visibility(
+                                        visible: receipientData['phone']
+                                            .toString()
+                                            .isNotEmpty,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 5, bottom: 10),
+                                          child: Row(
+                                            children: [
+                                              Icon(Icons.phone, size: 15),
+                                              SizedBox(width: 5),
+                                              Text(
+                                                  receipientData['phone']
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: Colors.black))
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Text(
+                                          context.read<HomeProvider>().getRecipientDetails_indexBased(index: index, nature_data: 'dropoff_location')[0]
+                                                      ['street'] !=
+                                                  null
+                                              ? _dataParser.getGenericLocationString(
+                                                  location: _dataParser.getRealisticPlacesNames(
+                                                      locationData: context
+                                                              .read<HomeProvider>()
+                                                              .getRecipientDetails_indexBased(
+                                                                  index: index,
+                                                                  nature_data: 'dropoff_location')[
+                                                          0]))
+                                              : 'generic_text.pressHereToSet'
+                                                  .tr(),
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: context.read<HomeProvider>().validateRecipient_data_isolated(index: index)['opacity'] == 1.0
+                                                  ? AppTheme().getPrimaryColor()
+                                                  : Colors.grey.shade500))
+                                    ],
+                                  ),
+                                  checked: true,
+                                  actuator: () {});
+                            },
+                            separatorBuilder: (context, index) => Divider(
+                                  height: 30,
+                                ),
+                            itemCount: context
+                                .watch<HomeProvider>()
+                                .recipients_infos
+                                .length)
+                        : Padding(
+                            padding: EdgeInsets.only(
+                                top: MediaQuery.of(context).size.height * 0.15),
+                            child: Container(
+                              child: Column(
+                                children: [
+                                  Icon(
+                                    Icons.person,
+                                    size: 45,
+                                    color: Colors.grey,
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  Text(
+                                    'delivery.noRecipientsAdded'.tr(),
+                                    style: TextStyle(
+                                        color: Colors.grey.shade500,
+                                        fontSize: 17),
+                                  )
+                                ],
+                              ),
                             ),
-                            CircularProgressIndicator(
-                              strokeWidth: 3,
-                              color: Colors.black,
-                            ),
-                            SizedBox(
-                              height: 20,
-                            )
-                          ],
-                        )
-                      : GenericRectButton(
-                          label: 'Make your delivery',
-                          labelFontSize: 22,
-                          actuatorFunctionl: () {
-                            requestForDelivery(context: context);
-                          }),
-                ],
+                          )),
               ),
-            )
-          ],
-        )));
+              Container(
+                // color: Colors.red,
+                child: Column(
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 2,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(colors: [
+                          AppTheme().getPrimaryColor(),
+                          Colors.black
+                        ]),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    //CART FEE
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(left: 20, right: 20, bottom: 5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('delivery.deliverFee'.tr(),
+                              style: TextStyle(fontSize: 17)),
+                          Text('N\$${payment_summary['delivery_fee']}',
+                              style: TextStyle(
+                                  fontSize: 21,
+                                  color: AppTheme().getPrimaryColor())),
+                        ],
+                      ),
+                    ),
+                    //SERVICE FEE
+                    // Padding(
+                    //   padding:
+                    //       const EdgeInsets.only(left: 20, right: 20, bottom: 5),
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //     children: [
+                    //       Text('delivery.handlingFee'.tr(),
+                    //           style: TextStyle(fontSize: 17)),
+                    //       Text(payment_summary['service_fee'],
+                    //           style: TextStyle(
+                    //               fontSize: 19,
+                    //               color: AppTheme().getPrimaryColor())),
+                    //     ],
+                    //   ),
+                    // ),
+                    Divider(),
+                    //TOTAL
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 20, right: 20, bottom: 15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('delivery.total'.tr(),
+                              style: TextStyle(
+                                  fontFamily: 'MoveTextMedium', fontSize: 17)),
+                          Text('N\$${payment_summary['total']}',
+                              style: TextStyle(
+                                  fontFamily: 'MoveTextBold',
+                                  fontSize: 22,
+                                  color: AppTheme().getPrimaryColor())),
+                        ],
+                      ),
+                    ),
+                    context.watch<HomeProvider>().isLoadingForRequest
+                        ? const Column(
+                            children: [
+                              SizedBox(
+                                height: 25,
+                              ),
+                              CircularProgressIndicator(
+                                strokeWidth: 3,
+                                color: Colors.black,
+                              ),
+                              SizedBox(
+                                height: 20,
+                              )
+                            ],
+                          )
+                        : GenericRectButton(
+                            label: 'Make your delivery',
+                            labelFontSize: 22,
+                            actuatorFunctionl: () {
+                              requestForDelivery(context: context);
+                            }),
+                  ],
+                ),
+              )
+            ],
+          ))),
+    );
   }
 
   //Request for delivery

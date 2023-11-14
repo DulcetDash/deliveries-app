@@ -18,69 +18,75 @@ class Cart extends StatefulWidget {
 class _CartState extends State<Cart> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Colors.white,
-        body: SafeArea(
-            child: Column(
-          children: [
-            Header(),
-            Expanded(
-              child: Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: context.watch<HomeProvider>().CART.isNotEmpty
-                      ? ListView.separated(
-                          itemBuilder: (context, index) {
-                            return ProductModel(
-                              indexProduct: index + 1,
-                              productData:
-                                  context.watch<HomeProvider>().CART[index],
-                            );
-                          },
-                          separatorBuilder: (context, index) => Divider(
-                                height: 50,
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false);
+      },
+      child: Scaffold(
+          backgroundColor: Colors.white,
+          body: SafeArea(
+              child: Column(
+            children: [
+              Header(),
+              Expanded(
+                child: Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: context.watch<HomeProvider>().CART.isNotEmpty
+                        ? ListView.separated(
+                            itemBuilder: (context, index) {
+                              return ProductModel(
+                                indexProduct: index + 1,
+                                productData:
+                                    context.watch<HomeProvider>().CART[index],
+                              );
+                            },
+                            separatorBuilder: (context, index) => Divider(
+                                  height: 50,
+                                ),
+                            itemCount:
+                                context.watch<HomeProvider>().CART.length)
+                        : Padding(
+                            padding: EdgeInsets.only(
+                                top: MediaQuery.of(context).size.height * 0.15),
+                            child: Container(
+                              child: Column(
+                                children: [
+                                  Icon(
+                                    Icons.shopping_cart,
+                                    size: 45,
+                                    color: Colors.grey,
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  Text(
+                                    'shopping.noItemsForShopping'.tr(),
+                                    style: TextStyle(
+                                        color: Colors.grey.shade500,
+                                        fontSize: 17),
+                                  )
+                                ],
                               ),
-                          itemCount: context.watch<HomeProvider>().CART.length)
-                      : Padding(
-                          padding: EdgeInsets.only(
-                              top: MediaQuery.of(context).size.height * 0.15),
-                          child: Container(
-                            child: Column(
-                              children: [
-                                Icon(
-                                  Icons.shopping_cart,
-                                  size: 45,
-                                  color: Colors.grey,
-                                ),
-                                SizedBox(
-                                  height: 15,
-                                ),
-                                Text(
-                                  'shopping.noItemsForShopping'.tr(),
-                                  style: TextStyle(
-                                      color: Colors.grey.shade500,
-                                      fontSize: 17),
-                                )
-                              ],
                             ),
-                          ),
-                        )),
-            ),
-            Visibility(
-              visible: context.watch<HomeProvider>().CART.isNotEmpty,
-              child: GenericRectButton(
-                  label: 'shopping.placeOrder'.tr(),
-                  labelFontSize: 22,
-                  actuatorFunctionl: context
-                          .watch<HomeProvider>()
-                          .CART
-                          .isNotEmpty
-                      ? () {
-                          Navigator.of(context).pushNamed('/paymentSetting');
-                        }
-                      : () {}),
-            )
-          ],
-        )));
+                          )),
+              ),
+              Visibility(
+                visible: context.watch<HomeProvider>().CART.isNotEmpty,
+                child: GenericRectButton(
+                    label: 'shopping.placeOrder'.tr(),
+                    labelFontSize: 22,
+                    actuatorFunctionl: context
+                            .watch<HomeProvider>()
+                            .CART
+                            .isNotEmpty
+                        ? () {
+                            Navigator.of(context).pushNamed('/paymentSetting');
+                          }
+                        : () {}),
+              )
+            ],
+          ))),
+    );
   }
 }
 
