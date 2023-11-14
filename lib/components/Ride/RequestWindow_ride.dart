@@ -1197,10 +1197,7 @@ class _LocalModalState extends State<LocalModal> {
       'title': 'rides.greatBeatsRatingLabel'.tr(),
       'image': 'assets/Images/musical_notes.png'
     },
-    {
-      'title': 'rides.expertNavigator'.tr(),
-      'image': 'assets/Images/placeholder.png'
-    }
+    {'title': 'Expert navigator', 'image': 'assets/Images/placeholder.png'}
   ];
   List<String> selectedBadges = [];
   String note = '';

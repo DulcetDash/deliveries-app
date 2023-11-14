@@ -832,10 +832,7 @@ class _LocalModalState extends State<LocalModal> {
       'title': 'delivery.veryPoliteRatingLabel'.tr(),
       'image': 'assets/Images/polite.png'
     },
-    {
-      'title': 'delivery.expertShopper'.tr(),
-      'image': 'assets/Images/shopping.png'
-    }
+    {'title': 'Exper shopper', 'image': 'assets/Images/shopping.png'}
   ];
   List<String> selectedBadges = [];
   String note = '';
