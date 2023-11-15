@@ -24,18 +24,42 @@ class Catalogue extends StatefulWidget {
 
 class _CatalogueState extends State<Catalogue> {
   bool isLoading = true; //Loading to get the stores.
+  final ScrollController _scrollController = ScrollController();
+  int pageNumber = 1;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    _scrollController.addListener(_onScroll);
+
     //! Get the stores names
     WidgetsBinding.instance.addPostFrameCallback((_) {
       GetCatalogueL1(context: context);
     });
   }
 
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent - 50 &&
+        !isLoading) {
+      pageNumber += 1;
+      GetCatalogueL1(context: context);
+    }
+  }
+
   Future GetCatalogueL1({required BuildContext context}) async {
+    setState(() {
+      isLoading = true;
+    });
+
     //....
     Uri mainUrl = Uri.parse(Uri.encodeFull(
         '${context.read<HomeProvider>().bridge}/getCatalogueFor'));
@@ -44,7 +68,8 @@ class _CatalogueState extends State<Catalogue> {
     //* @param type: the type of request (past, scheduled, business)
     Map<String, String> bundleData = {
       'store': context.read<HomeProvider>().selected_store['store_fp'],
-      'structured': 'true'
+      'structured': 'true',
+      'pageNumber': pageNumber.toString(),
     };
 
     try {
@@ -63,14 +88,12 @@ class _CatalogueState extends State<Catalogue> {
         });
       } else //Has some errors
       {
-        log(response.toString());
         Timer(const Duration(milliseconds: 1500), () {
           GetCatalogueL1(context: context);
         });
       }
     } catch (e) {
       log('8 - GetCatalogueL1');
-      log(e.toString());
       Timer(const Duration(milliseconds: 1500), () {
         GetCatalogueL1(context: context);
       });
@@ -100,82 +123,42 @@ class _CatalogueState extends State<Catalogue> {
                   height: 5,
                 ),
                 const TimeBar(),
-                isLoading
-                    ? Padding(
-                        padding: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height * 0.1),
-                        child: Container(
-                          child: CircularProgressIndicator(
-                            strokeWidth: 3,
-                            color: AppTheme().getPrimaryColor(),
-                          ),
-                        ))
-                    : context
-                            .watch<HomeProvider>()
-                            .catalogueData_level2_structured
-                            .isEmpty
-                        ? Container(
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                  top:
-                                      MediaQuery.of(context).size.height * 0.1),
-                              child: Column(
-                                children: [
-                                  const Icon(
-                                    Icons.wifi_off,
-                                    size: 40,
-                                    color: Colors.grey,
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text('generic_text.unableToConnectToNet'.tr(),
-                                      style: const TextStyle(
-                                          color: Colors.grey, fontSize: 15))
-                                ],
+                context.watch<HomeProvider>().shops_search_item_key.isNotEmpty
+                    ? context.watch<HomeProvider>().shops_items_searched.isEmpty
+                        ? const Column(
+                            children: [
+                              Divider(
+                                height: 60,
                               ),
-                            ),
+                              Icon(Icons.info_outlined,
+                                  color: Colors.grey, size: 30),
+                              Divider(
+                                height: 15,
+                                color: Colors.white,
+                              ),
+                              Text(
+                                'No products found for that search',
+                                style:
+                                    TextStyle(fontSize: 17, color: Colors.grey),
+                              ),
+                            ],
                           )
-                        : context
-                                .watch<HomeProvider>()
-                                .shops_search_item_key
-                                .isNotEmpty
-                            ? context
-                                    .watch<HomeProvider>()
-                                    .shops_items_searched
-                                    .isEmpty
-                                ? const Column(
-                                    children: [
-                                      Divider(
-                                        height: 60,
-                                      ),
-                                      Icon(Icons.info_outlined,
-                                          color: Colors.grey, size: 30),
-                                      Divider(
-                                        height: 15,
-                                        color: Colors.white,
-                                      ),
-                                      Text(
-                                        'No products found for that search',
-                                        style: TextStyle(
-                                            fontSize: 17, color: Colors.grey),
-                                      ),
-                                    ],
-                                  )
-                                : Expanded(
-                                    child: ListView(
-                                    padding: const EdgeInsets.only(
-                                        top: 10, bottom: 50),
-                                    children: [
-                                      GenericTitle(
-                                          title: 'shopping.searchResults'.tr()),
-                                      const SizedBox(
-                                        height: 15,
-                                      ),
-                                      searchedCatalogue(context: context),
-                                    ],
-                                  ))
-                            : const ShowCaseMainCat()
+                        : Expanded(
+                            child: ListView(
+                            padding: const EdgeInsets.only(top: 10, bottom: 50),
+                            children: [
+                              GenericTitle(
+                                  title: 'shopping.searchResults'.tr()),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              searchedCatalogue(context: context),
+                            ],
+                          ))
+                    : ShowCaseMainCat(
+                        scrollController: _scrollController,
+                        isLoading: isLoading,
+                      )
               ],
             ),
           ),
@@ -203,9 +186,9 @@ class _CatalogueState extends State<Catalogue> {
         : Container(
             // color: Colors.red,
             child: GridView.count(
-              padding: EdgeInsets.only(left: 20, right: 20),
+              padding: const EdgeInsets.only(left: 20, right: 20),
               physics:
-                  NeverScrollableScrollPhysics(), // to disable GridView's scrolling
+                  const NeverScrollableScrollPhysics(), // to disable GridView's scrolling
               shrinkWrap: true, // You won't see infinite size error
               // Create a grid with 2 columns. If you change the scrollDirection to
               // horizontal, this produces 2 rows.
@@ -298,6 +281,7 @@ class _HeaderState extends State<Header> {
                       context
                           .read<HomeProvider>()
                           .updateItemsSearchResults(value: []);
+                      context.read<HomeProvider>().clearProductsData();
                       //...
                       Navigator.of(context).pop();
                     },
@@ -310,10 +294,10 @@ class _HeaderState extends State<Header> {
                     alignment: Alignment.center,
                     child: Text(
                       context.watch<HomeProvider>().selected_store['name'],
-                      style:
-                          TextStyle(fontFamily: 'MoveTextBold', fontSize: 19),
+                      style: const TextStyle(
+                          fontFamily: 'MoveTextBold', fontSize: 19),
                     ))),
-            Expanded(
+            const Expanded(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [CartIcon()],
@@ -541,7 +525,12 @@ class TimeBar extends StatelessWidget {
 
 //Showcase main categories products
 class ShowCaseMainCat extends StatelessWidget {
-  const ShowCaseMainCat({Key? key}) : super(key: key);
+  final ScrollController scrollController;
+  final bool isLoading;
+
+  const ShowCaseMainCat(
+      {Key? key, required this.scrollController, required this.isLoading})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -551,19 +540,32 @@ class ShowCaseMainCat extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
         child: ListView.separated(
+            controller: scrollController,
             shrinkWrap: true,
-            physics: ClampingScrollPhysics(),
+            physics: const ClampingScrollPhysics(),
             // scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
-              List<Widget> tmpProductData = dataProducts[index];
-              //...
-              return Row(children: tmpProductData);
+              if (index < dataProducts.length) {
+                List<Widget> tmpProductData = dataProducts[index];
+                //...
+                return Row(children: tmpProductData);
+              } else {
+                return Container(
+                  height: 50,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 3,
+                      color: AppTheme().getPrimaryColor(),
+                    ),
+                  ),
+                );
+              }
             },
             separatorBuilder: (context, index) => const Divider(
                   height: 65,
                   thickness: 1,
                 ),
-            itemCount: dataProducts.length),
+            itemCount: dataProducts.length + (isLoading ? 1 : 0)),
       ),
     );
   }
@@ -614,46 +616,6 @@ class ShowCaseMainCat extends StatelessWidget {
   }
 }
 
-//Showcase main categories products
-// class ShowCaseMainCat extends StatelessWidget {
-//   const ShowCaseMainCat({Key? key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Expanded(
-//       child: Padding(
-//         padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
-//         child: ListView.separated(
-//             shrinkWrap: true,
-//             physics: ClampingScrollPhysics(),
-//             itemBuilder: (context, index) {
-//               List tmpProductData =
-//                   context.read<HomeProvider>().catalogueData_level1_structured[
-//                       context
-//                           .read<HomeProvider>()
-//                           .catalogueData_level1_structured
-//                           .keys
-//                           .toList()[index]
-//                           .toString()];
-
-//               //...
-//               return TrioProductShower(
-//                 productData: tmpProductData,
-//               );
-//             },
-//             separatorBuilder: (context, index) => const Divider(
-//                   height: 65,
-//                   thickness: 1,
-//                 ),
-//             itemCount: context
-//                 .watch<HomeProvider>()
-//                 .catalogueData_level1_structured
-//                 .length),
-//       ),
-//     );
-//   }
-// }
-
 //Trio product shower
 class TrioProductShower extends StatelessWidget {
   final List productData;
@@ -670,7 +632,8 @@ class TrioProductShower extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(ucFirst(productData[0]['meta']['category']),
-                  style: TextStyle(fontFamily: 'MoveTextBold', fontSize: 18)),
+                  style: const TextStyle(
+                      fontFamily: 'MoveTextBold', fontSize: 18)),
               InkWell(
                 onTap: () {
                   Map<String, String> tmpData = {
@@ -679,7 +642,6 @@ class TrioProductShower extends StatelessWidget {
                     "fd_name":
                         context.read<HomeProvider>().selected_store['name'],
                     "category": productData[0]['meta']['category'],
-                    // "subcategory": productData[0]['meta']['subcategory']
                   };
                   //...
                   context
@@ -695,7 +657,7 @@ class TrioProductShower extends StatelessWidget {
                             fontFamily: 'MoveTextBold',
                             fontSize: 14,
                             color: AppTheme().getPrimaryColor())),
-                    SizedBox(
+                    const SizedBox(
                       width: 4,
                     ),
                     Icon(
@@ -708,7 +670,7 @@ class TrioProductShower extends StatelessWidget {
               )
             ],
           ),
-          Divider(height: 35, color: Colors.white),
+          const Divider(height: 35, color: Colors.white),
           Container(
             // color: Colors.red,
             child: Row(
@@ -723,7 +685,7 @@ class TrioProductShower extends StatelessWidget {
                   productPrice: productData[0]['price'],
                   productData: productData[0],
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 20,
                 ),
                 ProductDisplayModel(
@@ -736,7 +698,7 @@ class TrioProductShower extends StatelessWidget {
                   productPrice: productData[1]['price'],
                   productData: productData[1],
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 20,
                 ),
                 ProductDisplayModel(
@@ -832,8 +794,9 @@ class ProductDisplayModel extends StatelessWidget {
             ),
             Text(productName,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 15)),
-            SizedBox(
+                style: const TextStyle(
+                    fontFamily: 'MoveTextMedium', fontSize: 15)),
+            const SizedBox(
               height: 5,
             ),
             Text("N\$$productPrice",
@@ -924,9 +887,10 @@ class ProductDisplayModel_search extends StatelessWidget {
               child: Text(productName,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 3,
-                  style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 15)),
+                  style: const TextStyle(
+                      fontFamily: 'MoveTextMedium', fontSize: 15)),
             ),
-            SizedBox(
+            const SizedBox(
               height: 5,
             ),
             Text('N\$$productPrice',

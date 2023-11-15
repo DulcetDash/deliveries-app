@@ -257,6 +257,8 @@ class _HeaderState extends State<Header> {
               children: [
                 InkWell(
                     onTap: () {
+                      context.read<HomeProvider>().clearProductsData();
+
                       //! Clear the data
                       context
                           .read<HomeProvider>()
@@ -443,6 +445,7 @@ class BigStoreShow extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
+        context.read<HomeProvider>().clearProductsData();
         //! Save the store fp and store name
         Map tmpData = productData;
         tmpData['store_fp'] = productData['fp'];
@@ -585,6 +588,8 @@ class NewStoreDisplay extends StatelessWidget {
         height: 70,
         child: InkWell(
           onTap: () {
+            context.read<HomeProvider>().clearProductsData();
+
             //! Save the store fp and store name
             Map tmpData = {
               'store_fp': productData['fp'],

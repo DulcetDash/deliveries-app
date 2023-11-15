@@ -19,8 +19,8 @@ import 'package:collection/collection.dart';
 // Will hold all the home related globals - only!
 
 class HomeProvider with ChangeNotifier {
-  final String bridge = 'http://192.168.8.100:9697';
-  // final String bridge = 'https://api.dulcetdash.com';
+  // final String bridge = 'http://192.168.8.100:9697';
+  final String bridge = 'https://api.dulcetdash.com';
 
   String selectedService =
       'ride'; //! The selected service that the user selected: ride, delivery and shopping - default: ''
@@ -436,7 +436,11 @@ class HomeProvider with ChangeNotifier {
 
   //?2.b Update the catalogue level 2 data - structured
   void updateCatalogueLevel2_structured({required List data}) {
-    catalogueData_level2_structured = data;
+    catalogueData_level2_structured.addAll(data);
+  }
+
+  void clearProductsData() {
+    catalogueData_level2_structured = [];
   }
 
   //?3. Update the the selected store's data
