@@ -597,6 +597,14 @@ class ShowCaseMainCat extends StatelessWidget {
           index: j.toDouble(),
         ));
       }
+
+      //If the chunk is less than 3, add empty containers
+      if (chunks[i].length < 3) {
+        for (var k = 0; k < 3 - chunks[i].length; k++) {
+          rowItems.add(Expanded(child: Container()));
+        }
+      }
+
       //? Save
       mainListWidgets.add(rowItems);
     }
