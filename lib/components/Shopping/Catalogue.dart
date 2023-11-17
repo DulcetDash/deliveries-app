@@ -124,7 +124,14 @@ class _CatalogueState extends State<Catalogue> {
                 ),
                 const TimeBar(),
                 context.watch<HomeProvider>().shops_search_item_key.isNotEmpty
-                    ? context.watch<HomeProvider>().shops_items_searched.isEmpty
+                    ? context
+                                .watch<HomeProvider>()
+                                .shops_items_searched
+                                .isEmpty &&
+                            context
+                                    .watch<HomeProvider>()
+                                    .isLoadingForItemsSearch ==
+                                false
                         ? const Column(
                             children: [
                               Divider(
@@ -202,6 +209,7 @@ class _CatalogueState extends State<Catalogue> {
                 // print(productData['product_picture']);
 
                 return ProductDisplayModel_search(
+                  key: Key(productData['id'].toString()),
                   index: index,
                   productImage:
                       productData['product_picture'].runtimeType.toString() ==
@@ -548,9 +556,11 @@ class ShowCaseMainCat extends StatelessWidget {
               if (index < dataProducts.length) {
                 List<Widget> tmpProductData = dataProducts[index];
                 //...
-                return Row(children: tmpProductData);
+                return Row(
+                    key: Key(index.toString()), children: tmpProductData);
               } else {
                 return Container(
+                  key: Key(index.toString()),
                   height: 50,
                   child: Center(
                     child: CircularProgressIndicator(
@@ -595,6 +605,7 @@ class ShowCaseMainCat extends StatelessWidget {
         Map tmpProductData = chunks[i][j];
         //...
         rowItems.add(ProductShower(
+          key: Key(tmpProductData['id']),
           productData: tmpProductData,
           index: j.toDouble(),
         ));
@@ -743,6 +754,7 @@ class ProductDisplayModel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
+      key: Key(productData['id']),
       child: InkWell(
         onTap: () {
           //! Form the saving data object for the selected item
@@ -768,6 +780,7 @@ class ProductDisplayModel extends StatelessWidget {
                 width: MediaQuery.of(context).size.width,
                 height: 90.0,
                 child: CachedNetworkImage(
+                  key: Key(productData['id']),
                   fit: BoxFit.cover,
                   imageUrl: productImage,
                   progressIndicatorBuilder: (context, url, downloadProgress) =>
@@ -784,11 +797,13 @@ class ProductDisplayModel extends StatelessWidget {
                       ),
                     ),
                   ),
-                  errorWidget: (context, url, error) => const Icon(
-                    Icons.photo,
-                    size: 60,
-                    color: Colors.grey,
-                  ),
+                  errorWidget: (context, url, error) {
+                    return const Icon(
+                      Icons.photo,
+                      size: 60,
+                      color: Colors.grey,
+                    );
+                  },
                 ),
               ),
             ),
@@ -828,6 +843,7 @@ class ProductDisplayModel_search extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      key: Key(productData['id']),
       // color: Colors.amber,
       // height: 800,
       child: InkWell(
@@ -856,6 +872,7 @@ class ProductDisplayModel_search extends StatelessWidget {
                   // width: MediaQuery.of(context).size.width,
                   height: 90.0,
                   child: CachedNetworkImage(
+                    key: Key(productData['id']),
                     fit: BoxFit.cover,
                     imageUrl: productImage,
                     progressIndicatorBuilder:
@@ -873,8 +890,8 @@ class ProductDisplayModel_search extends StatelessWidget {
                       ),
                     ),
                     errorWidget: (context, url, error) => const Icon(
-                      Icons.error,
-                      size: 30,
+                      Icons.photo,
+                      size: 35,
                       color: Colors.grey,
                     ),
                   ),
