@@ -93,13 +93,26 @@ class _HomeState extends State<Home> {
           child: Container(
             child: Column(
               children: [
-                Header(),
-                Divider(
+                Container(
+                    color: AppTheme().getSecondaryColor(),
+                    child: const ListTile(
+                      horizontalTitleGap: 0,
+                      leading: Icon(
+                        Icons.info,
+                        color: Colors.white,
+                      ),
+                      title: Text(
+                          'After shopping, we\'ll return any leftover money and provide all your receipts.',
+                          style: TextStyle(
+                              fontFamily: 'MoveText', color: Colors.white)),
+                    )),
+                const Header(),
+                const Divider(
                   thickness: 1,
                   height: 35,
                 ),
-                SearchBar(),
-                Divider(
+                const SearchBar(),
+                const Divider(
                   color: Colors.white,
                   height: 35,
                 ),
@@ -121,16 +134,16 @@ class _HomeState extends State<Home> {
                                       MediaQuery.of(context).size.height * 0.1),
                               child: Column(
                                 children: [
-                                  Icon(
+                                  const Icon(
                                     Icons.wifi_off,
                                     size: 40,
                                     color: Colors.grey,
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 20,
                                   ),
                                   Text('generic_text.unableToConnectToNet'.tr(),
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           color: Colors.grey, fontSize: 15))
                                 ],
                               ),
@@ -143,18 +156,18 @@ class _HomeState extends State<Home> {
                             ? searchedStores(context: context)
                             : Expanded(
                                 child: ListView(
-                                  padding: EdgeInsets.only(bottom: 55),
+                                  padding: const EdgeInsets.only(bottom: 55),
                                   children: [
                                     GenericTitle(
                                         title: 'shopping.frequent'.tr()),
-                                    StoresListingMain(),
+                                    const StoresListingMain(),
                                     Visibility(
                                       visible: context
                                               .watch<HomeProvider>()
                                               .mainStores
                                               .length >
                                           4,
-                                      child: Divider(
+                                      child: const Divider(
                                         height: 60,
                                         thickness: 1,
                                         color: Colors.white,
@@ -175,7 +188,7 @@ class _HomeState extends State<Home> {
                                                 .mainStores
                                                 .length >
                                             4,
-                                        child: NewStores())
+                                        child: const NewStores())
                                   ],
                                 ),
                               )
@@ -199,7 +212,7 @@ class _HomeState extends State<Home> {
                   Map<String, dynamic> storeData = searchedData[index];
 
                   return NewStoreDisplay(
-                    storeName: storeData['name'],
+                    storeName: storeData['fd_name'],
                     imagePath: storeData['logo'],
                     backgroundColor: HexColor(storeData['background']),
                     borderColor: HexColor(storeData['border']),
@@ -207,7 +220,7 @@ class _HomeState extends State<Home> {
                     productData: storeData,
                   );
                 },
-                separatorBuilder: (context, index) => Divider(
+                separatorBuilder: (context, index) => const Divider(
                       height: 50,
                     ),
                 itemCount: searchedData.length)));

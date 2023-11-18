@@ -244,7 +244,7 @@ class QuickAccess extends StatelessWidget {
                 child: recentData.isEmpty
                     ? renderEmptyRecent(context: context)
                     : ListView.separated(
-                        padding: EdgeInsets.only(top: 25),
+                        padding: const EdgeInsets.only(top: 25),
                         itemBuilder: (context, index) {
                           Map<String, dynamic> storeData = recentData[index];
 
@@ -259,9 +259,7 @@ class QuickAccess extends StatelessWidget {
                               Map tmpData = {
                                 'store_fp': storeData['fp'],
                                 'name': storeData['fd_name'],
-                                'structured': storeData['structured'] != null
-                                    ? storeData['structured']
-                                    : false
+                                'structured': storeData['structured'] ?? false
                               };
                               //...
                               context
@@ -306,16 +304,16 @@ class QuickAccess extends StatelessWidget {
                                 )),
                             title: Text(
                               storeData['fd_name'],
-                              style: TextStyle(fontSize: 16),
+                              style: const TextStyle(fontSize: 16),
                             ),
-                            subtitle: Text('home.youWereHere'.tr()),
-                            trailing: Icon(
+                            subtitle: Text('${storeData['timeString']}'),
+                            trailing: const Icon(
                               Icons.arrow_forward_ios_sharp,
                               size: 15,
                             ),
                           );
                         },
-                        separatorBuilder: (context, index) => Divider(),
+                        separatorBuilder: (context, index) => const Divider(),
                         itemCount: recentData.length),
               )
             ],
