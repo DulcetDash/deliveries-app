@@ -412,7 +412,7 @@ class _StoresListingMainState extends State<StoresListingMain> {
         // Generate 100 widgets that display their index in the List.
         children: List.generate(newStoresList.length, (index) {
           return BigStoreShow(
-            imagePath: newStoresList[index]['logo'],
+            imagePath: newStoresList[index]['logo'] ?? 'none',
             backgroundColor: HexColor(newStoresList[index]['background']),
             borderColor: HexColor(newStoresList[index]['border']),
             closingTime: newStoresList[index]['times']['string'],
@@ -444,6 +444,7 @@ class BigStoreShow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      key: Key(productData['fp']),
       onTap: () {
         context.read<HomeProvider>().clearProductsData();
         //! Save the store fp and store name
@@ -468,7 +469,7 @@ class BigStoreShow extends StatelessWidget {
                 child: SizedBox(
                   height: 50,
                   child: CachedNetworkImage(
-                    imageUrl: imagePath,
+                    imageUrl: imagePath ?? 'none',
                     progressIndicatorBuilder:
                         (context, url, downloadProgress) => SizedBox(
                       width: MediaQuery.of(context).size.width,
@@ -483,11 +484,10 @@ class BigStoreShow extends StatelessWidget {
                         ),
                       ),
                     ),
-                    errorWidget: (context, url, error) => const Icon(
-                      Icons.error,
-                      size: 30,
-                      color: Colors.grey,
-                    ),
+                    errorWidget: (context, url, error) => Container(
+                        alignment: Alignment.center,
+                        child: Text(productData['fd_name'],
+                            style: const TextStyle(fontSize: 18))),
                   ),
                 ),
               ),
@@ -542,7 +542,7 @@ class NewStores extends StatelessWidget {
         // Generate 100 widgets that display their index in the List.
         children: List.generate(newStoresList.length, (index) {
           return BigStoreShow(
-            imagePath: newStoresList[index]['logo'],
+            imagePath: newStoresList[index]['logo'] ?? 'none',
             backgroundColor: HexColor(newStoresList[index]['background']),
             borderColor: HexColor(newStoresList[index]['border']),
             closingTime: newStoresList[index]['times']['string'],
