@@ -37,7 +37,7 @@ class _ShoppingSummaryState extends State<ShoppingSummary> {
           body: SafeArea(
               child: Column(
             children: [
-              Header(),
+              const Header(),
               Expanded(
                 child: Padding(
                     padding:
@@ -51,7 +51,7 @@ class _ShoppingSummaryState extends State<ShoppingSummary> {
                                     context.watch<HomeProvider>().CART[index],
                               );
                             },
-                            separatorBuilder: (context, index) => Divider(
+                            separatorBuilder: (context, index) => const Divider(
                                   height: 50,
                                 ),
                             itemCount:
@@ -62,12 +62,12 @@ class _ShoppingSummaryState extends State<ShoppingSummary> {
                             child: Container(
                               child: Column(
                                 children: [
-                                  Icon(
+                                  const Icon(
                                     Icons.shopping_cart,
                                     size: 45,
                                     color: Colors.grey,
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 15,
                                   ),
                                   Text(
@@ -86,8 +86,21 @@ class _ShoppingSummaryState extends State<ShoppingSummary> {
                 child: Column(
                   children: [
                     Container(
+                        color: AppTheme().getSecondaryColor(),
+                        child: const ListTile(
+                          horizontalTitleGap: 0,
+                          leading: Icon(
+                            Icons.info,
+                            color: Colors.white,
+                          ),
+                          title: Text(
+                              'After shopping, we\'ll return any leftover money and provide all your receipts.',
+                              style: TextStyle(
+                                  fontFamily: 'MoveText', color: Colors.white)),
+                        )),
+                    Container(
                       width: MediaQuery.of(context).size.width,
-                      height: 2,
+                      height: 0,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(colors: [
                           AppTheme().getPrimaryColor(),
@@ -95,7 +108,7 @@ class _ShoppingSummaryState extends State<ShoppingSummary> {
                         ]),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     //CART FEE
@@ -106,7 +119,7 @@ class _ShoppingSummaryState extends State<ShoppingSummary> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('shopping.yourCart'.tr(),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 17,
                               )),
                           Text('N\$${payment_summary['cart']}',
@@ -123,7 +136,8 @@ class _ShoppingSummaryState extends State<ShoppingSummary> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Delivery fee', style: TextStyle(fontSize: 17)),
+                          const Text('Delivery fee',
+                              style: TextStyle(fontSize: 17)),
                           Text('N\$${payment_summary['service_fee']}',
                               style: TextStyle(
                                   fontSize: 21,
@@ -131,26 +145,7 @@ class _ShoppingSummaryState extends State<ShoppingSummary> {
                         ],
                       ),
                     ),
-                    //CASH PICKUP FEE?
-                    // Visibility(
-                    //   visible:
-                    //       context.watch<HomeProvider>().paymentMethod == 'cash',
-                    //   child: Padding(
-                    //     padding: const EdgeInsets.only(left: 20, right: 20),
-                    //     child: Row(
-                    //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //       children: [
-                    //         Text('shopping.cashPickupFee'.tr(),
-                    //             style: TextStyle(fontSize: 17)),
-                    //         Text(payment_summary['cash_pickup_fee'],
-                    //             style: TextStyle(
-                    //                 fontSize: 19,
-                    //                 color: AppTheme().getPrimaryColor())),
-                    //       ],
-                    //     ),
-                    //   ),
-                    // ),
-                    Divider(),
+                    const Divider(),
                     //TOTAL
                     Padding(
                       padding: const EdgeInsets.only(
@@ -159,7 +154,7 @@ class _ShoppingSummaryState extends State<ShoppingSummary> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('delivery.total'.tr(),
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontFamily: 'MoveTextMedium', fontSize: 17)),
                           Text('N\$${payment_summary['total']}',
                               style: TextStyle(
@@ -170,7 +165,7 @@ class _ShoppingSummaryState extends State<ShoppingSummary> {
                       ),
                     ),
                     context.watch<HomeProvider>().isLoadingForRequest
-                        ? Column(
+                        ? const Column(
                             children: [
                               SizedBox(
                                 height: 25,
@@ -187,6 +182,7 @@ class _ShoppingSummaryState extends State<ShoppingSummary> {
                         : GenericRectButton(
                             label: 'shopping.shopNow'.tr(),
                             labelFontSize: 22,
+                            labelFontFamily: 'MoveTextBold',
                             actuatorFunctionl: () {
                               requestForShopping(context: context);
                             }),
