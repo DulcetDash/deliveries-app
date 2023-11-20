@@ -121,15 +121,10 @@ class GetShoppingData {
           }
         }
       } else //Has some errors
-      {
-        // print(response.body);
-        // print(response.body.toString());
-        context.read<HomeProvider>().updateRealtimeShoppingData(data: []);
-      }
+      {}
     } catch (e) {
       log('8 - getShoppingData');
       log(e.toString());
-      context.read<HomeProvider>().updateRealtimeShoppingData(data: []);
     }
   }
 }

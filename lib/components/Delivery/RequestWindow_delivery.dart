@@ -1594,18 +1594,18 @@ class _LocalModalState extends State<LocalModal> {
                               child: Text(
                                 'delivery.delivery_status_msg'.tr(),
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontFamily: 'MoveTextBold', fontSize: 18),
                               ),
                             ),
                           ),
-                          Container(width: 100, child: Text(''))
+                          Container(width: 100, child: const Text(''))
                         ],
                       ),
                     ),
                   ),
                 ),
-                Divider(
+                const Divider(
                   height: 0,
                   thickness: 1,
                 ),
@@ -2069,15 +2069,16 @@ class LocationPackageModel extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(packageData['name'].toString(),
-                style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 16)),
-            Divider(
+                style: const TextStyle(
+                    fontFamily: 'MoveTextMedium', fontSize: 16)),
+            const Divider(
               height: 5,
               color: Colors.white,
             ),
             Text(packageData['phone'],
                 style: TextStyle(
                     fontSize: 14, color: AppTheme().getGenericDarkGrey())),
-            Divider(
+            const Divider(
               color: Colors.white,
               height: 15,
             ),
@@ -2088,13 +2089,15 @@ class LocationPackageModel extends StatelessWidget {
                   size: 5,
                   color: AppTheme().getSecondaryColor(),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 3,
                 ),
-                Text(
-                    '${locationTemplate['suburb'].toString().isEmpty ? '' : '${locationTemplate['suburb']}, '}${locationTemplate['location_name'].toString().isEmpty ? '' : '${locationTemplate['location_name']}, '}${locationTemplate['city']}',
-                    style: TextStyle(
-                        color: AppTheme().getSecondaryColor(), fontSize: 15)),
+                Flexible(
+                  child: Text(
+                      '${locationTemplate['suburb'].toString().isEmpty ? '' : '${locationTemplate['suburb']}, '}${locationTemplate['location_name'].toString().isEmpty ? '' : '${locationTemplate['location_name']}, '}${locationTemplate['city']}',
+                      style: TextStyle(
+                          color: AppTheme().getSecondaryColor(), fontSize: 15)),
+                ),
               ],
             )
           ],
