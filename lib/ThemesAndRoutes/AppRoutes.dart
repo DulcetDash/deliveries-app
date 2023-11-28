@@ -1,5 +1,13 @@
 // ignore_for_file: file_names
 
+import 'package:dulcetdash/components/Wallet/EnterTopUpAmount.dart';
+import 'package:dulcetdash/components/Wallet/SendFundsConfirmation.dart';
+import 'package:dulcetdash/components/Wallet/SendFundsEntry.dart';
+import 'package:dulcetdash/components/Wallet/SendFundsFriendInputNumber.dart';
+import 'package:dulcetdash/components/Wallet/SendFundsInputAmount.dart';
+import 'package:dulcetdash/components/Wallet/TransactionFinalReport.dart';
+import 'package:dulcetdash/components/Wallet/WalletEntry.dart';
+import 'package:dulcetdash/components/Wallet/WalletTopupEntry.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:dulcetdash/components/Delivery/RequestWindow_delivery.dart';
@@ -111,6 +119,19 @@ class _AppGeneralEntryState extends State<AppGeneralEntry> {
             '/Support': (context) => const Support(),
             //YourRides
             '/YourRides': (context) => const YourRides(),
+            //Wallet
+            '/Wallet': (context) => const WalletEntry(),
+            '/WalletEntry': (context) => const WalletEntry(),
+            '/SendFundsEntry': (context) => const SendFundsEntry(),
+            '/SendFundsFriendInputNumber': (context) =>
+                const SendFundsFriendInputNumber(),
+            '/SendFundsInputAmount': (context) => const SendFundsInputAmount(),
+            '/SendFundsConfirmation': (context) =>
+                const SendFundsConfirmation(),
+            '/TransactionFinalReport': (context) =>
+                const TransactionFinalReport(),
+            '/WalletTopupEntry': (context) => const WalletTopupEntry(),
+            '/EnterTopUpAmount': (context) => const EnterTopUpAmount(),
             //Settings
             '/Settings': (context) => const Settings(),
             '/PhoneInputChange': (context) => const PhoneInputChange(),

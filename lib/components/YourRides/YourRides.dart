@@ -32,16 +32,6 @@ class _YourRidesState extends State<YourRides> {
   bool isLoading = true; //Loading to get the stores.
   List requestsMade = []; //Will hold the list of all the requests fetched
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    //! Get the stores names
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // GetListRequests(context: context);
-    });
-  }
-
   Future GetListRequests({required BuildContext context}) async {
     //? Set the main stores to empty
     context.read<HomeProvider>().updateMainStores(data: []);

@@ -19,8 +19,8 @@ import 'package:collection/collection.dart';
 // Will hold all the home related globals - only!
 
 class HomeProvider with ChangeNotifier {
-  // final String bridge = 'http://192.168.178.93:9697';
-  final String bridge = 'https://api.dulcetdash.com';
+  final String bridge = 'http://192.168.178.93:9697';
+  // final String bridge = 'https://api.dulcetdash.com';
 
   String selectedService =
       'ride'; //! The selected service that the user selected: ride, delivery and shopping - default: ''
@@ -221,6 +221,12 @@ class HomeProvider with ChangeNotifier {
   double? definitiveCustomFare; //The unchanging custom fare after validatiion
   bool isCustomFareConsidered =
       false; //Whether or not a custom fare was applied by the user.
+
+  int voucherAmountToPurchase = 0;
+
+  bool isLoadingPurchaseVoucher = false;
+
+  Map<String, dynamic> walletData = {"balance": 0, "transactionHistory": []};
 
   //The higher order absolute class
   Future<String> get _localPath async {
@@ -1439,5 +1445,24 @@ class HomeProvider with ChangeNotifier {
     newList.removeWhere((element) => element['isNotFound'] != true);
 
     return newList.isNotEmpty;
+  }
+
+  void updateVoucherAmountToPurchase({required int voucher}) {
+    voucherAmountToPurchase = voucher;
+  }
+
+  void updateIsLoadingPurchaseVoucher({required bool isLoading}) {
+    isLoadingPurchaseVoucher = isLoading;
+    notifyListeners();
+  }
+
+  void updateWalletData(
+      {required Map<String, dynamic> data, bool reset = false}) {
+    if (!reset) {
+      walletData = data;
+    } else {
+      walletData = {"balance": 0, "transactionHistory": []};
+    }
+    notifyListeners();
   }
 }

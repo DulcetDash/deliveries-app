@@ -100,6 +100,12 @@ class _DrawerMenuState extends State<DrawerMenu> {
                 Navigator.of(context).pushReplacementNamed('/YourRides'),
           ),
           MenuOption(
+            titleOption: 'Wallet',
+            showDivider: true,
+            actuatorFnc: () =>
+                Navigator.of(context).pushReplacementNamed('/Wallet'),
+          ),
+          MenuOption(
             titleOption: 'drawer.settings'.tr(),
             showDivider: true,
             actuatorFnc: () =>
