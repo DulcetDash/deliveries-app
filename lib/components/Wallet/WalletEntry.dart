@@ -268,70 +268,92 @@ class LastTransactionSection extends StatelessWidget {
                     'Latest transactions',
                     style: TextStyle(fontSize: 19, color: Colors.grey.shade700),
                   )),
-                  Text('View all',
-                      style: TextStyle(
-                          fontSize: 17,
-                          fontFamily: 'MoveTextMedium',
-                          color: AppTheme().getPrimaryColor()))
+                  walletData['transactionHistory'].length <= 0
+                      ? const SizedBox.shrink()
+                      : Text('View all',
+                          style: TextStyle(
+                              fontSize: 17,
+                              fontFamily: 'MoveTextMedium',
+                              color: AppTheme().getPrimaryColor()))
                 ],
               ),
             ),
             Container(
               height: MediaQuery.of(context).size.height * 0.35,
-              child: ListView.separated(
-                itemBuilder: (context, index) {
-                  var transaction = walletData['transactionHistory'][index];
-                  Map<String, dynamic> transactionFormatted =
-                      getAmountStandards(transaction: transaction);
-
-                  print(transaction);
-
-                  return Container(
-                    decoration: BoxDecoration(
-                        border:
-                            Border.all(width: 0.5, color: Colors.grey.shade400),
-                        borderRadius: BorderRadius.circular(3)),
-                    child: ListTile(
-                      horizontalTitleGap: 0,
-                      contentPadding: const EdgeInsets.only(
-                          left: 10, right: 10, top: 5, bottom: 5),
-                      leading: const Icon(Icons.calendar_today),
-                      title: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
+              child: walletData['transactionHistory'].length <= 0
+                  ? Container(
+                      child: Column(
                         children: [
-                          Container(
-                              alignment: Alignment.centerLeft,
-                              child: Text(transactionFormatted['title'],
-                                  style: const TextStyle(
-                                      fontFamily: 'MoveTextMedium',
-                                      fontSize: 17))),
-                          Container(
-                              alignment: Alignment.centerLeft,
-                              child: Text(transactionFormatted['payment_mode'],
-                                  style: TextStyle(
-                                      fontFamily: 'MoveText',
-                                      color: AppTheme().getSecondaryColor())))
+                          const Divider(
+                            height: 50,
+                            color: Colors.white,
+                          ),
+                          Icon(
+                            Icons.compare_arrows_rounded,
+                            size: 45,
+                            color: Colors.grey.shade400,
+                          ),
+                          Text('No transactions yet.',
+                              style: TextStyle(
+                                  color: Colors.grey.shade600, fontSize: 15))
                         ],
                       ),
-                      subtitle: Padding(
-                        padding: const EdgeInsets.only(top: 3),
-                        child: Text(transactionFormatted['date']),
-                      ),
-                      trailing: Text(
-                        transactionFormatted['amountString'],
-                        style: TextStyle(
-                            fontFamily: 'MoveMedium',
-                            fontSize: 22,
-                            color: transactionFormatted['amountColor']),
-                      ),
+                    )
+                  : ListView.separated(
+                      itemBuilder: (context, index) {
+                        var transaction =
+                            walletData['transactionHistory'][index];
+                        Map<String, dynamic> transactionFormatted =
+                            getAmountStandards(transaction: transaction);
+
+                        return Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  width: 0.5, color: Colors.grey.shade400),
+                              borderRadius: BorderRadius.circular(3)),
+                          child: ListTile(
+                            horizontalTitleGap: 0,
+                            contentPadding: const EdgeInsets.only(
+                                left: 10, right: 10, top: 5, bottom: 5),
+                            leading: const Icon(Icons.calendar_today),
+                            title: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(transactionFormatted['title'],
+                                        style: const TextStyle(
+                                            fontFamily: 'MoveTextMedium',
+                                            fontSize: 17))),
+                                Container(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                        transactionFormatted['payment_mode'],
+                                        style: TextStyle(
+                                            fontFamily: 'MoveText',
+                                            color: AppTheme()
+                                                .getSecondaryColor())))
+                              ],
+                            ),
+                            subtitle: Padding(
+                              padding: const EdgeInsets.only(top: 3),
+                              child: Text(transactionFormatted['date']),
+                            ),
+                            trailing: Text(
+                              transactionFormatted['amountString'],
+                              style: TextStyle(
+                                  fontFamily: 'MoveMedium',
+                                  fontSize: 22,
+                                  color: transactionFormatted['amountColor']),
+                            ),
+                          ),
+                        );
+                      },
+                      separatorBuilder: (context, index) =>
+                          const Divider(color: Colors.white),
+                      itemCount:
+                          walletData['transactionHistory'].sublist(0, 3).length,
                     ),
-                  );
-                },
-                separatorBuilder: (context, index) =>
-                    const Divider(color: Colors.white),
-                itemCount:
-                    walletData['transactionHistory'].sublist(0, 3).length,
-              ),
             )
           ],
         ),
