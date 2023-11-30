@@ -365,6 +365,7 @@ class ProductsSelection extends StatelessWidget {
             imagePath: 'assets/Images/box_delivery.png',
             title: 'home.delivery'.tr(),
             actuator: () {
+              GetWallet().exec(context: context);
               //!Cleanse
               context.read<HomeProvider>().clearEveryRequestsRelatedData();
               //...
@@ -383,6 +384,7 @@ class ProductsSelection extends StatelessWidget {
             imagePath: 'assets/Images/cart.jpg',
             title: 'Groceries',
             actuator: () {
+              GetWallet().exec(context: context);
               //!Cleanse
               context.read<HomeProvider>().clearEveryRequestsRelatedData();
               //...

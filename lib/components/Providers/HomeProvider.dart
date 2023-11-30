@@ -19,11 +19,11 @@ import 'package:collection/collection.dart';
 // Will hold all the home related globals - only!
 
 class HomeProvider with ChangeNotifier {
-  final String bridge = 'http://192.168.178.93:9697';
+  final String bridge = 'http://192.168.178.161:9697';
   // final String bridge = 'https://api.dulcetdash.com';
 
   String selectedService =
-      'ride'; //! The selected service that the user selected: ride, delivery and shopping - default: ''
+      'delivery'; //! The selected service that the user selected: ride, delivery and shopping - default: ''
 
   String user_identifier = 'empty_fingerprint'; //The user's identifier
 
@@ -114,7 +114,7 @@ class HomeProvider with ChangeNotifier {
   List<Map<String, dynamic>> CART = []; //Will hold all the cart data
 
   String paymentMethod =
-      'mobile_money'; //The method used to pay: mobile_money or cash
+      'wallet'; //The method used to pay: mobile_money or cash or wallet
 
   //? LOCATION RELATED
   Map<String, dynamic> manuallySettedCurrentLocation_pickup =
@@ -227,6 +227,8 @@ class HomeProvider with ChangeNotifier {
   bool isLoadingPurchaseVoucher = false;
 
   Map<String, dynamic> walletData = {"balance": 0, "transactionHistory": []};
+
+  String preferredPaymentMethod = 'wallet'; //wallet or cash
 
   //The higher order absolute class
   Future<String> get _localPath async {
@@ -1460,9 +1462,34 @@ class HomeProvider with ChangeNotifier {
       {required Map<String, dynamic> data, bool reset = false}) {
     if (!reset) {
       walletData = data;
+
+      if (paymentMethod == 'cash' && isBalanceSufficient()) {
+        updatePaymentMethod(data: 'wallet');
+      }
     } else {
       walletData = {"balance": 0, "transactionHistory": []};
     }
+    notifyListeners();
+  }
+
+  bool isBalanceSufficient() {
+    Map<String, dynamic> totals =
+        selectedService == 'delivery' ? getTotals_delivery() : getTotals();
+
+    double mainTotal = double.parse(totals['total']);
+
+    return walletData['balance'] >= mainTotal;
+  }
+
+  String getGeneralMainTotal() {
+    Map<String, dynamic> totals =
+        selectedService == 'delivery' ? getTotals_delivery() : getTotals();
+
+    return double.parse(totals['total']).toStringAsFixed(1);
+  }
+
+  void updatePreferredPaymentMethod({required String method}) {
+    preferredPaymentMethod = method;
     notifyListeners();
   }
 }

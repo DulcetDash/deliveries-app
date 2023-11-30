@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:dulcetdash/components/Helpers/Networking.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:dulcetdash/components/GenericRectButton.dart';
@@ -17,7 +18,22 @@ class PaymentSetting extends StatefulWidget {
 
 class _PaymentSettingState extends State<PaymentSetting> {
   @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      GetWallet().exec(context: context);
+    });
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    //Reset selection to cash if wallet balance is not enough
+    if (context.watch<HomeProvider>().paymentMethod == 'wallet' &&
+        !context.read<HomeProvider>().isBalanceSufficient()) {
+      context.read<HomeProvider>().updatePaymentMethod(data: 'cash');
+    }
+
     return WillPopScope(
       onWillPop: () async {
         return Future.value(false);
@@ -34,18 +50,22 @@ class _PaymentSettingState extends State<PaymentSetting> {
                     child: ListView(
                       children: [
                         MethodChoice(
-                          paymentMethod: 'payments.mobileMoney'.tr(),
-                          subtitle: 'payments.subTitle'.tr(),
-                          isSelected:
-                              context.watch<HomeProvider>().paymentMethod ==
-                                  'mobile_money',
-                          actuator: (newValue) {
-                            context
-                                .read<HomeProvider>()
-                                .updatePaymentMethod(data: 'mobile_money');
-                          },
-                        ),
-                        Divider(
+                            isWallet: true,
+                            paymentMethod: 'Wallet',
+                            isSelected:
+                                context.watch<HomeProvider>().paymentMethod ==
+                                    'wallet',
+                            subtitle: 'Cashless payment with ease',
+                            actuator: (newValue) {
+                              if (context
+                                  .read<HomeProvider>()
+                                  .isBalanceSufficient()) {
+                                context
+                                    .read<HomeProvider>()
+                                    .updatePaymentMethod(data: 'wallet');
+                              }
+                            }),
+                        const Divider(
                           height: 50,
                         ),
                         MethodChoice(
@@ -164,10 +184,10 @@ class Header extends StatelessWidget {
                     children: [
                       Icon(Icons.arrow_back,
                           size: AppTheme().getArrowBackSize()),
-                      SizedBox(
+                      const SizedBox(
                         width: 4,
                       ),
-                      Text('rides.paymentLabel'.tr(),
+                      const Text('Payment',
                           style: TextStyle(
                               fontFamily: 'MoveTextBold', fontSize: 24))
                     ],
@@ -190,6 +210,8 @@ class Header extends StatelessWidget {
 class MethodChoice extends StatelessWidget {
   final String paymentMethod;
   final String subtitle;
+  final String extraSubtitle;
+  final bool isWallet;
   final bool hasPickupFee;
   final bool isSelected;
   final actuator;
@@ -198,6 +220,8 @@ class MethodChoice extends StatelessWidget {
       {Key? key,
       required this.paymentMethod,
       this.subtitle = '',
+      this.extraSubtitle = '',
+      this.isWallet = false,
       this.hasPickupFee = false,
       required this.isSelected,
       required this.actuator})
@@ -213,7 +237,7 @@ class MethodChoice extends StatelessWidget {
           activeColor: AppTheme().getPrimaryColor(),
           title: Text(
             paymentMethod,
-            style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 18),
+            style: const TextStyle(fontFamily: 'MoveTextMedium', fontSize: 21),
           ),
           subtitle: Padding(
             padding: const EdgeInsets.only(top: 5),
@@ -222,9 +246,9 @@ class MethodChoice extends StatelessWidget {
               children: [
                 Text(
                   subtitle,
-                  style: TextStyle(fontSize: 16),
+                  style: const TextStyle(fontSize: 16),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Visibility(
@@ -237,6 +261,88 @@ class MethodChoice extends StatelessWidget {
                         fontFamily: 'MoveTextMedium',
                         color: AppTheme().getPrimaryColor(),
                         fontSize: 17),
+                  ),
+                ),
+                Visibility(
+                  visible: isWallet,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.square,
+                            size: 10,
+                          ),
+                          const Text(
+                            'Balance: ',
+                            style: TextStyle(
+                                fontFamily: 'MoveTextMedium', fontSize: 17),
+                          ),
+                          Text(
+                            'N\$${context.read<HomeProvider>().walletData['balance']}',
+                            style: TextStyle(
+                                fontFamily: 'MoveTextMedium',
+                                color: AppTheme().getSecondaryColor(),
+                                fontSize: 19),
+                          ),
+                        ],
+                      ),
+                      Visibility(
+                        visible: !context
+                            .watch<HomeProvider>()
+                            .isBalanceSufficient(),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 0, top: 15),
+                          child: Container(
+                              child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Divider(),
+                              Row(
+                                children: [
+                                  // Icon(
+                                  //   Icons.warning,
+                                  //   color: AppTheme().getErrorColor(),
+                                  //   size: 15,
+                                  // ),
+                                  // const SizedBox(
+                                  //   width: 5,
+                                  // ),
+                                  Flexible(
+                                    child: Text(
+                                        'Insufficient balance, you need at least N\$${context.read<HomeProvider>().getGeneralMainTotal()}',
+                                        style: TextStyle(
+                                            color: AppTheme().getErrorColor(),
+                                            fontSize: 16)),
+                                  ),
+                                ],
+                              ),
+                              const Divider(
+                                color: Colors.white,
+                              ),
+                              InkWell(
+                                onTap: () => Navigator.of(context)
+                                    .pushNamed('/WalletEntry'),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: AppTheme().getSecondaryColor(),
+                                      borderRadius: BorderRadius.circular(5)),
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text('Top-up your wallet',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            color: Colors.white,
+                                            fontFamily: 'MoveBold')),
+                                  ),
+                                ),
+                              )
+                            ],
+                          )),
+                        ),
+                      )
+                    ],
                   ),
                 )
               ],

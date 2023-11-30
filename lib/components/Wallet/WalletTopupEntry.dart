@@ -1,5 +1,7 @@
 import 'package:dulcetdash/components/Helpers/AppTheme.dart';
+import 'package:dulcetdash/components/Providers/HomeProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class WalletTopupEntry extends StatelessWidget {
   const WalletTopupEntry({Key? key}) : super(key: key);
@@ -47,7 +49,7 @@ class WalletTopupEntry extends StatelessWidget {
                       height: 55,
                       width: MediaQuery.of(context).size.width / 3,
                       child: Text(
-                        'N\$950',
+                        'N\$${context.watch<HomeProvider>().walletData['balance']}',
                         style: TextStyle(
                             fontFamily: 'MoveBold',
                             fontSize: 22,
@@ -135,6 +137,9 @@ class TopupMethodsPart extends StatelessWidget {
               padding: const EdgeInsets.only(
                   bottom: 15, top: 15, left: 20, right: 20),
               child: ListTile(
+                onTap: () => context
+                    .read<HomeProvider>()
+                    .updatePreferredPaymentMethod(method: 'wallet'),
                 leading: Container(
                     alignment: Alignment.topCenter,
                     width: 40,
@@ -148,17 +153,25 @@ class TopupMethodsPart extends StatelessWidget {
                   style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 20),
                 ),
                 subtitle: const Text('Cashless, recommended.'),
-                trailing: Container(
-                    width: 40,
-                    height: 55,
-                    child: Icon(Icons.check_circle,
-                        size: 30, color: AppTheme().getSecondaryColor())),
+                trailing: Visibility(
+                  visible:
+                      context.watch<HomeProvider>().preferredPaymentMethod ==
+                          'wallet',
+                  child: Container(
+                      width: 40,
+                      height: 55,
+                      child: Icon(Icons.check_circle,
+                          size: 30, color: AppTheme().getSecondaryColor())),
+                ),
               ),
             ),
             Padding(
               padding: const EdgeInsets.only(
                   bottom: 15, top: 0, left: 20, right: 20),
               child: ListTile(
+                onTap: () => context
+                    .read<HomeProvider>()
+                    .updatePreferredPaymentMethod(method: 'cash'),
                 leading: Container(
                     alignment: Alignment.topCenter,
                     width: 40,
@@ -172,7 +185,9 @@ class TopupMethodsPart extends StatelessWidget {
                   style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 20),
                 ),
                 trailing: Visibility(
-                  visible: false,
+                  visible:
+                      context.watch<HomeProvider>().preferredPaymentMethod ==
+                          'cash',
                   child: Container(
                       width: 40,
                       height: 55,

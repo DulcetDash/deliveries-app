@@ -208,22 +208,6 @@ class _DeliverySummaryState extends State<DeliverySummary> {
                         ],
                       ),
                     ),
-                    //SERVICE FEE
-                    // Padding(
-                    //   padding:
-                    //       const EdgeInsets.only(left: 20, right: 20, bottom: 5),
-                    //   child: Row(
-                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //     children: [
-                    //       Text('delivery.handlingFee'.tr(),
-                    //           style: TextStyle(fontSize: 17)),
-                    //       Text(payment_summary['service_fee'],
-                    //           style: TextStyle(
-                    //               fontSize: 19,
-                    //               color: AppTheme().getPrimaryColor())),
-                    //     ],
-                    //   ),
-                    // ),
                     Divider(),
                     //TOTAL
                     Padding(

@@ -275,3 +275,33 @@ class GetRecentlyVisitedStores {
     }
   }
 }
+
+class GetWallet {
+  Future<void> exec({required BuildContext context}) async {
+    try {
+      SuperHttp superHttp = SuperHttp();
+
+      Uri mainUrl = Uri.parse(Uri.encodeFull(
+          '${context.read<HomeProvider>().bridge}/wallet/balance'));
+
+      final response = await superHttp.get(
+        mainUrl,
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      final responseData = json.decode(response.body);
+      if (response.statusCode == 200) {
+        if (responseData['status'] == 'success') {
+          context
+              .read<HomeProvider>()
+              .updateWalletData(data: responseData['data']);
+        }
+      } else {
+        // Handle server error
+        context.read<HomeProvider>().updateWalletData(data: {}, reset: true);
+      }
+    } catch (error) {
+      context.read<HomeProvider>().updateWalletData(data: {}, reset: true);
+    }
+  }
+}

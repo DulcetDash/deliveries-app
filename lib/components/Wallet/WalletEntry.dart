@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dulcetdash/components/Helpers/AppTheme.dart';
+import 'package:dulcetdash/components/Helpers/Networking.dart';
 import 'package:dulcetdash/components/Helpers/SuperHttp.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,32 +18,7 @@ class WalletEntry extends StatefulWidget {
 
 class _WalletEntryState extends State<WalletEntry> {
   Future<void> _getWalletData(BuildContext context) async {
-    try {
-      SuperHttp superHttp = SuperHttp();
-
-      Uri mainUrl = Uri.parse(Uri.encodeFull(
-          '${context.read<HomeProvider>().bridge}/wallet/balance'));
-
-      final response = await superHttp.get(
-        mainUrl,
-        headers: {'Content-Type': 'application/json'},
-      );
-
-      final responseData = json.decode(response.body);
-      if (response.statusCode == 200) {
-        if (responseData['status'] == 'success') {
-          print(responseData);
-          context
-              .read<HomeProvider>()
-              .updateWalletData(data: responseData['data']);
-        }
-      } else {
-        // Handle server error
-        context.read<HomeProvider>().updateWalletData(data: {}, reset: true);
-      }
-    } catch (error) {
-      context.read<HomeProvider>().updateWalletData(data: {}, reset: true);
-    }
+    GetWallet().exec(context: context);
   }
 
   final RefreshController _refreshController =
@@ -57,6 +33,12 @@ class _WalletEntryState extends State<WalletEntry> {
     await _getWalletData(context);
     _refreshController.loadComplete();
     _refreshController.refreshCompleted();
+  }
+
+  @override
+  void dispose() {
+    _refreshController.dispose();
+    super.dispose();
   }
 
   @override
@@ -268,13 +250,13 @@ class LastTransactionSection extends StatelessWidget {
                     'Latest transactions',
                     style: TextStyle(fontSize: 19, color: Colors.grey.shade700),
                   )),
-                  walletData['transactionHistory'].length <= 0
-                      ? const SizedBox.shrink()
-                      : Text('View all',
-                          style: TextStyle(
-                              fontSize: 17,
-                              fontFamily: 'MoveTextMedium',
-                              color: AppTheme().getPrimaryColor()))
+                  // walletData['transactionHistory'].length <= 0
+                  //     ? const SizedBox.shrink()
+                  //     : Text('View all',
+                  //         style: TextStyle(
+                  //             fontSize: 17,
+                  //             fontFamily: 'MoveTextMedium',
+                  //             color: AppTheme().getPrimaryColor()))
                 ],
               ),
             ),
@@ -314,8 +296,8 @@ class LastTransactionSection extends StatelessWidget {
                           child: ListTile(
                             horizontalTitleGap: 0,
                             contentPadding: const EdgeInsets.only(
-                                left: 10, right: 10, top: 5, bottom: 5),
-                            leading: const Icon(Icons.calendar_today),
+                                left: 10, right: 15, top: 5, bottom: 5),
+                            leading: const Icon(Icons.calendar_today, size: 20),
                             title: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
@@ -325,14 +307,6 @@ class LastTransactionSection extends StatelessWidget {
                                         style: const TextStyle(
                                             fontFamily: 'MoveTextMedium',
                                             fontSize: 17))),
-                                Container(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                        transactionFormatted['payment_mode'],
-                                        style: TextStyle(
-                                            fontFamily: 'MoveText',
-                                            color: AppTheme()
-                                                .getSecondaryColor())))
                               ],
                             ),
                             subtitle: Padding(
@@ -351,8 +325,11 @@ class LastTransactionSection extends StatelessWidget {
                       },
                       separatorBuilder: (context, index) =>
                           const Divider(color: Colors.white),
-                      itemCount:
-                          walletData['transactionHistory'].sublist(0, 3).length,
+                      itemCount: walletData['transactionHistory'].length < 3
+                          ? walletData['transactionHistory'].length
+                          : walletData['transactionHistory']
+                              .sublist(0, 3)
+                              .length,
                     ),
             )
           ],
@@ -393,7 +370,8 @@ class LastTransactionSection extends StatelessWidget {
           'title': 'Transaction',
           'payment_mode': 'Cashless',
           'amountString': '-N\$${transaction['amount']}',
-          'amountColor': Colors.grey
+          'amountColor': Colors.grey,
+          'date': '12-05-2021 at 13:00'
         };
     }
   }

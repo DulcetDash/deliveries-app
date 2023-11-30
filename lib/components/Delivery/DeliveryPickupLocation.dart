@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:dulcetdash/components/Helpers/Networking.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -20,6 +21,15 @@ class DeliveryPickupLocation extends StatefulWidget {
 
 class _DeliveryPickupLocationState extends State<DeliveryPickupLocation> {
   DataParser _dataParser = DataParser();
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      GetWallet().exec(context: context);
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
