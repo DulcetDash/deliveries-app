@@ -91,17 +91,20 @@ class InputAmountToSendPart extends StatelessWidget {
           child: TextField(
             readOnly: context.watch<HomeProvider>().isLoadingPurchaseVoucher,
             onChanged: (value) {
+              value = value.isEmpty ? '0' : value;
               context
                   .read<HomeProvider>()
                   .updateVoucherAmountToPurchase(voucher: int.parse(value));
             },
             style: const TextStyle(fontSize: 25),
+            maxLength: 4,
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             decoration: const InputDecoration(
                 floatingLabelBehavior: FloatingLabelBehavior.never,
                 labelText: 'Amount',
                 border: InputBorder.none,
+                counterText: "",
                 contentPadding: EdgeInsets.only(bottom: 15)),
           ),
         ),
@@ -116,6 +119,10 @@ class NoticePart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isVoucherAmountValid =
+        context.watch<HomeProvider>().voucherAmountToPurchase >= 10 &&
+            context.watch<HomeProvider>().voucherAmountToPurchase <= 5000;
+
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 20),
       child: Container(
@@ -130,20 +137,35 @@ class NoticePart extends StatelessWidget {
               child: Icon(
                 Icons.info,
                 size: 20,
-                color: AppTheme().getPrimaryColor(),
+                color: !isVoucherAmountValid
+                    ? AppTheme().getErrorColor()
+                    : AppTheme().getPrimaryColor(),
               )),
           title: Container(
             child: RichText(
-                text: const TextSpan(
+                text: TextSpan(
                     style: TextStyle(
-                        color: Colors.black,
+                        color: !isVoucherAmountValid
+                            ? AppTheme().getErrorColor()
+                            : Colors.black,
                         fontSize: 16,
                         fontFamily: 'MoveTextLight'),
                     children: [
-                  TextSpan(text: 'Your maximum amount is '),
                   TextSpan(
-                      text: 'N\$5000',
-                      style: TextStyle(fontFamily: 'MoveTextRegular'))
+                      text: context
+                                  .watch<HomeProvider>()
+                                  .voucherAmountToPurchase <
+                              10
+                          ? 'Your minimum amount is '
+                          : 'Your maximum amount is '),
+                  TextSpan(
+                      text: context
+                                  .watch<HomeProvider>()
+                                  .voucherAmountToPurchase <
+                              10
+                          ? 'N\$10'
+                          : 'N\$5000',
+                      style: const TextStyle(fontFamily: 'MoveTextRegular'))
                 ])),
           ),
         ),
@@ -325,27 +347,28 @@ class ValidationButtonsPart extends StatelessWidget {
                     size: 65,
                     color: AppTheme().getErrorColor(),
                   ),
-                  Divider(color: Colors.white),
-                  Text('Payment Failed',
+                  const Divider(color: Colors.white),
+                  const Text('Payment Failed',
                       style:
                           TextStyle(fontFamily: 'MoveTextBold', fontSize: 25)),
-                  Divider(
+                  const Divider(
                     height: 20,
                     color: Colors.white,
                   ),
-                  Text(
+                  const Text(
                       'Sorry were we unable to conclude the purchase of you voucher',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontFamily: 'MoveTextRegular', fontSize: 17)),
-                  Divider(
+                  const Divider(
                     height: 35,
                     color: Colors.white,
                   ),
                   Text(
                       'N\$${context.read<HomeProvider>().voucherAmountToPurchase}',
-                      style: TextStyle(fontFamily: 'MoveBold', fontSize: 35)),
-                  Expanded(child: SizedBox.shrink()),
+                      style: const TextStyle(
+                          fontFamily: 'MoveBold', fontSize: 35)),
+                  const Expanded(child: SizedBox.shrink()),
                   GenericRectButton(
                     label: 'Try again',
                     actuatorFunctionl: () {
@@ -362,6 +385,10 @@ class ValidationButtonsPart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isVoucherAmountValid =
+        context.watch<HomeProvider>().voucherAmountToPurchase >= 10 &&
+            context.watch<HomeProvider>().voucherAmountToPurchase <= 5000;
+
     return Padding(
         padding: const EdgeInsets.symmetric(vertical: 25),
         child: Container(
@@ -387,11 +414,16 @@ class ValidationButtonsPart extends StatelessWidget {
                 ? CircularProgressIndicator(
                     color: AppTheme().getPrimaryColor(),
                   )
-                : GenericCircButton(
-                    backgroundColor: AppTheme().getPrimaryColor(),
-                    actuatorFunctionl: () {
-                      _handleTopUp(context);
-                    },
+                : Opacity(
+                    opacity: isVoucherAmountValid ? 1 : 0.5,
+                    child: GenericCircButton(
+                      backgroundColor: AppTheme().getPrimaryColor(),
+                      actuatorFunctionl: !isVoucherAmountValid
+                          ? () {}
+                          : () {
+                              _handleTopUp(context);
+                            },
+                    ),
                   ),
           ),
         ));

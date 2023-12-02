@@ -31,11 +31,11 @@ void main() async {
     return true;
   };
 
-  // Stripe.publishableKey =
-  //     'pk_test_51O0XLUAUT5H40gaH5WWvNlm8C5zeGtDuP21HAovvUoYD0iiwLPsEI6MsqvH0TaUBD1GGLUe1dbrJFLd7AAfXyBgu00o63h1Xef';
-
   Stripe.publishableKey =
-      'pk_live_51O0XLUAUT5H40gaHyHou21pQxwqdfrj9qQA4Z5aHUGqE62JSLRv43NHcidazu1rJxQoFRqANn1pNuqwX6kE8a4Yp006DeFT3Dh';
+      'pk_test_51O0XLUAUT5H40gaH5WWvNlm8C5zeGtDuP21HAovvUoYD0iiwLPsEI6MsqvH0TaUBD1GGLUe1dbrJFLd7AAfXyBgu00o63h1Xef';
+
+  // Stripe.publishableKey =
+  //     'pk_live_51O0XLUAUT5H40gaHyHou21pQxwqdfrj9qQA4Z5aHUGqE62JSLRv43NHcidazu1rJxQoFRqANn1pNuqwX6kE8a4Yp006DeFT3Dh';
 
   runApp(MultiProvider(
     providers: [

@@ -1451,6 +1451,7 @@ class HomeProvider with ChangeNotifier {
 
   void updateVoucherAmountToPurchase({required int voucher}) {
     voucherAmountToPurchase = voucher;
+    notifyListeners();
   }
 
   void updateIsLoadingPurchaseVoucher({required bool isLoading}) {
