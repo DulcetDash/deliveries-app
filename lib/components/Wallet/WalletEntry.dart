@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dulcetdash/components/Helpers/AppTheme.dart';
+import 'package:dulcetdash/components/Helpers/DataParser.dart';
 import 'package:dulcetdash/components/Helpers/Networking.dart';
 import 'package:dulcetdash/components/Helpers/SuperHttp.dart';
 import 'package:flutter/material.dart';
@@ -307,6 +308,26 @@ class LastTransactionSection extends StatelessWidget {
                                         style: const TextStyle(
                                             fontFamily: 'MoveTextMedium',
                                             fontSize: 17))),
+                                Visibility(
+                                  visible:
+                                      transactionFormatted['paymentDirection']
+                                          .toString()
+                                          .isNotEmpty,
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 5),
+                                    child: Container(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                            transactionFormatted[
+                                                'paymentDirection'],
+                                            style: TextStyle(
+                                                fontFamily: 'MoveText',
+                                                color: transactionFormatted[
+                                                    'amountColor'],
+                                                fontSize: 15))),
+                                  ),
+                                ),
                               ],
                             ),
                             subtitle: Padding(
@@ -340,19 +361,22 @@ class LastTransactionSection extends StatelessWidget {
 
   Map<String, dynamic> getAmountStandards(
       {required Map<String, dynamic> transaction}) {
+    DataParser dataParser = DataParser();
+
     switch (transaction['description']) {
       case 'Top-up':
         return {
           'title': 'Top-up',
-          'payment_mode': 'Cashless',
+          'paymentDirection': '',
           'amountString': '+N\$${transaction['amount']}',
           'amountColor': AppTheme().getSecondaryColor(),
-          'date': '12-05-2021 at 13:00'
+          'date':
+              dataParser.getReadableDate(dateString: transaction['createdAt'])
         };
       case 'Grocery delivery':
         return {
           'title': 'Paid for grocery delivery',
-          'payment_mode': 'Cashless',
+          'paymentDirection': '',
           'amountString': '-N\$${transaction['amount']}',
           'amountColor': AppTheme().getErrorColor(),
           'date': '12-05-2021 at 13:00'
@@ -360,15 +384,25 @@ class LastTransactionSection extends StatelessWidget {
       case 'Package delivery':
         return {
           'title': 'Paid for package delivery',
-          'payment_mode': 'Cashless',
+          'paymentDirection': '',
           'amountString': '-N\$${transaction['amount']}',
           'amountColor': AppTheme().getErrorColor(),
           'date': '12-05-2021 at 13:00'
         };
       default:
+        if (transaction['success'] == false) {
+          return {
+            'title': transaction['description'],
+            'paymentDirection': 'Refunded',
+            'amountString': '+N\$${transaction['amount']}',
+            'amountColor': AppTheme().getGoldColor(),
+            'date': '12-05-2021 at 13:00'
+          };
+        }
+
         return {
           'title': 'Transaction',
-          'payment_mode': 'Cashless',
+          'paymentDirection': '',
           'amountString': '-N\$${transaction['amount']}',
           'amountColor': Colors.grey,
           'date': '12-05-2021 at 13:00'

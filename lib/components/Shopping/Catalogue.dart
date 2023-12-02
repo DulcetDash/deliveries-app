@@ -298,10 +298,12 @@ class _HeaderState extends State<Header> {
               ],
             )),
             Expanded(
+                flex: 3,
                 child: Container(
                     alignment: Alignment.center,
                     child: Text(
                       context.watch<HomeProvider>().selected_store['name'],
+                      textAlign: TextAlign.center,
                       style: const TextStyle(
                           fontFamily: 'MoveTextBold', fontSize: 19),
                     ))),

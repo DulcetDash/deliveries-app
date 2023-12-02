@@ -1194,7 +1194,7 @@ class _LocalModalState extends State<LocalModal> {
                   Container(
                     alignment: Alignment.center,
                     child: Text(
-                      'generic_text.ewallet'.tr(),
+                      'Wallet',
                       style: TextStyle(fontFamily: 'MoveBold', fontSize: 24),
                     ),
                   ),
@@ -1203,7 +1203,7 @@ class _LocalModalState extends State<LocalModal> {
                         const EdgeInsets.only(left: 25, right: 25, top: 15),
                     child: Container(
                       child: Text(
-                        'delivery.sendDeliveryMoney_msg'.tr(),
+                        'Your delivery has been paid for using your DulcetDash wallet, no need for cash.',
                         style: TextStyle(
                             fontSize: 16,
                             color: AppTheme().getGenericDarkGrey()),
@@ -1214,48 +1214,6 @@ class _LocalModalState extends State<LocalModal> {
                     height: 30,
                     color: Colors.white,
                   ),
-                  //?Payment
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        left: 25, right: 25, top: 15, bottom: 5),
-                    child: Row(
-                      children: [
-                        Text(
-                          'generic_text.sendTo'.tr(),
-                          style: TextStyle(
-                              fontFamily: 'MoveTextMedium',
-                              fontSize: 16,
-                              color: AppTheme().getGenericDarkGrey()),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Divider(
-                    height: 5,
-                    color: Colors.white,
-                  ),
-                  Padding(
-                      padding: const EdgeInsets.only(left: 25, right: 25),
-                      child: Container(
-                        // color: Colors.amber,
-                        child: ListTile(
-                          onTap: () => print('Copy ewallet number'),
-                          contentPadding: EdgeInsets.zero,
-                          horizontalTitleGap: 0,
-                          leading: Icon(
-                            Icons.phone,
-                            color: AppTheme().getPrimaryColor(),
-                            size: 20,
-                          ),
-                          title: Text(
-                              requestData['ewallet_details']['phone']
-                                  .toString(),
-                              style: TextStyle(
-                                  fontFamily: 'MoveTextBold', fontSize: 20)),
-                          trailing: Icon(Icons.copy),
-                        ),
-                      )),
-                  Divider(),
                   //?Amount
                   Padding(
                     padding: const EdgeInsets.only(
@@ -1317,8 +1275,7 @@ class _LocalModalState extends State<LocalModal> {
                           title: Padding(
                             padding: const EdgeInsets.only(top: 12),
                             child: Text(
-                                'generic_text.sendFullAmountBeforeProceeding'
-                                    .tr(),
+                                'The shown amount represents the total cost of your delivery.',
                                 style: TextStyle(
                                     fontFamily: 'MoveTextRegular',
                                     fontSize: 15,

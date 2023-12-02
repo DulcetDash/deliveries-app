@@ -93,19 +93,6 @@ class _HomeState extends State<Home> {
           child: Container(
             child: Column(
               children: [
-                Container(
-                    color: AppTheme().getSecondaryColor(),
-                    child: const ListTile(
-                      horizontalTitleGap: 0,
-                      leading: Icon(
-                        Icons.info,
-                        color: Colors.white,
-                      ),
-                      title: Text(
-                          'After shopping, we\'ll return any leftover money and provide all your receipts.',
-                          style: TextStyle(
-                              fontFamily: 'MoveText', color: Colors.white)),
-                    )),
                 const Header(),
                 const Divider(
                   thickness: 1,

@@ -19,7 +19,7 @@ import 'package:collection/collection.dart';
 // Will hold all the home related globals - only!
 
 class HomeProvider with ChangeNotifier {
-  final String bridge = 'http://192.168.178.161:9697';
+  final String bridge = 'http://192.168.178.93:9697';
   // final String bridge = 'https://api.dulcetdash.com';
 
   String selectedService =
@@ -1096,7 +1096,7 @@ class HomeProvider with ChangeNotifier {
   Map<String, String> getCleanPaymentMethod_nameAndImage({String? payment}) {
     if (payment != null) {
       return {
-        'name': payment == 'cash' ? 'Cash' : 'Ewallet',
+        'name': payment == 'cash' ? 'Cash' : 'Wallet',
         'image': payment == 'mobile_money'
             ? 'assets/Images/mobile_payment.png'
             : 'assets/Images/banknote.png'
@@ -1104,7 +1104,7 @@ class HomeProvider with ChangeNotifier {
     }
 
     return {
-      'name': paymentMethod == 'cash' ? 'Cash' : 'Ewallet',
+      'name': paymentMethod == 'cash' ? 'Cash' : 'Wallet',
       'image': paymentMethod == 'mobile_money'
           ? 'assets/Images/mobile_payment.png'
           : 'assets/Images/banknote.png'

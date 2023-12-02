@@ -89,14 +89,14 @@ class DataParser {
   String getReadableTime({required String dateString}) {
     DateTime dateTime = DateTime.parse(dateString);
 
-    return '${dateTime.hour}:${dateTime.minute}';
+    return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
   }
 
   //? Get normal readable date
   String getReadableDate({required String dateString}) {
     DateTime dateTime = DateTime.parse(dateString);
 
-    return '${dateTime.day < 10 ? '0${dateTime.day}' : dateTime.day}-${dateTime.month < 10 ? '0${dateTime.month}' : dateTime.month}-${dateTime.year} at ${getReadableTime(dateString: dateString)}';
+    return '${dateTime.day.toString().padLeft(2, '0')}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.year} at ${getReadableTime(dateString: dateString)}';
   }
 
   //? Validate email
