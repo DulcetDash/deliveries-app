@@ -373,13 +373,13 @@ class ValidationButtonsPart extends StatelessWidget {
                 text: TextSpan(
                     style: const TextStyle(fontSize: 15, color: Colors.black),
                     children: [
-                      const TextSpan(text: 'Your '),
+                      const TextSpan(text: 'Just a heads up, a '),
                       TextSpan(
-                          text: 'purchased voucher ',
+                          text: '5% card processing fee ',
                           style: TextStyle(
                               fontFamily: 'MoveTextBold',
                               color: AppTheme().getPrimaryColor())),
-                      const TextSpan(text: 'will be automatically toped-up.')
+                      const TextSpan(text: 'is included with your total.')
                     ]),
               ),
             ),
