@@ -363,6 +363,16 @@ class LastTransactionSection extends StatelessWidget {
       {required Map<String, dynamic> transaction}) {
     DataParser dataParser = DataParser();
 
+    if (transaction['success'] == false) {
+      return {
+        'title': transaction['description'],
+        'paymentDirection': 'Refunded',
+        'amountString': '+N\$${transaction['amount']}',
+        'amountColor': AppTheme().getGoldColor(),
+        'date': '12-05-2021 at 13:00'
+      };
+    }
+
     switch (transaction['description']) {
       case 'Top-up':
         return {
@@ -390,16 +400,6 @@ class LastTransactionSection extends StatelessWidget {
           'date': '12-05-2021 at 13:00'
         };
       default:
-        if (transaction['success'] == false) {
-          return {
-            'title': transaction['description'],
-            'paymentDirection': 'Refunded',
-            'amountString': '+N\$${transaction['amount']}',
-            'amountColor': AppTheme().getGoldColor(),
-            'date': '12-05-2021 at 13:00'
-          };
-        }
-
         return {
           'title': 'Transaction',
           'paymentDirection': '',
