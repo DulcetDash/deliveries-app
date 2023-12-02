@@ -1369,10 +1369,8 @@ class HomeProvider with ChangeNotifier {
 
   //?62. Update the pushnotif_token
   void updatePushnotification_token({required var data}) async {
-    // log(data.toString());
     pushnotif_token = data;
-    // peristDataMap();
-    //...Upload
+
     Uri mainUrl =
         Uri.parse(Uri.encodeFull('$bridge/receivePushNotification_token'));
 
