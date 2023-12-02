@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:dulcetdash/ThemesAndRoutes/AppRoutes.dart';
 import 'package:dulcetdash/components/DrawerMenu.dart';
@@ -84,6 +85,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Future.delayed(Duration(milliseconds: 1)).then((value) =>
+        SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+          systemNavigationBarColor: Colors.black,
+          systemNavigationBarDividerColor: Colors.black,
+          systemNavigationBarIconBrightness: Brightness.light,
+          statusBarColor: Colors.black,
+          statusBarBrightness: Brightness.light,
+          statusBarIconBrightness: Brightness.light,
+        )));
+
     return WillPopScope(
       onWillPop: () async {
         return Future.value(false);
