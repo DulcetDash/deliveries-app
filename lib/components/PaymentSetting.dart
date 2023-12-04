@@ -252,9 +252,7 @@ class MethodChoice extends StatelessWidget {
                   height: 10,
                 ),
                 Visibility(
-                  visible: hasPickupFee &&
-                      context.read<HomeProvider>().selectedService ==
-                          'shopping',
+                  visible: false,
                   child: Text(
                     'payments.topPickupIt'.tr(args: ["N\$0"]),
                     style: TextStyle(
