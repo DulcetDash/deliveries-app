@@ -1210,7 +1210,7 @@ class _LocalModalState extends State<LocalModal> {
                         title: Padding(
                           padding: const EdgeInsets.only(top: 12),
                           child: Text(
-                              'The shown amount represents the total cost of your delivery.',
+                              'The shown amount represents the total cost of your cart and delivery.',
                               style: TextStyle(
                                   fontFamily: 'MoveTextRegular',
                                   fontSize: 15,

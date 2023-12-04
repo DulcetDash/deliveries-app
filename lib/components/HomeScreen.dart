@@ -33,28 +33,8 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         refresher = 100;
       });
-      // OneSignal.initialize("40feab96-1690-4991-a5e4-78d4d383aaee");
-      // OneSignal.shared.setAppId("40feab96-1690-4991-a5e4-78d4d383aaee");
+
       initPlatformState();
-
-      // // The promptForPushNotificationsWithUserResponse function will show the iOS push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission
-      // OneSignal.shared
-      //     .promptUserForPushNotificationPermission()
-      //     .then((accepted) {
-      //   // print("Accepted permission: $accepted");
-      // });
-
-      // OneSignal.shared
-      //     .setSubscriptionObserver((OSSubscriptionStateChanges changes) {
-      //   // Will be called whenever the subscription changes
-      //   // (ie. user gets registered with OneSignal and gets a user ID)
-      //   // print(changes);
-      // });
-      // OneSignal.shared.getDeviceState().then((deviceState) {
-      //   // context.read<HomeProvider>().updatePushnotification_token(
-      //   //     data: json.decode(deviceState?.jsonRepresentation() as String));
-      //   print("DeviceState: ${deviceState?.jsonRepresentation()}");
-      // });
     });
   }
 
@@ -67,19 +47,16 @@ class _HomeScreenState extends State<HomeScreen> {
     OneSignal.shared.setAppId("40feab96-1690-4991-a5e4-78d4d383aaee");
 
     // The promptForPushNotificationsWithUserResponse function will show the iOS push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission
-    // await OneSignal.shared.promptUserForPushNotificationPermission();
     OneSignal.shared.promptUserForPushNotificationPermission();
 
     OneSignal.shared
         .setSubscriptionObserver((OSSubscriptionStateChanges changes) {
       // Will be called whenever the subscription changes
       // (ie. user gets registered with OneSignal and gets a user ID)
-      // print(changes);
     });
     OneSignal.shared.getDeviceState().then((deviceState) {
       context.read<HomeProvider>().updatePushnotification_token(
           data: json.decode(deviceState?.jsonRepresentation() as String));
-      print("DeviceState: ${deviceState?.jsonRepresentation()}");
     });
   }
 
