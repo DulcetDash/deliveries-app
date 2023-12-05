@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dulcetdash/components/Helpers/ProductOptionsViewer.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -30,53 +31,6 @@ class _ProductViewState extends State<ProductView> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    //! Get the stores names
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      GetCatalogueL1(context: context);
-    });
-  }
-
-  Future GetCatalogueL1({required BuildContext context}) async {
-    //....
-    // Uri mainUrl = Uri.parse(Uri.encodeFull(
-    //     '${context.read<HomeProvider>().bridge}/getCatalogueFor'));
-
-    // //Assemble the bundle data
-    // //* @param type: the type of request (past, scheduled, business)
-    // Map<String, String> bundleData = {
-    //   'store': context.read<HomeProvider>().selected_store['store_fp'],
-    //   'structured': 'true'
-    // };
-
-    // try {
-    //   http.Response response = await http.post(mainUrl, body: bundleData);
-
-    //   if (response.statusCode == 200) //Got some results
-    //   {
-    //     // log(response.body.toString());
-    //     Map tmpResponse = json.decode(response.body);
-    //     // log(tmpResponse['response']['WOMEN'].toString());
-    //     //? Update
-    //     context
-    //         .read<HomeProvider>()
-    //         .updateCatalogueLevel1_structured(data: tmpResponse['response']);
-    //     setState(() {
-    //       isLoading = false;
-    //     });
-    //   } else //Has some errors
-    //   {
-    //     log(response.toString());
-    //     Timer(const Duration(milliseconds: 500), () {
-    //       GetCatalogueL1(context: context);
-    //     });
-    //   }
-    // } catch (e) {
-    //   log('8');
-    //   log(e.toString());
-    //   Timer(const Duration(milliseconds: 500), () {
-    //     GetCatalogueL1(context: context);
-    //   });
-    // }
   }
 
   @override
@@ -178,6 +132,7 @@ class ShowProductMain extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
         child: ProductDisplayModel(
+          productData: productData,
           productImage: productData['pictures'][0].runtimeType.toString() ==
                   'List<dynamic>'
               ? productData['pictures'][0][0]
@@ -195,9 +150,11 @@ class ProductDisplayModel extends StatelessWidget {
   final String productImage;
   final String productName;
   final String productPrice;
+  final Map productData;
 
   const ProductDisplayModel(
       {Key? key,
+      required this.productData,
       required this.productImage,
       required this.productName,
       required this.productPrice})
@@ -206,13 +163,12 @@ class ProductDisplayModel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // color: Colors.red,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Padding(
           padding: const EdgeInsets.only(bottom: 35),
           child: SizedBox(
             width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height * 0.26,
+            height: MediaQuery.of(context).size.height * 0.24,
             child: CachedNetworkImage(
               fit: BoxFit.contain,
               imageUrl: productImage,
@@ -245,6 +201,22 @@ class ProductDisplayModel extends StatelessWidget {
               maxLines: 5,
               style: TextStyle(fontFamily: 'MoveTextBold', fontSize: 19)),
         ),
+        Visibility(
+          visible: productData['description'] != null &&
+              productData['description'].toString().trim().length > 0,
+          child: SizedBox(
+            height: 10,
+          ),
+        ),
+        Visibility(
+          visible: productData['description'] != null &&
+              productData['description'].toString().trim().length > 0,
+          child: Text(productData['description'].toString(),
+              style: TextStyle(
+                  fontSize: 16,
+                  fontFamily: 'MoveText',
+                  color: AppTheme().getGenericDarkGrey())),
+        ),
         SizedBox(
           height: 25,
         ),
@@ -268,6 +240,10 @@ class ProductDisplayModel extends StatelessWidget {
                     fontSize: 21,
                     color: AppTheme().getPrimaryColor())),
           ],
+        ),
+        Divider(),
+        ProductOptionsViewer(
+          productData: productData,
         ),
         Expanded(child: Text('')),
         Visibility(
