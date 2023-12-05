@@ -102,7 +102,7 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
       return Row(
         children: [
           Text(
-            'Tamanho: ',
+            'Tamanho:',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           Text(productData['options']['name'].toString()),
