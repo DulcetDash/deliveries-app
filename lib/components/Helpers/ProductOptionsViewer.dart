@@ -1,3 +1,4 @@
+import 'package:dulcetdash/components/Helpers/AppTheme.dart';
 import 'package:dulcetdash/components/Helpers/DataParser.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -24,14 +25,6 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
     if (productData['options'].runtimeType == Map) {
       return;
     }
-    // for (String key in allowedKeys) {
-    //   if (productData['options'][key] != null &&
-    //       productData['options'][key].isNotEmpty) {
-    //     // Auto-select the first option for each key
-    //     pizzaSelectedOptions[key] = productData['options'][key][0];
-    //   }
-    // }
-
     // Additional auto-selection based on specific criteria
     _autoSelectOptionByName('size', 'standard pizza (23cm)');
     _autoSelectOptionByName('base', 'original');
@@ -63,14 +56,18 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        color: Colors.blue, height: 120, child: getFirstLineOptions());
+    return Container(height: 120, child: getFirstLineOptions());
   }
 
   Widget getFirstLineOptions() {
     //Check if the options are for a pizza or other products
     var isPizza = productData['options'].containsKey('size');
+    bool isEmpty = mapEquals({}, productData['options']);
     var productOptions = productData['options'];
+
+    if (isEmpty) {
+      return SizedBox.shrink();
+    }
 
     if (isPizza) {
       final Map<String, dynamic> filteredMap = Map.fromIterable(
@@ -82,36 +79,39 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
       print(pizzaSelectedOptions);
 
       return Container(
-        color: Colors.red,
+        // color: Colors.red,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             for (String key in allowedKeys)
               if (pizzaSelectedOptions.containsKey(key))
                 _buildOptionRow(key, pizzaSelectedOptions[key]),
-            TextButton(
-                onPressed: () {
-                  // Show the modal to change options
-                  print('Show modal');
-                },
-                child: Text('Change')),
+            InkWell(
+              onTap: () {
+                print('Change options');
+              },
+              child: Row(
+                children: [
+                  Text(
+                    'Change',
+                    style: TextStyle(
+                        fontFamily: 'MoveText',
+                        color: AppTheme().getSecondaryColor(),
+                        fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    size: 16,
+                    color: AppTheme().getSecondaryColor(),
+                  ),
+                ],
+              ),
+            )
           ],
         ),
       );
     } else {
-      return Row(
-        children: [
-          Text(
-            'Tamanho:',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          Text(productData['options']['name'].toString()),
-          Text(
-            ' - R\$ ${productData['options']['price'].toString()}',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ],
-      );
+      return const SizedBox.shrink();
     }
   }
 
@@ -119,25 +119,38 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
     return Flexible(
       flex: 1,
       child: Container(
-        color: Colors.green,
+        decoration: BoxDecoration(
+          border: Border.all(color: AppTheme().getGenericDarkGrey()),
+          borderRadius: BorderRadius.circular(10),
+        ),
         width: MediaQuery.of(context).size.width /
             (pizzaSelectedOptions.keys.length * 1.5),
-        child: Column(
-          children: [
-            Text(
-              '${dataParser.capitalizeWords(mainKey)}',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Text(
-              dataParser.capitalizeWords(option['name'].toString()),
-              textAlign: TextAlign.center,
-            ),
-            Expanded(child: SizedBox.shrink()),
-            Text(
-              'N\$ ${option['price'].toString()}',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Column(
+            children: [
+              Text(
+                dataParser.capitalizeWords(mainKey),
+                style:
+                    const TextStyle(fontFamily: 'MoveTextBold', fontSize: 17),
+              ),
+              Text(
+                dataParser.capitalizeWords(option['name'].toString()),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontFamily: 'MoveText',
+                    color: AppTheme().getGenericDarkGrey()),
+              ),
+              const Expanded(child: SizedBox.shrink()),
+              Text(
+                'N\$${option['price'].toString()}',
+                style: TextStyle(
+                    fontFamily: 'MoveTextMedium',
+                    fontSize: 17,
+                    color: AppTheme().getSecondaryColor()),
+              ),
+            ],
+          ),
         ),
       ),
     );

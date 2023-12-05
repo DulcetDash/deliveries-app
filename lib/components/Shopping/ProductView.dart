@@ -224,7 +224,7 @@ class ProductDisplayModel extends StatelessWidget {
           'generic_text.information'.tr(),
           style: TextStyle(fontFamily: 'MoveTextMedium', fontSize: 16),
         ),
-        SizedBox(
+        const SizedBox(
           height: 15,
         ),
         Row(
@@ -241,7 +241,12 @@ class ProductDisplayModel extends StatelessWidget {
                     color: AppTheme().getPrimaryColor())),
           ],
         ),
-        Divider(),
+        Visibility(
+          visible: !mapEquals({}, productData['options']),
+          child: const Divider(
+            height: 25,
+          ),
+        ),
         ProductOptionsViewer(
           productData: productData,
         ),
