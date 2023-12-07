@@ -1,7 +1,9 @@
 import 'package:dulcetdash/components/Helpers/AppTheme.dart';
 import 'package:dulcetdash/components/Helpers/DataParser.dart';
+import 'package:dulcetdash/components/Modules/GenericRectButton/GenericRectButton.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class ProductOptionsViewer extends StatefulWidget {
   final Map productData;
@@ -59,6 +61,12 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
     return Container(height: 120, child: getFirstLineOptions());
   }
 
+  void updateSelectedOption(String key, dynamic selectedOption) {
+    setState(() {
+      pizzaSelectedOptions[key] = selectedOption;
+    });
+  }
+
   Widget getFirstLineOptions() {
     //Check if the options are for a pizza or other products
     var isPizza = productData['options'].containsKey('size');
@@ -76,8 +84,6 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
         value: (key) => productOptions[key],
       );
 
-      print(pizzaSelectedOptions);
-
       return Container(
         // color: Colors.red,
         child: Row(
@@ -88,7 +94,14 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
                 _buildOptionRow(key, pizzaSelectedOptions[key]),
             InkWell(
               onTap: () {
-                print('Change options');
+                showMaterialModalBottomSheet(
+                  backgroundColor: Colors.white,
+                  expand: false,
+                  bounce: true,
+                  duration: Duration(milliseconds: 250),
+                  context: context,
+                  builder: (context) => LocalModalPizza(pizzaSelectedOptions),
+                );
               },
               child: Row(
                 children: [
@@ -153,6 +166,101 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget LocalModalPizza(pizzaSelectedOptionsAlpha) {
+    var productOptions = productData['options'];
+    final Map<String, dynamic> filteredMap = Map.fromIterable(
+      productOptions.keys.where((key) => allowedKeys.contains(key)),
+      key: (key) => key,
+      value: (key) => productOptions[key],
+    );
+
+    print(filteredMap);
+
+    return SafeArea(
+      child: Container(
+          height: MediaQuery.of(context).size.height * 0.75,
+          child: Padding(
+            padding: EdgeInsets.only(left: 20, right: 20),
+            child: ListView(
+              children: [
+                for (String key in allowedKeys)
+                  if (pizzaSelectedOptionsAlpha.containsKey(key))
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          dataParser.capitalizeWords(key),
+                          style: TextStyle(
+                              fontFamily: 'MoveTextBold',
+                              fontSize: 20,
+                              color: AppTheme().getGenericDarkGrey()),
+                        ),
+                        Divider(),
+                        ListView.separated(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: filteredMap[key].length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              contentPadding: EdgeInsets.zero,
+                              minVerticalPadding: 0,
+                              onTap: () {
+                                // setState(() {
+                                //   pizzaSelectedOptions[key] =
+                                //       filteredMap[key][index];
+                                // });
+                                updateSelectedOption(
+                                    key, filteredMap[key][index]);
+                                // print(pizzaSelectedOptionsAlpha[key]);
+                              },
+                              leading: Icon(
+                                Icons.check_circle,
+                                color: pizzaSelectedOptionsAlpha[key]['name'] ==
+                                        filteredMap[key][index]['name']
+                                    ? AppTheme().getPrimaryColor()
+                                    : Colors.red,
+                              ),
+                              title: Text(
+                                dataParser.capitalizeWords(
+                                    filteredMap[key][index]['name']),
+                                style: TextStyle(
+                                    fontFamily: 'MoveText', fontSize: 17),
+                              ),
+                              trailing: Text(
+                                'N\$${filteredMap[key][index]['price'].toString()}',
+                                style: TextStyle(
+                                    fontFamily: 'MoveText',
+                                    fontSize: 18,
+                                    color: AppTheme().getPrimaryColor()),
+                              ),
+                            );
+                          },
+                          separatorBuilder: (context, index) => Divider(
+                            height: 0,
+                          ),
+                        ),
+                        Divider(
+                          height: 35,
+                          color: Colors.white,
+                        )
+                      ],
+                    ),
+                Expanded(child: SizedBox.shrink()),
+                GenericRectButton(
+                  label: 'Button',
+                  labelFontSize: 20,
+                  horizontalPadding: 0,
+                  actuatorFunctionl: () {
+                    Navigator.of(context).pop();
+                  },
+                  isArrowShow: false,
+                )
+              ],
+            ),
+          )),
     );
   }
 }
