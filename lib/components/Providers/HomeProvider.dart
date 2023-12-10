@@ -19,7 +19,7 @@ import 'package:collection/collection.dart';
 // Will hold all the home related globals - only!
 
 class HomeProvider with ChangeNotifier {
-  final String bridge = 'http://172.20.10.2:9697';
+  final String bridge = 'http://192.168.178.93:9697';
   // final String bridge = 'https://api.dulcetdash.com';
 
   String selectedService =
@@ -229,6 +229,14 @@ class HomeProvider with ChangeNotifier {
   Map<String, dynamic> walletData = {"balance": 0, "transactionHistory": []};
 
   String preferredPaymentMethod = 'wallet'; //wallet or cash
+
+  bool testOptions = false;
+  Map<String, dynamic> globalSelectedOptions = {};
+
+  void updateTestOptions() {
+    testOptions = !testOptions;
+    notifyListeners();
+  }
 
   //The higher order absolute class
   Future<String> get _localPath async {
@@ -474,9 +482,39 @@ class HomeProvider with ChangeNotifier {
     //! Add the item number if not set
     product['items'] = product['items'] != null ? product['items'] : 1;
     //...
-    CART.add(product);
-    // print(CART);
+    Map<String, dynamic> updatedProduct =
+        updateProductPriceAndOptions(product: product);
+
+    CART.add(updatedProduct);
     notifyListeners();
+  }
+
+  Map<String, dynamic> updateProductPriceAndOptions(
+      {required Map<String, dynamic> product}) {
+    try {
+      //Check if the product has options, if yes update the prices.
+      Map<dynamic, dynamic> options =
+          Map.from(globalSelectedOptions[product['id']]);
+
+      if (options != null) {
+        double newProductPrice = 0;
+        //1. PIZZAS
+        if (options.containsKey('size')) {
+          options.forEach((key, value) {
+            newProductPrice += double.parse(options[key]['price']);
+          });
+
+          product['price'] = newProductPrice.toStringAsFixed(2);
+          product['selectedOptions'] = {};
+          product['selectedOptions'] = options;
+        }
+      }
+
+      return product;
+    } catch (e) {
+      print(e);
+      return product;
+    }
   }
 
   //?6.b Remove product from cart
@@ -497,7 +535,6 @@ class HomeProvider with ChangeNotifier {
 
   //?7. Check if a product is in the cart
   bool isProductInCart({required Map<String, dynamic> product}) {
-    // print(CART.contains(product));
     Map<String, dynamic> checker = CART.firstWhere(
         (element) =>
             element['name'] == product['name'] &&
@@ -1489,6 +1526,30 @@ class HomeProvider with ChangeNotifier {
 
   void updatePreferredPaymentMethod({required String method}) {
     preferredPaymentMethod = method;
+    notifyListeners();
+  }
+
+  //?Options management
+  bool doesOptionsKeyExistForProduct(String productId) {
+    return globalSelectedOptions.containsKey(productId);
+  }
+
+  void addOptionsKeyForProductToGlobals(String productId) {
+    globalSelectedOptions[productId] = {};
+    // notifyListeners();
+  }
+
+  void updateOptionKeyForProductInGlobals(
+      {required String productId, required String key, required value}) {
+    globalSelectedOptions[productId] ??= {};
+
+    globalSelectedOptions[productId]!.addEntries([
+      MapEntry(key, value),
+    ]);
+
+    //! Updated the current selected product
+    selectedProduct = updateProductPriceAndOptions(product: selectedProduct);
+
     notifyListeners();
   }
 }

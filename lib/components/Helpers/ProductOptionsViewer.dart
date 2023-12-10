@@ -1,9 +1,11 @@
 import 'package:dulcetdash/components/Helpers/AppTheme.dart';
 import 'package:dulcetdash/components/Helpers/DataParser.dart';
 import 'package:dulcetdash/components/Modules/GenericRectButton/GenericRectButton.dart';
+import 'package:dulcetdash/components/Providers/HomeProvider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:provider/provider.dart';
 
 class ProductOptionsViewer extends StatefulWidget {
   final Map productData;
@@ -28,7 +30,7 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
       return;
     }
     // Additional auto-selection based on specific criteria
-    _autoSelectOptionByName('size', 'standard pizza (23cm)');
+    _autoSelectOptionByName('size', 'real deal pizza (19cm)');
     _autoSelectOptionByName('base', 'original');
     _autoSelectOptionByName('cheese', 'normal cheese');
 
@@ -44,7 +46,8 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
       );
 
       if (autoSelectedOption != null) {
-        pizzaSelectedOptions[key] = autoSelectedOption;
+        context.read<HomeProvider>().updateOptionKeyForProductInGlobals(
+            productId: productData['id'], key: key, value: autoSelectedOption);
       }
     }
   }
@@ -53,7 +56,17 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _pizzaAutoSelectOptions();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (context
+          .read<HomeProvider>()
+          .doesOptionsKeyExistForProduct(productData['id'])) {
+        context
+            .read<HomeProvider>()
+            .addOptionsKeyForProductToGlobals(productData['id']);
+      }
+
+      _pizzaAutoSelectOptions();
+    });
   }
 
   @override
@@ -62,9 +75,8 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
   }
 
   void updateSelectedOption(String key, dynamic selectedOption) {
-    setState(() {
-      pizzaSelectedOptions[key] = selectedOption;
-    });
+    context.read<HomeProvider>().updateOptionKeyForProductInGlobals(
+        productId: productData['id'], key: key, value: selectedOption);
   }
 
   Widget getFirstLineOptions() {
@@ -85,13 +97,19 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
       );
 
       return Container(
-        // color: Colors.red,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             for (String key in allowedKeys)
-              if (pizzaSelectedOptions.containsKey(key))
-                _buildOptionRow(key, pizzaSelectedOptions[key]),
+              if (context
+                  .watch<HomeProvider>()
+                  .globalSelectedOptions[productData['id']]
+                  .containsKey(key))
+                _buildOptionRow(
+                    key,
+                    context
+                        .watch<HomeProvider>()
+                        .globalSelectedOptions[productData['id']][key]),
             InkWell(
               onTap: () {
                 showMaterialModalBottomSheet(
@@ -100,7 +118,7 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
                   bounce: true,
                   duration: Duration(milliseconds: 250),
                   context: context,
-                  builder: (context) => LocalModalPizza(pizzaSelectedOptions),
+                  builder: (context) => LocalModalPizza(),
                 );
               },
               child: Row(
@@ -137,7 +155,12 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
           borderRadius: BorderRadius.circular(10),
         ),
         width: MediaQuery.of(context).size.width /
-            (pizzaSelectedOptions.keys.length * 1.5),
+            (context
+                    .watch<HomeProvider>()
+                    .globalSelectedOptions[productData['id']]
+                    .keys
+                    .length *
+                1.5),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: Column(
@@ -158,7 +181,7 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
               Text(
                 'N\$${option['price'].toString()}',
                 style: TextStyle(
-                    fontFamily: 'MoveTextMedium',
+                    fontFamily: 'MoveTextRegular',
                     fontSize: 17,
                     color: AppTheme().getSecondaryColor()),
               ),
@@ -169,7 +192,7 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
     );
   }
 
-  Widget LocalModalPizza(pizzaSelectedOptionsAlpha) {
+  Widget LocalModalPizza() {
     var productOptions = productData['options'];
     final Map<String, dynamic> filteredMap = Map.fromIterable(
       productOptions.keys.where((key) => allowedKeys.contains(key)),
@@ -177,17 +200,18 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
       value: (key) => productOptions[key],
     );
 
-    print(filteredMap);
-
     return SafeArea(
       child: Container(
           height: MediaQuery.of(context).size.height * 0.75,
           child: Padding(
-            padding: EdgeInsets.only(left: 20, right: 20),
+            padding: const EdgeInsets.only(left: 20, right: 20),
             child: ListView(
               children: [
                 for (String key in allowedKeys)
-                  if (pizzaSelectedOptionsAlpha.containsKey(key))
+                  if (context
+                      .watch<HomeProvider>()
+                      .globalSelectedOptions[productData['id']]
+                      .containsKey(key))
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -198,9 +222,9 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
                               fontSize: 20,
                               color: AppTheme().getGenericDarkGrey()),
                         ),
-                        Divider(),
+                        const Divider(),
                         ListView.separated(
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           itemCount: filteredMap[key].length,
                           itemBuilder: (context, index) {
@@ -208,25 +232,26 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
                               contentPadding: EdgeInsets.zero,
                               minVerticalPadding: 0,
                               onTap: () {
-                                // setState(() {
-                                //   pizzaSelectedOptions[key] =
-                                //       filteredMap[key][index];
-                                // });
                                 updateSelectedOption(
                                     key, filteredMap[key][index]);
-                                // print(pizzaSelectedOptionsAlpha[key]);
+                                context
+                                    .read<HomeProvider>()
+                                    .updateTestOptions();
                               },
                               leading: Icon(
                                 Icons.check_circle,
-                                color: pizzaSelectedOptionsAlpha[key]['name'] ==
+                                color: context
+                                                .watch<HomeProvider>()
+                                                .globalSelectedOptions[
+                                            productData['id']][key]['name'] ==
                                         filteredMap[key][index]['name']
                                     ? AppTheme().getPrimaryColor()
-                                    : Colors.red,
+                                    : Colors.grey.shade300,
                               ),
                               title: Text(
                                 dataParser.capitalizeWords(
                                     filteredMap[key][index]['name']),
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontFamily: 'MoveText', fontSize: 17),
                               ),
                               trailing: Text(
@@ -238,19 +263,19 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
                               ),
                             );
                           },
-                          separatorBuilder: (context, index) => Divider(
+                          separatorBuilder: (context, index) => const Divider(
                             height: 0,
                           ),
                         ),
-                        Divider(
+                        const Divider(
                           height: 35,
                           color: Colors.white,
                         )
                       ],
                     ),
-                Expanded(child: SizedBox.shrink()),
+                const Expanded(child: SizedBox.shrink()),
                 GenericRectButton(
-                  label: 'Button',
+                  label: 'Done',
                   labelFontSize: 20,
                   horizontalPadding: 0,
                   actuatorFunctionl: () {
