@@ -242,7 +242,8 @@ class ProductDisplayModel extends StatelessWidget {
           ],
         ),
         Visibility(
-          visible: !mapEquals({}, productData['options']),
+          visible: !context.read<HomeProvider>().areProductOptionsEmptyFor(
+              product: productData as Map<String, dynamic>),
           child: const Divider(
             height: 25,
           ),

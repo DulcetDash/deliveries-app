@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dulcetdash/components/Helpers/AppTheme.dart';
 import 'package:dulcetdash/components/Helpers/DataParser.dart';
 import 'package:dulcetdash/components/Modules/GenericRectButton/GenericRectButton.dart';
@@ -6,6 +7,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:badges/badges.dart' as badges;
 
 class ProductOptionsViewer extends StatefulWidget {
   final Map productData;
@@ -81,11 +84,12 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
 
   Widget getFirstLineOptions() {
     //Check if the options are for a pizza or other products
-    var isPizza = productData['options'].containsKey('size');
-    bool isEmpty = mapEquals({}, productData['options']);
+    var isPizza = productData['options'] is Map &&
+        productData['options'].containsKey('size');
     var productOptions = productData['options'];
 
-    if (isEmpty) {
+    if (context.read<HomeProvider>().areProductOptionsEmptyFor(
+        product: productData as Map<String, dynamic>)) {
       return SizedBox.shrink();
     }
 
@@ -142,8 +146,110 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
         ),
       );
     } else {
-      return const SizedBox.shrink();
+      return Container(
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        for (var option in productOptions)
+          _buildGenericFastFoodOptionRow(option['title'], option),
+        Visibility(
+            visible: productOptions.length <= 2,
+            child: Flexible(
+                flex: 1,
+                child: Container(
+                    width: MediaQuery.of(context).size.width / (3 * 1.5),
+                    child: Opacity(opacity: 0, child: Text('change')))))
+      ]));
     }
+  }
+
+  Widget _buildGenericFastFoodOptionRow(
+      String mainKey, Map<String, dynamic> option) {
+    bool isSelected = context.watch<HomeProvider>().isGenericOptionSelected(
+        product: productData as Map<String, dynamic>, option: option);
+    return Flexible(
+      flex: 1,
+      child: InkWell(
+        onTap: () => context
+            .read<HomeProvider>()
+            .toggleGenericFastFoodProductOptions(
+                product: productData as Map<String, dynamic>, option: option),
+        child: badges.Badge(
+          badgeContent: isSelected
+              ? Icon(
+                  Icons.check,
+                  color: Colors.white,
+                  size: 20,
+                )
+              : null,
+          badgeStyle: badges.BadgeStyle(
+            badgeColor:
+                isSelected ? AppTheme().getSecondaryColor() : Colors.white,
+          ),
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                  width: isSelected ? 2.5 : 1,
+                  color: isSelected
+                      ? AppTheme().getSecondaryColor()
+                      : AppTheme().getGenericDarkGrey()),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            width: MediaQuery.of(context).size.width /
+                (productData['options'].length * 1.5),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 0),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: 55,
+                      child: CachedNetworkImage(
+                        fit: BoxFit.contain,
+                        imageUrl: option['image'] is List
+                            ? option['image'][0]
+                            : 'null',
+                        progressIndicatorBuilder:
+                            (context, url, downloadProgress) => SizedBox(
+                          child: Shimmer.fromColors(
+                            baseColor: Colors.grey.shade300,
+                            highlightColor: Colors.grey.shade100,
+                            child: Container(
+                              height: 55.0,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => const Icon(
+                          Icons.photo,
+                          size: 15,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const Expanded(child: SizedBox.shrink()),
+                  Text(
+                    dataParser.capitalizeWords(mainKey),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontFamily: 'MoveTextMedium', fontSize: 14),
+                  ),
+                  Text(
+                    'N\$${option['price'].toString()}',
+                    style: TextStyle(
+                        fontFamily: 'MoveTextRegular',
+                        fontSize: 17,
+                        color: AppTheme().getSecondaryColor()),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _buildOptionRow(String mainKey, Map<String, dynamic> option) {

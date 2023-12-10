@@ -19,7 +19,7 @@ import 'package:collection/collection.dart';
 // Will hold all the home related globals - only!
 
 class HomeProvider with ChangeNotifier {
-  final String bridge = 'http://192.168.178.93:9697';
+  final String bridge = 'http://172.20.10.2:9697';
   // final String bridge = 'https://api.dulcetdash.com';
 
   String selectedService =
@@ -1551,5 +1551,49 @@ class HomeProvider with ChangeNotifier {
     selectedProduct = updateProductPriceAndOptions(product: selectedProduct);
 
     notifyListeners();
+  }
+
+  bool areProductOptionsEmptyFor({required Map<String, dynamic> product}) {
+    return (product['options'] is List || product['options'] is Map)
+        ? product['options'].isEmpty
+        : false;
+  }
+
+  void toggleGenericFastFoodProductOptions(
+      {required Map<String, dynamic> product,
+      required Map<String, dynamic> option}) {
+    globalSelectedOptions[product['id']] ??= [];
+
+    List currentSelectedOptions =
+        List.from(globalSelectedOptions[product['id']]);
+    currentSelectedOptions
+        .removeWhere((element) => element['title'] != option['title']);
+
+    if (currentSelectedOptions.isNotEmpty) //Element was already selected
+    {
+      List selectedThisOptions =
+          List.from(globalSelectedOptions[product['id']]);
+      selectedThisOptions
+          .removeWhere((element) => element['title'] == option['title']);
+      globalSelectedOptions[product['id']] = selectedThisOptions;
+    } else //Not yet selected
+    {
+      globalSelectedOptions[product['id']].add(option);
+    }
+
+    notifyListeners();
+  }
+
+  bool isGenericOptionSelected(
+      {required Map<String, dynamic> product,
+      required Map<String, dynamic> option}) {
+    globalSelectedOptions[product['id']] ??= [];
+
+    List currentSelectedOptions =
+        List.from(globalSelectedOptions[product['id']]);
+    currentSelectedOptions
+        .removeWhere((element) => element['title'] != option['title']);
+
+    return currentSelectedOptions.isNotEmpty;
   }
 }
