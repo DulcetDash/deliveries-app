@@ -578,10 +578,11 @@ class HomeProvider with ChangeNotifier {
     double total = 0;
 
     CART.forEach((element) {
-      double tmpPrice = double.parse(
-          pricingToolbox(currentPrice: element['price'], multiplier: 1)
-              .toString()
-              .replaceFirst('N\$', ''));
+      double tmpPrice = double.parse(pricingToolbox(
+              currentPrice: element['priceWithOptions'] ?? element['price'],
+              multiplier: 1)
+          .toString()
+          .replaceFirst('N\$', ''));
       total += tmpPrice;
     });
 
