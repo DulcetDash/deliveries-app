@@ -2002,7 +2002,7 @@ class ProductModel extends StatelessWidget {
                   height: 10,
                 ),
                 Text(
-                  'N\$${productData['price']} • ${getItemsNumber()}',
+                  'N\$${productData['priceWithOptions'] ?? productData['price']} • ${getItemsNumber()}',
                   style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
                 ),
                 const Divider(
