@@ -233,11 +233,6 @@ class HomeProvider with ChangeNotifier {
   bool testOptions = false;
   Map<String, dynamic> globalSelectedOptions = {};
 
-  void updateTestOptions() {
-    testOptions = !testOptions;
-    notifyListeners();
-  }
-
   //The higher order absolute class
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
@@ -492,27 +487,60 @@ class HomeProvider with ChangeNotifier {
   Map<String, dynamic> updateProductPriceAndOptions(
       {required Map<String, dynamic> product}) {
     try {
-      //Check if the product has options, if yes update the prices.
-      Map<dynamic, dynamic> options =
-          Map.from(globalSelectedOptions[product['id']]);
+      if (product['options'] is Map) {
+        //Check if the product has options, if yes update the prices.
+        Map<dynamic, dynamic> options =
+            Map.from(globalSelectedOptions[product['id']]);
 
-      if (options != null) {
-        double newProductPrice = 0;
-        //1. PIZZAS
-        if (options.containsKey('size')) {
-          options.forEach((key, value) {
-            newProductPrice += double.parse(options[key]['price']);
-          });
+        if (options != null) {
+          double newProductPrice = 0;
+          //1. PIZZAS
+          if (options.containsKey('size')) {
+            options.forEach((key, value) {
+              newProductPrice += double.parse(options[key]['price']);
+            });
 
-          product['price'] = newProductPrice.toStringAsFixed(2);
-          product['selectedOptions'] = {};
+            product['priceWithOptions'] = newProductPrice.toStringAsFixed(2);
+            product['selectedOptions'] = {};
+            product['selectedOptions'] = options;
+          }
+        }
+
+        return product;
+      } else if (product['options'] is List) {
+        //Check if the product has options, if yes update the prices.
+        List options = List.from(globalSelectedOptions[product['id']]);
+
+        if (options != null) {
+          double newProductPrice = double.parse(product['price']);
+
+          //2. GENERIC FAST FOOD
+          for (var value in options) {
+            if (value['isPriceTotal']) {
+              //!Take the highest price
+              var highestOption = options.reduce((max, current) {
+                final double maxPrice = double.parse(max['price']!);
+                final double currentPrice = double.parse(current['price']!);
+                return currentPrice > maxPrice ? current : max;
+              });
+              newProductPrice = double.parse(highestOption['price']);
+            } else {
+              newProductPrice += double.parse(value['price']);
+            }
+          }
+
+          product['priceWithOptions'] = newProductPrice.toStringAsFixed(2);
+          product['selectedOptions'] = [];
           product['selectedOptions'] = options;
         }
-      }
 
-      return product;
-    } catch (e) {
+        return product;
+      } else {
+        return product;
+      }
+    } catch (e, s) {
       print(e);
+      print(s);
       return product;
     }
   }
@@ -1534,9 +1562,12 @@ class HomeProvider with ChangeNotifier {
     return globalSelectedOptions.containsKey(productId);
   }
 
-  void addOptionsKeyForProductToGlobals(String productId) {
-    globalSelectedOptions[productId] = {};
-    // notifyListeners();
+  void addOptionsKeyForProductToGlobals(
+      {required Map<String, dynamic> product}) {
+    if (product['options'] is List || product['options'] is Map) {
+      String productId = product['id'];
+      globalSelectedOptions[productId] = product['options'] is Map ? {} : [];
+    }
   }
 
   void updateOptionKeyForProductInGlobals(
@@ -1580,6 +1611,9 @@ class HomeProvider with ChangeNotifier {
     {
       globalSelectedOptions[product['id']].add(option);
     }
+
+    //! Updated the current selected product
+    selectedProduct = updateProductPriceAndOptions(product: selectedProduct);
 
     notifyListeners();
   }

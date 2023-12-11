@@ -41,6 +41,8 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
   }
 
   void _autoSelectOptionByName(String key, String optionName) {
+    if (productData['options'] is List) return;
+
     final options = productData['options'][key];
     if (options != null) {
       final autoSelectedOption = options.firstWhere(
@@ -63,9 +65,8 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
       if (context
           .read<HomeProvider>()
           .doesOptionsKeyExistForProduct(productData['id'])) {
-        context
-            .read<HomeProvider>()
-            .addOptionsKeyForProductToGlobals(productData['id']);
+        context.read<HomeProvider>().addOptionsKeyForProductToGlobals(
+            product: productData as Map<String, dynamic>);
       }
 
       _pizzaAutoSelectOptions();
@@ -157,7 +158,7 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
                 flex: 1,
                 child: Container(
                     width: MediaQuery.of(context).size.width / (3 * 1.5),
-                    child: Opacity(opacity: 0, child: Text('change')))))
+                    child: const Opacity(opacity: 0, child: Text('change')))))
       ]));
     }
   }
@@ -166,6 +167,7 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
       String mainKey, Map<String, dynamic> option) {
     bool isSelected = context.watch<HomeProvider>().isGenericOptionSelected(
         product: productData as Map<String, dynamic>, option: option);
+
     return Flexible(
       flex: 1,
       child: InkWell(
@@ -175,7 +177,7 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
                 product: productData as Map<String, dynamic>, option: option),
         child: badges.Badge(
           badgeContent: isSelected
-              ? Icon(
+              ? const Icon(
                   Icons.check,
                   color: Colors.white,
                   size: 20,
@@ -197,7 +199,7 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
             width: MediaQuery.of(context).size.width /
                 (productData['options'].length * 1.5),
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5),
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
               child: Column(
                 children: [
                   Padding(
@@ -233,6 +235,7 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
                   Text(
                     dataParser.capitalizeWords(mainKey),
                     textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                         fontFamily: 'MoveTextMedium', fontSize: 14),
                   ),
@@ -340,9 +343,6 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
                               onTap: () {
                                 updateSelectedOption(
                                     key, filteredMap[key][index]);
-                                context
-                                    .read<HomeProvider>()
-                                    .updateTestOptions();
                               },
                               leading: Icon(
                                 Icons.check_circle,

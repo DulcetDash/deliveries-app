@@ -138,7 +138,10 @@ class ShowProductMain extends StatelessWidget {
               ? productData['pictures'][0][0]
               : productData['pictures'][0],
           productName: productData['name'],
-          productPrice: productData['price'],
+          productPrice: context
+                  .watch<HomeProvider>()
+                  .selectedProduct['priceWithOptions'] ??
+              productData['price'],
         ),
       ),
     );
