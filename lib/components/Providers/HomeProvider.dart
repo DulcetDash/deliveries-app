@@ -469,6 +469,12 @@ class HomeProvider with ChangeNotifier {
   //?5. Update  the selected product to show
   void updateSelectedProduct({required Map<String, dynamic> data}) {
     selectedProduct = data;
+    //? If any option was selected if the item was in cart, updated the global selected.
+    if (isProductInCart(product: data) && data['options'] != null) {
+      globalSelectedOptions[data['id']] ??= data['options'] is List ? [] : {};
+      globalSelectedOptions[data['id']] = data['selectedOptions'];
+    }
+
     notifyListeners();
   }
 
@@ -1651,5 +1657,21 @@ class HomeProvider with ChangeNotifier {
     List unifiedList = unifiedSet.toList();
 
     return unifiedList;
+  }
+
+  dynamic getTrueOptionsFromAddedToCart(
+      {required Map<String, dynamic> product}) {
+    //Check if the item was added to cart
+    List copiedCart = List.from(CART);
+    copiedCart.removeWhere((element) => element['id'] != product['id']);
+
+    bool isItemInCart = copiedCart.isNotEmpty;
+
+    if (isItemInCart) {
+      return product['selectedOptions'];
+    } else //Item not in cart
+    {
+      return product['options'];
+    }
   }
 }

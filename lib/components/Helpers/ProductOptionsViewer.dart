@@ -29,7 +29,10 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
   _ProductOptionsViewerState({required this.productData});
 
   void _pizzaAutoSelectOptions() {
-    if (productData['options'].runtimeType == Map) {
+    if (productData['options'].runtimeType == Map ||
+        context
+            .read<HomeProvider>()
+            .isProductInCart(product: productData as Map<String, dynamic>)) {
       return;
     }
     // Additional auto-selection based on specific criteria
@@ -44,7 +47,10 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
     if (productData['options'] is List) return;
 
     final options = productData['options'][key];
-    if (options != null) {
+    if (options != null &&
+        context
+            .read<HomeProvider>()
+            .isProductInCart(product: productData as Map<String, dynamic>)) {
       final autoSelectedOption = options.firstWhere(
         (option) => option['name'] == optionName,
         orElse: () => null,
@@ -229,12 +235,15 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
                           contentPadding: EdgeInsets.zero,
                           minVerticalPadding: 0,
                           onTap: () {
-                            context
-                                .read<HomeProvider>()
-                                .toggleGenericFastFoodProductOptions(
-                                    product:
-                                        productData as Map<String, dynamic>,
-                                    option: productOptions[index]);
+                            if (!context.read<HomeProvider>().isProductInCart(
+                                product: productData as Map<String, dynamic>)) {
+                              context
+                                  .read<HomeProvider>()
+                                  .toggleGenericFastFoodProductOptions(
+                                      product:
+                                          productData as Map<String, dynamic>,
+                                      option: productOptions[index]);
+                            }
                           },
                           leading: Icon(
                             Icons.check_circle,
@@ -296,10 +305,14 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
     return Flexible(
       flex: 1,
       child: InkWell(
-        onTap: () => context
-            .read<HomeProvider>()
-            .toggleGenericFastFoodProductOptions(
-                product: productData as Map<String, dynamic>, option: option),
+        onTap: () {
+          if (!context
+              .read<HomeProvider>()
+              .isProductInCart(product: productData as Map<String, dynamic>)) {
+            context.read<HomeProvider>().toggleGenericFastFoodProductOptions(
+                product: productData as Map<String, dynamic>, option: option);
+          }
+        },
         child: badges.Badge(
           badgeContent: isSelected
               ? const Icon(
@@ -468,8 +481,14 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
                               contentPadding: EdgeInsets.zero,
                               minVerticalPadding: 0,
                               onTap: () {
-                                updateSelectedOption(
-                                    key, filteredMap[key][index]);
+                                if (!context
+                                    .read<HomeProvider>()
+                                    .isProductInCart(
+                                        product: productData
+                                            as Map<String, dynamic>)) {
+                                  updateSelectedOption(
+                                      key, filteredMap[key][index]);
+                                }
                               },
                               leading: Icon(
                                 Icons.check_circle,
