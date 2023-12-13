@@ -75,7 +75,9 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(height: 120, child: getFirstLineOptions());
+    return Container(
+        height: MediaQuery.of(context).size.height * 0.15,
+        child: getFirstLineOptions());
   }
 
   void updateSelectedOption(String key, dynamic selectedOption) {
@@ -150,8 +152,38 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
       return Container(
           child:
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        for (var option in productOptions)
+        for (var option in productOptions.sublist(0, 3))
           _buildGenericFastFoodOptionRow(option['title'], option),
+        Visibility(
+            visible: productOptions.length > 3,
+            child: InkWell(
+              onTap: () {
+                showMaterialModalBottomSheet(
+                  backgroundColor: Colors.white,
+                  expand: false,
+                  bounce: true,
+                  duration: Duration(milliseconds: 250),
+                  context: context,
+                  builder: (context) => LocalModalGeneric(),
+                );
+              },
+              child: Row(
+                children: [
+                  Text(
+                    'More',
+                    style: TextStyle(
+                        fontFamily: 'MoveText',
+                        color: AppTheme().getSecondaryColor(),
+                        fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    size: 16,
+                    color: AppTheme().getSecondaryColor(),
+                  ),
+                ],
+              ),
+            )),
         Visibility(
             visible: productOptions.length <= 2,
             child: Flexible(
@@ -161,6 +193,90 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
                     child: const Opacity(opacity: 0, child: Text('change')))))
       ]));
     }
+  }
+
+  Widget LocalModalGeneric() {
+    var productOptions = productData['options'];
+
+    return SafeArea(
+      child: Container(
+          height: MediaQuery.of(context).size.height * 0.75,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20),
+            child: ListView(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Customize your order',
+                      style: TextStyle(
+                          fontFamily: 'MoveTextBold',
+                          fontSize: 20,
+                          color: AppTheme().getGenericDarkGrey()),
+                    ),
+                    const Divider(),
+                    ListView.separated(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: productOptions.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          minVerticalPadding: 0,
+                          onTap: () {
+                            // updateSelectedOption(
+                            //     key, filteredMap[key][index]);
+                          },
+                          leading: Icon(
+                            Icons.check_circle,
+                            // color: context
+                            //                 .watch<HomeProvider>()
+                            //                 .globalSelectedOptions[
+                            //             productData['id']][key]['name'] ==
+                            //         filteredMap[key][index]['name']
+                            //     ? AppTheme().getPrimaryColor()
+                            //     : Colors.grey.shade300,
+                          ),
+                          title: Text(
+                            dataParser.capitalizeWords(
+                                productOptions[index]['title']),
+                            style: const TextStyle(
+                                fontFamily: 'MoveText', fontSize: 17),
+                          ),
+                          trailing: Text(
+                            'N\$${productOptions[index]['price'].toString()}',
+                            style: TextStyle(
+                                fontFamily: 'MoveText',
+                                fontSize: 18,
+                                color: AppTheme().getPrimaryColor()),
+                          ),
+                        );
+                      },
+                      separatorBuilder: (context, index) => const Divider(
+                        height: 0,
+                      ),
+                    ),
+                    const Divider(
+                      height: 35,
+                      color: Colors.white,
+                    )
+                  ],
+                ),
+                const Expanded(child: SizedBox.shrink()),
+                GenericRectButton(
+                  label: 'Done',
+                  labelFontSize: 20,
+                  horizontalPadding: 0,
+                  actuatorFunctionl: () {
+                    Navigator.of(context).pop();
+                  },
+                  isArrowShow: false,
+                )
+              ],
+            ),
+          )),
+    );
   }
 
   Widget _buildGenericFastFoodOptionRow(
@@ -196,37 +312,39 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
                       : AppTheme().getGenericDarkGrey()),
               borderRadius: BorderRadius.circular(10),
             ),
-            width: MediaQuery.of(context).size.width /
-                (productData['options'].length * 1.5),
+            width: MediaQuery.of(context).size.width / (3 * 1.5),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 0),
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      height: 55,
-                      child: CachedNetworkImage(
-                        fit: BoxFit.contain,
-                        imageUrl: option['image'] is List
-                            ? option['image'][0]
-                            : 'null',
-                        progressIndicatorBuilder:
-                            (context, url, downloadProgress) => SizedBox(
-                          child: Shimmer.fromColors(
-                            baseColor: Colors.grey.shade300,
-                            highlightColor: Colors.grey.shade100,
-                            child: Container(
-                              height: 55.0,
-                              color: Colors.white,
+                  Visibility(
+                    // visible: option['image'] != null,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 0),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: 55,
+                        child: CachedNetworkImage(
+                          fit: BoxFit.contain,
+                          imageUrl: option['image'] is List
+                              ? option['image'][0]
+                              : 'null',
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) => SizedBox(
+                            child: Shimmer.fromColors(
+                              baseColor: Colors.grey.shade300,
+                              highlightColor: Colors.grey.shade100,
+                              child: Container(
+                                height: 55.0,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
-                        ),
-                        errorWidget: (context, url, error) => const Icon(
-                          Icons.photo,
-                          size: 15,
-                          color: Colors.grey,
+                          errorWidget: (context, url, error) => const Icon(
+                            Icons.photo,
+                            size: 35,
+                            color: Colors.grey,
+                          ),
                         ),
                       ),
                     ),
@@ -235,7 +353,7 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
                   Text(
                     dataParser.capitalizeWords(mainKey),
                     textAlign: TextAlign.center,
-                    overflow: TextOverflow.ellipsis,
+                    overflow: TextOverflow.visible,
                     style: const TextStyle(
                         fontFamily: 'MoveTextMedium', fontSize: 14),
                   ),

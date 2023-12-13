@@ -19,7 +19,7 @@ import 'package:collection/collection.dart';
 // Will hold all the home related globals - only!
 
 class HomeProvider with ChangeNotifier {
-  final String bridge = 'http://172.20.10.2:9697';
+  final String bridge = 'http://192.168.178.93:9697';
   // final String bridge = 'https://api.dulcetdash.com';
 
   String selectedService =
