@@ -19,7 +19,7 @@ import 'package:collection/collection.dart';
 // Will hold all the home related globals - only!
 
 class HomeProvider with ChangeNotifier {
-  final String bridge = 'http://192.168.178.93:9697';
+  final String bridge = 'http://172.20.10.2:9697';
   // final String bridge = 'https://api.dulcetdash.com';
 
   String selectedService =
@@ -1630,5 +1630,26 @@ class HomeProvider with ChangeNotifier {
         .removeWhere((element) => element['title'] != option['title']);
 
     return currentSelectedOptions.isNotEmpty;
+  }
+
+  Map getSelectedGenericOptions({required Map<String, dynamic> product}) {
+    return globalSelectedOptions[product['id']] ?? [];
+  }
+
+  List getUnifiedArrayOfGenericOptions(
+      {required Map<String, dynamic> product}) {
+    // Create a set to store unique values
+    Set unifiedSet = {};
+
+    // Add selectedOptions to the set
+    unifiedSet.addAll(List.from(globalSelectedOptions[product['id']]));
+
+    // Add productOptions excluding duplicates
+    unifiedSet.addAll(List.from(product['options']));
+
+    // Convert the set back to a list
+    List unifiedList = unifiedSet.toList();
+
+    return unifiedList;
   }
 }

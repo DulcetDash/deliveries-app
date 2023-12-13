@@ -152,7 +152,11 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
       return Container(
           child:
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        for (var option in productOptions.sublist(0, 3))
+        for (var option in context
+            .watch<HomeProvider>()
+            .getUnifiedArrayOfGenericOptions(
+                product: productData as Map<String, dynamic>)
+            .sublist(0, 3))
           _buildGenericFastFoodOptionRow(option['title'], option),
         Visibility(
             visible: productOptions.length > 3,
@@ -225,18 +229,23 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
                           contentPadding: EdgeInsets.zero,
                           minVerticalPadding: 0,
                           onTap: () {
-                            // updateSelectedOption(
-                            //     key, filteredMap[key][index]);
+                            context
+                                .read<HomeProvider>()
+                                .toggleGenericFastFoodProductOptions(
+                                    product:
+                                        productData as Map<String, dynamic>,
+                                    option: productOptions[index]);
                           },
                           leading: Icon(
                             Icons.check_circle,
-                            // color: context
-                            //                 .watch<HomeProvider>()
-                            //                 .globalSelectedOptions[
-                            //             productData['id']][key]['name'] ==
-                            //         filteredMap[key][index]['name']
-                            //     ? AppTheme().getPrimaryColor()
-                            //     : Colors.grey.shade300,
+                            color: context
+                                    .watch<HomeProvider>()
+                                    .isGenericOptionSelected(
+                                        product:
+                                            productData as Map<String, dynamic>,
+                                        option: productOptions[index])
+                                ? AppTheme().getPrimaryColor()
+                                : Colors.grey.shade300,
                           ),
                           title: Text(
                             dataParser.capitalizeWords(
