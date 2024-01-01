@@ -19,7 +19,7 @@ import 'package:collection/collection.dart';
 // Will hold all the home related globals - only!
 
 class HomeProvider with ChangeNotifier {
-  final String bridge = 'http://192.168.178.93:9697';
+  final String bridge = 'http://172.20.10.2:9697';
   // final String bridge = 'https://api.dulcetdash.com';
 
   String selectedService =
@@ -230,6 +230,8 @@ class HomeProvider with ChangeNotifier {
 
   String preferredPaymentMethod = 'wallet'; //wallet or cash
 
+  List<dynamic> allowedServices = ['delivery']; //delivery, shopping
+
   bool testOptions = false;
   Map<String, dynamic> globalSelectedOptions = {};
 
@@ -360,7 +362,8 @@ class HomeProvider with ChangeNotifier {
       "user_identifier": user_identifier_deduced,
       "userData": userData,
       "pushnotif_token": pushnotif_token,
-      "didSelectLanguage": didSelectLanguage
+      "didSelectLanguage": didSelectLanguage,
+      "allowedServices": allowedServices
     };
   }
 
@@ -741,7 +744,12 @@ class HomeProvider with ChangeNotifier {
       userLocationDetails = newCurrentLocation;
       userLocationDetails['coordinates'] =
           userLocationCoords; //? Very important
+
+      allowedServices = newCurrentLocation['supported_services'];
+
       notifyListeners();
+
+      peristDataMap();
     }
   }
 
@@ -764,7 +772,6 @@ class HomeProvider with ChangeNotifier {
       {required String location_type, required Map<String, dynamic> location}) {
     if (location_type == 'pickup') {
       manuallySettedCurrentLocation_pickup = location;
-      log(location.toString());
       notifyListeners();
     } else if (location_type == 'dropoff') {
       manuallySettedCurrentLocation_dropoff = location;
@@ -777,7 +784,6 @@ class HomeProvider with ChangeNotifier {
       {required String location_type, required Map<String, dynamic> location}) {
     if (location_type == 'pickup') {
       delivery_pickup = location;
-      log(location.toString());
       notifyListeners();
     } else if (location_type == 'dropoff') {
       recipients_infos[selectedRecipient_index]['dropoff_location'] = location;

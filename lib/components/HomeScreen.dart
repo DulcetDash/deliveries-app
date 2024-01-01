@@ -96,68 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 left: 20,
                                 right: 20,
                                 top: MediaQuery.of(context).size.height * 0.04),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Shop seamlessly',
-                                  style: TextStyle(
-                                      fontFamily: 'MoveTextMedium',
-                                      fontSize: 27,
-                                      color: Colors.white),
-                                ),
-                                SizedBox(
-                                  height: 8,
-                                ),
-                                SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.68,
-                                  child: Text(
-                                    'home.subDescription'.tr(),
-                                    style: TextStyle(
-                                      height: 1.3,
-                                      fontSize: 16,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 14,
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    //!Cleanse
-                                    context
-                                        .read<HomeProvider>()
-                                        .clearEveryRequestsRelatedData();
-                                    //! Update the selected service
-                                    context
-                                        .read<HomeProvider>()
-                                        .updateSelectedService(
-                                            service: 'shopping');
-                                    //...
-                                    Navigator.of(context)
-                                        .pushNamed('/shopping');
-                                  },
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                        color: Colors.black,
-                                        borderRadius:
-                                            BorderRadius.circular(1000)),
-                                    width: 133,
-                                    height: 40,
-                                    child: Text(
-                                      'Shop now',
-                                      style: TextStyle(
-                                          fontFamily: 'MoveTextBold',
-                                          color: Colors.white,
-                                          fontSize: 18),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
+                            child: getCorrectShowcasePart(),
                           ),
                           // Expanded(child: SizedBox.shrink()),
                           Flexible(
@@ -188,9 +127,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(
                   height: 35,
                 ),
-                Divider(
-                  thickness: 10,
-                  color: Colors.grey.shade100,
+                Visibility(
+                  visible:
+                      !context.watch<HomeProvider>().allowedServices.isEmpty,
+                  child: Divider(
+                    thickness: 10,
+                    color: Colors.grey.shade100,
+                  ),
                 ),
                 SizedBox(
                   height: 30,
@@ -201,6 +144,156 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  Widget getCorrectShowcasePart() {
+    if (context.watch<HomeProvider>().allowedServices.contains('shopping')) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Shop seamlessly',
+            style: TextStyle(
+                fontFamily: 'MoveTextMedium',
+                fontSize: 27,
+                color: Colors.white),
+          ),
+          SizedBox(
+            height: 8,
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.68,
+            child: Text(
+              'home.subDescription'.tr(),
+              style: TextStyle(
+                height: 1.3,
+                fontSize: 16,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 14,
+          ),
+          InkWell(
+            onTap: () {
+              //!Cleanse
+              context.read<HomeProvider>().clearEveryRequestsRelatedData();
+              //! Update the selected service
+              context
+                  .read<HomeProvider>()
+                  .updateSelectedService(service: 'shopping');
+              //...
+              Navigator.of(context).pushNamed('/shopping');
+            },
+            child: Container(
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(1000)),
+              width: 133,
+              height: 40,
+              child: Text(
+                'Shop now',
+                style: TextStyle(
+                    fontFamily: 'MoveTextBold',
+                    color: Colors.white,
+                    fontSize: 18),
+              ),
+            ),
+          )
+        ],
+      );
+    }
+
+    //Delivery
+    if (context.watch<HomeProvider>().allowedServices.contains('delivery')) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Deliver with ease',
+            style: TextStyle(
+                fontFamily: 'MoveTextMedium',
+                fontSize: 27,
+                color: Colors.white),
+          ),
+          SizedBox(
+            height: 8,
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.68,
+            child: Text(
+              'home.subDescription'.tr(),
+              style: TextStyle(
+                height: 1.3,
+                fontSize: 16,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 14,
+          ),
+          InkWell(
+            onTap: () {
+              //!Cleanse
+              context.read<HomeProvider>().clearEveryRequestsRelatedData();
+              //! Update the selected service
+              context
+                  .read<HomeProvider>()
+                  .updateSelectedService(service: 'delivery');
+              //...
+              Navigator.of(context).pushNamed('/delivery_recipients');
+            },
+            child: Container(
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(1000)),
+              width: 170,
+              height: 40,
+              child: Text(
+                'Send a Package',
+                style: TextStyle(
+                    fontFamily: 'MoveTextBold',
+                    color: Colors.white,
+                    fontSize: 18),
+              ),
+            ),
+          )
+        ],
+      );
+    }
+
+    //Service unavailable
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Service unavailable',
+          style: TextStyle(
+              fontFamily: 'MoveTextMedium', fontSize: 27, color: Colors.white),
+        ),
+        SizedBox(
+          height: 8,
+        ),
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 0.68,
+          child: Text(
+            'We do not yet support this city, but will very soon!',
+            style: TextStyle(
+              height: 1.3,
+              fontSize: 16,
+              color: Colors.white,
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 14,
+        )
+      ],
+    );
+  }
 }
 
 //Quick access section
@@ -209,6 +302,10 @@ class QuickAccess extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (context.watch<HomeProvider>().allowedServices.isEmpty) {
+      return SizedBox.shrink();
+    }
+
     List recentData = context.watch<HomeProvider>().recentlyVisitedShops;
 
     return Expanded(
@@ -344,48 +441,59 @@ class ProductsSelection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (context.watch<HomeProvider>().allowedServices.isEmpty) {
+      return Container(
+        child: Text(
+          'DulcetDash not available in ${context.read<HomeProvider>().userLocationDetails['city']} yet :(',
+          style: TextStyle(fontSize: 17),
+        ),
+      );
+    }
+
     return Container(
       width: MediaQuery.of(context).size.width * 0.90,
       alignment: Alignment.center,
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-        selections(
-            context: context,
-            imagePath: 'assets/Images/box_delivery.png',
-            title: 'home.delivery'.tr(),
-            actuator: () {
-              GetWallet().exec(context: context);
-              //!Cleanse
-              context.read<HomeProvider>().clearEveryRequestsRelatedData();
-              //...
-              context
-                  .read<HomeProvider>()
-                  .updateLoadingRequestStatus(status: false);
-              //! Update the selected service
-              context
-                  .read<HomeProvider>()
-                  .updateSelectedService(service: 'delivery');
-              //...
-              Navigator.of(context).pushNamed('/delivery_recipients');
-            }),
-        selections(
-            context: context,
-            imagePath: 'assets/Images/cart.jpg',
-            title: 'Groceries',
-            actuator: () {
-              GetWallet().exec(context: context);
-              //!Cleanse
-              context.read<HomeProvider>().clearEveryRequestsRelatedData();
-              //...
-              context
-                  .read<HomeProvider>()
-                  .updateLoadingRequestStatus(status: false);
-              //! Update the selected service
-              context
-                  .read<HomeProvider>()
-                  .updateSelectedService(service: 'shopping');
-              //...
-              Navigator.of(context).pushNamed('/shopping');
-            })
+        if (context.watch<HomeProvider>().allowedServices.contains('delivery'))
+          selections(
+              context: context,
+              imagePath: 'assets/Images/box_delivery.png',
+              title: 'home.delivery'.tr(),
+              actuator: () {
+                GetWallet().exec(context: context);
+                //!Cleanse
+                context.read<HomeProvider>().clearEveryRequestsRelatedData();
+                //...
+                context
+                    .read<HomeProvider>()
+                    .updateLoadingRequestStatus(status: false);
+                //! Update the selected service
+                context
+                    .read<HomeProvider>()
+                    .updateSelectedService(service: 'delivery');
+                //...
+                Navigator.of(context).pushNamed('/delivery_recipients');
+              }),
+        if (context.watch<HomeProvider>().allowedServices.contains('shopping'))
+          selections(
+              context: context,
+              imagePath: 'assets/Images/cart.jpg',
+              title: 'Groceries',
+              actuator: () {
+                GetWallet().exec(context: context);
+                //!Cleanse
+                context.read<HomeProvider>().clearEveryRequestsRelatedData();
+                //...
+                context
+                    .read<HomeProvider>()
+                    .updateLoadingRequestStatus(status: false);
+                //! Update the selected service
+                context
+                    .read<HomeProvider>()
+                    .updateSelectedService(service: 'shopping');
+                //...
+                Navigator.of(context).pushNamed('/shopping');
+              })
       ]),
     );
   }
