@@ -37,6 +37,7 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
     }
     // Additional auto-selection based on specific criteria
     _autoSelectOptionByName('size', 'real deal pizza (19cm)');
+    _autoSelectOptionByName('size', 'small pizza (19cm)');
     _autoSelectOptionByName('base', 'original');
     _autoSelectOptionByName('cheese', 'normal cheese');
 
@@ -47,10 +48,12 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
     if (productData['options'] is List) return;
 
     final options = productData['options'][key];
-    if (options != null &&
-        context
-            .read<HomeProvider>()
-            .isProductInCart(product: productData as Map<String, dynamic>)) {
+    if (options != null
+        // &&
+        //     context
+        //         .read<HomeProvider>()
+        //         .isProductInCart(product: productData as Map<String, dynamic>)
+        ) {
       final autoSelectedOption = options.firstWhere(
         (option) => option['name'] == optionName,
         orElse: () => null,
@@ -117,7 +120,7 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
               if (context
                   .watch<HomeProvider>()
                   .globalSelectedOptions[productData['id']]
-                  .containsKey(key))
+                  ?.containsKey(key))
                 _buildOptionRow(
                     key,
                     context
@@ -155,14 +158,16 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
         ),
       );
     } else {
+      var array = context.watch<HomeProvider>().getUnifiedArrayOfGenericOptions(
+          product: productData as Map<String, dynamic>);
+
+      int endRange = array.length > 3 ? 3 : array.length;
+      var subList = array.sublist(0, endRange);
+
       return Container(
           child:
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        for (var option in context
-            .watch<HomeProvider>()
-            .getUnifiedArrayOfGenericOptions(
-                product: productData as Map<String, dynamic>)
-            .sublist(0, 3))
+        for (var option in array)
           _buildGenericFastFoodOptionRow(option['title'], option),
         Visibility(
             visible: productOptions.length > 3,
@@ -202,6 +207,17 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
                     width: MediaQuery.of(context).size.width / (3 * 1.5),
                     child: const Opacity(opacity: 0, child: Text('change')))))
       ]));
+    }
+  }
+
+  String cleanupTitle(String title) {
+    switch (title) {
+      case 'Med':
+        return 'Medium';
+      case 'Lrg':
+        return 'Large';
+      default:
+        return title;
     }
   }
 
@@ -373,7 +389,7 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
                   ),
                   const Expanded(child: SizedBox.shrink()),
                   Text(
-                    dataParser.capitalizeWords(mainKey),
+                    cleanupTitle(dataParser.capitalizeWords(mainKey)),
                     textAlign: TextAlign.center,
                     overflow: TextOverflow.visible,
                     style: const TextStyle(
