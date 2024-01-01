@@ -82,7 +82,6 @@ class _ShoppingSummaryState extends State<ShoppingSummary> {
                           )),
               ),
               Container(
-                // color: Colors.red,
                 child: Column(
                   children: [
                     Container(
@@ -268,7 +267,7 @@ class _ShoppingSummaryState extends State<ShoppingSummary> {
       backgroundColor: Colors.white,
       expand: false,
       bounce: true,
-      duration: Duration(milliseconds: 250),
+      duration: const Duration(milliseconds: 250),
       context: context,
       builder: (context) => LocalModal(
         scenario: scenario,
@@ -296,27 +295,27 @@ class LocalModal extends StatelessWidget {
                 children: [
                   Icon(Icons.warning,
                       size: 50, color: AppTheme().getErrorColor()),
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
                   Text(
                     'rides.haveRequestInPro_title'.tr(),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontFamily: 'MoveTextMedium',
                       fontSize: 19,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Text(
                       "shopping.unableToRequestShopping_msg".tr(),
-                      style: TextStyle(fontSize: 16),
+                      style: const TextStyle(fontSize: 16),
                     ),
                   ),
-                  Expanded(child: SizedBox.shrink()),
+                  const Expanded(child: SizedBox.shrink()),
                   GenericRectButton(
                     label: 'generic_text.tryAgain'.tr(),
                     labelFontSize: 20,
@@ -341,27 +340,27 @@ class LocalModal extends StatelessWidget {
                 children: [
                   Icon(Icons.error,
                       size: 50, color: AppTheme().getErrorColor()),
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
                   Text(
                     'rides.unableToRequestTitle'.tr(),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontFamily: 'MoveTextMedium',
                       fontSize: 19,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Text(
                       "shopping.unableToRequestShoppingUnexpected_msg".tr(),
-                      style: TextStyle(fontSize: 16),
+                      style: const TextStyle(fontSize: 16),
                     ),
                   ),
-                  Expanded(child: SizedBox.shrink()),
+                  const Expanded(child: SizedBox.shrink()),
                   GenericRectButton(
                     label: 'generic_text.tryAgain'.tr(),
                     labelFontSize: 20,
@@ -385,7 +384,6 @@ class Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // color: Colors.red,
       child: Padding(
         padding: const EdgeInsets.only(left: 15, right: 20, top: 15),
         child: Column(
@@ -422,25 +420,18 @@ class Header extends StatelessWidget {
                     children: [
                       Icon(Icons.arrow_back,
                           size: AppTheme().getArrowBackSize()),
-                      SizedBox(
+                      const SizedBox(
                         width: 4,
                       ),
                       Text('rides.summaryRideLabel'.tr(),
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontFamily: 'MoveTextBold', fontSize: 24)),
                     ],
                   ),
-                ),
-                // Text(
-                //   'Edit',
-                //   style: TextStyle(
-                //       fontFamily: 'MoveTextMedium',
-                //       fontSize: 20,
-                //       color: AppTheme().getPrimaryColor()),
-                // )
+                )
               ],
             ),
-            Divider(
+            const Divider(
               height: 35,
               color: Colors.white,
             )
@@ -468,10 +459,9 @@ class ProductModel extends StatelessWidget {
             width: 30,
             child: Text(
               indexProduct.toString(),
-              style: TextStyle(fontSize: 17),
+              style: const TextStyle(fontSize: 17),
             )),
         Container(
-            // color: Colors.red,
             width: 70,
             height: 60,
             child: CachedNetworkImage(
@@ -500,11 +490,10 @@ class ProductModel extends StatelessWidget {
                 color: Colors.grey,
               ),
             )),
-        SizedBox(
+        const SizedBox(
           width: 10,
         ),
         Container(
-          // color: Colors.amber,
           width: MediaQuery.of(context).size.width * 0.45,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -513,13 +502,14 @@ class ProductModel extends StatelessWidget {
                 productData['name'],
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 15, fontFamily: 'MoveTextMedium'),
+                style:
+                    const TextStyle(fontSize: 15, fontFamily: 'MoveTextMedium'),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Text(
-                'N\$${productData['price']} • ${getItemsNumber()}',
+                'N\$${productData['priceWithOptions'] ?? productData['price']} • ${getItemsNumber()}',
                 style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
               ),
               const Divider(

@@ -768,8 +768,14 @@ class ProductDisplayModel extends StatelessWidget {
             "sku": productData['sku'],
             "meta": productData['meta']
           };
+
+          final Map<String, dynamic> updatedProduct =
+              (productData as Map<String, dynamic>);
+          updatedProduct.addAll(tmpData);
           //...
-          context.read<HomeProvider>().updateSelectedProduct(data: tmpData);
+          context
+              .read<HomeProvider>()
+              .updateSelectedProduct(data: updatedProduct);
           //Move
           Navigator.of(context).pushNamed('/product_view');
         },
@@ -859,8 +865,15 @@ class ProductDisplayModel_search extends StatelessWidget {
             "sku": productData['sku'],
             "meta": productData['meta']
           };
+
+          final Map<String, dynamic> updatedProduct =
+              (productData as Map<String, dynamic>);
+          updatedProduct.addAll(tmpData);
+
           //...
-          context.read<HomeProvider>().updateSelectedProduct(data: tmpData);
+          context
+              .read<HomeProvider>()
+              .updateSelectedProduct(data: updatedProduct);
           //Move
           Navigator.of(context).pushNamed('/product_view');
         },

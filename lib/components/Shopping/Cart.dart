@@ -187,7 +187,7 @@ class ProductModel extends StatelessWidget {
           Map<String, dynamic> tmpData = {
             "index": productData['index'],
             "name": productData['name'],
-            "price": productData['price'],
+            "price": productData['priceWithOptions'] ?? productData['price'],
             "pictures": productData['pictures'],
             "sku": productData['sku'],
             "meta": productData['meta']
@@ -256,7 +256,7 @@ class ProductModel extends StatelessWidget {
                   height: 10,
                 ),
                 Text(
-                  'N\$${productData['price']} • ${getItemsNumber()}',
+                  'N\$${productData['priceWithOptions'] ?? productData['price']} • ${getItemsNumber()}',
                   style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
                 ),
                 const Divider(
@@ -278,7 +278,6 @@ class ProductModel extends StatelessWidget {
                   .removeProductFromCart(product: productData);
             },
             child: Container(
-              // color: Colors.amber,
               width: 30,
               height: 30,
               child: Icon(

@@ -99,12 +99,13 @@ class _DrawerMenuState extends State<DrawerMenu> {
             actuatorFnc: () =>
                 Navigator.of(context).pushReplacementNamed('/YourRides'),
           ),
-          MenuOption(
-            titleOption: 'Wallet',
-            showDivider: true,
-            actuatorFnc: () =>
-                Navigator.of(context).pushReplacementNamed('/Wallet'),
-          ),
+          if (context.watch<HomeProvider>().allowedServices.contains('wallet'))
+            MenuOption(
+              titleOption: 'Wallet',
+              showDivider: true,
+              actuatorFnc: () =>
+                  Navigator.of(context).pushReplacementNamed('/Wallet'),
+            ),
           MenuOption(
             titleOption: 'drawer.settings'.tr(),
             showDivider: true,
@@ -151,7 +152,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                             },
                             child: Text('drawer.legal'.tr(),
                                 style: TextStyle(fontSize: 16))),
-                        trailing: const Text('v1.1.1',
+                        trailing: const Text('v1.1.2',
                             style: TextStyle(fontSize: 16, color: Colors.grey)),
                       ),
                     ))),

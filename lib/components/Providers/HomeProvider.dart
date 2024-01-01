@@ -19,8 +19,8 @@ import 'package:collection/collection.dart';
 // Will hold all the home related globals - only!
 
 class HomeProvider with ChangeNotifier {
-  // final String bridge = 'http://192.168.178.93:9697';
-  final String bridge = 'https://api.dulcetdash.com';
+  final String bridge = 'http://172.20.10.2:9697';
+  // final String bridge = 'https://api.dulcetdash.com';
 
   String selectedService =
       'delivery'; //! The selected service that the user selected: ride, delivery and shopping - default: ''
@@ -230,6 +230,11 @@ class HomeProvider with ChangeNotifier {
 
   String preferredPaymentMethod = 'wallet'; //wallet or cash
 
+  List<dynamic> allowedServices = ['delivery']; //delivery, shopping
+
+  bool testOptions = false;
+  Map<String, dynamic> globalSelectedOptions = {};
+
   //The higher order absolute class
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
@@ -357,7 +362,8 @@ class HomeProvider with ChangeNotifier {
       "user_identifier": user_identifier_deduced,
       "userData": userData,
       "pushnotif_token": pushnotif_token,
-      "didSelectLanguage": didSelectLanguage
+      "didSelectLanguage": didSelectLanguage,
+      "allowedServices": allowedServices
     };
   }
 
@@ -466,6 +472,12 @@ class HomeProvider with ChangeNotifier {
   //?5. Update  the selected product to show
   void updateSelectedProduct({required Map<String, dynamic> data}) {
     selectedProduct = data;
+    //? If any option was selected if the item was in cart, updated the global selected.
+    if (isProductInCart(product: data) && data['options'] != null) {
+      globalSelectedOptions[data['id']] ??= data['options'] is List ? [] : {};
+      globalSelectedOptions[data['id']] = data['selectedOptions'];
+    }
+
     notifyListeners();
   }
 
@@ -474,9 +486,72 @@ class HomeProvider with ChangeNotifier {
     //! Add the item number if not set
     product['items'] = product['items'] != null ? product['items'] : 1;
     //...
-    CART.add(product);
-    // print(CART);
+    Map<String, dynamic> updatedProduct =
+        updateProductPriceAndOptions(product: product);
+
+    CART.add(updatedProduct);
     notifyListeners();
+  }
+
+  Map<String, dynamic> updateProductPriceAndOptions(
+      {required Map<String, dynamic> product}) {
+    try {
+      if (product['options'] is Map) {
+        //Check if the product has options, if yes update the prices.
+        Map<dynamic, dynamic> options =
+            Map.from(globalSelectedOptions[product['id']]);
+
+        if (options != null) {
+          double newProductPrice = 0;
+          //1. PIZZAS
+          if (options.containsKey('size')) {
+            options.forEach((key, value) {
+              newProductPrice += double.parse(options[key]['price']);
+            });
+
+            product['priceWithOptions'] = newProductPrice.toStringAsFixed(2);
+            product['selectedOptions'] = {};
+            product['selectedOptions'] = options;
+          }
+        }
+
+        return product;
+      } else if (product['options'] is List) {
+        //Check if the product has options, if yes update the prices.
+        List options = List.from(globalSelectedOptions[product['id']]);
+
+        if (options != null) {
+          double newProductPrice = double.parse(product['price']);
+
+          //2. GENERIC FAST FOOD
+          for (var value in options) {
+            if (value['isPriceTotal']) {
+              //!Take the highest price
+              var highestOption = options.reduce((max, current) {
+                final double maxPrice = double.parse(max['price']!);
+                final double currentPrice = double.parse(current['price']!);
+                return currentPrice > maxPrice ? current : max;
+              });
+              newProductPrice = double.parse(highestOption['price']);
+            } else {
+              newProductPrice += double.parse(value['price']);
+            }
+          }
+
+          product['priceWithOptions'] = newProductPrice.toStringAsFixed(2);
+          product['selectedOptions'] = [];
+          product['selectedOptions'] = options;
+        }
+
+        return product;
+      } else {
+        return product;
+      }
+    } catch (e, s) {
+      print(e);
+      print(s);
+      return product;
+    }
   }
 
   //?6.b Remove product from cart
@@ -497,7 +572,6 @@ class HomeProvider with ChangeNotifier {
 
   //?7. Check if a product is in the cart
   bool isProductInCart({required Map<String, dynamic> product}) {
-    // print(CART.contains(product));
     Map<String, dynamic> checker = CART.firstWhere(
         (element) =>
             element['name'] == product['name'] &&
@@ -513,10 +587,11 @@ class HomeProvider with ChangeNotifier {
     double total = 0;
 
     CART.forEach((element) {
-      double tmpPrice = double.parse(
-          pricingToolbox(currentPrice: element['price'], multiplier: 1)
-              .toString()
-              .replaceFirst('N\$', ''));
+      double tmpPrice = double.parse(pricingToolbox(
+              currentPrice: element['priceWithOptions'] ?? element['price'],
+              multiplier: 1)
+          .toString()
+          .replaceFirst('N\$', ''));
       total += tmpPrice;
     });
 
@@ -669,7 +744,12 @@ class HomeProvider with ChangeNotifier {
       userLocationDetails = newCurrentLocation;
       userLocationDetails['coordinates'] =
           userLocationCoords; //? Very important
+
+      allowedServices = newCurrentLocation['supported_services'];
+
       notifyListeners();
+
+      peristDataMap();
     }
   }
 
@@ -692,7 +772,6 @@ class HomeProvider with ChangeNotifier {
       {required String location_type, required Map<String, dynamic> location}) {
     if (location_type == 'pickup') {
       manuallySettedCurrentLocation_pickup = location;
-      log(location.toString());
       notifyListeners();
     } else if (location_type == 'dropoff') {
       manuallySettedCurrentLocation_dropoff = location;
@@ -705,7 +784,6 @@ class HomeProvider with ChangeNotifier {
       {required String location_type, required Map<String, dynamic> location}) {
     if (location_type == 'pickup') {
       delivery_pickup = location;
-      log(location.toString());
       notifyListeners();
     } else if (location_type == 'dropoff') {
       recipients_infos[selectedRecipient_index]['dropoff_location'] = location;
@@ -1490,5 +1568,119 @@ class HomeProvider with ChangeNotifier {
   void updatePreferredPaymentMethod({required String method}) {
     preferredPaymentMethod = method;
     notifyListeners();
+  }
+
+  //?Options management
+  bool doesOptionsKeyExistForProduct(String productId) {
+    return globalSelectedOptions.containsKey(productId);
+  }
+
+  void addOptionsKeyForProductToGlobals(
+      {required Map<String, dynamic> product}) {
+    if (product['options'] is List || product['options'] is Map) {
+      String productId = product['id'];
+      globalSelectedOptions[productId] = product['options'] is Map ? {} : [];
+    }
+  }
+
+  void updateOptionKeyForProductInGlobals(
+      {required String productId, required String key, required value}) {
+    globalSelectedOptions[productId] ??= {};
+
+    globalSelectedOptions[productId]!.addEntries([
+      MapEntry(key, value),
+    ]);
+
+    //! Updated the current selected product
+    selectedProduct = updateProductPriceAndOptions(product: selectedProduct);
+
+    notifyListeners();
+  }
+
+  bool areProductOptionsEmptyFor({required Map<String, dynamic> product}) {
+    return (product['options'] is List || product['options'] is Map)
+        ? product['options'].isEmpty
+        : false;
+  }
+
+  void toggleGenericFastFoodProductOptions(
+      {required Map<String, dynamic> product,
+      required Map<String, dynamic> option}) {
+    globalSelectedOptions[product['id']] ??= [];
+
+    List currentSelectedOptions =
+        List.from(globalSelectedOptions[product['id']]);
+    currentSelectedOptions
+        .removeWhere((element) => element['title'] != option['title']);
+
+    if (currentSelectedOptions.isNotEmpty) //Element was already selected
+    {
+      List selectedThisOptions =
+          List.from(globalSelectedOptions[product['id']]);
+      selectedThisOptions
+          .removeWhere((element) => element['title'] == option['title']);
+      globalSelectedOptions[product['id']] = selectedThisOptions;
+    } else //Not yet selected
+    {
+      globalSelectedOptions[product['id']].add(option);
+    }
+
+    //! Updated the current selected product
+    selectedProduct = updateProductPriceAndOptions(product: selectedProduct);
+
+    notifyListeners();
+  }
+
+  bool isGenericOptionSelected(
+      {required Map<String, dynamic> product,
+      required Map<String, dynamic> option}) {
+    globalSelectedOptions[product['id']] ??= [];
+
+    List currentSelectedOptions =
+        List.from(globalSelectedOptions[product['id']]);
+    currentSelectedOptions
+        .removeWhere((element) => element['title'] != option['title']);
+
+    return currentSelectedOptions.isNotEmpty;
+  }
+
+  Map getSelectedGenericOptions({required Map<String, dynamic> product}) {
+    return globalSelectedOptions[product['id']] ?? [];
+  }
+
+  List getUnifiedArrayOfGenericOptions(
+      {required Map<String, dynamic> product}) {
+    if (globalSelectedOptions[product['id']] == null) {
+      return product['options'];
+    }
+    // Create a set to store unique values
+    Set unifiedSet = {};
+
+    // Add selectedOptions to the set
+    unifiedSet.addAll(List.from(globalSelectedOptions[product['id']]));
+
+    // Add productOptions excluding duplicates
+    unifiedSet.addAll(List.from(product['options']));
+
+    // Convert the set back to a list
+    List unifiedList = unifiedSet.toList();
+
+    return unifiedList;
+  }
+
+  dynamic getTrueOptionsFromAddedToCart(
+      {required Map<String, dynamic> product}) {
+    //Check if the item was added to cart
+    List copiedCart = List.from(CART);
+    copiedCart.removeWhere((element) => element['id'] != product['id']);
+
+    bool isItemInCart = copiedCart.isNotEmpty;
+
+    if (isItemInCart) {
+      return product['selectedOptions'];
+    } else //Item not in cart
+    {
+      return product['options'];
+    }
   }
 }

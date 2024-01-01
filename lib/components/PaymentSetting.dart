@@ -49,25 +49,33 @@ class _PaymentSettingState extends State<PaymentSetting> {
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: ListView(
                       children: [
-                        MethodChoice(
-                            isWallet: true,
-                            paymentMethod: 'Wallet',
-                            isSelected:
-                                context.watch<HomeProvider>().paymentMethod ==
-                                    'wallet',
-                            subtitle: 'Cashless payment with ease',
-                            actuator: (newValue) {
-                              if (context
-                                  .read<HomeProvider>()
-                                  .isBalanceSufficient()) {
-                                context
+                        if (context
+                            .watch<HomeProvider>()
+                            .allowedServices
+                            .contains('wallet'))
+                          MethodChoice(
+                              isWallet: true,
+                              paymentMethod: 'Wallet',
+                              isSelected:
+                                  context.watch<HomeProvider>().paymentMethod ==
+                                      'wallet',
+                              subtitle: 'Cashless payment with ease',
+                              actuator: (newValue) {
+                                if (context
                                     .read<HomeProvider>()
-                                    .updatePaymentMethod(data: 'wallet');
-                              }
-                            }),
-                        const Divider(
-                          height: 50,
-                        ),
+                                    .isBalanceSufficient()) {
+                                  context
+                                      .read<HomeProvider>()
+                                      .updatePaymentMethod(data: 'wallet');
+                                }
+                              }),
+                        if (context
+                            .watch<HomeProvider>()
+                            .allowedServices
+                            .contains('wallet'))
+                          const Divider(
+                            height: 50,
+                          ),
                         MethodChoice(
                           paymentMethod: 'payments.cash'.tr(),
                           subtitle:
