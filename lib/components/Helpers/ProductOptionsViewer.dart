@@ -45,6 +45,10 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
   }
 
   void _autoSelectOptionByName(String key, String optionName) {
+    if (productData['options'] == null) {
+      return;
+    }
+
     if (productData['options'] is List) return;
 
     final options = productData['options'][key];
@@ -95,10 +99,17 @@ class _ProductOptionsViewerState extends State<ProductOptionsViewer> {
   }
 
   Widget getFirstLineOptions() {
+    if (productData['options'] == null) {
+      return SizedBox.shrink();
+    }
     //Check if the options are for a pizza or other products
     var isPizza = productData['options'] is Map &&
         productData['options'].containsKey('size');
     var productOptions = productData['options'];
+
+    if (productOptions == null) {
+      return SizedBox.shrink();
+    }
 
     if (context.read<HomeProvider>().areProductOptionsEmptyFor(
         product: productData as Map<String, dynamic>)) {
